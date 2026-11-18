@@ -35,7 +35,7 @@ public sealed class Error {
             TermUnset -> Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit)
             is MalformedTerminfo -> {
                 val (e) = this as MalformedTerminfo
-                e.fmt(f)
+                run { f.append(e); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
             is IoError -> {
                 val (e1) = this as IoError

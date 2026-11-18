@@ -76,7 +76,7 @@ public interface Seek {
      */
     public fun rewind(): Result<Unit> {
         when (val tryResult = this.seek(SeekFrom.Start(0))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     /**
@@ -165,7 +165,7 @@ public interface Seek {
      */
     public fun seekRelative(offset: Long): Result<Unit> {
         when (val tryResult = this.seek(SeekFrom.Current(offset))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 }
 
@@ -182,7 +182,7 @@ public fun <T : Seek> streamLenDefault(selfRef: T): Result<ULong> {
     if (oldPos != len) {
         when (val tryResult = selfRef.seek(SeekFrom.Start(oldPos))) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     }
-    return RustResult.Ok(len)
+    return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(len)
 }
 
 /**

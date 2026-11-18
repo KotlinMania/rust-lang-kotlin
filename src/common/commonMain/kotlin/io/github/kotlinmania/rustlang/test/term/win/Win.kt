@@ -31,7 +31,7 @@ public open class WinConsole<T>(
     public var background: Color,
 ) {
     public open fun apply() {
-        var accum: Word = 0u
+        var accum: Word = 0u.toUShort()
         accum = accum or colorToBits(this.foreground)
         accum = accum or ((colorToBits(this.background).toUInt() shl 4).toUShort())
         run {
@@ -259,7 +259,7 @@ public fun colorToBits(color: Color): UShort {
             else -> error("unreachable")
         }
     return if (color >= 8u) {
-        bits or 0x8u
+        bits or 0x8u.toUShort()
     } else {
         bits
     }
@@ -289,12 +289,12 @@ public fun <T : Write<T>> WinConsole<T>.flush(): Result<Unit> = this.buf.flush()
 public fun <T : Write<T>> WinConsole<T>.fg(color: Color): Result<Boolean> {
     this.foreground = color
     this.apply()
-    return RustResult.Ok(true)
+    return RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(true)
 }
 
 public fun <T : Write<T>> WinConsole<T>.reset(): Result<Boolean> {
     this.foreground = this.defForeground
     this.background = this.defBackground
     this.apply()
-    return RustResult.Ok(true)
+    return RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(true)
 }

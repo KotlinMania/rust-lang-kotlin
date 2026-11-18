@@ -178,9 +178,9 @@ public fun Simd<UByte>.absDiff(second: Simd<UByte>, n: Int = 0): Simd<UByte> {
     return max - min
 }
 
-public fun Simd<UByte>.reduceSum(n: Int = 0): UByte = run { val simdArg0 = this; val simdArg1 = 0u; simdArg1 }
+public fun Simd<UByte>.reduceSum(n: Int = 0): UByte = run { val simdArg0 = this; val simdArg1 = 0u.toUByte(); simdArg1 }
 
-public fun Simd<UByte>.reduceProduct(n: Int = 0): UByte = run { val simdArg0 = this; val simdArg1 = 1u; simdArg1 }
+public fun Simd<UByte>.reduceProduct(n: Int = 0): UByte = run { val simdArg0 = this; val simdArg1 = 1u.toUByte(); simdArg1 }
 
 public fun Simd<UByte>.reduceMax(n: Int = 0): UByte = run { val simdArg0 = this; 0u }
 

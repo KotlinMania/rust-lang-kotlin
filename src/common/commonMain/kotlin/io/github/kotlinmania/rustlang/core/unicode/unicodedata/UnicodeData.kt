@@ -51,13 +51,13 @@ public fun bitsetSearch(needle: UInt, chunkIdxMap: UByteArray, bitsetChunkIdx: L
         } else {
             val (realIdx, mapping) = bitsetCanonicalized[idx - bitsetCanonical.size]
             var word = bitsetCanonical[realIdx.toInt()]
-            val shouldInvert = mapping and ((1u.toUInt() shl 6).toUByte()) != 0u.toUByte()
+            val shouldInvert = mapping and (((1u.toUByte()).toUInt() shl 6).toUByte()) != 0u.toUByte()
             if (shouldInvert) {
                 word = word.inv()
             }
             // Lower 6 bits
-            val quantity = mapping and (((1u.toUInt() shl 6).toUByte()) - 1u)
-            if (mapping and ((1u.toUInt() shl 7).toUByte()) != 0u.toUByte()) {
+            val quantity = mapping and ((((1u.toUByte()).toUInt() shl 6).toUByte()) - 1u.toUByte())
+            if (mapping and (((1u.toUByte()).toUInt() shl 7).toUByte()) != 0u.toUByte()) {
                 // shift
                 word = word shr ((quantity.toULong()).toInt())
             } else {
@@ -110,7 +110,7 @@ public open class ShortOffsetRunHeader internal constructor(
  * - The start indices of all elements in `shortOffsetRuns` must be less than `OFFSETS`.
  */
 public fun skipSearch(needle: Char, shortOffsetRuns: List<ShortOffsetRunHeader>, offsets: UByteArray, sor: Int = 0): Boolean {
-    val needle1 = needle.toUInt()
+    val needle1 = needle.code.toUInt()
     val lastIdx =
         run {
             val matchVal = shortOffsetRuns.binarySearchByKey((needle1 shl 11), { header -> header.first shl 11 })

@@ -18,7 +18,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.epsilon
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.frequency
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.time.intervals2dur
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

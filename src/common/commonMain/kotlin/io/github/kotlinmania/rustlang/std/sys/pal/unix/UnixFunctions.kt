@@ -1,5 +1,6 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -28,7 +29,6 @@ import io.github.kotlinmania.rustlang.libc.wasi.F_GETFD
 import io.github.kotlinmania.rustlang.libc.wasi.NfdsT
 import io.github.kotlinmania.rustlang.libc.wasi.O_RDWR
 import io.github.kotlinmania.rustlang.libc.wasi.POLLNVAL
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.io.Errno
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.setName
@@ -108,13 +108,13 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {
             // constants from `compiler / rustcSession / src / config / sigpipe.rs`.
             // See the other file for docs. NOTE: Make sure to keep them in
             // sync!
-            val DEFAULT: UByte = 0u
+            val DEFAULT: UByte = 0u.toUByte()
 
-            val INHERIT: UByte = 1u
+            val INHERIT: UByte = 1u.toUByte()
 
-            val SIG_IGN: UByte = 2u
+            val SIG_IGN: UByte = 2u.toUByte()
 
-            val SIG_DFL: UByte = 3u
+            val SIG_DFL: UByte = 3u.toUByte()
             val (onBrokenPipeUsed, handler) =
                 when (sigpipe1) {
                     default -> Pair(false, SIG_IGN)

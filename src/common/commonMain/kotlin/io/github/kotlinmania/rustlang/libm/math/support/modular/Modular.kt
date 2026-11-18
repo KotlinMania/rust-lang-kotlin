@@ -23,13 +23,13 @@ import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 public fun <D, OtherSign, H, Unsigned, U> linearMulReduction(x: U, e: UInt, y: U): U where U : HInt<U, D, OtherSign, Unsigned>, U : Int<U, OtherSign, U> {
     var e1 = e
     var y1 = y
-    check((kmCompareValues(y1, U.MAX shr 2) <= 0))
+    check((kmCompareValues(y1, x.MAX shr 2) <= 0))
     check((kmCompareValues(x, (y1 shl 1)) < 0))
-    val v0 = U.ZERO
-    val v1 = U.ONE
+    val v0 = x.ZERO
+    val v1 = x.ONE
     // power of two divisors
     if ((y1 and (y1 - v1)).isZero()) {
-        if (e1 < U.BITS) {
+        if (e1 < x.BITS) {
             // shift and only keep low bits
             return (x shl e1.toInt()) and (y1 - v1)
         } else {
@@ -47,9 +47,9 @@ public fun <D, OtherSign, H, Unsigned, U> linearMulReduction(x: U, e: UInt, y: U
     // very efficient to do `x< <= k` modulo `y` for integers `k<U.BITS`
     val m = Reducer.new(x, y1)
     // Use the faster special case with constant `k == U.BITS - 1` while we can
-    while (e1 >= U.BITS - 1u) {
+    while (e1 >= x.BITS - 1u) {
         m.wordReduce()
-        e1 -= U.BITS - 1u
+        e1 -= x.BITS - 1u
     }
     // Finish with the variable shift operation
     m.shiftReduce(e1)
@@ -192,9 +192,9 @@ public open class Reducer<U : HInt<U, D, OtherSign, Unsigned>, D, OtherSign, Uns
          * Requires `R / 8<n<R / 4` and `x<2n`.
          */
         public fun <D, OtherSign, Unsigned, H, U : HInt<U, D, OtherSign, Unsigned>> new(x: U, n: U): Reducer<U, D, OtherSign, Unsigned> where U : HInt<U, D, OtherSign, Unsigned>, U : Int<U, OtherSign, U> {
-            val v1 = U.ONE
-            check(n > (v1 shl (U.BITS - 3).toInt()))
-            check(n < (v1 shl (U.BITS - 2).toInt()))
+            val v1 = x.ONE
+            check(n > (v1 shl (x.BITS - 3).toInt()))
+            check(n < (v1 shl (x.BITS - 2).toInt()))
             val m = n shl 1
             check(x < m)
             // We need to compute the parameters
@@ -206,7 +206,7 @@ public open class Reducer<U : HInt<U, D, OtherSign, Unsigned>, D, OtherSign, Uns
             // from the dividend, which doesn't change the remainder:
             // `f = R(R / 2 - m) / m`
             // `r = R(R / 2 - m) % m`
-            val dividend = ((v1 shl (U.BITS - 1).toInt()) - m).widenHi()
+            val dividend = ((v1 shl (x.BITS - 1).toInt()) - m).widenHi()
             val (f, r) = dividend.checkedNarrowingDivRem(m).unwrap()
             // As `x<m`, `xq<qm <= RR / 2`
             // Thus `2xq = 2xR + 2xf` does not overflow in `U.D`.

@@ -127,7 +127,7 @@ public open class Utf8Error(
 public open class ParseBoolError {
     public open fun clone(): ParseBoolError = ParseBoolError()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = "provided string was not `true` or `false`".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("provided string was not `true` or `false`"); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<ParseBoolError> =

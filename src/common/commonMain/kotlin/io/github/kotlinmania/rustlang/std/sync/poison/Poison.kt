@@ -6,8 +6,6 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.load
@@ -69,7 +67,7 @@ import io.github.kotlinmania.rustlang.std.thread.functions.panicking
 // Note that the [Once] type also employs poisoning, but since it has non-poisoning `force`
 // methods available on it, there is no separate `nonpoison` and `poison` version.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -94,12 +92,9 @@ public class DebugStruct(
     }
 }
 
-public open class Flag internal constructor(
-    failedCtorArg: Atomic<Boolean, Align1<UByte>>,
+public open class Flag(
+    public var failed: AtomicBool,
 ) {
-    public var failed: Atomic<Boolean, Align1<UByte>> = failedCtorArg
-        internal set
-
     // Note that the Ordering uses to access the `failed` field of `Flag` below is
     // always `Relaxed`, and that's because this isn't actually protecting any data,
     // it's just a flag whether we've panicked or not.
@@ -146,12 +141,6 @@ public open class Flag internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(
-            failed: Atomic<Boolean, Align1<UByte>>,
-        ): Flag = Flag(
-            failedCtorArg = failed,
-        )
-
         public fun new(): Flag = Flag(failed = AtomicBool.new(false))
     }
 }
@@ -224,7 +213,7 @@ public open class PoisonError<T>(
 ) {
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "PoisonError").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = "poisoned lock: another task failed inside".fmt(f)
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append("poisoned lock: another task failed inside"); Result.Ok<Unit, Error>(Unit) }
 
     /**
      * Consumes this error indicating that a lock is poisoned, returning the
@@ -297,8 +286,8 @@ public sealed class TryLockError<T> {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is TryLockError.Poisoned<*> -> "Poisoned(..)".fmt(f)
-            is TryLockError.WouldBlock<*> -> "WouldBlock".fmt(f)
+            is TryLockError.Poisoned<*> -> run { f.append("Poisoned(..)"); Result.Ok<Unit, Error>(Unit) }
+            is TryLockError.WouldBlock<*> -> run { f.append("WouldBlock"); Result.Ok<Unit, Error>(Unit) }
         }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =

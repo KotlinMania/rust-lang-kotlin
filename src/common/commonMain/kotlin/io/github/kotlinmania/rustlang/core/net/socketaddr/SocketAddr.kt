@@ -297,10 +297,10 @@ public sealed class SocketAddr {
          */
         public fun unspecifiedFrom(thisRef: SocketAddr): SocketAddr =
             when (thisRef) {
-                is V4 -> SocketAddr.V4(SocketAddrV4.new(Ipv4Addr.UNSPECIFIED, 0u))
+                is V4 -> SocketAddr.V4(SocketAddrV4.new(Ipv4Addr.UNSPECIFIED, 0u.toUShort()))
                 is V6 -> {
                     val (addr) = thisRef
-                    SocketAddr.V6(SocketAddrV6.new(Ipv6Addr.UNSPECIFIED, 0u, addr.flowinfo(), addr.scopeId()))
+                    SocketAddr.V6(SocketAddrV6.new(Ipv6Addr.UNSPECIFIED, 0u.toUShort(), addr.flowinfo(), addr.scopeId()))
                 }
             }
 

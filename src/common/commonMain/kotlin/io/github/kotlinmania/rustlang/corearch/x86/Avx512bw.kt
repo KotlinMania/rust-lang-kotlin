@@ -8060,7 +8060,7 @@ public fun mm256MaskzCvtsepi16Epi8(k: Mmask16, a: M256i): M128i = run { val simd
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsepi16_epi8&expand=1801)
  */
-public fun mmCvtsepi16Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovswb128(a.asI16x8(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtsepi16Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovswb128(a.asI16x8(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 16-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8123,7 +8123,7 @@ public fun mm256MaskzCvtusepi16Epi8(k: Mmask16, a: M256i): M128i = run { val sim
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtusepi16_epi8&expand=2036)
  */
-public fun mmCvtusepi16Epi8(a: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovuswb128(a.asU16x8(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtusepi16Epi8(a: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovuswb128(a.asU16x8(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 16-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).

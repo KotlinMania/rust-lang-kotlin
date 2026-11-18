@@ -6,7 +6,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

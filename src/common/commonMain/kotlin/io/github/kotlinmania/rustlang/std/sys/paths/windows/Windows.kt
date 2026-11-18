@@ -103,7 +103,7 @@ public open class SplitPathsRef(
 public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? = null
 
 public open class JoinPathsError {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "path segment contains `\"`".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("path segment contains `\"`"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<JoinPathsError> =

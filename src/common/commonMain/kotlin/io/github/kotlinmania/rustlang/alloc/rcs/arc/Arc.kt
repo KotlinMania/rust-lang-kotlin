@@ -75,12 +75,9 @@ import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Acquire
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
@@ -2305,14 +2302,8 @@ public open class Weak<T, A : Allocator> internal constructor(
 // inner types.
 // Unlike RcInner, repr(align(2)) is not strictly required because atomic types
 // have the alignment same as its size, but we use it for consistency and clarity.
-public open class ArcInner<T> internal constructor(
-    strongCtorArg: Atomic<Int, Align8<Int>>,
-    weakCtorArg: Atomic<Int, Align8<Int>>,
-    public var data: T,
-) {
-    public var strong: Atomic<Int, Align8<Int>> = strongCtorArg
-        internal set
-
+public open class ArcInner<T>(
+    public var strong: AtomicUsize,
     // the value usize.Max acts as a sentinel for temporarily "locking" the
     // weak count, preventing `Arc.downgrade` from racing to create new
     // `Weak` references. `Arc.isUnique` (which backs `Arc.getMut`)
@@ -2320,21 +2311,9 @@ public open class ArcInner<T> internal constructor(
     // uniqueness in one logical atomic step; since they live in separate
     // atomic words, it locks the weak count while reading the strong
     // count to keep the two reads consistent.
-    public var weak: Atomic<Int, Align8<Int>> = weakCtorArg
-        internal set
-
-    public companion object {
-        public operator fun <T> invoke(
-            strong: Atomic<Int, Align8<Int>>,
-            weak: Atomic<Int, Align8<Int>>,
-            data: T,
-        ): ArcInner<T> = ArcInner<T>(
-            strongCtorArg = strong,
-            weakCtorArg = weak,
-            data = data,
-        )
-    }
-}
+    public var weak: AtomicUsize,
+    public var data: T,
+)
 
 /**
  * Calculate layout for `ArcInner<T>` using the inner value's layout
@@ -2976,8 +2955,8 @@ public fun <T> Arc.Companion.initializeArcinner(ptr: NonNull, layout: Layout, me
     check(Layout.forValueRaw((inner).asConstPtr()) == layout)
     // ignore-tidy-undocumented-unchecked
     run {
-        (UnresolvedTypeLayout<Atomic<Int, Align8<Int>>>()).writeNative(((addrOfMut((UnresolvedTypeLayout<ArcInner<T>>()).readNative((inner).rawAddress).strong))).rawAddress, AtomicUsize.new(1))
-        (UnresolvedTypeLayout<Atomic<Int, Align8<Int>>>()).writeNative(((addrOfMut((UnresolvedTypeLayout<ArcInner<T>>()).readNative((inner).rawAddress).weak))).rawAddress, AtomicUsize.new(1))
+        (UnresolvedTypeLayout<AtomicUsize>()).writeNative(((addrOfMut((UnresolvedTypeLayout<ArcInner<T>>()).readNative((inner).rawAddress).strong))).rawAddress, AtomicUsize.new(1))
+        (UnresolvedTypeLayout<AtomicUsize>()).writeNative(((addrOfMut((UnresolvedTypeLayout<ArcInner<T>>()).readNative((inner).rawAddress).weak))).rawAddress, AtomicUsize.new(1))
     }
     return inner
 }
@@ -3151,26 +3130,10 @@ public fun <T> Weak.Companion.new(): Weak<T, Global> = Weak(ptr = NonNull.withou
  * Helper type to allow accessing the reference counts without
  * making any assertions about the data field.
  */
-public open class WeakInner internal constructor(
-    weakCtorArg: Atomic<Int, Align8<Int>>,
-    strongCtorArg: Atomic<Int, Align8<Int>>,
-) {
-    public var weak: Atomic<Int, Align8<Int>> = weakCtorArg
-        internal set
-
-    public var strong: Atomic<Int, Align8<Int>> = strongCtorArg
-        internal set
-
-    public companion object {
-        public operator fun invoke(
-            weak: Atomic<Int, Align8<Int>>,
-            strong: Atomic<Int, Align8<Int>>,
-        ): WeakInner = WeakInner(
-            weakCtorArg = weak,
-            strongCtorArg = strong,
-        )
-    }
-}
+public open class WeakInner(
+    public var weak: AtomicUsize,
+    public var strong: AtomicUsize,
+)
 
 /**
  * Converts a raw pointer previously created by [intoRaw] back into `Weak<T>`.

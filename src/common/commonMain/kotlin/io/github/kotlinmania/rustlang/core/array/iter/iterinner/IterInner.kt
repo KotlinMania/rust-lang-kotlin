@@ -16,7 +16,7 @@ import io.github.kotlinmania.rustlang.core.str.len
 
 // Defines the `IntoIter` owned iterator for arrays.
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {

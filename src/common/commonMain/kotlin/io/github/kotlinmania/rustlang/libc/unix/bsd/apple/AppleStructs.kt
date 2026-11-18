@@ -55,7 +55,7 @@ import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.IfData
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.Timeval32
 import io.github.kotlinmania.rustlang.libc.unix.bsd.apple.b64.aarch64.BooleanT
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

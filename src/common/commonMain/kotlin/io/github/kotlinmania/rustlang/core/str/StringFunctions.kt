@@ -22,7 +22,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.splitAtMut
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.len
@@ -469,10 +468,10 @@ public fun String.asBytes(): List<UByte> {
  * var s = "🗻∈🌏"
  * run {
  *     val bytes = s.asBytesMut()
- *     bytes[0] = 0xF0u
- *     bytes[1] = 0x9Fu
- *     bytes[2] = 0x8Du
- *     bytes[3] = 0x94u
+ *     bytes[0] = 0xF0u.toUByte()
+ *     bytes[1] = 0x9Fu.toUByte()
+ *     bytes[2] = 0x8Du.toUByte()
+ *     bytes[3] = 0x94u.toUByte()
  * }
  * check("🍔∈🌏" == s)
  * ```
@@ -1186,7 +1185,7 @@ public fun String.linesAny(): LinesAny = LinesAny(this.lines())
  * check(utf16Len <= utf8Len)
  * ```
  */
-public fun String.encodeUtf16(): EncodeUtf16 = EncodeUtf16(chars = this.chars(), extra = 0u)
+public fun String.encodeUtf16(): EncodeUtf16 = EncodeUtf16(chars = this.chars(), extra = 0u.toUShort())
 
 /**
  * Returns `true` if the given pattern matches a sub-slice of

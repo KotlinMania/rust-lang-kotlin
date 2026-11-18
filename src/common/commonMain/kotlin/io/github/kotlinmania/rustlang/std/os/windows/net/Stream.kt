@@ -34,7 +34,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getsockna
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvtNz
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock.startup
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -106,7 +106,7 @@ public open class UnixStream(
             }
             else -> {}
         }
-        return builder.finish()
+        return run { builder.finish(); Result.Ok<Unit, Error>(Unit) }
     }
 
     /**

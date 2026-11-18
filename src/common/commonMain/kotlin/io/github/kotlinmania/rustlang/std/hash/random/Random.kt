@@ -18,7 +18,7 @@ import io.github.kotlinmania.rustlang.std.sys.random.hashmapRandomKeys
 // Although its items are public and contain stability attributes, they can't actually be accessed
 // outside this crate.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

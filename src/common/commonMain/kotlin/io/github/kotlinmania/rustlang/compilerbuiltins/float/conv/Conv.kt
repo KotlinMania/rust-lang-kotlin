@@ -11,13 +11,13 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u32
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u64ToF128Bits
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u64ToF32Bits
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat.u64ToF64Bits
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.num.ilog2
 import io.github.kotlinmania.rustlang.core.ops.arith.Neg
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 // Conversions from unsigned integers to floats.
 // Conversions from signed integers to floats.
@@ -80,7 +80,7 @@ public fun <F, U> floatToUnsignedInt(f: F): U where F : Float, U : Int<U> = floa
  * Generic float to signed int conversions.
  */
 public fun <F, I> floatToSignedInt(f: F): I where F : Float, I : Int, I : Neg<I> =
-    floatToIntInner<F, I>(f.toBits() and F.SIGN_MASK.inv(), { i: I -> if (f.isSignNegative()) {
+    floatToIntInner<F, I>(f.toBits() and f.SIGN_MASK.inv(), { i: I -> if (f.isSignNegative()) {
         -i
     } else {
         i

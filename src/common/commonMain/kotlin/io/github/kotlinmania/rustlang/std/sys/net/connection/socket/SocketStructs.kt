@@ -1,5 +1,7 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUchar
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
@@ -70,8 +72,6 @@ import io.github.kotlinmania.rustlang.libc.wasi.EMSGSIZE
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.std.net.Shutdown
 import io.github.kotlinmania.rustlang.std.net.socketaddr.ToSocketAddrs
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
-import io.github.kotlinmania.rustlang.std.os.raw.CUchar
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.net.connection.eachAddr
@@ -83,7 +83,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.WSAEWOULD
 import io.github.kotlinmania.rustlang.std.c.IPV6_JOIN_GROUP as IPV6_ADD_MEMBERSHIP
 import io.github.kotlinmania.rustlang.std.c.IPV6_LEAVE_GROUP as IPV6_DROP_MEMBERSHIP
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -398,7 +398,7 @@ public open class TcpListener(
         return Result.Ok<UByte, Error>(raw.toUByte())
     }
 
-    public open fun setOnlyV6(onlyV6: Boolean): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_V6ONLY, onlyV6.toInt(), typeLayoutT = UnresolvedTypeLayout<CInt>())
+    public open fun setOnlyV6(onlyV6: Boolean): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_V6ONLY, (if (onlyV6) 1 else 0), typeLayoutT = UnresolvedTypeLayout<CInt>())
 
     public open fun onlyV6(): Result<Boolean, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IPV6, IPV6_V6ONLY)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
@@ -505,14 +505,14 @@ public open class UdpSocket(
 
     public open fun writeTimeout(): Result<Duration?, Error> = this.inner.timeout(SO_SNDTIMEO)
 
-    public open fun setBroadcast(broadcast: Boolean): Result<Unit, Error> = setsockopt(this.inner, SOL_SOCKET, SO_BROADCAST, broadcast.toInt(), typeLayoutT = UnresolvedTypeLayout<CInt>())
+    public open fun setBroadcast(broadcast: Boolean): Result<Unit, Error> = setsockopt(this.inner, SOL_SOCKET, SO_BROADCAST, (if (broadcast) 1 else 0), typeLayoutT = UnresolvedTypeLayout<CInt>())
 
     public open fun broadcast(): Result<Boolean, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this.inner, SOL_SOCKET, SO_BROADCAST)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
         return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
-    public open fun setMulticastLoopV4(multicastLoopV4: Boolean): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IP, IP_MULTICAST_LOOP, multicastLoopV4, typeLayoutT = UnresolvedTypeLayout<CUchar>())
+    public open fun setMulticastLoopV4(multicastLoopV4: Boolean): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IP, IP_MULTICAST_LOOP, (if (multicastLoopV4) 1u else 0u).toUByte(), typeLayoutT = UnresolvedTypeLayout<CUchar>())
 
     public open fun multicastLoopV4(): Result<Boolean, Error> {
         val raw: IpV4MultiCastType = when (val tryResult = getsockopt(this.inner, IPPROTO_IP, IP_MULTICAST_LOOP)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
@@ -529,7 +529,7 @@ public open class UdpSocket(
         return Result.Ok<UInt, Error>(raw.toUInt())
     }
 
-    public open fun setMulticastLoopV6(multicastLoopV6: Boolean): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, multicastLoopV6.toInt(), typeLayoutT = UnresolvedTypeLayout<CInt>())
+    public open fun setMulticastLoopV6(multicastLoopV6: Boolean): Result<Unit, Error> = setsockopt(this.inner, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, (if (multicastLoopV6) 1 else 0), typeLayoutT = UnresolvedTypeLayout<CInt>())
 
     public open fun multicastLoopV6(): Result<Boolean, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this.inner, IPPROTO_IPV6, IPV6_MULTICAST_LOOP)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }

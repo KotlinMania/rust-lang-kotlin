@@ -56,7 +56,7 @@ import kotlin.experimental.or
 // nor can it decode WTF-8 from arbitrary bytes.
 // WTF-8 strings can be obtained from UTF-8, UTF-16, or code points.
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -189,7 +189,7 @@ public open class CodePoint(
          */
         public fun fromChar(value: Char): CodePoint {
             // SAFETY: All char are valid for this type.
-            return CodePoint.fromU32Unchecked(value.toUInt())
+            return CodePoint.fromU32Unchecked(value.code.toUInt())
         }
     }
 }
@@ -295,7 +295,7 @@ public open class Wtf8 internal constructor(
                 val asciiByte = matchVal
                 asciiByte
             }
-            else -> 0xFFu
+            else -> 0xFFu.toUByte()
         }
 
     /**
@@ -325,7 +325,7 @@ public open class Wtf8 internal constructor(
      * calling `Wtf8Buf.fromIllFormedUtf16` on the resulting code units
      * would always return the original WTF-8 string.
      */
-    public open fun encodeWide(): EncodeWide = EncodeWide(codePoints = this.codePoints(), extra = 0u)
+    public open fun encodeWide(): EncodeWide = EncodeWide(codePoints = this.codePoints(), extra = 0u.toUShort())
 
     public open fun nextSurrogate(pos: Int): Pair<Int, UShort>? {
         var pos1 = pos
@@ -685,7 +685,7 @@ public open class EncodeWide(
     public open fun next(): UShort? {
         if (this.extra != 0u.toUShort()) {
             val tmp = this.extra
-            this.extra = 0u
+            this.extra = 0u.toUShort()
             return tmp
         }
         val buf = MutableList((Char.MAX_LEN_UTF16).toInt()) { 0 }

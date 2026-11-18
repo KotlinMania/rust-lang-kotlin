@@ -27,7 +27,6 @@ import io.github.kotlinmania.rustlang.core.ops.arith.Sub
 import io.github.kotlinmania.rustlang.core.ops.arith.SubAssign
 import io.github.kotlinmania.rustlang.core.ops.arith.mul
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import kotlin.experimental.and
@@ -1489,7 +1488,7 @@ public open class Duration(
                         val isEven = (nanos and 1u) == 0u
                         val remMsb = nanosTmp and remMsbMask == 0
                         val addNs = !(remMsb || (isEven && isTie))
-                        val nanos1 = nanos + addNs.toUInt()
+                        val nanos1 = nanos + (if (addNs) 1u else 0u)
                         if ((23 == 23) || (nanos1 != NANOS_PER_SEC)) {
                             Pair(0, nanos1)
                         } else {
@@ -1508,7 +1507,7 @@ public open class Duration(
                         val isEven1 = (nanos2 and 1u) == 0u
                         val remMsb1 = nanosTmp1 and remMsbMask1 == 0
                         val addNs1 = !(remMsb1 || (isEven1 && isTie1))
-                        val nanos3 = nanos2 + addNs1.toUInt()
+                        val nanos3 = nanos2 + (if (addNs1) 1u else 0u)
                         if ((23 == 23) || (nanos3 != NANOS_PER_SEC)) {
                             Pair(secs1, nanos3)
                         } else {
@@ -1609,7 +1608,7 @@ public open class Duration(
                         val isEven = (nanos and 1u) == 0u
                         val remMsb = nanosTmp and remMsbMask == 0
                         val addNs = !(remMsb || (isEven && isTie))
-                        val nanos1 = nanos + addNs.toUInt()
+                        val nanos1 = nanos + (if (addNs) 1u else 0u)
                         if ((52 == 23) || (nanos1 != NANOS_PER_SEC)) {
                             Pair(0, nanos1)
                         } else {
@@ -1628,7 +1627,7 @@ public open class Duration(
                         val isEven1 = (nanos2 and 1u) == 0u
                         val remMsb1 = nanosTmp1 and remMsbMask1 == 0
                         val addNs1 = !(remMsb1 || (isEven1 && isTie1))
-                        val nanos3 = nanos2 + addNs1.toUInt()
+                        val nanos3 = nanos2 + (if (addNs1) 1u else 0u)
                         if ((52 == 23) || (nanos3 != NANOS_PER_SEC)) {
                             Pair(secs1, nanos3)
                         } else {
@@ -1696,7 +1695,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
             val isTie = fractionalPart1 == divisor1 * 5u
             val lastDigitIsOdd =
                 if (pos > 0) {
-                    (buf[pos - 1] - 48u.toUByte()) % 2u == 1u.toUByte()
+                    (buf[pos - 1] - 48u.toUByte()) % 2u.toUByte() == 1u.toUByte()
                 } else {
                     // No fractional digits - check the integer part
                     (integerPart % 2uL) == 1uL
@@ -1715,7 +1714,7 @@ public fun fmtDecimal(f: StringBuilder, integerPart: ULong, fractionalPart: UInt
                     // carry anymore). Otherwise, we set it to '0' (overflow)
                     // and continue.
                     if (buf[revPos] < 57u.toUByte()) {
-                        buf[revPos] += 1u
+                        buf[revPos] += 1u.toUByte()
                         carry = false
                     } else {
                         buf[revPos] = 48u.toUByte()

@@ -1,11 +1,11 @@
 // port-lint: source os/darwin/raw.rs
 package io.github.kotlinmania.rustlang.std.os.darwin.raw
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.std.os.raw.CLong
 
 // Apple-specific raw type definitions
 

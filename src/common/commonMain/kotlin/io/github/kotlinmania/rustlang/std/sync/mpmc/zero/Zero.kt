@@ -16,8 +16,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.load
@@ -90,23 +88,20 @@ public open class ZeroToken internal constructor(
 /**
  * A slot for passing one message from a sender to a receiver.
  */
-public open class Packet<T> internal constructor(
+public open class Packet<T>(
     /**
      * Equals `true` if the packet is allocated on the stack.
      */
     public var onStack: Boolean,
-    readyCtorArg: Atomic<Boolean, Align1<UByte>>,
+    /**
+     * Equals `true` once the packet is ready for reading or writing.
+     */
+    public var ready: AtomicBool,
     /**
      * The message.
      */
     public var msg: UnsafeCell<T?>,
 ) {
-    /**
-     * Equals `true` once the packet is ready for reading or writing.
-     */
-    public var ready: Atomic<Boolean, Align1<UByte>> = readyCtorArg
-        internal set
-
     /**
      * Waits until the packet becomes ready for reading or writing.
      */
@@ -118,16 +113,6 @@ public open class Packet<T> internal constructor(
     }
 
     public companion object {
-        public operator fun <T> invoke(
-            onStack: Boolean,
-            ready: Atomic<Boolean, Align1<UByte>>,
-            msg: UnsafeCell<T?>,
-        ): Packet<T> = Packet<T>(
-            onStack = onStack,
-            readyCtorArg = ready,
-            msg = msg,
-        )
-
         /**
          * Creates an empty packet on the stack.
          */

@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.test.helpers.concurrency
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 
 // Helper module which helps to determine amount of threads to be used
 // during tests execution.

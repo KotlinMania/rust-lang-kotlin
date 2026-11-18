@@ -10,21 +10,21 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
  * applicable.
  */
 public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> rintStatus(x: F): FpResult<F> {
-    val toint = F.ONE / F.EPSILON
+    val toint = x.ONE / x.EPSILON
     val e = x.ex()
     val positive = x.isSignPositive()
     // On i386 `forceEval` must be used to force rounding via storage to memory. Otherwise,
     // the excess precission from x87 would cause an incorrect final result.
     val force =
         { x1 ->
-            if (false && (F.BITS == 32 || F.BITS == 64)) {
+            if (false && (x.BITS == 32 || x.BITS == 64)) {
                 readVolatile(x1)
             } else {
                 x1
             }
         }
     val res =
-        if (e >= F.EXP_BIAS + F.SIG_BITS) {
+        if (e >= x.EXP_BIAS + x.SIG_BITS) {
             // No fractional part; exact result can be returned.
             x
         } else {
@@ -36,12 +36,12 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> rintStatus(x: F): FpRe
                 } else {
                     force(force(x) - toint) + toint
                 }
-            if (y == F.ZERO) {
+            if (y == x.ZERO) {
                 // A zero result takes the sign of the input.
                 if (positive) {
-                    F.ZERO
+                    x.ZERO
                 } else {
-                    F.NEG_ZERO
+                    x.NEG_ZERO
                 }
             } else {
                 y

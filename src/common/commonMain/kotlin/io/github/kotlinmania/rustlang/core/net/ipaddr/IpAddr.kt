@@ -977,7 +977,7 @@ public open class Ipv4Addr(
      */
     public open fun toIpv6Compatible(): Ipv6Addr {
         val (a, b, c, d) = this.octets()
-        return Ipv6Addr(octets = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, a, b, c, d))
+        return Ipv6Addr(octets = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), a, b, c, d))
     }
 
     /**
@@ -999,7 +999,7 @@ public open class Ipv4Addr(
      */
     public open fun toIpv6Mapped(): Ipv6Addr {
         val (a, b, c, d) = this.octets()
-        return Ipv6Addr(octets = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0xFFu, 0xFFu, a, b, c, d))
+        return Ipv6Addr(octets = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0xFFu.toUByte(), 0xFFu.toUByte(), a, b, c, d))
     }
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
@@ -1153,7 +1153,7 @@ public open class Ipv4Addr(
          * check(addr == Ipv4Addr.new(127, 0, 0, 1))
          * ```
          */
-        public val LOCALHOST: Ipv4Addr = Ipv4Addr.new(127u, 0u, 0u, 1u)
+        public val LOCALHOST: Ipv4Addr = Ipv4Addr.new(127u.toUByte(), 0u.toUByte(), 0u.toUByte(), 1u.toUByte())
 
         /**
          * An IPv4 address representing an unspecified address: `0.0.0.0`
@@ -1169,7 +1169,7 @@ public open class Ipv4Addr(
          * check(addr == Ipv4Addr.new(0, 0, 0, 0))
          * ```
          */
-        public val UNSPECIFIED: Ipv4Addr = Ipv4Addr.new(0u, 0u, 0u, 0u)
+        public val UNSPECIFIED: Ipv4Addr = Ipv4Addr.new(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
 
         /**
          * An IPv4 address representing the broadcast address: `255.255.255.255`.
@@ -1183,7 +1183,7 @@ public open class Ipv4Addr(
          * check(addr == Ipv4Addr.new(255, 255, 255, 255))
          * ```
          */
-        public val BROADCAST: Ipv4Addr = Ipv4Addr.new(255u, 255u, 255u, 255u)
+        public val BROADCAST: Ipv4Addr = Ipv4Addr.new(255u.toUByte(), 255u.toUByte(), 255u.toUByte(), 255u.toUByte())
 
         /**
          * Creates an `Ipv4Addr` from a four element byte array.
@@ -2151,7 +2151,7 @@ public open class Ipv6Addr(
          * check(addr == Ipv6Addr.new(0, 0, 0, 0, 0, 0, 0, 1))
          * ```
          */
-        public val LOCALHOST: Ipv6Addr = Ipv6Addr.new(0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u)
+        public val LOCALHOST: Ipv6Addr = Ipv6Addr.new(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 1u.toUShort())
 
         /**
          * An IPv6 address representing the unspecified address: `.`.
@@ -2167,7 +2167,7 @@ public open class Ipv6Addr(
          * check(addr == Ipv6Addr.new(0, 0, 0, 0, 0, 0, 0, 0))
          * ```
          */
-        public val UNSPECIFIED: Ipv6Addr = Ipv6Addr.new(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+        public val UNSPECIFIED: Ipv6Addr = Ipv6Addr.new(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
 
         /**
          * Creates an `Ipv6Addr` from an eight element 16-bit array.

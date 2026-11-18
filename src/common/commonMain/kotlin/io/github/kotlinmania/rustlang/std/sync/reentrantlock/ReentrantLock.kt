@@ -8,8 +8,6 @@ import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.core.sync.atomic.load
@@ -17,7 +15,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.sys.sync.mutex.futex.Mutex
 import io.github.kotlinmania.rustlang.std.thread.current.currentId
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -259,7 +257,7 @@ public open class ReentrantLock<T> internal constructor(
                 d.field("data", v)
             }
         }
-        return d.finishNonExhaustive()
+        return run { d.finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
     }
 
     public companion object {
@@ -297,13 +295,10 @@ public open class ReentrantLock<T> internal constructor(
     }
 }
 
-public open class Tid internal constructor(
-    valueCtorArg: Atomic<ULong, Align8<ULong>>,
+public open class Tid(
+    public var value: AtomicU64,
 ) {
-    public var value: Atomic<ULong, Align8<ULong>> = valueCtorArg
-        internal set
-
-    public var field0: Atomic<ULong, Align8<ULong>>
+    public var field0: AtomicU64
         get() = value
         set(v) {
             value = v
@@ -318,13 +313,7 @@ public open class Tid internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(
-            value: Atomic<ULong, Align8<ULong>>,
-        ): Tid = Tid(
-            valueCtorArg = value,
-        )
-
-        public fun new(): Tid = Tid(AtomicU64.new(0))
+        public fun new(): Tid = Tid(AtomicU64.new(0uL))
     }
 }
 

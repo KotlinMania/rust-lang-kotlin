@@ -3,7 +3,6 @@ package io.github.kotlinmania.rustlang.std.thread.spawnhook
 
 import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.sync.UniqueArc
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread

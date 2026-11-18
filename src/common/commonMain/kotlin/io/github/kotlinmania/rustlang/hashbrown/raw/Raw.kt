@@ -1063,7 +1063,7 @@ public open class RawTable<T, A : Allocator>(
             val bucket = this.table.bucket(index)
             // If we are replacing a DELETED entry then we don't need to update
             // the load counter.
-            this.table.growthLeft -= oldCtrl.specialIsEmpty().toInt()
+            this.table.growthLeft -= (if (oldCtrl.specialIsEmpty()) 1 else 0)
             bucket.write(value)
             this.table.items += 1
             bucket

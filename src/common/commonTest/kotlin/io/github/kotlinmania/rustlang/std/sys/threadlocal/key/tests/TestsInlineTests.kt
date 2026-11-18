@@ -1,10 +1,10 @@
 // port-lint: tests sys/thread_local/key/tests.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.tests
 
+import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.windows.KEY
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey

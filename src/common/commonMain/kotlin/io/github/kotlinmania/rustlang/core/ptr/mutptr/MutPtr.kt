@@ -507,7 +507,7 @@ public fun MutPtr.byteOffset(count: Int): MutPtr {
  *
  * public fun doctestEntry() {
  *     // Iterate using a raw pointer in increments of two elements
- *     var data = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u)
+ *     var data = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte())
  *     var ptr: MutPtr = data.asMutPtr()
  *     val step = 2
  *     val endRoundedUp = MutPtr((ptr).rawAddress + ((6).toLong() * (PrimitiveLayouts.U8).strideBytes))
@@ -1113,7 +1113,7 @@ public fun MutPtr.byteSub(count: Int): MutPtr {
  *
  * public fun doctestEntry() {
  *     // Iterate using a raw pointer in increments of two elements
- *     val data = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u)
+ *     val data = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte())
  *     var ptr: ConstPtr = data.asPtr()
  *     val step = 2
  *     val endRoundedUp = ConstPtr((ptr).rawAddress + ((6).toLong() * (PrimitiveLayouts.U8).strideBytes))
@@ -1183,7 +1183,7 @@ public fun MutPtr.wrappingByteAdd(count: Int): MutPtr = MutPtr((MutPtr((this).ra
  *
  * public fun doctestEntry() {
  *     // Iterate using a raw pointer in increments of two elements (backwards)
- *     val data = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u)
+ *     val data = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte())
  *     var ptr: ConstPtr = data.asPtr()
  *     val startRoundedDown = ConstPtr((ptr).rawAddress - ((2).toLong() * (PrimitiveLayouts.U8).strideBytes))
  *     ptr = ConstPtr((ptr).rawAddress + ((4).toLong() * (PrimitiveLayouts.U8).strideBytes))
@@ -1445,7 +1445,7 @@ public fun MutPtr.swap(with: MutPtr) {
  *
  * public fun doctestEntry() {
  *     run {
- *         var x = ubyteArrayOf(5u.toUByte(), 6u, 7u, 8u, 9u)
+ *         var x = ubyteArrayOf(5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte())
  *         val ptr = x.asMutPtr()
  *         val offset = ptr.alignOffset(alignOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))
  *         if (offset < x.size - 1) {

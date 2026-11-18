@@ -293,7 +293,7 @@ public fun <Mask, T> Simd<T>.deinterleave(other: Simd<T>, n: Int = 0): Pair<Simd
         val idx = MutableList((n1).toInt()) { 0 }
         var i = 0
         while (i < n1) {
-            idx[i] = i * 2 + second.toInt()
+            idx[i] = i * 2 + (if (second) 1 else 0)
             i += 1
         }
         return idx

@@ -30,7 +30,6 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.isAlignedTo
 import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.iter.Iter
@@ -48,7 +47,7 @@ import io.github.kotlinmania.rustlang.core.vorrqU8
 
 // Operations on ASCII `[UByte]`.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -642,7 +641,7 @@ public fun isAscii(s: List<UByte>): Boolean {
          * from `.. / String / mod.rs`, which does something similar for utf8 validation.
          */
         fun containsNonascii(v: Int): Boolean {
-            val NONASCII_MASK: Int = Int.repeatU8(0x80u)
+            val NONASCII_MASK: Int = Int.repeatU8(0x80u.toUByte())
             return (NONASCII_MASK and v) != 0
         }
         val USIZE_SIZE: Int = sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)

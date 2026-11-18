@@ -13,8 +13,6 @@ import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.chunksExact
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.chars
@@ -228,7 +226,7 @@ public open class Ident(
                         }
                         in 48u.toUByte()..57u.toUByte() -> {
                             val d1 = matchVal
-                            26u + (d1 - 48u.toUByte())
+                            26u.toUByte() + (d1 - 48u.toUByte())
                         }
                         else -> { return Result.Err<Unit, Unit>(Unit) }
                     }
@@ -513,11 +511,11 @@ public open class Parser(
                 }
                 in 97u.toUByte()..122u.toUByte() -> {
                     val d1 = matchVal
-                    10u + (d1 - 97u.toUByte())
+                    10u.toUByte() + (d1 - 97u.toUByte())
                 }
                 in 65u.toUByte()..90u.toUByte() -> {
                     val d2 = matchVal
-                    10u + 26u + (d2 - 65u.toUByte())
+                    10u.toUByte() + 26u.toUByte() + (d2 - 65u.toUByte())
                 }
                 else -> { return Result.Err<UByte, ParseError>(ParseError.Invalid) }
             }

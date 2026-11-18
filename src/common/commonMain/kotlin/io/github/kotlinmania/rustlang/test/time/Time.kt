@@ -3,11 +3,10 @@ package io.github.kotlinmania.rustlang.test.time
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.time.Instant
-import io.github.kotlinmania.rustlang.test.types.TestDesc
-import io.github.kotlinmania.rustlang.test.types.TestType
+import io.github.kotlinmania.rustlang.test.TestDesc
+import io.github.kotlinmania.rustlang.test.TestType
 
 // Module `time` contains everything related to the time measurement of unit tests
 // execution.

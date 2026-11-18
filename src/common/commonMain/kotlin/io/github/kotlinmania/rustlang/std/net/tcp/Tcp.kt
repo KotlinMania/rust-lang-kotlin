@@ -861,7 +861,7 @@ public open class TcpListener(
      *         // Ignore failed connections
      *     }
      *     fun main(): Result<Unit> {
-     *         for (stream in listenOn(80u)) {
+     *         for (stream in listenOn(80u.toUShort())) {
      *             // handle the connection here
      *         }
      *         return Result.success(Unit)

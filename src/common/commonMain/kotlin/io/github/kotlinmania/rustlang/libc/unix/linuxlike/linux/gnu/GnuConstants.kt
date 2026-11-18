@@ -435,67 +435,67 @@ public val PTRACE_GET_SYSCALL_INFO: CUint = 0x420eu
 
 public val PTRACE_SET_SYSCALL_INFO: CUint = 0x4212u
 
-public val PTRACE_SYSCALL_INFO_NONE: U8 = 0u
+public val PTRACE_SYSCALL_INFO_NONE: U8 = 0u.toUByte()
 
-public val PTRACE_SYSCALL_INFO_ENTRY: U8 = 1u
+public val PTRACE_SYSCALL_INFO_ENTRY: U8 = 1u.toUByte()
 
-public val PTRACE_SYSCALL_INFO_EXIT: U8 = 2u
+public val PTRACE_SYSCALL_INFO_EXIT: U8 = 2u.toUByte()
 
-public val PTRACE_SYSCALL_INFO_SECCOMP: U8 = 3u
+public val PTRACE_SYSCALL_INFO_SECCOMP: U8 = 3u.toUByte()
 
 public val PTRACE_SET_SYSCALL_USER_DISPATCH_CONFIG: CUint = 0x4210u
 
 public val PTRACE_GET_SYSCALL_USER_DISPATCH_CONFIG: CUint = 0x4211u
 
 // linux/rtnetlink.h
-public val TCA_PAD: CUshort = 9u
+public val TCA_PAD: CUshort = 9u.toUShort()
 
-public val TCA_DUMP_INVISIBLE: CUshort = 10u
+public val TCA_DUMP_INVISIBLE: CUshort = 10u.toUShort()
 
-public val TCA_CHAIN: CUshort = 11u
+public val TCA_CHAIN: CUshort = 11u.toUShort()
 
-public val TCA_HW_OFFLOAD: CUshort = 12u
+public val TCA_HW_OFFLOAD: CUshort = 12u.toUShort()
 
-public val RTM_DELNETCONF: UShort = 81u
+public val RTM_DELNETCONF: UShort = 81u.toUShort()
 
-public val RTM_NEWSTATS: UShort = 92u
+public val RTM_NEWSTATS: UShort = 92u.toUShort()
 
-public val RTM_GETSTATS: UShort = 94u
+public val RTM_GETSTATS: UShort = 94u.toUShort()
 
-public val RTM_NEWCACHEREPORT: UShort = 96u
+public val RTM_NEWCACHEREPORT: UShort = 96u.toUShort()
 
 public val RTM_F_LOOKUP_TABLE: CUint = 0x1000u
 
 public val RTM_F_FIB_MATCH: CUint = 0x2000u
 
-public val RTA_VIA: CUshort = 18u
+public val RTA_VIA: CUshort = 18u.toUShort()
 
-public val RTA_NEWDST: CUshort = 19u
+public val RTA_NEWDST: CUshort = 19u.toUShort()
 
-public val RTA_PREF: CUshort = 20u
+public val RTA_PREF: CUshort = 20u.toUShort()
 
-public val RTA_ENCAP_TYPE: CUshort = 21u
+public val RTA_ENCAP_TYPE: CUshort = 21u.toUShort()
 
-public val RTA_ENCAP: CUshort = 22u
+public val RTA_ENCAP: CUshort = 22u.toUShort()
 
-public val RTA_EXPIRES: CUshort = 23u
+public val RTA_EXPIRES: CUshort = 23u.toUShort()
 
-public val RTA_PAD: CUshort = 24u
+public val RTA_PAD: CUshort = 24u.toUShort()
 
-public val RTA_UID: CUshort = 25u
+public val RTA_UID: CUshort = 25u.toUShort()
 
-public val RTA_TTL_PROPAGATE: CUshort = 26u
+public val RTA_TTL_PROPAGATE: CUshort = 26u.toUShort()
 
 // linux/neighbor.h
-public val NTF_EXT_LEARNED: UByte = 0x10u
+public val NTF_EXT_LEARNED: UByte = 0x10u.toUByte()
 
-public val NTF_OFFLOADED: UByte = 0x20u
+public val NTF_OFFLOADED: UByte = 0x20u.toUByte()
 
-public val NDA_MASTER: CUshort = 9u
+public val NDA_MASTER: CUshort = 9u.toUShort()
 
-public val NDA_LINK_NETNSID: CUshort = 10u
+public val NDA_LINK_NETNSID: CUshort = 10u.toUShort()
 
-public val NDA_SRC_VNI: CUshort = 11u
+public val NDA_SRC_VNI: CUshort = 11u.toUShort()
 
 // linux/personality.h
 public val UNAME26: CInt = 0x0020000
@@ -508,7 +508,7 @@ public val GENL_ID_VFS_DQUOT: CInt = NLMSG_MIN_TYPE + 1
 
 public val GENL_ID_PMCRAID: CInt = NLMSG_MIN_TYPE + 2
 
-public val ELFOSABI_ARM_AEABI: UByte = 64u
+public val ELFOSABI_ARM_AEABI: UByte = 64u.toUByte()
 
 // linux/sched.h
 public val CLONE_NEWTIME: CInt = 0x80

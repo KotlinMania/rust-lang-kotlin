@@ -32,7 +32,7 @@ public fun interface FromFnPtrFCallback {
     public operator fun invoke()
 }
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

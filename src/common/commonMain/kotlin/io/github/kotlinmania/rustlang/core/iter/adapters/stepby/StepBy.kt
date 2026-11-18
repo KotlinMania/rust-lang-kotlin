@@ -18,7 +18,6 @@ import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.range.iter.RangeIter
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 
@@ -938,7 +937,7 @@ public fun StepBy<Range<UByte>>.specNextBack(): I.Item? {
     return if (remaining > 0) {
         val start = r.start
         r.end = remaining - 1
-        start + step * (remaining - 1u)
+        start + step * (remaining - 1u.toUByte())
     } else {
         null
     }
@@ -980,7 +979,7 @@ public fun StepBy<Range<UShort>>.specNextBackRangeUShort(): I.Item? {
     return if (remaining > 0) {
         val start = r.start
         r.end = remaining - 1
-        start + step * (remaining - 1u)
+        start + step * (remaining - 1u.toUShort())
     } else {
         null
     }
@@ -1106,7 +1105,7 @@ public fun StepBy<RangeIter<UByte>>.specNextBackRangeIterUByte(): I.Item? {
     return if (remaining > 0) {
         val start = r.start
         r.end = remaining - 1
-        start + step * (remaining - 1u)
+        start + step * (remaining - 1u.toUByte())
     } else {
         null
     }
@@ -1148,7 +1147,7 @@ public fun StepBy<RangeIter<UShort>>.specNextBackRangeIterUShort(): I.Item? {
     return if (remaining > 0) {
         val start = r.start
         r.end = remaining - 1
-        start + step * (remaining - 1u)
+        start + step * (remaining - 1u.toUShort())
     } else {
         null
     }

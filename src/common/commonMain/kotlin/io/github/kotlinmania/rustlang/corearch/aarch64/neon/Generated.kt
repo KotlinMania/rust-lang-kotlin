@@ -846,25 +846,25 @@ public fun vaddvU32(a: Uint32x2T): UInt = run { val simdArg0 = a; val simdArg1 =
  * Add across vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaddvU8)
  */
-public fun vaddvU8(a: Uint8x8T): UByte = run { val simdArg0 = a; val simdArg1 = 0u; simdArg1 }
+public fun vaddvU8(a: Uint8x8T): UByte = run { val simdArg0 = a; val simdArg1 = 0u.toUByte(); simdArg1 }
 
 /**
  * Add across vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaddvqU8)
  */
-public fun vaddvqU8(a: Uint8x16T): UByte = run { val simdArg0 = a; val simdArg1 = 0u; simdArg1 }
+public fun vaddvqU8(a: Uint8x16T): UByte = run { val simdArg0 = a; val simdArg1 = 0u.toUByte(); simdArg1 }
 
 /**
  * Add across vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaddvU16)
  */
-public fun vaddvU16(a: Uint16x4T): UShort = run { val simdArg0 = a; val simdArg1 = 0u; simdArg1 }
+public fun vaddvU16(a: Uint16x4T): UShort = run { val simdArg0 = a; val simdArg1 = 0u.toUShort(); simdArg1 }
 
 /**
  * Add across vector
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vaddvqU16)
  */
-public fun vaddvqU16(a: Uint16x8T): UShort = run { val simdArg0 = a; val simdArg1 = 0u; simdArg1 }
+public fun vaddvqU16(a: Uint16x8T): UShort = run { val simdArg0 = a; val simdArg1 = 0u.toUShort(); simdArg1 }
 
 /**
  * Add across vector
@@ -1362,7 +1362,7 @@ public fun vceqdU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T,
  * Floating-point compare equal
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vceqhF16)
  */
-public fun vceqhF16(a: F16, b: F16): UShort = vgetLaneU16(vceqF16(vdupNF16(a), vdupNF16(b)), 0u)
+public fun vceqhF16(a: F16, b: F16): UShort = vgetLaneU16(vceqF16(vdupNF16(a), vdupNF16(b)), 0u.toUShort())
 
 /**
  * Floating-point compare bitwise equal to zero
@@ -1614,7 +1614,7 @@ public fun vceqzdU64(a: ULong): ULong = transmuteWithLayouts<Uint64x1T, ULong>(v
  * Floating-point compare bitwise equal to zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vceqzhF16)
  */
-public fun vceqzhF16(a: F16): UShort = vgetLaneU16(vceqzF16(vdupNF16(a)), 0u)
+public fun vceqzhF16(a: F16): UShort = vgetLaneU16(vceqzF16(vdupNF16(a)), 0u.toUShort())
 
 /**
  * Floating-point compare bitwise equal to zero
@@ -1692,7 +1692,7 @@ public fun vcgedU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T,
  * Floating-point compare greater than or equal
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgehF16)
  */
-public fun vcgehF16(a: F16, b: F16): UShort = vgetLaneU16(vcgeF16(vdupNF16(a), vdupNF16(b)), 0u)
+public fun vcgehF16(a: F16, b: F16): UShort = vgetLaneU16(vcgeF16(vdupNF16(a), vdupNF16(b)), 0u.toUShort())
 
 /**
  * Floating-point compare greater than or equal to zero
@@ -1824,7 +1824,7 @@ public fun vcgezdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vc
  * Floating-point compare greater than or equal to zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgezhF16)
  */
-public fun vcgezhF16(a: F16): UShort = vgetLaneU16(vcgezF16(vdupNF16(a)), 0u)
+public fun vcgezhF16(a: F16): UShort = vgetLaneU16(vcgezF16(vdupNF16(a)), 0u.toUShort())
 
 /**
  * Floating-point compare greater than
@@ -1890,7 +1890,7 @@ public fun vcgtdU64(a: ULong, b: ULong): ULong = transmuteWithLayouts<Uint64x1T,
  * Floating-point compare greater than
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgthF16)
  */
-public fun vcgthF16(a: F16, b: F16): UShort = vgetLaneU16(vcgtF16(vdupNF16(a), vdupNF16(b)), 0u)
+public fun vcgthF16(a: F16, b: F16): UShort = vgetLaneU16(vcgtF16(vdupNF16(a), vdupNF16(b)), 0u.toUShort())
 
 /**
  * Floating-point compare greater than zero
@@ -2022,7 +2022,7 @@ public fun vcgtzdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vc
  * Floating-point compare greater than zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcgtzhF16)
  */
-public fun vcgtzhF16(a: F16): UShort = vgetLaneU16(vcgtzF16(vdupNF16(a)), 0u)
+public fun vcgtzhF16(a: F16): UShort = vgetLaneU16(vcgtzF16(vdupNF16(a)), 0u.toUShort())
 
 /**
  * Floating-point compare less than or equal
@@ -2088,7 +2088,7 @@ public fun vcledS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, U
  * Floating-point compare less than or equal
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclehF16)
  */
-public fun vclehF16(a: F16, b: F16): UShort = vgetLaneU16(vcleF16(vdupNF16(a), vdupNF16(b)), 0u)
+public fun vclehF16(a: F16, b: F16): UShort = vgetLaneU16(vcleF16(vdupNF16(a), vdupNF16(b)), 0u.toUShort())
 
 /**
  * Floating-point compare less than or equal to zero
@@ -2220,7 +2220,7 @@ public fun vclezdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vc
  * Floating-point compare less than or equal to zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclezhF16)
  */
-public fun vclezhF16(a: F16): UShort = vgetLaneU16(vclezF16(vdupNF16(a)), 0u)
+public fun vclezhF16(a: F16): UShort = vgetLaneU16(vclezF16(vdupNF16(a)), 0u.toUShort())
 
 /**
  * Floating-point compare less than
@@ -2274,7 +2274,7 @@ public fun vcltdS64(a: Long, b: Long): ULong = transmuteWithLayouts<Uint64x1T, U
  * Floating-point compare less than
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vclthF16)
  */
-public fun vclthF16(a: F16, b: F16): UShort = vgetLaneU16(vcltF16(vdupNF16(a), vdupNF16(b)), 0u)
+public fun vclthF16(a: F16, b: F16): UShort = vgetLaneU16(vcltF16(vdupNF16(a), vdupNF16(b)), 0u.toUShort())
 
 /**
  * Floating-point compare less than
@@ -2418,7 +2418,7 @@ public fun vcltzdS64(a: Long): ULong = transmuteWithLayouts<Uint64x1T, ULong>(vc
  * Floating-point compare less than zero
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vcltzhF16)
  */
-public fun vcltzhF16(a: F16): UShort = vgetLaneU16(vcltzF16(vdupNF16(a)), 0u)
+public fun vcltzhF16(a: F16): UShort = vgetLaneU16(vcltzF16(vdupNF16(a)), 0u.toUShort())
 
 /**
  * Floating-point complex multiply accumulate
@@ -10242,7 +10242,7 @@ public fun vqaddhS16(a: Short, b: Short): Short {
 public fun vqaddbU8(a: UByte, b: UByte): UByte {
     val a1: Uint8x8T = vdupNU8(a)
     val b1: Uint8x8T = vdupNU8(b)
-    return vgetLaneU8(vqaddU8(a1, b1), 0u)
+    return vgetLaneU8(vqaddU8(a1, b1), 0u.toUByte())
 }
 
 /**
@@ -10252,7 +10252,7 @@ public fun vqaddbU8(a: UByte, b: UByte): UByte {
 public fun vqaddhU16(a: UShort, b: UShort): UShort {
     val a1: Uint16x4T = vdupNU16(a)
     val b1: Uint16x4T = vdupNU16(b)
-    return vgetLaneU16(vqaddU16(a1, b1), 0u)
+    return vgetLaneU16(vqaddU16(a1, b1), 0u.toUShort())
 }
 
 /**
@@ -10960,13 +10960,13 @@ public fun vqmovnsS32(a: Int): Short = vgetLaneS16(vqmovnS32(vdupqNS32(a)), 0)
  * Saturating extract narrow
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovnhU16)
  */
-public fun vqmovnhU16(a: UShort): UByte = vgetLaneU8(vqmovnU16(vdupqNU16(a)), 0u)
+public fun vqmovnhU16(a: UShort): UByte = vgetLaneU8(vqmovnU16(vdupqNU16(a)), 0u.toUByte())
 
 /**
  * Saturating extract narrow
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovnsU32)
  */
-public fun vqmovnsU32(a: UInt): UShort = vgetLaneU16(vqmovnU32(vdupqNU32(a)), 0u)
+public fun vqmovnsU32(a: UInt): UShort = vgetLaneU16(vqmovnU32(vdupqNU32(a)), 0u.toUShort())
 
 /**
  * Signed saturating extract unsigned narrow
@@ -10990,13 +10990,13 @@ public fun vqmovunHighS64(a: Uint32x2T, b: Int64x2T): Uint32x4T = vcombineU32(a,
  * Signed saturating extract unsigned narrow
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovunhS16)
  */
-public fun vqmovunhS16(a: Short): UByte = vgetLaneU8(vqmovunS16(vdupqNS16(a)), 0u)
+public fun vqmovunhS16(a: Short): UByte = vgetLaneU8(vqmovunS16(vdupqNS16(a)), 0u.toUByte())
 
 /**
  * Signed saturating extract unsigned narrow
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vqmovunsS32)
  */
-public fun vqmovunsS32(a: Int): UShort = vgetLaneU16(vqmovunS32(vdupqNS32(a)), 0u)
+public fun vqmovunsS32(a: Int): UShort = vgetLaneU16(vqmovunS32(vdupqNS32(a)), 0u.toUShort())
 
 /**
  * Signed saturating extract unsigned narrow
@@ -11525,7 +11525,7 @@ public fun vqrshlhS16(a: Short, b: Short): Short {
 public fun vqrshlbU8(a: UByte, b: Byte): UByte {
     val a1: Uint8x8T = vdupNU8(a)
     val b1: Int8x8T = vdupNS8(b)
-    return vgetLaneU8(vqrshlU8(a1, b1), 0u)
+    return vgetLaneU8(vqrshlU8(a1, b1), 0u.toUByte())
 }
 
 /**
@@ -11535,7 +11535,7 @@ public fun vqrshlbU8(a: UByte, b: Byte): UByte {
 public fun vqrshlhU16(a: UShort, b: Short): UShort {
     val a1: Uint16x4T = vdupNU16(a)
     val b1: Int16x4T = vdupNS16(b)
-    return vgetLaneU16(vqrshlU16(a1, b1), 0u)
+    return vgetLaneU16(vqrshlU16(a1, b1), 0u.toUShort())
 }
 
 /**
@@ -11661,7 +11661,7 @@ public fun vqrshrnhNU16(a: UShort, n: Int): UByte {
         check(n >= 1 && n <= 8)
     }
     val a1: Uint16x8T = vdupqNU16(a)
-    return vgetLaneU8(vqrshrnNU16(a1, n), 0u)
+    return vgetLaneU8(vqrshrnNU16(a1, n), 0u.toUByte())
 }
 
 /**
@@ -11673,7 +11673,7 @@ public fun vqrshrnsNU32(a: UInt, n: Int): UShort {
         check(n >= 1 && n <= 16)
     }
     val a1: Uint32x4T = vdupqNU32(a)
-    return vgetLaneU16(vqrshrnNU32(a1, n), 0u)
+    return vgetLaneU16(vqrshrnNU32(a1, n), 0u.toUShort())
 }
 
 /**
@@ -11766,7 +11766,7 @@ public fun vqrshrunhNS16(a: Short, n: Int): UByte {
         check(n >= 1 && n <= 8)
     }
     val a1: Int16x8T = vdupqNS16(a)
-    return vgetLaneU8(vqrshrunNS16(a1, n), 0u)
+    return vgetLaneU8(vqrshrunNS16(a1, n), 0u.toUByte())
 }
 
 /**
@@ -11778,7 +11778,7 @@ public fun vqrshrunsNS32(a: Int, n: Int): UShort {
         check(n >= 1 && n <= 16)
     }
     val a1: Int32x4T = vdupqNS32(a)
-    return vgetLaneU16(vqrshrunNS32(a1, n), 0u)
+    return vgetLaneU16(vqrshrunNS32(a1, n), 0u.toUShort())
 }
 
 /**
@@ -11833,7 +11833,7 @@ public fun vqshlbNU8(a: UByte, n: Int): UByte {
     run {
         check(0 <= n && n < (1 shl 3)) { "N doesn't fit in 3 bits (unsigned)" }
     }
-    return vgetLaneU8(vqshlNU8(vdupNU8(a), n), 0u)
+    return vgetLaneU8(vqshlNU8(vdupNU8(a), n), 0u.toUByte())
 }
 
 /**
@@ -11855,7 +11855,7 @@ public fun vqshlhNU16(a: UShort, n: Int): UShort {
     run {
         check(0 <= n && n < (1 shl 4)) { "N doesn't fit in 4 bits (unsigned)" }
     }
-    return vgetLaneU16(vqshlNU16(vdupNU16(a), n), 0u)
+    return vgetLaneU16(vqshlNU16(vdupNU16(a), n), 0u.toUShort())
 }
 
 /**
@@ -11902,7 +11902,7 @@ public fun vqshlsS32(a: Int, b: Int): Int {
  */
 public fun vqshlbU8(a: UByte, b: Byte): UByte {
     val c: Uint8x8T = vqshlU8(vdupNU8(a), vdupNS8(b))
-    return vgetLaneU8(c, 0u)
+    return vgetLaneU8(c, 0u.toUByte())
 }
 
 /**
@@ -11911,7 +11911,7 @@ public fun vqshlbU8(a: UByte, b: Byte): UByte {
  */
 public fun vqshlhU16(a: UShort, b: Short): UShort {
     val c: Uint16x4T = vqshlU16(vdupNU16(a), vdupNS16(b))
-    return vgetLaneU16(c, 0u)
+    return vgetLaneU16(c, 0u.toUShort())
 }
 
 /**
@@ -11949,7 +11949,7 @@ public fun vqshlubNS8(a: Byte, n: Int): UByte {
     run {
         check(0 <= n && n < (1 shl 3)) { "N doesn't fit in 3 bits (unsigned)" }
     }
-    return vgetLaneU8(vqshluNS8(vdupNS8(a), n), 0u)
+    return vgetLaneU8(vqshluNS8(vdupNS8(a), n), 0u.toUByte())
 }
 
 /**
@@ -11971,7 +11971,7 @@ public fun vqshluhNS16(a: Short, n: Int): UShort {
     run {
         check(0 <= n && n < (1 shl 4)) { "N doesn't fit in 4 bits (unsigned)" }
     }
-    return vgetLaneU16(vqshluNS16(vdupNS16(a), n), 0u)
+    return vgetLaneU16(vqshluNS16(vdupNS16(a), n), 0u.toUShort())
 }
 
 /**
@@ -12105,7 +12105,7 @@ public fun vqshrnhNU16(a: UShort, n: Int): UByte {
     run {
         check(n >= 1 && n <= 8)
     }
-    return vgetLaneU8(vqshrnNU16(vdupqNU16(a), n), 0u)
+    return vgetLaneU8(vqshrnNU16(vdupqNU16(a), n), 0u.toUByte())
 }
 
 /**
@@ -12116,7 +12116,7 @@ public fun vqshrnsNU32(a: UInt, n: Int): UShort {
     run {
         check(n >= 1 && n <= 16)
     }
-    return vgetLaneU16(vqshrnNU32(vdupqNU32(a), n), 0u)
+    return vgetLaneU16(vqshrnNU32(vdupqNU32(a), n), 0u.toUShort())
 }
 
 /**
@@ -12171,7 +12171,7 @@ public fun vqshrunhNS16(a: Short, n: Int): UByte {
     run {
         check(n >= 1 && n <= 8)
     }
-    return vgetLaneU8(vqshrunNS16(vdupqNS16(a), n), 0u)
+    return vgetLaneU8(vqshrunNS16(vdupqNS16(a), n), 0u.toUByte())
 }
 
 /**
@@ -12182,7 +12182,7 @@ public fun vqshrunsNS32(a: Int, n: Int): UShort {
     run {
         check(n >= 1 && n <= 16)
     }
-    return vgetLaneU16(vqshrunNS32(vdupqNS32(a), n), 0u)
+    return vgetLaneU16(vqshrunNS32(vdupqNS32(a), n), 0u.toUShort())
 }
 
 /**
@@ -12212,7 +12212,7 @@ public fun vqsubhS16(a: Short, b: Short): Short {
 public fun vqsubbU8(a: UByte, b: UByte): UByte {
     val a1: Uint8x8T = vdupNU8(a)
     val b1: Uint8x8T = vdupNU8(b)
-    return vgetLaneU8(vqsubU8(a1, b1), 0u)
+    return vgetLaneU8(vqsubU8(a1, b1), 0u.toUByte())
 }
 
 /**
@@ -12222,7 +12222,7 @@ public fun vqsubbU8(a: UByte, b: UByte): UByte {
 public fun vqsubhU16(a: UShort, b: UShort): UShort {
     val a1: Uint16x4T = vdupNU16(a)
     val b1: Uint16x4T = vdupNU16(b)
-    return vgetLaneU16(vqsubU16(a1, b1), 0u)
+    return vgetLaneU16(vqsubU16(a1, b1), 0u.toUShort())
 }
 
 /**
@@ -14654,13 +14654,13 @@ public fun vsqaddqU64(a: Uint64x2T, b: Int64x2T): Uint64x2T {
  * Unsigned saturating accumulate of signed value
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsqaddbU8)
  */
-public fun vsqaddbU8(a: UByte, b: Byte): UByte = vgetLaneU8(vsqaddU8(vdupNU8(a), vdupNS8(b)), 0u)
+public fun vsqaddbU8(a: UByte, b: Byte): UByte = vgetLaneU8(vsqaddU8(vdupNU8(a), vdupNS8(b)), 0u.toUByte())
 
 /**
  * Unsigned saturating accumulate of signed value
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/vsqaddhU16)
  */
-public fun vsqaddhU16(a: UShort, b: Short): UShort = vgetLaneU16(vsqaddU16(vdupNU16(a), vdupNS16(b)), 0u)
+public fun vsqaddhU16(a: UShort, b: Short): UShort = vgetLaneU16(vsqaddU16(vdupNU16(a), vdupNS16(b)), 0u.toUShort())
 
 /**
  * Unsigned saturating accumulate of signed value

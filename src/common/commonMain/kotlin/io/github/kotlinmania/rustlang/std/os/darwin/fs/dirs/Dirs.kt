@@ -315,20 +315,20 @@ public open class Iter(
             return null
         }
         val path = when (val tryResult = CStr.fromBytesUntilNul(buf)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> // should be impossible given home-relative paths, but be defensive
-return Result.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory path too long"))) }
+return Result.Err<PathBuf, Error, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory path too long"))) }
         val path1 = when (val tryResult1 = path.toStr()) { is Result.Ok<*, *> -> tryResult1.okValue(); is Result.Err<*, *> -> // should be impossible on a working system, but be defensive
-return Result.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory path not valid UTF-8"))) }
+return Result.Err<PathBuf, Error, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory path not valid UTF-8"))) }
         // expand `~` shorthand
         return when {
-            path1 == "~" -> Result.Ok(this.home.into())
-            path1.startsWith("~/") -> Result.Ok(this.home.join(path1[2 until path1.size]))
-            path1.startsWith("~") -> Result.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory relative to different user")))
+            path1 == "~" -> Result.Ok<PathBuf, Error, Error>(this.home.into())
+            path1.startsWith("~/") -> Result.Ok<PathBuf, Error, Error>(this.home.join(path1[2 until path1.size]))
+            path1.startsWith("~") -> Result.Err<PathBuf, Error, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory relative to different user")))
             else -> {
                 val path2 = PathBuf.from(path1)
                 if (path2.isRelative()) {
-                    Result.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory path not absolute")))
+                    Result.Err<PathBuf, Error, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidData, message = "standard user directory path not absolute")))
                 } else {
-                    Result.Ok(path2)
+                    Result.Ok<PathBuf, Error, Error>(path2)
                 }
             }
         }

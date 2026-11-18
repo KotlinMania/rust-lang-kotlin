@@ -139,7 +139,7 @@ public open class F16b internal constructor(
             return transmuteWithLayouts<UShort, F16b>(bits, PrimitiveLayouts.U16, TransparentTypeLayout(PrimitiveLayouts.U16, { ptr, layout -> F16b(ptr, layout) }, { it.value }))
         }
 
-        public fun default(): F16b = F16b.fromBits(0u)
+        public fun default(): F16b = F16b.fromBits(0u.toUShort())
     }
 }
 

@@ -5,11 +5,11 @@ import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.getopts.Matches
 import io.github.kotlinmania.rustlang.std.path.PathBuf
-import io.github.kotlinmania.rustlang.test.options.ColorConfig
-import io.github.kotlinmania.rustlang.test.options.Options
-import io.github.kotlinmania.rustlang.test.options.OutputFormat
-import io.github.kotlinmania.rustlang.test.options.RunIgnored
-import io.github.kotlinmania.rustlang.test.time.TestTimeOptions
+import io.github.kotlinmania.rustlang.test.ColorConfig
+import io.github.kotlinmania.rustlang.test.Options
+import io.github.kotlinmania.rustlang.test.OutputFormat
+import io.github.kotlinmania.rustlang.test.RunIgnored
+import io.github.kotlinmania.rustlang.test.TestTimeOptions
 
 // Module converting command-line arguments into test configuration.
 

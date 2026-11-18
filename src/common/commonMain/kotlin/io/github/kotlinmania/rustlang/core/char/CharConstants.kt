@@ -1,13 +1,13 @@
 package io.github.kotlinmania.rustlang.core.char
 
 // UTF-8 ranges and tags for encoding characters
-public val TAG_CONT: UByte = 0x80u
+public val TAG_CONT: UByte = 0x80u.toUByte()
 
-public val TAG_TWO_B: UByte = 0xC0u
+public val TAG_TWO_B: UByte = 0xC0u.toUByte()
 
-public val TAG_THREE_B: UByte = 0xE0u
+public val TAG_THREE_B: UByte = 0xE0u.toUByte()
 
-public val TAG_FOUR_B: UByte = 0xF0u
+public val TAG_FOUR_B: UByte = 0xF0u.toUByte()
 
 public val MAX_ONE_B: UInt = 0x80u
 

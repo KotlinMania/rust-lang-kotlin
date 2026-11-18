@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -21,12 +22,11 @@ import io.github.kotlinmania.rustlang.std.os.windows.raw.AsRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.FromRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.IntoRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.raw.RawSocket
-import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
 
 // Owned and borrowed OS sockets.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -233,7 +233,7 @@ public interface AsSocket {
  */
 public fun <T : AsSocket> Arc<T, Global>.asSocket(): BorrowedSocket = this.asSocket()
 
-public fun <T : AsSocket> Rc.Rc<T, Global>.asSocket(): BorrowedSocket = this.asSocket()
+public fun <T : AsSocket> Rc<T, Global>.asSocket(): BorrowedSocket = this.asSocket()
 
 public fun <T : AsSocket> Rc.UniqueRc<T>.asSocket(): BorrowedSocket = this.asSocket()
 

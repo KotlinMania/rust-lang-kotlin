@@ -290,7 +290,7 @@ public fun testMmCmpPhMask() {
 public fun testMmMaskCmpPhMask() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val b = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), -F16.fromFloat(5.0f), -F16.fromFloat(6.0f), -F16.fromFloat(7.0f), -F16.fromFloat(8.0f))
-    val r = mmMaskCmpPhMask(0x55u, a, b, CMP_EQ_OQ)
+    val r = mmMaskCmpPhMask(0x55u.toUByte(), a, b, CMP_EQ_OQ)
     check(r == 0x50u.toUByte())
 }
 
@@ -304,7 +304,7 @@ public fun testMm256CmpPhMask() {
 public fun testMm256MaskCmpPhMask() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), -F16.fromFloat(5.0f), -F16.fromFloat(6.0f), -F16.fromFloat(7.0f), -F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), -F16.fromFloat(13.0f), -F16.fromFloat(14.0f), -F16.fromFloat(15.0f), -F16.fromFloat(16.0f))
-    val r = mm256MaskCmpPhMask(0x5555u, a, b, CMP_EQ_OQ)
+    val r = mm256MaskCmpPhMask(0x5555u.toUShort(), a, b, CMP_EQ_OQ)
     check(r == 0x5050u.toUShort())
 }
 
@@ -346,7 +346,7 @@ public fun testMmCmpRoundShMask() {
 public fun testMmMaskCmpRoundShMask() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(1.0f))
-    val r = mmMaskCmpRoundShMask(0u, a, b, CMP_EQ_OQ, MM_FROUND_NO_EXC)
+    val r = mmMaskCmpRoundShMask(0u.toUByte(), a, b, CMP_EQ_OQ, MM_FROUND_NO_EXC)
     check(r == 0u.toUByte())
 }
 
@@ -360,7 +360,7 @@ public fun testMmCmpShMask() {
 public fun testMmMaskCmpShMask() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(1.0f))
-    val r = mmMaskCmpShMask(0u, a, b, CMP_EQ_OQ)
+    val r = mmMaskCmpShMask(0u.toUByte(), a, b, CMP_EQ_OQ)
     check(r == 0u.toUByte())
 }
 
@@ -489,17 +489,17 @@ public fun testMmLoadSh() {
 public fun testMmMaskLoadSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val src = mmSetSh(F16.fromFloat(2.0f))
-    val b = mmMaskLoadSh(src, 1u, addrOf(a).cast())
+    val b = mmMaskLoadSh(src, 1u.toUByte(), addrOf(a).cast())
     assertEqM128h(a, b)
-    val b1 = mmMaskLoadSh(src, 0u, addrOf(a).cast())
+    val b1 = mmMaskLoadSh(src, 0u.toUByte(), addrOf(a).cast())
     assertEqM128h(src, b1)
 }
 
 public fun testMmMaskzLoadSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
-    val b = mmMaskzLoadSh(1u, addrOf(a).cast())
+    val b = mmMaskzLoadSh(1u.toUByte(), addrOf(a).cast())
     assertEqM128h(a, b)
-    val b1 = mmMaskzLoadSh(0u, addrOf(a).cast())
+    val b1 = mmMaskzLoadSh(0u.toUByte(), addrOf(a).cast())
     assertEqM128h(mmSetzeroPh(), b1)
 }
 
@@ -536,7 +536,7 @@ public fun testMmMaskMoveSh() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val b = mmSetSh(F16.fromFloat(9.0f))
     val src = mmSetSh(F16.fromFloat(10.0f))
-    val r = mmMaskMoveSh(src, 0u, a, b)
+    val r = mmMaskMoveSh(src, 0u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(10.0f))
     assertEqM128h(r, e)
 }
@@ -544,7 +544,7 @@ public fun testMmMaskMoveSh() {
 public fun testMmMaskzMoveSh() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val b = mmSetSh(F16.fromFloat(9.0f))
-    val r = mmMaskzMoveSh(0u, a, b)
+    val r = mmMaskzMoveSh(0u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(0.0f))
     assertEqM128h(r, e)
 }
@@ -589,11 +589,11 @@ public fun testMmMaskStoreSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetzeroPh()
     run {
-        mmMaskStoreSh(addrOfMut(b).cast(), 0u, a)
+        mmMaskStoreSh(addrOfMut(b).cast(), 0u.toUByte(), a)
     }
     assertEqM128h(mmSetzeroPh(), b)
     run {
-        mmMaskStoreSh(addrOfMut(b).cast(), 1u, a)
+        mmMaskStoreSh(addrOfMut(b).cast(), 1u.toUByte(), a)
     }
     assertEqM128h(a, b)
 }
@@ -637,7 +637,7 @@ public fun testMmMaskAddPh() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val b = mmSetPh(F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskAddPh(src, 0x55u, a, b)
+    val r = mmMaskAddPh(src, 0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(9.0f), F16.fromFloat(12.0f), F16.fromFloat(9.0f), F16.fromFloat(14.0f), F16.fromFloat(9.0f), F16.fromFloat(16.0f), F16.fromFloat(9.0f))
     assertEqM128h(r, e)
 }
@@ -645,7 +645,7 @@ public fun testMmMaskAddPh() {
 public fun testMmMaskzAddPh() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val b = mmSetPh(F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
-    val r = mmMaskzAddPh(0x55u, a, b)
+    val r = mmMaskzAddPh(0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(9.0f), F16.fromFloat(0.0f), F16.fromFloat(9.0f), F16.fromFloat(0.0f), F16.fromFloat(9.0f), F16.fromFloat(0.0f), F16.fromFloat(9.0f))
     assertEqM128h(r, e)
 }
@@ -662,7 +662,7 @@ public fun testMm256MaskAddPh() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mm256SetPh(F16.fromFloat(16.0f), F16.fromFloat(15.0f), F16.fromFloat(14.0f), F16.fromFloat(13.0f), F16.fromFloat(12.0f), F16.fromFloat(11.0f), F16.fromFloat(10.0f), F16.fromFloat(9.0f), F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
     val src = mm256SetPh(F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm256MaskAddPh(src, 0x5555u, a, b)
+    val r = mm256MaskAddPh(src, 0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(18.0f), F16.fromFloat(17.0f), F16.fromFloat(20.0f), F16.fromFloat(17.0f), F16.fromFloat(22.0f), F16.fromFloat(17.0f), F16.fromFloat(24.0f), F16.fromFloat(17.0f), F16.fromFloat(26.0f), F16.fromFloat(17.0f), F16.fromFloat(28.0f), F16.fromFloat(17.0f), F16.fromFloat(30.0f), F16.fromFloat(17.0f), F16.fromFloat(32.0f), F16.fromFloat(17.0f))
     assertEqM256h(r, e)
 }
@@ -670,7 +670,7 @@ public fun testMm256MaskAddPh() {
 public fun testMm256MaskzAddPh() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mm256SetPh(F16.fromFloat(16.0f), F16.fromFloat(15.0f), F16.fromFloat(14.0f), F16.fromFloat(13.0f), F16.fromFloat(12.0f), F16.fromFloat(11.0f), F16.fromFloat(10.0f), F16.fromFloat(9.0f), F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
-    val r = mm256MaskzAddPh(0x5555u, a, b)
+    val r = mm256MaskzAddPh(0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(17.0f), F16.fromFloat(0.0f), F16.fromFloat(17.0f), F16.fromFloat(0.0f), F16.fromFloat(17.0f), F16.fromFloat(0.0f), F16.fromFloat(17.0f), F16.fromFloat(0.0f), F16.fromFloat(17.0f), F16.fromFloat(0.0f), F16.fromFloat(17.0f), F16.fromFloat(0.0f), F16.fromFloat(17.0f), F16.fromFloat(0.0f), F16.fromFloat(17.0f))
     assertEqM256h(r, e)
 }
@@ -737,10 +737,10 @@ public fun testMmMaskAddRoundSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
     val src = mmSetSh(F16.fromFloat(4.0f))
-    val r = mmMaskAddRoundSh(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskAddRoundSh(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetSh(F16.fromFloat(4.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskAddRoundSh(src, 1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskAddRoundSh(src, 1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetSh(F16.fromFloat(3.0f))
     assertEqM128h(r1, e1)
 }
@@ -748,10 +748,10 @@ public fun testMmMaskAddRoundSh() {
 public fun testMmMaskzAddRoundSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
-    val r = mmMaskzAddRoundSh(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzAddRoundSh(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetSh(F16.fromFloat(0.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzAddRoundSh(1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzAddRoundSh(1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetSh(F16.fromFloat(3.0f))
     assertEqM128h(r1, e1)
 }
@@ -768,10 +768,10 @@ public fun testMmMaskAddSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
     val src = mmSetSh(F16.fromFloat(4.0f))
-    val r = mmMaskAddSh(src, 0u, a, b)
+    val r = mmMaskAddSh(src, 0u.toUByte(), a, b)
     val e = mmSetSh(F16.fromFloat(4.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskAddSh(src, 1u, a, b)
+    val r1 = mmMaskAddSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetSh(F16.fromFloat(3.0f))
     assertEqM128h(r1, e1)
 }
@@ -779,10 +779,10 @@ public fun testMmMaskAddSh() {
 public fun testMmMaskzAddSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
-    val r = mmMaskzAddSh(0u, a, b)
+    val r = mmMaskzAddSh(0u.toUByte(), a, b)
     val e = mmSetSh(F16.fromFloat(0.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzAddSh(1u, a, b)
+    val r1 = mmMaskzAddSh(1u.toUByte(), a, b)
     val e1 = mmSetSh(F16.fromFloat(3.0f))
     assertEqM128h(r1, e1)
 }
@@ -799,7 +799,7 @@ public fun testMmMaskSubPh() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val b = mmSetPh(F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskSubPh(src, 0x55u, a, b)
+    val r = mmMaskSubPh(src, 0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(10.0f), -F16.fromFloat(5.0f), F16.fromFloat(12.0f), -F16.fromFloat(1.0f), F16.fromFloat(14.0f), F16.fromFloat(3.0f), F16.fromFloat(16.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -807,7 +807,7 @@ public fun testMmMaskSubPh() {
 public fun testMmMaskzSubPh() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val b = mmSetPh(F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
-    val r = mmMaskzSubPh(0x55u, a, b)
+    val r = mmMaskzSubPh(0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -824,7 +824,7 @@ public fun testMm256MaskSubPh() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mm256SetPh(F16.fromFloat(16.0f), F16.fromFloat(15.0f), F16.fromFloat(14.0f), F16.fromFloat(13.0f), F16.fromFloat(12.0f), F16.fromFloat(11.0f), F16.fromFloat(10.0f), F16.fromFloat(9.0f), F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
     val src = mm256SetPh(F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm256MaskSubPh(src, 0x5555u, a, b)
+    val r = mm256MaskSubPh(src, 0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(18.0f), -F16.fromFloat(13.0f), F16.fromFloat(20.0f), -F16.fromFloat(9.0f), F16.fromFloat(22.0f), -F16.fromFloat(5.0f), F16.fromFloat(24.0f), -F16.fromFloat(1.0f), F16.fromFloat(26.0f), F16.fromFloat(3.0f), F16.fromFloat(28.0f), F16.fromFloat(7.0f), F16.fromFloat(30.0f), F16.fromFloat(11.0f), F16.fromFloat(32.0f), F16.fromFloat(15.0f))
     assertEqM256h(r, e)
 }
@@ -832,7 +832,7 @@ public fun testMm256MaskSubPh() {
 public fun testMm256MaskzSubPh() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mm256SetPh(F16.fromFloat(16.0f), F16.fromFloat(15.0f), F16.fromFloat(14.0f), F16.fromFloat(13.0f), F16.fromFloat(12.0f), F16.fromFloat(11.0f), F16.fromFloat(10.0f), F16.fromFloat(9.0f), F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
-    val r = mm256MaskzSubPh(0x5555u, a, b)
+    val r = mm256MaskzSubPh(0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(0.0f), -F16.fromFloat(13.0f), F16.fromFloat(0.0f), -F16.fromFloat(9.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(7.0f), F16.fromFloat(0.0f), F16.fromFloat(11.0f), F16.fromFloat(0.0f), F16.fromFloat(15.0f))
     assertEqM256h(r, e)
 }
@@ -899,10 +899,10 @@ public fun testMmMaskSubRoundSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
     val src = mmSetSh(F16.fromFloat(4.0f))
-    val r = mmMaskSubRoundSh(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskSubRoundSh(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetSh(F16.fromFloat(4.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskSubRoundSh(src, 1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskSubRoundSh(src, 1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetSh(-F16.fromFloat(1.0f))
     assertEqM128h(r1, e1)
 }
@@ -910,10 +910,10 @@ public fun testMmMaskSubRoundSh() {
 public fun testMmMaskzSubRoundSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
-    val r = mmMaskzSubRoundSh(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzSubRoundSh(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetSh(F16.fromFloat(0.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzSubRoundSh(1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzSubRoundSh(1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetSh(-F16.fromFloat(1.0f))
     assertEqM128h(r1, e1)
 }
@@ -930,10 +930,10 @@ public fun testMmMaskSubSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
     val src = mmSetSh(F16.fromFloat(4.0f))
-    val r = mmMaskSubSh(src, 0u, a, b)
+    val r = mmMaskSubSh(src, 0u.toUByte(), a, b)
     val e = mmSetSh(F16.fromFloat(4.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskSubSh(src, 1u, a, b)
+    val r1 = mmMaskSubSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetSh(-F16.fromFloat(1.0f))
     assertEqM128h(r1, e1)
 }
@@ -941,10 +941,10 @@ public fun testMmMaskSubSh() {
 public fun testMmMaskzSubSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
-    val r = mmMaskzSubSh(0u, a, b)
+    val r = mmMaskzSubSh(0u.toUByte(), a, b)
     val e = mmSetSh(F16.fromFloat(0.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzSubSh(1u, a, b)
+    val r1 = mmMaskzSubSh(1u.toUByte(), a, b)
     val e1 = mmSetSh(-F16.fromFloat(1.0f))
     assertEqM128h(r1, e1)
 }
@@ -961,7 +961,7 @@ public fun testMmMaskMulPh() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val b = mmSetPh(F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskMulPh(src, 0x55u, a, b)
+    val r = mmMaskMulPh(src, 0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(14.0f), F16.fromFloat(12.0f), F16.fromFloat(20.0f), F16.fromFloat(14.0f), F16.fromFloat(18.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -969,7 +969,7 @@ public fun testMmMaskMulPh() {
 public fun testMmMaskzMulPh() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val b = mmSetPh(F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
-    val r = mmMaskzMulPh(0x55u, a, b)
+    val r = mmMaskzMulPh(0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(0.0f), F16.fromFloat(20.0f), F16.fromFloat(0.0f), F16.fromFloat(18.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -986,7 +986,7 @@ public fun testMm256MaskMulPh() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mm256SetPh(F16.fromFloat(16.0f), F16.fromFloat(15.0f), F16.fromFloat(14.0f), F16.fromFloat(13.0f), F16.fromFloat(12.0f), F16.fromFloat(11.0f), F16.fromFloat(10.0f), F16.fromFloat(9.0f), F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
     val src = mm256SetPh(F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm256MaskMulPh(src, 0x5555u, a, b)
+    val r = mm256MaskMulPh(src, 0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(18.0f), F16.fromFloat(30.0f), F16.fromFloat(20.0f), F16.fromFloat(52.0f), F16.fromFloat(22.0f), F16.fromFloat(66.0f), F16.fromFloat(24.0f), F16.fromFloat(72.0f), F16.fromFloat(26.0f), F16.fromFloat(70.0f), F16.fromFloat(28.0f), F16.fromFloat(60.0f), F16.fromFloat(30.0f), F16.fromFloat(42.0f), F16.fromFloat(32.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -994,7 +994,7 @@ public fun testMm256MaskMulPh() {
 public fun testMm256MaskzMulPh() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mm256SetPh(F16.fromFloat(16.0f), F16.fromFloat(15.0f), F16.fromFloat(14.0f), F16.fromFloat(13.0f), F16.fromFloat(12.0f), F16.fromFloat(11.0f), F16.fromFloat(10.0f), F16.fromFloat(9.0f), F16.fromFloat(8.0f), F16.fromFloat(7.0f), F16.fromFloat(6.0f), F16.fromFloat(5.0f), F16.fromFloat(4.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
-    val r = mm256MaskzMulPh(0x5555u, a, b)
+    val r = mm256MaskzMulPh(0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(30.0f), F16.fromFloat(0.0f), F16.fromFloat(52.0f), F16.fromFloat(0.0f), F16.fromFloat(66.0f), F16.fromFloat(0.0f), F16.fromFloat(72.0f), F16.fromFloat(0.0f), F16.fromFloat(70.0f), F16.fromFloat(0.0f), F16.fromFloat(60.0f), F16.fromFloat(0.0f), F16.fromFloat(42.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -1061,10 +1061,10 @@ public fun testMmMaskMulRoundSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
     val src = mmSetSh(F16.fromFloat(4.0f))
-    val r = mmMaskMulRoundSh(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskMulRoundSh(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetSh(F16.fromFloat(4.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskMulRoundSh(src, 1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskMulRoundSh(src, 1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetSh(F16.fromFloat(2.0f))
     assertEqM128h(r1, e1)
 }
@@ -1072,10 +1072,10 @@ public fun testMmMaskMulRoundSh() {
 public fun testMmMaskzMulRoundSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
-    val r = mmMaskzMulRoundSh(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzMulRoundSh(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetSh(F16.fromFloat(0.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzMulRoundSh(1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzMulRoundSh(1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetSh(F16.fromFloat(2.0f))
     assertEqM128h(r1, e1)
 }
@@ -1092,10 +1092,10 @@ public fun testMmMaskMulSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
     val src = mmSetSh(F16.fromFloat(4.0f))
-    val r = mmMaskMulSh(src, 0u, a, b)
+    val r = mmMaskMulSh(src, 0u.toUByte(), a, b)
     val e = mmSetSh(F16.fromFloat(4.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskMulSh(src, 1u, a, b)
+    val r1 = mmMaskMulSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetSh(F16.fromFloat(2.0f))
     assertEqM128h(r1, e1)
 }
@@ -1103,10 +1103,10 @@ public fun testMmMaskMulSh() {
 public fun testMmMaskzMulSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
-    val r = mmMaskzMulSh(0u, a, b)
+    val r = mmMaskzMulSh(0u.toUByte(), a, b)
     val e = mmSetSh(F16.fromFloat(0.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzMulSh(1u, a, b)
+    val r1 = mmMaskzMulSh(1u.toUByte(), a, b)
     val e1 = mmSetSh(F16.fromFloat(2.0f))
     assertEqM128h(r1, e1)
 }
@@ -1123,7 +1123,7 @@ public fun testMmMaskDivPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val src = mmSetPh(F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f))
-    val r = mmMaskDivPh(src, 0x55u, a, b)
+    val r = mmMaskDivPh(src, 0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(4.0f), F16.fromFloat(0.5f), F16.fromFloat(6.0f), F16.fromFloat(0.5f), F16.fromFloat(8.0f), F16.fromFloat(0.5f), F16.fromFloat(10.0f), F16.fromFloat(0.5f))
     assertEqM128h(r, e)
 }
@@ -1131,7 +1131,7 @@ public fun testMmMaskDivPh() {
 public fun testMmMaskzDivPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
-    val r = mmMaskzDivPh(0x55u, a, b)
+    val r = mmMaskzDivPh(0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f))
     assertEqM128h(r, e)
 }
@@ -1148,7 +1148,7 @@ public fun testMm256MaskDivPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val src = mm256SetPh(F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mm256MaskDivPh(src, 0x5555u, a, b)
+    val r = mm256MaskDivPh(src, 0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(4.0f), F16.fromFloat(0.5f), F16.fromFloat(6.0f), F16.fromFloat(0.5f), F16.fromFloat(8.0f), F16.fromFloat(0.5f), F16.fromFloat(10.0f), F16.fromFloat(0.5f), F16.fromFloat(12.0f), F16.fromFloat(0.5f), F16.fromFloat(14.0f), F16.fromFloat(0.5f), F16.fromFloat(16.0f), F16.fromFloat(0.5f), F16.fromFloat(18.0f), F16.fromFloat(0.5f))
     assertEqM256h(r, e)
 }
@@ -1156,7 +1156,7 @@ public fun testMm256MaskDivPh() {
 public fun testMm256MaskzDivPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
-    val r = mm256MaskzDivPh(0x5555u, a, b)
+    val r = mm256MaskzDivPh(0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f))
     assertEqM256h(r, e)
 }
@@ -1223,10 +1223,10 @@ public fun testMmMaskDivRoundSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
     val src = mmSetSh(F16.fromFloat(4.0f))
-    val r = mmMaskDivRoundSh(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskDivRoundSh(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetSh(F16.fromFloat(4.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskDivRoundSh(src, 1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskDivRoundSh(src, 1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetSh(F16.fromFloat(0.5f))
     assertEqM128h(r1, e1)
 }
@@ -1234,10 +1234,10 @@ public fun testMmMaskDivRoundSh() {
 public fun testMmMaskzDivRoundSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
-    val r = mmMaskzDivRoundSh(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzDivRoundSh(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetSh(F16.fromFloat(0.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzDivRoundSh(1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzDivRoundSh(1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetSh(F16.fromFloat(0.5f))
     assertEqM128h(r1, e1)
 }
@@ -1254,10 +1254,10 @@ public fun testMmMaskDivSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
     val src = mmSetSh(F16.fromFloat(4.0f))
-    val r = mmMaskDivSh(src, 0u, a, b)
+    val r = mmMaskDivSh(src, 0u.toUByte(), a, b)
     val e = mmSetSh(F16.fromFloat(4.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskDivSh(src, 1u, a, b)
+    val r1 = mmMaskDivSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetSh(F16.fromFloat(0.5f))
     assertEqM128h(r1, e1)
 }
@@ -1265,10 +1265,10 @@ public fun testMmMaskDivSh() {
 public fun testMmMaskzDivSh() {
     val a = mmSetSh(F16.fromFloat(1.0f))
     val b = mmSetSh(F16.fromFloat(2.0f))
-    val r = mmMaskzDivSh(0u, a, b)
+    val r = mmMaskzDivSh(0u.toUByte(), a, b)
     val e = mmSetSh(F16.fromFloat(0.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzDivSh(1u, a, b)
+    val r1 = mmMaskzDivSh(1u.toUByte(), a, b)
     val e1 = mmSetSh(F16.fromFloat(0.5f))
     assertEqM128h(r1, e1)
 }
@@ -1285,7 +1285,7 @@ public fun testMmMaskMulPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, 1.0)
     val src = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f))
-    val r = mmMaskMulPch(src, 0x5u, a, b)
+    val r = mmMaskMulPch(src, 0x5u.toUByte(), a, b)
     val e = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f))
     assertEqM128h(r, e)
 }
@@ -1293,7 +1293,7 @@ public fun testMmMaskMulPch() {
 public fun testMmMaskzMulPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, 1.0)
-    val r = mmMaskzMulPch(0x5u, a, b)
+    val r = mmMaskzMulPch(0x5u.toUByte(), a, b)
     val e = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM128h(r, e)
 }
@@ -1310,7 +1310,7 @@ public fun testMm256MaskMulPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, 1.0)
     val src = mm256SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskMulPch(src, 0x55u, a, b)
+    val r = mm256MaskMulPch(src, 0x55u.toUByte(), a, b)
     val e = mm256SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM256h(r, e)
 }
@@ -1318,7 +1318,7 @@ public fun testMm256MaskMulPch() {
 public fun testMm256MaskzMulPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, 1.0)
-    val r = mm256MaskzMulPch(0x55u, a, b)
+    val r = mm256MaskzMulPch(0x55u.toUByte(), a, b)
     val e = mm256SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM256h(r, e)
 }
@@ -1335,7 +1335,7 @@ public fun testMm512MaskMulPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 1.0)
     val src = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm512MaskMulPch(src, 0x5555u, a, b)
+    val r = mm512MaskMulPch(src, 0x5555u.toUShort(), a, b)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
     assertEqM512h(r, e)
 }
@@ -1343,7 +1343,7 @@ public fun testMm512MaskMulPch() {
 public fun testMm512MaskzMulPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 1.0)
-    val r = mm512MaskzMulPch(0x5555u, a, b)
+    val r = mm512MaskzMulPch(0x5555u.toUShort(), a, b)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -1360,7 +1360,7 @@ public fun testMm512MaskMulRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 1.0)
     val src = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm512MaskMulRoundPch(src, 0x5555u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskMulRoundPch(src, 0x5555u.toUShort(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
     assertEqM512h(r, e)
 }
@@ -1368,7 +1368,7 @@ public fun testMm512MaskMulRoundPch() {
 public fun testMm512MaskzMulRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 1.0)
-    val r = mm512MaskzMulRoundPch(0x5555u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzMulRoundPch(0x5555u.toUShort(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -1385,7 +1385,7 @@ public fun testMmMaskMulRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val src = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f))
-    val r = mmMaskMulRoundSch(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskMulRoundSch(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1393,7 +1393,7 @@ public fun testMmMaskMulRoundSch() {
 public fun testMmMaskzMulRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
-    val r = mmMaskzMulRoundSch(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzMulRoundSch(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1410,7 +1410,7 @@ public fun testMmMaskMulSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val src = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f))
-    val r = mmMaskMulSch(src, 0u, a, b)
+    val r = mmMaskMulSch(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1418,7 +1418,7 @@ public fun testMmMaskMulSch() {
 public fun testMmMaskzMulSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
-    val r = mmMaskzMulSch(0u, a, b)
+    val r = mmMaskzMulSch(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1435,7 +1435,7 @@ public fun testMmMaskFmulPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, 1.0)
     val src = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f))
-    val r = mmMaskFmulPch(src, 0x5u, a, b)
+    val r = mmMaskFmulPch(src, 0x5u.toUByte(), a, b)
     val e = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f))
     assertEqM128h(r, e)
 }
@@ -1443,7 +1443,7 @@ public fun testMmMaskFmulPch() {
 public fun testMmMaskzFmulPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, 1.0)
-    val r = mmMaskzFmulPch(0x5u, a, b)
+    val r = mmMaskzFmulPch(0x5u.toUByte(), a, b)
     val e = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM128h(r, e)
 }
@@ -1460,7 +1460,7 @@ public fun testMm256MaskFmulPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, 1.0)
     val src = mm256SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskFmulPch(src, 0x55u, a, b)
+    val r = mm256MaskFmulPch(src, 0x55u.toUByte(), a, b)
     val e = mm256SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM256h(r, e)
 }
@@ -1468,7 +1468,7 @@ public fun testMm256MaskFmulPch() {
 public fun testMm256MaskzFmulPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, 1.0)
-    val r = mm256MaskzFmulPch(0x55u, a, b)
+    val r = mm256MaskzFmulPch(0x55u.toUByte(), a, b)
     val e = mm256SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM256h(r, e)
 }
@@ -1485,7 +1485,7 @@ public fun testMm512MaskFmulPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 1.0)
     val src = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm512MaskFmulPch(src, 0x5555u, a, b)
+    val r = mm512MaskFmulPch(src, 0x5555u.toUShort(), a, b)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
     assertEqM512h(r, e)
 }
@@ -1493,7 +1493,7 @@ public fun testMm512MaskFmulPch() {
 public fun testMm512MaskzFmulPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 1.0)
-    val r = mm512MaskzFmulPch(0x5555u, a, b)
+    val r = mm512MaskzFmulPch(0x5555u.toUShort(), a, b)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -1510,7 +1510,7 @@ public fun testMm512MaskFmulRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 1.0)
     val src = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm512MaskFmulRoundPch(src, 0x5555u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskFmulRoundPch(src, 0x5555u.toUShort(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
     assertEqM512h(r, e)
 }
@@ -1518,7 +1518,7 @@ public fun testMm512MaskFmulRoundPch() {
 public fun testMm512MaskzFmulRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 1.0)
-    val r = mm512MaskzFmulRoundPch(0x5555u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzFmulRoundPch(0x5555u.toUShort(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -1535,7 +1535,7 @@ public fun testMmMaskFmulRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val src = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f))
-    val r = mmMaskFmulRoundSch(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskFmulRoundSch(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1543,7 +1543,7 @@ public fun testMmMaskFmulRoundSch() {
 public fun testMmMaskzFmulRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
-    val r = mmMaskzFmulRoundSch(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzFmulRoundSch(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1560,7 +1560,7 @@ public fun testMmMaskFmulSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val src = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f))
-    val r = mmMaskFmulSch(src, 0u, a, b)
+    val r = mmMaskFmulSch(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1568,7 +1568,7 @@ public fun testMmMaskFmulSch() {
 public fun testMmMaskzFmulSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
-    val r = mmMaskzFmulSch(0u, a, b)
+    val r = mmMaskzFmulSch(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1585,7 +1585,7 @@ public fun testMmMaskCmulPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, -1.0)
     val src = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f))
-    val r = mmMaskCmulPch(src, 0x5u, a, b)
+    val r = mmMaskCmulPch(src, 0x5u.toUByte(), a, b)
     val e = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f))
     assertEqM128h(r, e)
 }
@@ -1593,7 +1593,7 @@ public fun testMmMaskCmulPch() {
 public fun testMmMaskzCmulPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, -1.0)
-    val r = mmMaskzCmulPch(0x5u, a, b)
+    val r = mmMaskzCmulPch(0x5u.toUByte(), a, b)
     val e = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM128h(r, e)
 }
@@ -1610,7 +1610,7 @@ public fun testMm256MaskCmulPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, -1.0)
     val src = mm256SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskCmulPch(src, 0x55u, a, b)
+    val r = mm256MaskCmulPch(src, 0x55u.toUByte(), a, b)
     val e = mm256SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM256h(r, e)
 }
@@ -1618,7 +1618,7 @@ public fun testMm256MaskCmulPch() {
 public fun testMm256MaskzCmulPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, -1.0)
-    val r = mm256MaskzCmulPch(0x55u, a, b)
+    val r = mm256MaskzCmulPch(0x55u.toUByte(), a, b)
     val e = mm256SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM256h(r, e)
 }
@@ -1635,7 +1635,7 @@ public fun testMm512MaskCmulPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, -1.0)
     val src = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm512MaskCmulPch(src, 0x5555u, a, b)
+    val r = mm512MaskCmulPch(src, 0x5555u.toUShort(), a, b)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
     assertEqM512h(r, e)
 }
@@ -1643,7 +1643,7 @@ public fun testMm512MaskCmulPch() {
 public fun testMm512MaskzCmulPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, -1.0)
-    val r = mm512MaskzCmulPch(0x5555u, a, b)
+    val r = mm512MaskzCmulPch(0x5555u.toUShort(), a, b)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -1660,7 +1660,7 @@ public fun testMm512MaskCmulRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, -1.0)
     val src = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm512MaskCmulRoundPch(src, 0x5555u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCmulRoundPch(src, 0x5555u.toUShort(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
     assertEqM512h(r, e)
 }
@@ -1668,7 +1668,7 @@ public fun testMm512MaskCmulRoundPch() {
 public fun testMm512MaskzCmulRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, -1.0)
-    val r = mm512MaskzCmulRoundPch(0x5555u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCmulRoundPch(0x5555u.toUShort(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -1685,7 +1685,7 @@ public fun testMmMaskCmulSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), -F16.fromFloat(9.0f), F16.fromFloat(10.0f), -F16.fromFloat(11.0f), F16.fromFloat(12.0f), -F16.fromFloat(13.0f))
     val src = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f))
-    val r = mmMaskCmulSch(src, 0u, a, b)
+    val r = mmMaskCmulSch(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1693,7 +1693,7 @@ public fun testMmMaskCmulSch() {
 public fun testMmMaskzCmulSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), -F16.fromFloat(9.0f), F16.fromFloat(10.0f), -F16.fromFloat(11.0f), F16.fromFloat(12.0f), -F16.fromFloat(13.0f))
-    val r = mmMaskzCmulSch(0u, a, b)
+    val r = mmMaskzCmulSch(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1710,7 +1710,7 @@ public fun testMmMaskCmulRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), -F16.fromFloat(9.0f), F16.fromFloat(10.0f), -F16.fromFloat(11.0f), F16.fromFloat(12.0f), -F16.fromFloat(13.0f))
     val src = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f))
-    val r = mmMaskCmulRoundSch(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskCmulRoundSch(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1718,7 +1718,7 @@ public fun testMmMaskCmulRoundSch() {
 public fun testMmMaskzCmulRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), -F16.fromFloat(9.0f), F16.fromFloat(10.0f), -F16.fromFloat(11.0f), F16.fromFloat(12.0f), -F16.fromFloat(13.0f))
-    val r = mmMaskzCmulRoundSch(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzCmulRoundSch(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1735,7 +1735,7 @@ public fun testMmMaskFcmulPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, -1.0)
     val src = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f))
-    val r = mmMaskFcmulPch(src, 0x5u, a, b)
+    val r = mmMaskFcmulPch(src, 0x5u.toUByte(), a, b)
     val e = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f))
     assertEqM128h(r, e)
 }
@@ -1743,7 +1743,7 @@ public fun testMmMaskFcmulPch() {
 public fun testMmMaskzFcmulPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, -1.0)
-    val r = mmMaskzFcmulPch(0x5u, a, b)
+    val r = mmMaskzFcmulPch(0x5u.toUByte(), a, b)
     val e = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM128h(r, e)
 }
@@ -1760,7 +1760,7 @@ public fun testMm256MaskFcmulPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, -1.0)
     val src = mm256SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskFcmulPch(src, 0x55u, a, b)
+    val r = mm256MaskFcmulPch(src, 0x55u.toUByte(), a, b)
     val e = mm256SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM256h(r, e)
 }
@@ -1768,7 +1768,7 @@ public fun testMm256MaskFcmulPch() {
 public fun testMm256MaskzFcmulPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, -1.0)
-    val r = mm256MaskzFcmulPch(0x55u, a, b)
+    val r = mm256MaskzFcmulPch(0x55u.toUByte(), a, b)
     val e = mm256SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM256h(r, e)
 }
@@ -1785,7 +1785,7 @@ public fun testMm512MaskFcmulPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, -1.0)
     val src = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm512MaskFcmulPch(src, 0x5555u, a, b)
+    val r = mm512MaskFcmulPch(src, 0x5555u.toUShort(), a, b)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
     assertEqM512h(r, e)
 }
@@ -1793,7 +1793,7 @@ public fun testMm512MaskFcmulPch() {
 public fun testMm512MaskzFcmulPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, -1.0)
-    val r = mm512MaskzFcmulPch(0x5555u, a, b)
+    val r = mm512MaskzFcmulPch(0x5555u.toUShort(), a, b)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -1810,7 +1810,7 @@ public fun testMm512MaskFcmulRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, -1.0)
     val src = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm512MaskFcmulRoundPch(src, 0x5555u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskFcmulRoundPch(src, 0x5555u.toUShort(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
     assertEqM512h(r, e)
 }
@@ -1818,7 +1818,7 @@ public fun testMm512MaskFcmulRoundPch() {
 public fun testMm512MaskzFcmulRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, -1.0)
-    val r = mm512MaskzFcmulRoundPch(0x5555u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzFcmulRoundPch(0x5555u.toUShort(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -1835,7 +1835,7 @@ public fun testMmMaskFcmulSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), -F16.fromFloat(9.0f), F16.fromFloat(10.0f), -F16.fromFloat(11.0f), F16.fromFloat(12.0f), -F16.fromFloat(13.0f))
     val src = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f))
-    val r = mmMaskFcmulSch(src, 0u, a, b)
+    val r = mmMaskFcmulSch(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1843,7 +1843,7 @@ public fun testMmMaskFcmulSch() {
 public fun testMmMaskzFcmulSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), -F16.fromFloat(9.0f), F16.fromFloat(10.0f), -F16.fromFloat(11.0f), F16.fromFloat(12.0f), -F16.fromFloat(13.0f))
-    val r = mmMaskzFcmulSch(0u, a, b)
+    val r = mmMaskzFcmulSch(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1860,7 +1860,7 @@ public fun testMmMaskFcmulRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), -F16.fromFloat(9.0f), F16.fromFloat(10.0f), -F16.fromFloat(11.0f), F16.fromFloat(12.0f), -F16.fromFloat(13.0f))
     val src = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f))
-    val r = mmMaskFcmulRoundSch(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskFcmulRoundSch(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1868,7 +1868,7 @@ public fun testMmMaskFcmulRoundSch() {
 public fun testMmMaskzFcmulRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), -F16.fromFloat(9.0f), F16.fromFloat(10.0f), -F16.fromFloat(11.0f), F16.fromFloat(12.0f), -F16.fromFloat(13.0f))
-    val r = mmMaskzFcmulRoundSch(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzFcmulRoundSch(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
 }
@@ -1904,14 +1904,14 @@ public fun testMmConjPch() {
 public fun testMmMaskConjPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val src = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f))
-    val r = mmMaskConjPch(src, 0x5u, a)
+    val r = mmMaskConjPch(src, 0x5u.toUByte(), a)
     val e = mmSetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzConjPch() {
     val a = mmSet1Pch(0.0, 1.0)
-    val r = mmMaskzConjPch(0x5u, a)
+    val r = mmMaskzConjPch(0x5u.toUByte(), a)
     val e = mmSetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM128h(r, e)
 }
@@ -1926,14 +1926,14 @@ public fun testMm256ConjPch() {
 public fun testMm256MaskConjPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val src = mm256SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskConjPch(src, 0x55u, a)
+    val r = mm256MaskConjPch(src, 0x55u.toUByte(), a)
     val e = mm256SetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm256MaskzConjPch() {
     val a = mm256Set1Pch(0.0, 1.0)
-    val r = mm256MaskzConjPch(0x55u, a)
+    val r = mm256MaskzConjPch(0x55u.toUByte(), a)
     val e = mm256SetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM256h(r, e)
 }
@@ -1948,14 +1948,14 @@ public fun testMm512ConjPch() {
 public fun testMm512MaskConjPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val src = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
-    val r = mm512MaskConjPch(src, 0x5555u, a)
+    val r = mm512MaskConjPch(src, 0x5555u.toUShort(), a)
     val e = mm512SetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(28.0f), F16.fromFloat(29.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f))
     assertEqM512h(r, e)
 }
 
 public fun testMm512MaskzConjPch() {
     val a = mm512Set1Pch(0.0, 1.0)
-    val r = mm512MaskzConjPch(0x5555u, a)
+    val r = mm512MaskzConjPch(0x5555u.toUShort(), a)
     val e = mm512SetrPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -1973,7 +1973,7 @@ public fun testMmMaskFmaddPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, 2.0)
     val c = mmSet1Pch(0.0, 3.0)
-    val r = mmMaskFmaddPch(a, 0x5u, b, c)
+    val r = mmMaskFmaddPch(a, 0x5u.toUByte(), b, c)
     val e = mmSetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -1982,7 +1982,7 @@ public fun testMmMask3FmaddPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, 2.0)
     val c = mmSet1Pch(0.0, 3.0)
-    val r = mmMask3FmaddPch(a, b, c, 0x5u)
+    val r = mmMask3FmaddPch(a, b, c, 0x5u.toUByte())
     val e = mmSetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f))
     assertEqM128h(r, e)
 }
@@ -1991,7 +1991,7 @@ public fun testMmMaskzFmaddPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, 2.0)
     val c = mmSet1Pch(0.0, 3.0)
-    val r = mmMaskzFmaddPch(0x5u, a, b, c)
+    val r = mmMaskzFmaddPch(0x5u.toUByte(), a, b, c)
     val e = mmSetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM128h(r, e)
 }
@@ -2009,7 +2009,7 @@ public fun testMm256MaskFmaddPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, 2.0)
     val c = mm256Set1Pch(0.0, 3.0)
-    val r = mm256MaskFmaddPch(a, 0x55u, b, c)
+    val r = mm256MaskFmaddPch(a, 0x55u.toUByte(), b, c)
     val e = mm256SetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -2018,7 +2018,7 @@ public fun testMm256Mask3FmaddPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, 2.0)
     val c = mm256Set1Pch(0.0, 3.0)
-    val r = mm256Mask3FmaddPch(a, b, c, 0x55u)
+    val r = mm256Mask3FmaddPch(a, b, c, 0x55u.toUByte())
     val e = mm256SetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f))
     assertEqM256h(r, e)
 }
@@ -2027,7 +2027,7 @@ public fun testMm256MaskzFmaddPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, 2.0)
     val c = mm256Set1Pch(0.0, 3.0)
-    val r = mm256MaskzFmaddPch(0x55u, a, b, c)
+    val r = mm256MaskzFmaddPch(0x55u.toUByte(), a, b, c)
     val e = mm256SetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM256h(r, e)
 }
@@ -2045,7 +2045,7 @@ public fun testMm512MaskFmaddPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512MaskFmaddPch(a, 0x5555u, b, c)
+    val r = mm512MaskFmaddPch(a, 0x5555u.toUShort(), b, c)
     val e = mm512SetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM512h(r, e)
 }
@@ -2054,7 +2054,7 @@ public fun testMm512Mask3FmaddPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512Mask3FmaddPch(a, b, c, 0x5555u)
+    val r = mm512Mask3FmaddPch(a, b, c, 0x5555u.toUShort())
     val e = mm512SetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f))
     assertEqM512h(r, e)
 }
@@ -2063,7 +2063,7 @@ public fun testMm512MaskzFmaddPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512MaskzFmaddPch(0x5555u, a, b, c)
+    val r = mm512MaskzFmaddPch(0x5555u.toUShort(), a, b, c)
     val e = mm512SetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -2081,7 +2081,7 @@ public fun testMm512MaskFmaddRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512MaskFmaddRoundPch(a, 0x5555u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskFmaddRoundPch(a, 0x5555u.toUShort(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM512h(r, e)
 }
@@ -2090,7 +2090,7 @@ public fun testMm512Mask3FmaddRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512Mask3FmaddRoundPch(a, b, c, 0x5555u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512Mask3FmaddRoundPch(a, b, c, 0x5555u.toUShort(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f))
     assertEqM512h(r, e)
 }
@@ -2099,7 +2099,7 @@ public fun testMm512MaskzFmaddRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512MaskzFmaddRoundPch(0x5555u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzFmaddRoundPch(0x5555u.toUShort(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -2117,10 +2117,10 @@ public fun testMmMaskFmaddSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMaskFmaddSch(a, 0u, b, c)
+    val r = mmMaskFmaddSch(a, 0u.toUByte(), b, c)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFmaddSch(a, 1u, b, c)
+    val r1 = mmMaskFmaddSch(a, 1u.toUByte(), b, c)
     val e1 = mmSetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r1, e1)
 }
@@ -2129,10 +2129,10 @@ public fun testMmMask3FmaddSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMask3FmaddSch(a, b, c, 0u)
+    val r = mmMask3FmaddSch(a, b, c, 0u.toUByte())
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FmaddSch(a, b, c, 1u)
+    val r1 = mmMask3FmaddSch(a, b, c, 1u.toUByte())
     val e1 = mmSetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
     assertEqM128h(r1, e1)
 }
@@ -2141,10 +2141,10 @@ public fun testMmMaskzFmaddSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMaskzFmaddSch(0u, a, b, c)
+    val r = mmMaskzFmaddSch(0u.toUByte(), a, b, c)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFmaddSch(1u, a, b, c)
+    val r1 = mmMaskzFmaddSch(1u.toUByte(), a, b, c)
     val e1 = mmSetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r1, e1)
 }
@@ -2162,10 +2162,10 @@ public fun testMmMaskFmaddRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMaskFmaddRoundSch(a, 0u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskFmaddRoundSch(a, 0u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFmaddRoundSch(a, 1u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskFmaddRoundSch(a, 1u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r1, e1)
 }
@@ -2174,10 +2174,10 @@ public fun testMmMask3FmaddRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMask3FmaddRoundSch(a, b, c, 0u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMask3FmaddRoundSch(a, b, c, 0u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FmaddRoundSch(a, b, c, 1u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMask3FmaddRoundSch(a, b, c, 1u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
     assertEqM128h(r1, e1)
 }
@@ -2186,10 +2186,10 @@ public fun testMmMaskzFmaddRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMaskzFmaddRoundSch(0u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzFmaddRoundSch(0u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFmaddRoundSch(1u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzFmaddRoundSch(1u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(-F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r1, e1)
 }
@@ -2207,7 +2207,7 @@ public fun testMmMaskFcmaddPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, 2.0)
     val c = mmSet1Pch(0.0, 3.0)
-    val r = mmMaskFcmaddPch(a, 0x5u, b, c)
+    val r = mmMaskFcmaddPch(a, 0x5u.toUByte(), b, c)
     val e = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -2216,7 +2216,7 @@ public fun testMmMask3FcmaddPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, 2.0)
     val c = mmSet1Pch(0.0, 3.0)
-    val r = mmMask3FcmaddPch(a, b, c, 0x5u)
+    val r = mmMask3FcmaddPch(a, b, c, 0x5u.toUByte())
     val e = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f))
     assertEqM128h(r, e)
 }
@@ -2225,7 +2225,7 @@ public fun testMmMaskzFcmaddPch() {
     val a = mmSet1Pch(0.0, 1.0)
     val b = mmSet1Pch(0.0, 2.0)
     val c = mmSet1Pch(0.0, 3.0)
-    val r = mmMaskzFcmaddPch(0x5u, a, b, c)
+    val r = mmMaskzFcmaddPch(0x5u.toUByte(), a, b, c)
     val e = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM128h(r, e)
 }
@@ -2243,7 +2243,7 @@ public fun testMm256MaskFcmaddPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, 2.0)
     val c = mm256Set1Pch(0.0, 3.0)
-    val r = mm256MaskFcmaddPch(a, 0x55u, b, c)
+    val r = mm256MaskFcmaddPch(a, 0x55u.toUByte(), b, c)
     val e = mm256SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -2252,7 +2252,7 @@ public fun testMm256Mask3FcmaddPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, 2.0)
     val c = mm256Set1Pch(0.0, 3.0)
-    val r = mm256Mask3FcmaddPch(a, b, c, 0x55u)
+    val r = mm256Mask3FcmaddPch(a, b, c, 0x55u.toUByte())
     val e = mm256SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f))
     assertEqM256h(r, e)
 }
@@ -2261,7 +2261,7 @@ public fun testMm256MaskzFcmaddPch() {
     val a = mm256Set1Pch(0.0, 1.0)
     val b = mm256Set1Pch(0.0, 2.0)
     val c = mm256Set1Pch(0.0, 3.0)
-    val r = mm256MaskzFcmaddPch(0x55u, a, b, c)
+    val r = mm256MaskzFcmaddPch(0x55u.toUByte(), a, b, c)
     val e = mm256SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM256h(r, e)
 }
@@ -2279,7 +2279,7 @@ public fun testMm512MaskFcmaddPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512MaskFcmaddPch(a, 0x5555u, b, c)
+    val r = mm512MaskFcmaddPch(a, 0x5555u.toUShort(), b, c)
     val e = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM512h(r, e)
 }
@@ -2288,7 +2288,7 @@ public fun testMm512Mask3FcmaddPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512Mask3FcmaddPch(a, b, c, 0x5555u)
+    val r = mm512Mask3FcmaddPch(a, b, c, 0x5555u.toUShort())
     val e = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f))
     assertEqM512h(r, e)
 }
@@ -2297,7 +2297,7 @@ public fun testMm512MaskzFcmaddPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512MaskzFcmaddPch(0x5555u, a, b, c)
+    val r = mm512MaskzFcmaddPch(0x5555u.toUShort(), a, b, c)
     val e = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -2315,7 +2315,7 @@ public fun testMm512MaskFcmaddRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512MaskFcmaddRoundPch(a, 0x5555u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskFcmaddRoundPch(a, 0x5555u.toUShort(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM512h(r, e)
 }
@@ -2324,7 +2324,7 @@ public fun testMm512Mask3FcmaddRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512Mask3FcmaddRoundPch(a, b, c, 0x5555u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512Mask3FcmaddRoundPch(a, b, c, 0x5555u.toUShort(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(3.0f))
     assertEqM512h(r, e)
 }
@@ -2333,7 +2333,7 @@ public fun testMm512MaskzFcmaddRoundPch() {
     val a = mm512Set1Pch(0.0, 1.0)
     val b = mm512Set1Pch(0.0, 2.0)
     val c = mm512Set1Pch(0.0, 3.0)
-    val r = mm512MaskzFcmaddRoundPch(0x5555u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzFcmaddRoundPch(0x5555u.toUShort(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f))
     assertEqM512h(r, e)
 }
@@ -2351,10 +2351,10 @@ public fun testMmMaskFcmaddSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMaskFcmaddSch(a, 0u, b, c)
+    val r = mmMaskFcmaddSch(a, 0u.toUByte(), b, c)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFcmaddSch(a, 1u, b, c)
+    val r1 = mmMaskFcmaddSch(a, 1u.toUByte(), b, c)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r1, e1)
 }
@@ -2363,10 +2363,10 @@ public fun testMmMask3FcmaddSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMask3FcmaddSch(a, b, c, 0u)
+    val r = mmMask3FcmaddSch(a, b, c, 0u.toUByte())
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FcmaddSch(a, b, c, 1u)
+    val r1 = mmMask3FcmaddSch(a, b, c, 1u.toUByte())
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
     assertEqM128h(r1, e1)
 }
@@ -2375,10 +2375,10 @@ public fun testMmMaskzFcmaddSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMaskzFcmaddSch(0u, a, b, c)
+    val r = mmMaskzFcmaddSch(0u.toUByte(), a, b, c)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFcmaddSch(1u, a, b, c)
+    val r1 = mmMaskzFcmaddSch(1u.toUByte(), a, b, c)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r1, e1)
 }
@@ -2396,10 +2396,10 @@ public fun testMmMaskFcmaddRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMaskFcmaddRoundSch(a, 0u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskFcmaddRoundSch(a, 0u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFcmaddRoundSch(a, 1u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskFcmaddRoundSch(a, 1u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r1, e1)
 }
@@ -2408,10 +2408,10 @@ public fun testMmMask3FcmaddRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMask3FcmaddRoundSch(a, b, c, 0u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMask3FcmaddRoundSch(a, b, c, 0u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FcmaddRoundSch(a, b, c, 1u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMask3FcmaddRoundSch(a, b, c, 1u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
     assertEqM128h(r1, e1)
 }
@@ -2420,10 +2420,10 @@ public fun testMmMaskzFcmaddRoundSch() {
     val a = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     val b = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f))
     val c = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(3.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f))
-    val r = mmMaskzFcmaddRoundSch(0u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzFcmaddRoundSch(0u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFcmaddRoundSch(1u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzFcmaddRoundSch(1u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f))
     assertEqM128h(r1, e1)
 }
@@ -2441,7 +2441,7 @@ public fun testMmMaskFmaddPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskFmaddPh(a, 0x55u, b, c)
+    val r = mmMaskFmaddPh(a, 0x55u.toUByte(), b, c)
     val e = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f))
     assertEqM128h(r, e)
 }
@@ -2450,7 +2450,7 @@ public fun testMmMask3FmaddPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMask3FmaddPh(a, b, c, 0x55u)
+    val r = mmMask3FmaddPh(a, b, c, 0x55u.toUByte())
     val e = mmSetPh(F16.fromFloat(3.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f))
     assertEqM128h(r, e)
 }
@@ -2459,7 +2459,7 @@ public fun testMmMaskzFmaddPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskzFmaddPh(0x55u, a, b, c)
+    val r = mmMaskzFmaddPh(0x55u.toUByte(), a, b, c)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f))
     assertEqM128h(r, e)
 }
@@ -2477,7 +2477,7 @@ public fun testMm256MaskFmaddPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskFmaddPh(a, 0x5555u, b, c)
+    val r = mm256MaskFmaddPh(a, 0x5555u.toUShort(), b, c)
     val e = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f))
     assertEqM256h(r, e)
 }
@@ -2486,7 +2486,7 @@ public fun testMm256Mask3FmaddPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256Mask3FmaddPh(a, b, c, 0x5555u)
+    val r = mm256Mask3FmaddPh(a, b, c, 0x5555u.toUShort())
     val e = mm256SetPh(F16.fromFloat(3.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f))
     assertEqM256h(r, e)
 }
@@ -2495,7 +2495,7 @@ public fun testMm256MaskzFmaddPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskzFmaddPh(0x5555u, a, b, c)
+    val r = mm256MaskzFmaddPh(0x5555u.toUShort(), a, b, c)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f))
     assertEqM256h(r, e)
 }
@@ -2585,10 +2585,10 @@ public fun testMmMaskFmaddSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskFmaddSh(a, 0u, b, c)
+    val r = mmMaskFmaddSh(a, 0u.toUByte(), b, c)
     val e = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFmaddSh(a, 1u, b, c)
+    val r1 = mmMaskFmaddSh(a, 1u.toUByte(), b, c)
     val e1 = mmSetrPh(F16.fromFloat(5.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -2597,10 +2597,10 @@ public fun testMmMask3FmaddSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMask3FmaddSh(a, b, c, 0u)
+    val r = mmMask3FmaddSh(a, b, c, 0u.toUByte())
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FmaddSh(a, b, c, 1u)
+    val r1 = mmMask3FmaddSh(a, b, c, 1u.toUByte())
     val e1 = mmSetrPh(F16.fromFloat(5.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r1, e1)
 }
@@ -2609,10 +2609,10 @@ public fun testMmMaskzFmaddSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskzFmaddSh(0u, a, b, c)
+    val r = mmMaskzFmaddSh(0u.toUByte(), a, b, c)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFmaddSh(1u, a, b, c)
+    val r1 = mmMaskzFmaddSh(1u.toUByte(), a, b, c)
     val e1 = mmSetrPh(F16.fromFloat(5.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -2630,10 +2630,10 @@ public fun testMmMaskFmaddRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskFmaddRoundSh(a, 0u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskFmaddRoundSh(a, 0u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFmaddRoundSh(a, 1u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskFmaddRoundSh(a, 1u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(5.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -2642,10 +2642,10 @@ public fun testMmMask3FmaddRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMask3FmaddRoundSh(a, b, c, 0u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMask3FmaddRoundSh(a, b, c, 0u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FmaddRoundSh(a, b, c, 1u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMask3FmaddRoundSh(a, b, c, 1u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(5.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r1, e1)
 }
@@ -2654,10 +2654,10 @@ public fun testMmMaskzFmaddRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskzFmaddRoundSh(0u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzFmaddRoundSh(0u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFmaddRoundSh(1u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzFmaddRoundSh(1u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(5.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -2675,7 +2675,7 @@ public fun testMmMaskFmsubPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskFmsubPh(a, 0x55u, b, c)
+    val r = mmMaskFmsubPh(a, 0x55u.toUByte(), b, c)
     val e = mmSetPh(F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -2684,7 +2684,7 @@ public fun testMmMask3FmsubPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMask3FmsubPh(a, b, c, 0x55u)
+    val r = mmMask3FmsubPh(a, b, c, 0x55u.toUByte())
     val e = mmSetPh(F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -2693,7 +2693,7 @@ public fun testMmMaskzFmsubPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskzFmsubPh(0x55u, a, b, c)
+    val r = mmMaskzFmsubPh(0x55u.toUByte(), a, b, c)
     val e = mmSetPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -2711,7 +2711,7 @@ public fun testMm256MaskFmsubPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskFmsubPh(a, 0x5555u, b, c)
+    val r = mm256MaskFmsubPh(a, 0x5555u.toUShort(), b, c)
     val e = mm256SetPh(F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -2720,7 +2720,7 @@ public fun testMm256Mask3FmsubPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256Mask3FmsubPh(a, b, c, 0x5555u)
+    val r = mm256Mask3FmsubPh(a, b, c, 0x5555u.toUShort())
     val e = mm256SetPh(F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -2729,7 +2729,7 @@ public fun testMm256MaskzFmsubPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskzFmsubPh(0x5555u, a, b, c)
+    val r = mm256MaskzFmsubPh(0x5555u.toUShort(), a, b, c)
     val e = mm256SetPh(F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -2819,10 +2819,10 @@ public fun testMmMaskFmsubSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskFmsubSh(a, 0u, b, c)
+    val r = mmMaskFmsubSh(a, 0u.toUByte(), b, c)
     val e = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFmsubSh(a, 1u, b, c)
+    val r1 = mmMaskFmsubSh(a, 1u.toUByte(), b, c)
     val e1 = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -2831,10 +2831,10 @@ public fun testMmMask3FmsubSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMask3FmsubSh(a, b, c, 0u)
+    val r = mmMask3FmsubSh(a, b, c, 0u.toUByte())
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FmsubSh(a, b, c, 1u)
+    val r1 = mmMask3FmsubSh(a, b, c, 1u.toUByte())
     val e1 = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r1, e1)
 }
@@ -2843,10 +2843,10 @@ public fun testMmMaskzFmsubSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskzFmsubSh(0u, a, b, c)
+    val r = mmMaskzFmsubSh(0u.toUByte(), a, b, c)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFmsubSh(1u, a, b, c)
+    val r1 = mmMaskzFmsubSh(1u.toUByte(), a, b, c)
     val e1 = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -2864,10 +2864,10 @@ public fun testMmMaskFmsubRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskFmsubRoundSh(a, 0u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskFmsubRoundSh(a, 0u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFmsubRoundSh(a, 1u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskFmsubRoundSh(a, 1u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -2876,10 +2876,10 @@ public fun testMmMask3FmsubRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMask3FmsubRoundSh(a, b, c, 0u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMask3FmsubRoundSh(a, b, c, 0u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FmsubRoundSh(a, b, c, 1u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMask3FmsubRoundSh(a, b, c, 1u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r1, e1)
 }
@@ -2888,10 +2888,10 @@ public fun testMmMaskzFmsubRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskzFmsubRoundSh(0u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzFmsubRoundSh(0u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFmsubRoundSh(1u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzFmsubRoundSh(1u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(-F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -2909,7 +2909,7 @@ public fun testMmMaskFnmaddPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskFnmaddPh(a, 0x55u, b, c)
+    val r = mmMaskFnmaddPh(a, 0x55u.toUByte(), b, c)
     val e = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -2918,7 +2918,7 @@ public fun testMmMask3FnmaddPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMask3FnmaddPh(a, b, c, 0x55u)
+    val r = mmMask3FnmaddPh(a, b, c, 0x55u.toUByte())
     val e = mmSetPh(F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -2927,7 +2927,7 @@ public fun testMmMaskzFnmaddPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskzFnmaddPh(0x55u, a, b, c)
+    val r = mmMaskzFnmaddPh(0x55u.toUByte(), a, b, c)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -2945,7 +2945,7 @@ public fun testMm256MaskFnmaddPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskFnmaddPh(a, 0x5555u, b, c)
+    val r = mm256MaskFnmaddPh(a, 0x5555u.toUShort(), b, c)
     val e = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -2954,7 +2954,7 @@ public fun testMm256Mask3FnmaddPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256Mask3FnmaddPh(a, b, c, 0x5555u)
+    val r = mm256Mask3FnmaddPh(a, b, c, 0x5555u.toUShort())
     val e = mm256SetPh(F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -2963,7 +2963,7 @@ public fun testMm256MaskzFnmaddPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskzFnmaddPh(0x5555u, a, b, c)
+    val r = mm256MaskzFnmaddPh(0x5555u.toUShort(), a, b, c)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -3053,10 +3053,10 @@ public fun testMmMaskFnmaddSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskFnmaddSh(a, 0u, b, c)
+    val r = mmMaskFnmaddSh(a, 0u.toUByte(), b, c)
     val e = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFnmaddSh(a, 1u, b, c)
+    val r1 = mmMaskFnmaddSh(a, 1u.toUByte(), b, c)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3065,10 +3065,10 @@ public fun testMmMask3FnmaddSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMask3FnmaddSh(a, b, c, 0u)
+    val r = mmMask3FnmaddSh(a, b, c, 0u.toUByte())
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FnmaddSh(a, b, c, 1u)
+    val r1 = mmMask3FnmaddSh(a, b, c, 1u.toUByte())
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r1, e1)
 }
@@ -3077,10 +3077,10 @@ public fun testMmMaskzFnmaddSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskzFnmaddSh(0u, a, b, c)
+    val r = mmMaskzFnmaddSh(0u.toUByte(), a, b, c)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFnmaddSh(1u, a, b, c)
+    val r1 = mmMaskzFnmaddSh(1u.toUByte(), a, b, c)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3098,10 +3098,10 @@ public fun testMmMaskFnmaddRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskFnmaddRoundSh(a, 0u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskFnmaddRoundSh(a, 0u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFnmaddRoundSh(a, 1u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskFnmaddRoundSh(a, 1u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3110,10 +3110,10 @@ public fun testMmMask3FnmaddRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMask3FnmaddRoundSh(a, b, c, 0u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMask3FnmaddRoundSh(a, b, c, 0u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FnmaddRoundSh(a, b, c, 1u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMask3FnmaddRoundSh(a, b, c, 1u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r1, e1)
 }
@@ -3122,10 +3122,10 @@ public fun testMmMaskzFnmaddRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskzFnmaddRoundSh(0u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzFnmaddRoundSh(0u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFnmaddRoundSh(1u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzFnmaddRoundSh(1u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3143,7 +3143,7 @@ public fun testMmMaskFnmsubPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskFnmsubPh(a, 0x55u, b, c)
+    val r = mmMaskFnmsubPh(a, 0x55u.toUByte(), b, c)
     val e = mmSetPh(F16.fromFloat(1.0f), -F16.fromFloat(5.0f), F16.fromFloat(1.0f), -F16.fromFloat(5.0f), F16.fromFloat(1.0f), -F16.fromFloat(5.0f), F16.fromFloat(1.0f), -F16.fromFloat(5.0f))
     assertEqM128h(r, e)
 }
@@ -3152,7 +3152,7 @@ public fun testMmMask3FnmsubPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMask3FnmsubPh(a, b, c, 0x55u)
+    val r = mmMask3FnmsubPh(a, b, c, 0x55u.toUByte())
     val e = mmSetPh(F16.fromFloat(3.0f), -F16.fromFloat(5.0f), F16.fromFloat(3.0f), -F16.fromFloat(5.0f), F16.fromFloat(3.0f), -F16.fromFloat(5.0f), F16.fromFloat(3.0f), -F16.fromFloat(5.0f))
     assertEqM128h(r, e)
 }
@@ -3161,7 +3161,7 @@ public fun testMmMaskzFnmsubPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskzFnmsubPh(0x55u, a, b, c)
+    val r = mmMaskzFnmsubPh(0x55u.toUByte(), a, b, c)
     val e = mmSetPh(F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f))
     assertEqM128h(r, e)
 }
@@ -3179,7 +3179,7 @@ public fun testMm256MaskFnmsubPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskFnmsubPh(a, 0x5555u, b, c)
+    val r = mm256MaskFnmsubPh(a, 0x5555u.toUShort(), b, c)
     val e = mm256SetPh(F16.fromFloat(1.0f), -F16.fromFloat(5.0f), F16.fromFloat(1.0f), -F16.fromFloat(5.0f), F16.fromFloat(1.0f), -F16.fromFloat(5.0f), F16.fromFloat(1.0f), -F16.fromFloat(5.0f), F16.fromFloat(1.0f), -F16.fromFloat(5.0f), F16.fromFloat(1.0f), -F16.fromFloat(5.0f), F16.fromFloat(1.0f), -F16.fromFloat(5.0f), F16.fromFloat(1.0f), -F16.fromFloat(5.0f))
     assertEqM256h(r, e)
 }
@@ -3188,7 +3188,7 @@ public fun testMm256Mask3FnmsubPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256Mask3FnmsubPh(a, b, c, 0x5555u)
+    val r = mm256Mask3FnmsubPh(a, b, c, 0x5555u.toUShort())
     val e = mm256SetPh(F16.fromFloat(3.0f), -F16.fromFloat(5.0f), F16.fromFloat(3.0f), -F16.fromFloat(5.0f), F16.fromFloat(3.0f), -F16.fromFloat(5.0f), F16.fromFloat(3.0f), -F16.fromFloat(5.0f), F16.fromFloat(3.0f), -F16.fromFloat(5.0f), F16.fromFloat(3.0f), -F16.fromFloat(5.0f), F16.fromFloat(3.0f), -F16.fromFloat(5.0f), F16.fromFloat(3.0f), -F16.fromFloat(5.0f))
     assertEqM256h(r, e)
 }
@@ -3197,7 +3197,7 @@ public fun testMm256MaskzFnmsubPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskzFnmsubPh(0x5555u, a, b, c)
+    val r = mm256MaskzFnmsubPh(0x5555u.toUShort(), a, b, c)
     val e = mm256SetPh(F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f), F16.fromFloat(0.0f), -F16.fromFloat(5.0f))
     assertEqM256h(r, e)
 }
@@ -3287,10 +3287,10 @@ public fun testMmMaskFnmsubSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskFnmsubSh(a, 0u, b, c)
+    val r = mmMaskFnmsubSh(a, 0u.toUByte(), b, c)
     val e = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFnmsubSh(a, 1u, b, c)
+    val r1 = mmMaskFnmsubSh(a, 1u.toUByte(), b, c)
     val e1 = mmSetrPh(-F16.fromFloat(5.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3299,10 +3299,10 @@ public fun testMmMask3FnmsubSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMask3FnmsubSh(a, b, c, 0u)
+    val r = mmMask3FnmsubSh(a, b, c, 0u.toUByte())
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FnmsubSh(a, b, c, 1u)
+    val r1 = mmMask3FnmsubSh(a, b, c, 1u.toUByte())
     val e1 = mmSetrPh(-F16.fromFloat(5.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r1, e1)
 }
@@ -3311,10 +3311,10 @@ public fun testMmMaskzFnmsubSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskzFnmsubSh(0u, a, b, c)
+    val r = mmMaskzFnmsubSh(0u.toUByte(), a, b, c)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFnmsubSh(1u, a, b, c)
+    val r1 = mmMaskzFnmsubSh(1u.toUByte(), a, b, c)
     val e1 = mmSetrPh(-F16.fromFloat(5.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3332,10 +3332,10 @@ public fun testMmMaskFnmsubRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskFnmsubRoundSh(a, 0u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskFnmsubRoundSh(a, 0u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskFnmsubRoundSh(a, 1u, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskFnmsubRoundSh(a, 1u.toUByte(), b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(-F16.fromFloat(5.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3344,10 +3344,10 @@ public fun testMmMask3FnmsubRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMask3FnmsubRoundSh(a, b, c, 0u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMask3FnmsubRoundSh(a, b, c, 0u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r, e)
-    val r1 = mmMask3FnmsubRoundSh(a, b, c, 1u, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMask3FnmsubRoundSh(a, b, c, 1u.toUByte(), MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(-F16.fromFloat(5.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
     assertEqM128h(r1, e1)
 }
@@ -3356,10 +3356,10 @@ public fun testMmMaskzFnmsubRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val c = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskzFnmsubRoundSh(0u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzFnmsubRoundSh(0u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzFnmsubRoundSh(1u, a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzFnmsubRoundSh(1u.toUByte(), a, b, c, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(-F16.fromFloat(5.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3377,7 +3377,7 @@ public fun testMmMaskFmaddsubPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskFmaddsubPh(a, 0x33u, b, c)
+    val r = mmMaskFmaddsubPh(a, 0x33u.toUByte(), b, c)
     val e = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -3386,7 +3386,7 @@ public fun testMmMask3FmaddsubPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMask3FmaddsubPh(a, b, c, 0x33u)
+    val r = mmMask3FmaddsubPh(a, b, c, 0x33u.toUByte())
     val e = mmSetPh(F16.fromFloat(3.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -3395,7 +3395,7 @@ public fun testMmMaskzFmaddsubPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskzFmaddsubPh(0x33u, a, b, c)
+    val r = mmMaskzFmaddsubPh(0x33u.toUByte(), a, b, c)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -3413,7 +3413,7 @@ public fun testMm256MaskFmaddsubPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskFmaddsubPh(a, 0x3333u, b, c)
+    val r = mm256MaskFmaddsubPh(a, 0x3333u.toUShort(), b, c)
     val e = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -3422,7 +3422,7 @@ public fun testMm256Mask3FmaddsubPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256Mask3FmaddsubPh(a, b, c, 0x3333u)
+    val r = mm256Mask3FmaddsubPh(a, b, c, 0x3333u.toUShort())
     val e = mm256SetPh(F16.fromFloat(3.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(3.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -3431,7 +3431,7 @@ public fun testMm256MaskzFmaddsubPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskzFmaddsubPh(0x3333u, a, b, c)
+    val r = mm256MaskzFmaddsubPh(0x3333u.toUShort(), a, b, c)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(5.0f), -F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -3521,7 +3521,7 @@ public fun testMmMaskFmsubaddPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskFmsubaddPh(a, 0x33u, b, c)
+    val r = mmMaskFmsubaddPh(a, 0x33u.toUByte(), b, c)
     val e = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f))
     assertEqM128h(r, e)
 }
@@ -3530,7 +3530,7 @@ public fun testMmMask3FmsubaddPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMask3FmsubaddPh(a, b, c, 0x33u)
+    val r = mmMask3FmsubaddPh(a, b, c, 0x33u.toUByte())
     val e = mmSetPh(F16.fromFloat(3.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f))
     assertEqM128h(r, e)
 }
@@ -3539,7 +3539,7 @@ public fun testMmMaskzFmsubaddPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(2.0f))
     val c = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskzFmsubaddPh(0x33u, a, b, c)
+    val r = mmMaskzFmsubaddPh(0x33u.toUByte(), a, b, c)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f))
     assertEqM128h(r, e)
 }
@@ -3557,7 +3557,7 @@ public fun testMm256MaskFmsubaddPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskFmsubaddPh(a, 0x3333u, b, c)
+    val r = mm256MaskFmsubaddPh(a, 0x3333u.toUShort(), b, c)
     val e = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(1.0f), F16.fromFloat(1.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f))
     assertEqM256h(r, e)
 }
@@ -3566,7 +3566,7 @@ public fun testMm256Mask3FmsubaddPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256Mask3FmsubaddPh(a, b, c, 0x3333u)
+    val r = mm256Mask3FmsubaddPh(a, b, c, 0x3333u.toUShort())
     val e = mm256SetPh(F16.fromFloat(3.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(3.0f), F16.fromFloat(3.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f))
     assertEqM256h(r, e)
 }
@@ -3575,7 +3575,7 @@ public fun testMm256MaskzFmsubaddPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(2.0f))
     val c = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskzFmsubaddPh(0x3333u, a, b, c)
+    val r = mm256MaskzFmsubaddPh(0x3333u.toUShort(), a, b, c)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), -F16.fromFloat(1.0f), F16.fromFloat(5.0f))
     assertEqM256h(r, e)
 }
@@ -3662,14 +3662,14 @@ public fun testMmRcpPh() {
 public fun testMmMaskRcpPh() {
     val a = mmSet1Ph(F16.fromFloat(2.0f))
     val src = mmSet1Ph(F16.fromFloat(1.0f))
-    val r = mmMaskRcpPh(src, 0x55u, a)
+    val r = mmMaskRcpPh(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzRcpPh() {
     val a = mmSet1Ph(F16.fromFloat(2.0f))
-    val r = mmMaskzRcpPh(0x55u, a)
+    val r = mmMaskzRcpPh(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f))
     assertEqM128h(r, e)
 }
@@ -3684,14 +3684,14 @@ public fun testMm256RcpPh() {
 public fun testMm256MaskRcpPh() {
     val a = mm256Set1Ph(F16.fromFloat(2.0f))
     val src = mm256Set1Ph(F16.fromFloat(1.0f))
-    val r = mm256MaskRcpPh(src, 0x5555u, a)
+    val r = mm256MaskRcpPh(src, 0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f))
     assertEqM256h(r, e)
 }
 
 public fun testMm256MaskzRcpPh() {
     val a = mm256Set1Ph(F16.fromFloat(2.0f))
-    val r = mm256MaskzRcpPh(0x5555u, a)
+    val r = mm256MaskzRcpPh(0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f))
     assertEqM256h(r, e)
 }
@@ -3730,10 +3730,10 @@ public fun testMmMaskRcpSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskRcpSh(src, 0u, a, b)
+    val r = mmMaskRcpSh(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskRcpSh(src, 1u, a, b)
+    val r1 = mmMaskRcpSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(0.5f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3741,10 +3741,10 @@ public fun testMmMaskRcpSh() {
 public fun testMmMaskzRcpSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzRcpSh(0u, a, b)
+    val r = mmMaskzRcpSh(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzRcpSh(1u, a, b)
+    val r1 = mmMaskzRcpSh(1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(0.5f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3759,14 +3759,14 @@ public fun testMmRsqrtPh() {
 public fun testMmMaskRsqrtPh() {
     val a = mmSet1Ph(F16.fromFloat(4.0f))
     val src = mmSet1Ph(F16.fromFloat(1.0f))
-    val r = mmMaskRsqrtPh(src, 0x55u, a)
+    val r = mmMaskRsqrtPh(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzRsqrtPh() {
     val a = mmSet1Ph(F16.fromFloat(4.0f))
-    val r = mmMaskzRsqrtPh(0x55u, a)
+    val r = mmMaskzRsqrtPh(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f))
     assertEqM128h(r, e)
 }
@@ -3781,14 +3781,14 @@ public fun testMm256RsqrtPh() {
 public fun testMm256MaskRsqrtPh() {
     val a = mm256Set1Ph(F16.fromFloat(4.0f))
     val src = mm256Set1Ph(F16.fromFloat(1.0f))
-    val r = mm256MaskRsqrtPh(src, 0x5555u, a)
+    val r = mm256MaskRsqrtPh(src, 0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f), F16.fromFloat(1.0f), F16.fromFloat(0.5f))
     assertEqM256h(r, e)
 }
 
 public fun testMm256MaskzRsqrtPh() {
     val a = mm256Set1Ph(F16.fromFloat(4.0f))
-    val r = mm256MaskzRsqrtPh(0x5555u, a)
+    val r = mm256MaskzRsqrtPh(0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f), F16.fromFloat(0.0f), F16.fromFloat(0.5f))
     assertEqM256h(r, e)
 }
@@ -3827,10 +3827,10 @@ public fun testMmMaskRsqrtSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(40.0f), F16.fromFloat(41.0f), F16.fromFloat(42.0f), F16.fromFloat(43.0f), F16.fromFloat(44.0f), F16.fromFloat(45.0f), F16.fromFloat(46.0f))
     val src = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskRsqrtSh(src, 0u, a, b)
+    val r = mmMaskRsqrtSh(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskRsqrtSh(src, 1u, a, b)
+    val r1 = mmMaskRsqrtSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(0.5f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3838,10 +3838,10 @@ public fun testMmMaskRsqrtSh() {
 public fun testMmMaskzRsqrtSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(40.0f), F16.fromFloat(41.0f), F16.fromFloat(42.0f), F16.fromFloat(43.0f), F16.fromFloat(44.0f), F16.fromFloat(45.0f), F16.fromFloat(46.0f))
-    val r = mmMaskzRsqrtSh(0u, a, b)
+    val r = mmMaskzRsqrtSh(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzRsqrtSh(1u, a, b)
+    val r1 = mmMaskzRsqrtSh(1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(0.5f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3856,14 +3856,14 @@ public fun testMmSqrtPh() {
 public fun testMmMaskSqrtPh() {
     val a = mmSet1Ph(F16.fromFloat(4.0f))
     val src = mmSet1Ph(F16.fromFloat(1.0f))
-    val r = mmMaskSqrtPh(src, 0x55u, a)
+    val r = mmMaskSqrtPh(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzSqrtPh() {
     val a = mmSet1Ph(F16.fromFloat(4.0f))
-    val r = mmMaskzSqrtPh(0x55u, a)
+    val r = mmMaskzSqrtPh(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f))
     assertEqM128h(r, e)
 }
@@ -3878,14 +3878,14 @@ public fun testMm256SqrtPh() {
 public fun testMm256MaskSqrtPh() {
     val a = mm256Set1Ph(F16.fromFloat(4.0f))
     val src = mm256Set1Ph(F16.fromFloat(1.0f))
-    val r = mm256MaskSqrtPh(src, 0x5555u, a)
+    val r = mm256MaskSqrtPh(src, 0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm256MaskzSqrtPh() {
     val a = mm256Set1Ph(F16.fromFloat(4.0f))
-    val r = mm256MaskzSqrtPh(0x5555u, a)
+    val r = mm256MaskzSqrtPh(0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f))
     assertEqM256h(r, e)
 }
@@ -3946,10 +3946,10 @@ public fun testMmMaskSqrtSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(40.0f), F16.fromFloat(41.0f), F16.fromFloat(42.0f), F16.fromFloat(43.0f), F16.fromFloat(44.0f), F16.fromFloat(45.0f), F16.fromFloat(46.0f))
     val src = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskSqrtSh(src, 0u, a, b)
+    val r = mmMaskSqrtSh(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskSqrtSh(src, 1u, a, b)
+    val r1 = mmMaskSqrtSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3957,10 +3957,10 @@ public fun testMmMaskSqrtSh() {
 public fun testMmMaskzSqrtSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(40.0f), F16.fromFloat(41.0f), F16.fromFloat(42.0f), F16.fromFloat(43.0f), F16.fromFloat(44.0f), F16.fromFloat(45.0f), F16.fromFloat(46.0f))
-    val r = mmMaskzSqrtSh(0u, a, b)
+    val r = mmMaskzSqrtSh(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzSqrtSh(1u, a, b)
+    val r1 = mmMaskzSqrtSh(1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3977,10 +3977,10 @@ public fun testMmMaskSqrtRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(40.0f), F16.fromFloat(41.0f), F16.fromFloat(42.0f), F16.fromFloat(43.0f), F16.fromFloat(44.0f), F16.fromFloat(45.0f), F16.fromFloat(46.0f))
     val src = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskSqrtRoundSh(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskSqrtRoundSh(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskSqrtRoundSh(src, 1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskSqrtRoundSh(src, 1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -3988,10 +3988,10 @@ public fun testMmMaskSqrtRoundSh() {
 public fun testMmMaskzSqrtRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(40.0f), F16.fromFloat(41.0f), F16.fromFloat(42.0f), F16.fromFloat(43.0f), F16.fromFloat(44.0f), F16.fromFloat(45.0f), F16.fromFloat(46.0f))
-    val r = mmMaskzSqrtRoundSh(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzSqrtRoundSh(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzSqrtRoundSh(1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzSqrtRoundSh(1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4008,7 +4008,7 @@ public fun testMmMaskMaxPh() {
     val a = mmSet1Ph(F16.fromFloat(2.0f))
     val b = mmSet1Ph(F16.fromFloat(1.0f))
     val src = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskMaxPh(src, 0x55u, a, b)
+    val r = mmMaskMaxPh(src, 0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f))
     assertEqM128h(r, e)
 }
@@ -4016,7 +4016,7 @@ public fun testMmMaskMaxPh() {
 public fun testMmMaskzMaxPh() {
     val a = mmSet1Ph(F16.fromFloat(2.0f))
     val b = mmSet1Ph(F16.fromFloat(1.0f))
-    val r = mmMaskzMaxPh(0x55u, a, b)
+    val r = mmMaskzMaxPh(0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f))
     assertEqM128h(r, e)
 }
@@ -4033,7 +4033,7 @@ public fun testMm256MaskMaxPh() {
     val a = mm256Set1Ph(F16.fromFloat(2.0f))
     val b = mm256Set1Ph(F16.fromFloat(1.0f))
     val src = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskMaxPh(src, 0x5555u, a, b)
+    val r = mm256MaskMaxPh(src, 0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(2.0f))
     assertEqM256h(r, e)
 }
@@ -4041,7 +4041,7 @@ public fun testMm256MaskMaxPh() {
 public fun testMm256MaskzMaxPh() {
     val a = mm256Set1Ph(F16.fromFloat(2.0f))
     val b = mm256Set1Ph(F16.fromFloat(1.0f))
-    val r = mm256MaskzMaxPh(0x5555u, a, b)
+    val r = mm256MaskzMaxPh(0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f))
     assertEqM256h(r, e)
 }
@@ -4108,10 +4108,10 @@ public fun testMmMaskMaxSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskMaxSh(src, 0u, a, b)
+    val r = mmMaskMaxSh(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskMaxSh(src, 1u, a, b)
+    val r1 = mmMaskMaxSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4119,10 +4119,10 @@ public fun testMmMaskMaxSh() {
 public fun testMmMaskzMaxSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzMaxSh(0u, a, b)
+    val r = mmMaskzMaxSh(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzMaxSh(1u, a, b)
+    val r1 = mmMaskzMaxSh(1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4139,10 +4139,10 @@ public fun testMmMaskMaxRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskMaxRoundSh(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskMaxRoundSh(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskMaxRoundSh(src, 1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskMaxRoundSh(src, 1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4150,10 +4150,10 @@ public fun testMmMaskMaxRoundSh() {
 public fun testMmMaskzMaxRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzMaxRoundSh(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzMaxRoundSh(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzMaxRoundSh(1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzMaxRoundSh(1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4170,7 +4170,7 @@ public fun testMmMaskMinPh() {
     val a = mmSet1Ph(F16.fromFloat(2.0f))
     val b = mmSet1Ph(F16.fromFloat(1.0f))
     val src = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskMinPh(src, 0x55u, a, b)
+    val r = mmMaskMinPh(src, 0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -4178,7 +4178,7 @@ public fun testMmMaskMinPh() {
 public fun testMmMaskzMinPh() {
     val a = mmSet1Ph(F16.fromFloat(2.0f))
     val b = mmSet1Ph(F16.fromFloat(1.0f))
-    val r = mmMaskzMinPh(0x55u, a, b)
+    val r = mmMaskzMinPh(0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -4195,7 +4195,7 @@ public fun testMm256MaskMinPh() {
     val a = mm256Set1Ph(F16.fromFloat(2.0f))
     val b = mm256Set1Ph(F16.fromFloat(1.0f))
     val src = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskMinPh(src, 0x5555u, a, b)
+    val r = mm256MaskMinPh(src, 0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f), F16.fromFloat(3.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -4203,7 +4203,7 @@ public fun testMm256MaskMinPh() {
 public fun testMm256MaskzMinPh() {
     val a = mm256Set1Ph(F16.fromFloat(2.0f))
     val b = mm256Set1Ph(F16.fromFloat(1.0f))
-    val r = mm256MaskzMinPh(0x5555u, a, b)
+    val r = mm256MaskzMinPh(0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -4270,10 +4270,10 @@ public fun testMmMaskMinSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskMinSh(src, 0u, a, b)
+    val r = mmMaskMinSh(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskMinSh(src, 1u, a, b)
+    val r1 = mmMaskMinSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4281,10 +4281,10 @@ public fun testMmMaskMinSh() {
 public fun testMmMaskzMinSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzMinSh(0u, a, b)
+    val r = mmMaskzMinSh(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzMinSh(1u, a, b)
+    val r1 = mmMaskzMinSh(1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4301,10 +4301,10 @@ public fun testMmMaskMinRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskMinRoundSh(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskMinRoundSh(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskMinRoundSh(src, 1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskMinRoundSh(src, 1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4312,10 +4312,10 @@ public fun testMmMaskMinRoundSh() {
 public fun testMmMaskzMinRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzMinRoundSh(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzMinRoundSh(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzMinRoundSh(1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzMinRoundSh(1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4330,14 +4330,14 @@ public fun testMmGetexpPh() {
 public fun testMmMaskGetexpPh() {
     val a = mmSet1Ph(F16.fromFloat(3.0f))
     val src = mmSet1Ph(F16.fromFloat(4.0f))
-    val r = mmMaskGetexpPh(src, 0x55u, a)
+    val r = mmMaskGetexpPh(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(4.0f), F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzGetexpPh() {
     val a = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskzGetexpPh(0x55u, a)
+    val r = mmMaskzGetexpPh(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -4352,14 +4352,14 @@ public fun testMm256GetexpPh() {
 public fun testMm256MaskGetexpPh() {
     val a = mm256Set1Ph(F16.fromFloat(3.0f))
     val src = mm256Set1Ph(F16.fromFloat(4.0f))
-    val r = mm256MaskGetexpPh(src, 0x5555u, a)
+    val r = mm256MaskGetexpPh(src, 0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(4.0f), F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(1.0f), F16.fromFloat(4.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm256MaskzGetexpPh() {
     val a = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskzGetexpPh(0x5555u, a)
+    val r = mm256MaskzGetexpPh(0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -4420,10 +4420,10 @@ public fun testMmMaskGetexpSh() {
     val a = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskGetexpSh(src, 0u, a, b)
+    val r = mmMaskGetexpSh(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskGetexpSh(src, 1u, a, b)
+    val r1 = mmMaskGetexpSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4431,10 +4431,10 @@ public fun testMmMaskGetexpSh() {
 public fun testMmMaskzGetexpSh() {
     val a = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzGetexpSh(0u, a, b)
+    val r = mmMaskzGetexpSh(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzGetexpSh(1u, a, b)
+    val r1 = mmMaskzGetexpSh(1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4451,10 +4451,10 @@ public fun testMmMaskGetexpRoundSh() {
     val a = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskGetexpRoundSh(src, 0u, a, b, MM_FROUND_NO_EXC)
+    val r = mmMaskGetexpRoundSh(src, 0u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskGetexpRoundSh(src, 1u, a, b, MM_FROUND_NO_EXC)
+    val r1 = mmMaskGetexpRoundSh(src, 1u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4462,10 +4462,10 @@ public fun testMmMaskGetexpRoundSh() {
 public fun testMmMaskzGetexpRoundSh() {
     val a = mmSetrPh(F16.fromFloat(4.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzGetexpRoundSh(0u, a, b, MM_FROUND_NO_EXC)
+    val r = mmMaskzGetexpRoundSh(0u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzGetexpRoundSh(1u, a, b, MM_FROUND_NO_EXC)
+    val r1 = mmMaskzGetexpRoundSh(1u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4480,14 +4480,14 @@ public fun testMmGetmantPh() {
 public fun testMmMaskGetmantPh() {
     val a = mmSet1Ph(F16.fromFloat(10.0f))
     val src = mmSet1Ph(F16.fromFloat(20.0f))
-    val r = mmMaskGetmantPh(src, 0x55u, a, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
+    val r = mmMaskGetmantPh(src, 0x55u.toUByte(), a, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
     val e = mmSetPh(F16.fromFloat(20.0f), F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(1.25f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzGetmantPh() {
     val a = mmSet1Ph(F16.fromFloat(10.0f))
-    val r = mmMaskzGetmantPh(0x55u, a, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
+    val r = mmMaskzGetmantPh(0x55u.toUByte(), a, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(1.25f), F16.fromFloat(0.0f), F16.fromFloat(1.25f), F16.fromFloat(0.0f), F16.fromFloat(1.25f), F16.fromFloat(0.0f), F16.fromFloat(1.25f))
     assertEqM128h(r, e)
 }
@@ -4502,14 +4502,14 @@ public fun testMm256GetmantPh() {
 public fun testMm256MaskGetmantPh() {
     val a = mm256Set1Ph(F16.fromFloat(10.0f))
     val src = mm256Set1Ph(F16.fromFloat(20.0f))
-    val r = mm256MaskGetmantPh(src, 0x5555u, a, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
+    val r = mm256MaskGetmantPh(src, 0x5555u.toUShort(), a, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
     val e = mm256SetPh(F16.fromFloat(20.0f), F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(1.25f))
     assertEqM256h(r, e)
 }
 
 public fun testMm256MaskzGetmantPh() {
     val a = mm256Set1Ph(F16.fromFloat(10.0f))
-    val r = mm256MaskzGetmantPh(0x5555u, a, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
+    val r = mm256MaskzGetmantPh(0x5555u.toUShort(), a, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(1.25f), F16.fromFloat(0.0f), F16.fromFloat(1.25f), F16.fromFloat(0.0f), F16.fromFloat(1.25f), F16.fromFloat(0.0f), F16.fromFloat(1.25f), F16.fromFloat(0.0f), F16.fromFloat(1.25f), F16.fromFloat(0.0f), F16.fromFloat(1.25f), F16.fromFloat(0.0f), F16.fromFloat(1.25f), F16.fromFloat(0.0f), F16.fromFloat(1.25f))
     assertEqM256h(r, e)
 }
@@ -4570,10 +4570,10 @@ public fun testMmMaskGetmantSh() {
     val a = mmSetrPh(F16.fromFloat(15.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskGetmantSh(src, 0u, a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
+    val r = mmMaskGetmantSh(src, 0u.toUByte(), a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
     val e = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskGetmantSh(src, 1u, a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
+    val r1 = mmMaskGetmantSh(src, 1u.toUByte(), a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
     val e1 = mmSetrPh(F16.fromFloat(1.25f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4581,10 +4581,10 @@ public fun testMmMaskGetmantSh() {
 public fun testMmMaskzGetmantSh() {
     val a = mmSetrPh(F16.fromFloat(15.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzGetmantSh(0u, a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
+    val r = mmMaskzGetmantSh(0u.toUByte(), a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzGetmantSh(1u, a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
+    val r1 = mmMaskzGetmantSh(1u.toUByte(), a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN)
     val e1 = mmSetrPh(F16.fromFloat(1.25f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4601,10 +4601,10 @@ public fun testMmMaskGetmantRoundSh() {
     val a = mmSetrPh(F16.fromFloat(15.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskGetmantRoundSh(src, 0u, a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN, MM_FROUND_NO_EXC)
+    val r = mmMaskGetmantRoundSh(src, 0u.toUByte(), a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN, MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskGetmantRoundSh(src, 1u, a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN, MM_FROUND_NO_EXC)
+    val r1 = mmMaskGetmantRoundSh(src, 1u.toUByte(), a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN, MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.25f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4612,10 +4612,10 @@ public fun testMmMaskGetmantRoundSh() {
 public fun testMmMaskzGetmantRoundSh() {
     val a = mmSetrPh(F16.fromFloat(15.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzGetmantRoundSh(0u, a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN, MM_FROUND_NO_EXC)
+    val r = mmMaskzGetmantRoundSh(0u.toUByte(), a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN, MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzGetmantRoundSh(1u, a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN, MM_FROUND_NO_EXC)
+    val r1 = mmMaskzGetmantRoundSh(1u.toUByte(), a, b, MM_MANT_NORM_P75_1P5, MM_MANT_SIGN_NAN, MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.25f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4630,14 +4630,14 @@ public fun testMmRoundscalePh() {
 public fun testMmMaskRoundscalePh() {
     val a = mmSet1Ph(F16.fromFloat(1.1f))
     val src = mmSet1Ph(F16.fromFloat(2.0f))
-    val r = mmMaskRoundscalePh(src, 0x55u, a, 0)
+    val r = mmMaskRoundscalePh(src, 0x55u.toUByte(), a, 0)
     val e = mmSetPh(F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzRoundscalePh() {
     val a = mmSet1Ph(F16.fromFloat(1.1f))
-    val r = mmMaskzRoundscalePh(0x55u, a, 0)
+    val r = mmMaskzRoundscalePh(0x55u.toUByte(), a, 0)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM128h(r, e)
 }
@@ -4652,14 +4652,14 @@ public fun testMm256RoundscalePh() {
 public fun testMm256MaskRoundscalePh() {
     val a = mm256Set1Ph(F16.fromFloat(1.1f))
     val src = mm256Set1Ph(F16.fromFloat(2.0f))
-    val r = mm256MaskRoundscalePh(src, 0x5555u, a, 0)
+    val r = mm256MaskRoundscalePh(src, 0x5555u.toUShort(), a, 0)
     val e = mm256SetPh(F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm256MaskzRoundscalePh() {
     val a = mm256Set1Ph(F16.fromFloat(1.1f))
-    val r = mm256MaskzRoundscalePh(0x5555u, a, 0)
+    val r = mm256MaskzRoundscalePh(0x5555u.toUShort(), a, 0)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f))
     assertEqM256h(r, e)
 }
@@ -4720,10 +4720,10 @@ public fun testMmMaskRoundscaleSh() {
     val a = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(1.1f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskRoundscaleSh(src, 0u, a, b, 0)
+    val r = mmMaskRoundscaleSh(src, 0u.toUByte(), a, b, 0)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskRoundscaleSh(src, 1u, a, b, 0)
+    val r1 = mmMaskRoundscaleSh(src, 1u.toUByte(), a, b, 0)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4731,10 +4731,10 @@ public fun testMmMaskRoundscaleSh() {
 public fun testMmMaskzRoundscaleSh() {
     val a = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(1.1f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzRoundscaleSh(0u, a, b, 0)
+    val r = mmMaskzRoundscaleSh(0u.toUByte(), a, b, 0)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzRoundscaleSh(1u, a, b, 0)
+    val r1 = mmMaskzRoundscaleSh(1u.toUByte(), a, b, 0)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4751,10 +4751,10 @@ public fun testMmMaskRoundscaleRoundSh() {
     val a = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(1.1f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskRoundscaleRoundSh(src, 0u, a, b, 0, MM_FROUND_NO_EXC)
+    val r = mmMaskRoundscaleRoundSh(src, 0u.toUByte(), a, b, 0, MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskRoundscaleRoundSh(src, 1u, a, b, 0, MM_FROUND_NO_EXC)
+    val r1 = mmMaskRoundscaleRoundSh(src, 1u.toUByte(), a, b, 0, MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4762,10 +4762,10 @@ public fun testMmMaskRoundscaleRoundSh() {
 public fun testMmMaskzRoundscaleRoundSh() {
     val a = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(1.1f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzRoundscaleRoundSh(0u, a, b, 0, MM_FROUND_NO_EXC)
+    val r = mmMaskzRoundscaleRoundSh(0u.toUByte(), a, b, 0, MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzRoundscaleRoundSh(1u, a, b, 0, MM_FROUND_NO_EXC)
+    val r1 = mmMaskzRoundscaleRoundSh(1u.toUByte(), a, b, 0, MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4782,7 +4782,7 @@ public fun testMmMaskScalefPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(3.0f))
     val src = mmSet1Ph(F16.fromFloat(2.0f))
-    val r = mmMaskScalefPh(src, 0x55u, a, b)
+    val r = mmMaskScalefPh(src, 0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -4790,7 +4790,7 @@ public fun testMmMaskScalefPh() {
 public fun testMmMaskzScalefPh() {
     val a = mmSet1Ph(F16.fromFloat(1.0f))
     val b = mmSet1Ph(F16.fromFloat(3.0f))
-    val r = mmMaskzScalefPh(0x55u, a, b)
+    val r = mmMaskzScalefPh(0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -4807,7 +4807,7 @@ public fun testMm256MaskScalefPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(3.0f))
     val src = mm256Set1Ph(F16.fromFloat(2.0f))
-    val r = mm256MaskScalefPh(src, 0x5555u, a, b)
+    val r = mm256MaskScalefPh(src, 0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f), F16.fromFloat(2.0f), F16.fromFloat(8.0f))
     assertEqM256h(r, e)
 }
@@ -4815,7 +4815,7 @@ public fun testMm256MaskScalefPh() {
 public fun testMm256MaskzScalefPh() {
     val a = mm256Set1Ph(F16.fromFloat(1.0f))
     val b = mm256Set1Ph(F16.fromFloat(3.0f))
-    val r = mm256MaskzScalefPh(0x5555u, a, b)
+    val r = mm256MaskzScalefPh(0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM256h(r, e)
 }
@@ -4882,10 +4882,10 @@ public fun testMmMaskScalefSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskScalefSh(src, 0u, a, b)
+    val r = mmMaskScalefSh(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskScalefSh(src, 1u, a, b)
+    val r1 = mmMaskScalefSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(8.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4893,10 +4893,10 @@ public fun testMmMaskScalefSh() {
 public fun testMmMaskzScalefSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzScalefSh(0u, a, b)
+    val r = mmMaskzScalefSh(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzScalefSh(1u, a, b)
+    val r1 = mmMaskzScalefSh(1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(8.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4913,10 +4913,10 @@ public fun testMmMaskScalefRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskScalefRoundSh(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskScalefRoundSh(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskScalefRoundSh(src, 1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskScalefRoundSh(src, 1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(8.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4924,10 +4924,10 @@ public fun testMmMaskScalefRoundSh() {
 public fun testMmMaskzScalefRoundSh() {
     val a = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzScalefRoundSh(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzScalefRoundSh(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzScalefRoundSh(1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzScalefRoundSh(1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(8.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -4942,14 +4942,14 @@ public fun testMmReducePh() {
 public fun testMmMaskReducePh() {
     val a = mmSet1Ph(F16.fromFloat(1.25f))
     val src = mmSet1Ph(F16.fromFloat(2.0f))
-    val r = mmMaskReducePh(src, 0x55u, a, 16 or MM_FROUND_TO_ZERO)
+    val r = mmMaskReducePh(src, 0x55u.toUByte(), a, 16 or MM_FROUND_TO_ZERO)
     val e = mmSetPh(F16.fromFloat(2.0f), F16.fromFloat(0.25f), F16.fromFloat(2.0f), F16.fromFloat(0.25f), F16.fromFloat(2.0f), F16.fromFloat(0.25f), F16.fromFloat(2.0f), F16.fromFloat(0.25f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzReducePh() {
     val a = mmSet1Ph(F16.fromFloat(1.25f))
-    val r = mmMaskzReducePh(0x55u, a, 16 or MM_FROUND_TO_ZERO)
+    val r = mmMaskzReducePh(0x55u.toUByte(), a, 16 or MM_FROUND_TO_ZERO)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.25f), F16.fromFloat(0.0f), F16.fromFloat(0.25f), F16.fromFloat(0.0f), F16.fromFloat(0.25f), F16.fromFloat(0.0f), F16.fromFloat(0.25f))
     assertEqM128h(r, e)
 }
@@ -4964,14 +4964,14 @@ public fun testMm256ReducePh() {
 public fun testMm256MaskReducePh() {
     val a = mm256Set1Ph(F16.fromFloat(1.25f))
     val src = mm256Set1Ph(F16.fromFloat(2.0f))
-    val r = mm256MaskReducePh(src, 0x5555u, a, 16 or MM_FROUND_TO_ZERO)
+    val r = mm256MaskReducePh(src, 0x5555u.toUShort(), a, 16 or MM_FROUND_TO_ZERO)
     val e = mm256SetPh(F16.fromFloat(2.0f), F16.fromFloat(0.25f), F16.fromFloat(2.0f), F16.fromFloat(0.25f), F16.fromFloat(2.0f), F16.fromFloat(0.25f), F16.fromFloat(2.0f), F16.fromFloat(0.25f), F16.fromFloat(2.0f), F16.fromFloat(0.25f), F16.fromFloat(2.0f), F16.fromFloat(0.25f), F16.fromFloat(2.0f), F16.fromFloat(0.25f), F16.fromFloat(2.0f), F16.fromFloat(0.25f))
     assertEqM256h(r, e)
 }
 
 public fun testMm256MaskzReducePh() {
     val a = mm256Set1Ph(F16.fromFloat(1.25f))
-    val r = mm256MaskzReducePh(0x5555u, a, 16 or MM_FROUND_TO_ZERO)
+    val r = mm256MaskzReducePh(0x5555u.toUShort(), a, 16 or MM_FROUND_TO_ZERO)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(0.25f), F16.fromFloat(0.0f), F16.fromFloat(0.25f), F16.fromFloat(0.0f), F16.fromFloat(0.25f), F16.fromFloat(0.0f), F16.fromFloat(0.25f), F16.fromFloat(0.0f), F16.fromFloat(0.25f), F16.fromFloat(0.0f), F16.fromFloat(0.25f), F16.fromFloat(0.0f), F16.fromFloat(0.25f), F16.fromFloat(0.0f), F16.fromFloat(0.25f))
     assertEqM256h(r, e)
 }
@@ -5032,10 +5032,10 @@ public fun testMmMaskReduceSh() {
     val a = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskReduceSh(src, 0u, a, b, 16 or MM_FROUND_TO_ZERO)
+    val r = mmMaskReduceSh(src, 0u.toUByte(), a, b, 16 or MM_FROUND_TO_ZERO)
     val e = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskReduceSh(src, 1u, a, b, 16 or MM_FROUND_TO_ZERO)
+    val r1 = mmMaskReduceSh(src, 1u.toUByte(), a, b, 16 or MM_FROUND_TO_ZERO)
     val e1 = mmSetrPh(F16.fromFloat(0.25f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -5043,10 +5043,10 @@ public fun testMmMaskReduceSh() {
 public fun testMmMaskzReduceSh() {
     val a = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzReduceSh(0u, a, b, 16 or MM_FROUND_TO_ZERO)
+    val r = mmMaskzReduceSh(0u.toUByte(), a, b, 16 or MM_FROUND_TO_ZERO)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzReduceSh(1u, a, b, 16 or MM_FROUND_TO_ZERO)
+    val r1 = mmMaskzReduceSh(1u.toUByte(), a, b, 16 or MM_FROUND_TO_ZERO)
     val e1 = mmSetrPh(F16.fromFloat(0.25f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -5063,10 +5063,10 @@ public fun testMmMaskReduceRoundSh() {
     val a = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
     val src = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(30.0f), F16.fromFloat(31.0f), F16.fromFloat(32.0f), F16.fromFloat(33.0f), F16.fromFloat(34.0f), F16.fromFloat(35.0f), F16.fromFloat(36.0f))
-    val r = mmMaskReduceRoundSh(src, 0u, a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
+    val r = mmMaskReduceRoundSh(src, 0u.toUByte(), a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(2.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskReduceRoundSh(src, 1u, a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
+    val r1 = mmMaskReduceRoundSh(src, 1u.toUByte(), a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(0.25f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -5074,10 +5074,10 @@ public fun testMmMaskReduceRoundSh() {
 public fun testMmMaskzReduceRoundSh() {
     val a = mmSetrPh(F16.fromFloat(3.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mmSetrPh(F16.fromFloat(1.25f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f))
-    val r = mmMaskzReduceRoundSh(0u, a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
+    val r = mmMaskzReduceRoundSh(0u.toUByte(), a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzReduceRoundSh(1u, a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
+    val r1 = mmMaskzReduceRoundSh(1u.toUByte(), a, b, 16 or MM_FROUND_TO_ZERO, MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(0.25f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     assertEqM128h(r1, e1)
 }
@@ -5163,7 +5163,7 @@ public fun testMmFpclassPhMask() {
 
 public fun testMmMaskFpclassPhMask() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.INFINITY, F16.NEG_INFINITY, F16.fromFloat(0.0f), -F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.NAN, F16.fromFloat(5.9e-8f))
-    val r = mmMaskFpclassPhMask(0x55u, a, 0x18)
+    val r = mmMaskFpclassPhMask(0x55u.toUByte(), a, 0x18)
     check(r == 0x40u.toUByte())
 }
 
@@ -5176,7 +5176,7 @@ public fun testMm256FpclassPhMask() {
 
 public fun testMm256MaskFpclassPhMask() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.INFINITY, F16.NEG_INFINITY, F16.fromFloat(0.0f), -F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.NAN, F16.fromFloat(5.9e-8f), F16.fromFloat(1.0f), F16.INFINITY, F16.NEG_INFINITY, F16.fromFloat(0.0f), -F16.fromFloat(0.0f), -F16.fromFloat(2.0f), F16.NAN, F16.fromFloat(5.9e-8f))
-    val r = mm256MaskFpclassPhMask(0x5555u, a, 0x18)
+    val r = mm256MaskFpclassPhMask(0x5555u.toUShort(), a, 0x18)
     check(r == 0x4040u.toUShort())
 }
 
@@ -5201,16 +5201,16 @@ public fun testMmFpclassShMask() {
 
 public fun testMmMaskFpclassShMask() {
     val a = mmSetSh(F16.INFINITY)
-    val r = mmMaskFpclassShMask(0u, a, 0x18)
+    val r = mmMaskFpclassShMask(0u.toUByte(), a, 0x18)
     check(r == 0u.toUByte())
-    val r1 = mmMaskFpclassShMask(1u, a, 0x18)
+    val r1 = mmMaskFpclassShMask(1u.toUByte(), a, 0x18)
     check(r1 == 1u.toUByte())
 }
 
 public fun testMmMaskBlendPh() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val b = mmSetPh(-F16.fromFloat(1.0f), -F16.fromFloat(2.0f), -F16.fromFloat(3.0f), -F16.fromFloat(4.0f), -F16.fromFloat(5.0f), -F16.fromFloat(6.0f), -F16.fromFloat(7.0f), -F16.fromFloat(8.0f))
-    val r = mmMaskBlendPh(0x55u, a, b)
+    val r = mmMaskBlendPh(0x55u.toUByte(), a, b)
     val e = mmSetPh(F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), -F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(6.0f), F16.fromFloat(7.0f), -F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -5218,7 +5218,7 @@ public fun testMmMaskBlendPh() {
 public fun testMm256MaskBlendPh() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val b = mm256SetPh(-F16.fromFloat(1.0f), -F16.fromFloat(2.0f), -F16.fromFloat(3.0f), -F16.fromFloat(4.0f), -F16.fromFloat(5.0f), -F16.fromFloat(6.0f), -F16.fromFloat(7.0f), -F16.fromFloat(8.0f), -F16.fromFloat(9.0f), -F16.fromFloat(10.0f), -F16.fromFloat(11.0f), -F16.fromFloat(12.0f), -F16.fromFloat(13.0f), -F16.fromFloat(14.0f), -F16.fromFloat(15.0f), -F16.fromFloat(16.0f))
-    val r = mm256MaskBlendPh(0x5555u, a, b)
+    val r = mm256MaskBlendPh(0x5555u.toUShort(), a, b)
     val e = mm256SetPh(F16.fromFloat(1.0f), -F16.fromFloat(2.0f), F16.fromFloat(3.0f), -F16.fromFloat(4.0f), F16.fromFloat(5.0f), -F16.fromFloat(6.0f), F16.fromFloat(7.0f), -F16.fromFloat(8.0f), F16.fromFloat(9.0f), -F16.fromFloat(10.0f), F16.fromFloat(11.0f), -F16.fromFloat(12.0f), F16.fromFloat(13.0f), -F16.fromFloat(14.0f), F16.fromFloat(15.0f), -F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -5292,14 +5292,14 @@ public fun testMmCvtepi16Ph() {
 public fun testMmMaskCvtepi16Ph() {
     val a = mmSetEpi16(1, 2, 3, 4, 5, 6, 7, 8)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskCvtepi16Ph(src, 0x55u, a)
+    val r = mmMaskCvtepi16Ph(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzCvtepi16Ph() {
     val a = mmSetEpi16(1, 2, 3, 4, 5, 6, 7, 8)
-    val r = mmMaskzCvtepi16Ph(0x55u, a)
+    val r = mmMaskzCvtepi16Ph(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -5314,14 +5314,14 @@ public fun testMm256Cvtepi16Ph() {
 public fun testMm256MaskCvtepi16Ph() {
     val a = mm256SetEpi16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val src = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f))
-    val r = mm256MaskCvtepi16Ph(src, 0x5555u, a)
+    val r = mm256MaskCvtepi16Ph(src, 0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f), F16.fromFloat(18.0f), F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(12.0f), F16.fromFloat(22.0f), F16.fromFloat(14.0f), F16.fromFloat(24.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm256MaskzCvtepi16Ph() {
     val a = mm256SetEpi16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-    val r = mm256MaskzCvtepi16Ph(0x5555u, a)
+    val r = mm256MaskzCvtepi16Ph(0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -5380,14 +5380,14 @@ public fun testMmCvtepu16Ph() {
 public fun testMmMaskCvtepu16Ph() {
     val a = mmSetEpi16(1, 2, 3, 4, 5, 6, 7, 8)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskCvtepu16Ph(src, 0x55u, a)
+    val r = mmMaskCvtepu16Ph(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzCvtepu16Ph() {
     val a = mmSetEpi16(1, 2, 3, 4, 5, 6, 7, 8)
-    val r = mmMaskzCvtepu16Ph(0x55u, a)
+    val r = mmMaskzCvtepu16Ph(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -5402,14 +5402,14 @@ public fun testMm256Cvtepu16Ph() {
 public fun testMm256MaskCvtepu16Ph() {
     val a = mm256SetEpi16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val src = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f))
-    val r = mm256MaskCvtepu16Ph(src, 0x5555u, a)
+    val r = mm256MaskCvtepu16Ph(src, 0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f), F16.fromFloat(18.0f), F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(12.0f), F16.fromFloat(22.0f), F16.fromFloat(14.0f), F16.fromFloat(24.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm256MaskzCvtepu16Ph() {
     val a = mm256SetEpi16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-    val r = mm256MaskzCvtepu16Ph(0x5555u, a)
+    val r = mm256MaskzCvtepu16Ph(0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -5468,14 +5468,14 @@ public fun testMmCvtepi32Ph() {
 public fun testMmMaskCvtepi32Ph() {
     val a = mmSetEpi32(1, 2, 3, 4)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskCvtepi32Ph(src, 0x5u, a)
+    val r = mmMaskCvtepi32Ph(src, 0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(2.0f), F16.fromFloat(16.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzCvtepi32Ph() {
     val a = mmSetEpi32(1, 2, 3, 4)
-    val r = mmMaskzCvtepi32Ph(0x5u, a)
+    val r = mmMaskzCvtepi32Ph(0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
@@ -5490,14 +5490,14 @@ public fun testMm256Cvtepi32Ph() {
 public fun testMm256MaskCvtepi32Ph() {
     val a = mm256SetEpi32(1, 2, 3, 4, 5, 6, 7, 8)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskCvtepi32Ph(src, 0x55u, a)
+    val r = mm256MaskCvtepi32Ph(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm256MaskzCvtepi32Ph() {
     val a = mm256SetEpi32(1, 2, 3, 4, 5, 6, 7, 8)
-    val r = mm256MaskzCvtepi32Ph(0x55u, a)
+    val r = mm256MaskzCvtepi32Ph(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -5512,14 +5512,14 @@ public fun testMm512Cvtepi32Ph() {
 public fun testMm512MaskCvtepi32Ph() {
     val a = mm512SetEpi32(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val src = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f))
-    val r = mm512MaskCvtepi32Ph(src, 0x5555u, a)
+    val r = mm512MaskCvtepi32Ph(src, 0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f), F16.fromFloat(18.0f), F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(12.0f), F16.fromFloat(22.0f), F16.fromFloat(14.0f), F16.fromFloat(24.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm512MaskzCvtepi32Ph() {
     val a = mm512SetEpi32(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-    val r = mm512MaskzCvtepi32Ph(0x5555u, a)
+    val r = mm512MaskzCvtepi32Ph(0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -5534,14 +5534,14 @@ public fun testMm512CvtRoundepi32Ph() {
 public fun testMm512MaskCvtRoundepi32Ph() {
     val a = mm512SetEpi32(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val src = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f))
-    val r = mm512MaskCvtRoundepi32Ph(src, 0x5555u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtRoundepi32Ph(src, 0x5555u.toUShort(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f), F16.fromFloat(18.0f), F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(12.0f), F16.fromFloat(22.0f), F16.fromFloat(14.0f), F16.fromFloat(24.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm512MaskzCvtRoundepi32Ph() {
     val a = mm512SetEpi32(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-    val r = mm512MaskzCvtRoundepi32Ph(0x5555u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtRoundepi32Ph(0x5555u.toUShort(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -5570,14 +5570,14 @@ public fun testMmCvtepu32Ph() {
 public fun testMmMaskCvtepu32Ph() {
     val a = mmSetEpi32(1, 2, 3, 4)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskCvtepu32Ph(src, 0x5u, a)
+    val r = mmMaskCvtepu32Ph(src, 0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(2.0f), F16.fromFloat(16.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzCvtepu32Ph() {
     val a = mmSetEpi32(1, 2, 3, 4)
-    val r = mmMaskzCvtepu32Ph(0x5u, a)
+    val r = mmMaskzCvtepu32Ph(0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
@@ -5592,14 +5592,14 @@ public fun testMm256Cvtepu32Ph() {
 public fun testMm256MaskCvtepu32Ph() {
     val a = mm256SetEpi32(1, 2, 3, 4, 5, 6, 7, 8)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskCvtepu32Ph(src, 0x55u, a)
+    val r = mm256MaskCvtepu32Ph(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm256MaskzCvtepu32Ph() {
     val a = mm256SetEpi32(1, 2, 3, 4, 5, 6, 7, 8)
-    val r = mm256MaskzCvtepu32Ph(0x55u, a)
+    val r = mm256MaskzCvtepu32Ph(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -5614,14 +5614,14 @@ public fun testMm512Cvtepu32Ph() {
 public fun testMm512MaskCvtepu32Ph() {
     val a = mm512SetEpi32(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val src = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f))
-    val r = mm512MaskCvtepu32Ph(src, 0x5555u, a)
+    val r = mm512MaskCvtepu32Ph(src, 0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f), F16.fromFloat(18.0f), F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(12.0f), F16.fromFloat(22.0f), F16.fromFloat(14.0f), F16.fromFloat(24.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm512MaskzCvtepu32Ph() {
     val a = mm512SetEpi32(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-    val r = mm512MaskzCvtepu32Ph(0x5555u, a)
+    val r = mm512MaskzCvtepu32Ph(0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -5636,14 +5636,14 @@ public fun testMm512CvtRoundepu32Ph() {
 public fun testMm512MaskCvtRoundepu32Ph() {
     val a = mm512SetEpi32(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val src = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f))
-    val r = mm512MaskCvtRoundepu32Ph(src, 0x5555u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtRoundepu32Ph(src, 0x5555u.toUShort(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f), F16.fromFloat(18.0f), F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(12.0f), F16.fromFloat(22.0f), F16.fromFloat(14.0f), F16.fromFloat(24.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm512MaskzCvtRoundepu32Ph() {
     val a = mm512SetEpi32(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
-    val r = mm512MaskzCvtRoundepu32Ph(0x5555u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtRoundepu32Ph(0x5555u.toUShort(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -5672,14 +5672,14 @@ public fun testMmCvtepi64Ph() {
 public fun testMmMaskCvtepi64Ph() {
     val a = mmSetEpi64x(1L, 2L)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskCvtepi64Ph(src, 0x1u, a)
+    val r = mmMaskCvtepi64Ph(src, 0x1u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(2.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzCvtepi64Ph() {
     val a = mmSetEpi64x(1L, 2L)
-    val r = mmMaskzCvtepi64Ph(0x1u, a)
+    val r = mmMaskzCvtepi64Ph(0x1u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f))
     assertEqM128h(r, e)
 }
@@ -5694,14 +5694,14 @@ public fun testMm256Cvtepi64Ph() {
 public fun testMm256MaskCvtepi64Ph() {
     val a = mm256SetEpi64x(1L, 2L, 3L, 4L)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskCvtepi64Ph(src, 0x5u, a)
+    val r = mm256MaskCvtepi64Ph(src, 0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(2.0f), F16.fromFloat(16.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm256MaskzCvtepi64Ph() {
     val a = mm256SetEpi64x(1L, 2L, 3L, 4L)
-    val r = mm256MaskzCvtepi64Ph(0x5u, a)
+    val r = mm256MaskzCvtepi64Ph(0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
@@ -5716,14 +5716,14 @@ public fun testMm512Cvtepi64Ph() {
 public fun testMm512MaskCvtepi64Ph() {
     val a = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm512MaskCvtepi64Ph(src, 0x55u, a)
+    val r = mm512MaskCvtepi64Ph(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm512MaskzCvtepi64Ph() {
     val a = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
-    val r = mm512MaskzCvtepi64Ph(0x55u, a)
+    val r = mm512MaskzCvtepi64Ph(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -5738,14 +5738,14 @@ public fun testMm512CvtRoundepi64Ph() {
 public fun testMm512MaskCvtRoundepi64Ph() {
     val a = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm512MaskCvtRoundepi64Ph(src, 0x55u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtRoundepi64Ph(src, 0x55u.toUByte(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm512MaskzCvtRoundepi64Ph() {
     val a = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
-    val r = mm512MaskzCvtRoundepi64Ph(0x55u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtRoundepi64Ph(0x55u.toUByte(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -5760,14 +5760,14 @@ public fun testMmCvtepu64Ph() {
 public fun testMmMaskCvtepu64Ph() {
     val a = mmSetEpi64x(1L, 2L)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskCvtepu64Ph(src, 0x1u, a)
+    val r = mmMaskCvtepu64Ph(src, 0x1u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(2.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzCvtepu64Ph() {
     val a = mmSetEpi64x(1L, 2L)
-    val r = mmMaskzCvtepu64Ph(0x1u, a)
+    val r = mmMaskzCvtepu64Ph(0x1u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f))
     assertEqM128h(r, e)
 }
@@ -5782,14 +5782,14 @@ public fun testMm256Cvtepu64Ph() {
 public fun testMm256MaskCvtepu64Ph() {
     val a = mm256SetEpi64x(1L, 2L, 3L, 4L)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskCvtepu64Ph(src, 0x5u, a)
+    val r = mm256MaskCvtepu64Ph(src, 0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(2.0f), F16.fromFloat(16.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm256MaskzCvtepu64Ph() {
     val a = mm256SetEpi64x(1L, 2L, 3L, 4L)
-    val r = mm256MaskzCvtepu64Ph(0x5u, a)
+    val r = mm256MaskzCvtepu64Ph(0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
@@ -5804,14 +5804,14 @@ public fun testMm512Cvtepu64Ph() {
 public fun testMm512MaskCvtepu64Ph() {
     val a = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm512MaskCvtepu64Ph(src, 0x55u, a)
+    val r = mm512MaskCvtepu64Ph(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm512MaskzCvtepu64Ph() {
     val a = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
-    val r = mm512MaskzCvtepu64Ph(0x55u, a)
+    val r = mm512MaskzCvtepu64Ph(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -5826,14 +5826,14 @@ public fun testMm512CvtRoundepu64Ph() {
 public fun testMm512MaskCvtRoundepu64Ph() {
     val a = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm512MaskCvtRoundepu64Ph(src, 0x55u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtRoundepu64Ph(src, 0x55u.toUByte(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm512MaskzCvtRoundepu64Ph() {
     val a = mm512SetEpi64(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L)
-    val r = mm512MaskzCvtRoundepu64Ph(0x55u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtRoundepu64Ph(0x55u.toUByte(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -5848,14 +5848,14 @@ public fun testMmCvtxpsPh() {
 public fun testMmMaskCvtxpsPh() {
     val a = mmSetPs(1.0f, 2.0f, 3.0f, 4.0f)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskCvtxpsPh(src, 0x5u, a)
+    val r = mmMaskCvtxpsPh(src, 0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(2.0f), F16.fromFloat(16.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzCvtxpsPh() {
     val a = mmSetPs(1.0f, 2.0f, 3.0f, 4.0f)
-    val r = mmMaskzCvtxpsPh(0x5u, a)
+    val r = mmMaskzCvtxpsPh(0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
@@ -5870,14 +5870,14 @@ public fun testMm256CvtxpsPh() {
 public fun testMm256MaskCvtxpsPh() {
     val a = mm256SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskCvtxpsPh(src, 0x55u, a)
+    val r = mm256MaskCvtxpsPh(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm256MaskzCvtxpsPh() {
     val a = mm256SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f)
-    val r = mm256MaskzCvtxpsPh(0x55u, a)
+    val r = mm256MaskzCvtxpsPh(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -5892,14 +5892,14 @@ public fun testMm512CvtxpsPh() {
 public fun testMm512MaskCvtxpsPh() {
     val a = mm512SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f)
     val src = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f))
-    val r = mm512MaskCvtxpsPh(src, 0x5555u, a)
+    val r = mm512MaskCvtxpsPh(src, 0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f), F16.fromFloat(18.0f), F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(12.0f), F16.fromFloat(22.0f), F16.fromFloat(14.0f), F16.fromFloat(24.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm512MaskzCvtxpsPh() {
     val a = mm512SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f)
-    val r = mm512MaskzCvtxpsPh(0x5555u, a)
+    val r = mm512MaskzCvtxpsPh(0x5555u.toUShort(), a)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -5914,14 +5914,14 @@ public fun testMm512CvtxRoundpsPh() {
 public fun testMm512MaskCvtxRoundpsPh() {
     val a = mm512SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f)
     val src = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f), F16.fromFloat(18.0f), F16.fromFloat(19.0f), F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f))
-    val r = mm512MaskCvtxRoundpsPh(src, 0x5555u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtxRoundpsPh(src, 0x5555u.toUShort(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm256SetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f), F16.fromFloat(18.0f), F16.fromFloat(10.0f), F16.fromFloat(20.0f), F16.fromFloat(12.0f), F16.fromFloat(22.0f), F16.fromFloat(14.0f), F16.fromFloat(24.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
 
 public fun testMm512MaskzCvtxRoundpsPh() {
     val a = mm512SetPs(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f)
-    val r = mm512MaskzCvtxRoundpsPh(0x5555u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtxRoundpsPh(0x5555u.toUShort(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm256SetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f), F16.fromFloat(0.0f), F16.fromFloat(10.0f), F16.fromFloat(0.0f), F16.fromFloat(12.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f))
     assertEqM256h(r, e)
 }
@@ -5938,10 +5938,10 @@ public fun testMmMaskCvtssSh() {
     val a = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     val b = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     val src = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f))
-    val r = mmMaskCvtssSh(src, 0u, a, b)
+    val r = mmMaskCvtssSh(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskCvtssSh(src, 1u, a, b)
+    val r1 = mmMaskCvtssSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r1, e1)
 }
@@ -5949,10 +5949,10 @@ public fun testMmMaskCvtssSh() {
 public fun testMmMaskzCvtssSh() {
     val a = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     val b = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
-    val r = mmMaskzCvtssSh(0u, a, b)
+    val r = mmMaskzCvtssSh(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzCvtssSh(1u, a, b)
+    val r1 = mmMaskzCvtssSh(1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r1, e1)
 }
@@ -5969,10 +5969,10 @@ public fun testMmMaskCvtRoundssSh() {
     val a = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     val b = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
     val src = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f))
-    val r = mmMaskCvtRoundssSh(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskCvtRoundssSh(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskCvtRoundssSh(src, 1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskCvtRoundssSh(src, 1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r1, e1)
 }
@@ -5980,10 +5980,10 @@ public fun testMmMaskCvtRoundssSh() {
 public fun testMmMaskzCvtRoundssSh() {
     val a = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     val b = mmSetrPs(1.0f, 2.0f, 3.0f, 4.0f)
-    val r = mmMaskzCvtRoundssSh(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzCvtRoundssSh(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzCvtRoundssSh(1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzCvtRoundssSh(1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r1, e1)
 }
@@ -5998,14 +5998,14 @@ public fun testMmCvtpdPh() {
 public fun testMmMaskCvtpdPh() {
     val a = mmSetPd(1.0, 2.0)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mmMaskCvtpdPh(src, 0x1u, a)
+    val r = mmMaskCvtpdPh(src, 0x1u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(16.0f), F16.fromFloat(2.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMmMaskzCvtpdPh() {
     val a = mmSetPd(1.0, 2.0)
-    val r = mmMaskzCvtpdPh(0x1u, a)
+    val r = mmMaskzCvtpdPh(0x1u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f))
     assertEqM128h(r, e)
 }
@@ -6020,14 +6020,14 @@ public fun testMm256CvtpdPh() {
 public fun testMm256MaskCvtpdPh() {
     val a = mm256SetPd(1.0, 2.0, 3.0, 4.0)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm256MaskCvtpdPh(src, 0x5u, a)
+    val r = mm256MaskCvtpdPh(src, 0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(14.0f), F16.fromFloat(2.0f), F16.fromFloat(16.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm256MaskzCvtpdPh() {
     val a = mm256SetPd(1.0, 2.0, 3.0, 4.0)
-    val r = mm256MaskzCvtpdPh(0x5u, a)
+    val r = mm256MaskzCvtpdPh(0x5u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f))
     assertEqM128h(r, e)
 }
@@ -6042,14 +6042,14 @@ public fun testMm512CvtpdPh() {
 public fun testMm512MaskCvtpdPh() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm512MaskCvtpdPh(src, 0x55u, a)
+    val r = mm512MaskCvtpdPh(src, 0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm512MaskzCvtpdPh() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
-    val r = mm512MaskzCvtpdPh(0x55u, a)
+    val r = mm512MaskzCvtpdPh(0x55u.toUByte(), a)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -6064,14 +6064,14 @@ public fun testMm512CvtRoundpdPh() {
 public fun testMm512MaskCvtRoundpdPh() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
     val src = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
-    val r = mm512MaskCvtRoundpdPh(src, 0x55u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtRoundpdPh(src, 0x55u.toUByte(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetPh(F16.fromFloat(10.0f), F16.fromFloat(2.0f), F16.fromFloat(12.0f), F16.fromFloat(4.0f), F16.fromFloat(14.0f), F16.fromFloat(6.0f), F16.fromFloat(16.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
 
 public fun testMm512MaskzCvtRoundpdPh() {
     val a = mm512SetPd(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
-    val r = mm512MaskzCvtRoundpdPh(0x55u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtRoundpdPh(0x55u.toUByte(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(2.0f), F16.fromFloat(0.0f), F16.fromFloat(4.0f), F16.fromFloat(0.0f), F16.fromFloat(6.0f), F16.fromFloat(0.0f), F16.fromFloat(8.0f))
     assertEqM128h(r, e)
 }
@@ -6088,10 +6088,10 @@ public fun testMmMaskCvtsdSh() {
     val a = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     val b = mmSetrPd(1.0, 2.0)
     val src = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f))
-    val r = mmMaskCvtsdSh(src, 0u, a, b)
+    val r = mmMaskCvtsdSh(src, 0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskCvtsdSh(src, 1u, a, b)
+    val r1 = mmMaskCvtsdSh(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r1, e1)
 }
@@ -6099,10 +6099,10 @@ public fun testMmMaskCvtsdSh() {
 public fun testMmMaskzCvtsdSh() {
     val a = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     val b = mmSetrPd(1.0, 2.0)
-    val r = mmMaskzCvtsdSh(0u, a, b)
+    val r = mmMaskzCvtsdSh(0u.toUByte(), a, b)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzCvtsdSh(1u, a, b)
+    val r1 = mmMaskzCvtsdSh(1u.toUByte(), a, b)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r1, e1)
 }
@@ -6119,10 +6119,10 @@ public fun testMmMaskCvtRoundsdSh() {
     val a = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     val b = mmSetrPd(1.0, 2.0)
     val src = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(21.0f), F16.fromFloat(22.0f), F16.fromFloat(23.0f), F16.fromFloat(24.0f), F16.fromFloat(25.0f), F16.fromFloat(26.0f), F16.fromFloat(27.0f))
-    val r = mmMaskCvtRoundsdSh(src, 0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskCvtRoundsdSh(src, 0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(20.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskCvtRoundsdSh(src, 1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskCvtRoundsdSh(src, 1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r1, e1)
 }
@@ -6130,10 +6130,10 @@ public fun testMmMaskCvtRoundsdSh() {
 public fun testMmMaskzCvtRoundsdSh() {
     val a = mmSetrPh(F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     val b = mmSetrPd(1.0, 2.0)
-    val r = mmMaskzCvtRoundsdSh(0u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mmMaskzCvtRoundsdSh(0u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mmSetrPh(F16.fromFloat(0.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r, e)
-    val r1 = mmMaskzCvtRoundsdSh(1u, a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r1 = mmMaskzCvtRoundsdSh(1u.toUByte(), a, b, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e1 = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f), F16.fromFloat(17.0f))
     assertEqM128h(r1, e1)
 }
@@ -6148,14 +6148,14 @@ public fun testMmCvtphEpi16() {
 public fun testMmMaskCvtphEpi16() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val src = mmSetEpi16(10, 11, 12, 13, 14, 15, 16, 17)
-    val r = mmMaskCvttphEpi16(src, 0x55u, a)
+    val r = mmMaskCvttphEpi16(src, 0x55u.toUByte(), a)
     val e = mmSetEpi16(10, 2, 12, 4, 14, 6, 16, 8)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvtphEpi16() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mmMaskzCvttphEpi16(0x55u, a)
+    val r = mmMaskzCvttphEpi16(0x55u.toUByte(), a)
     val e = mmSetEpi16(0, 2, 0, 4, 0, 6, 0, 8)
     assertEqM128i(r, e)
 }
@@ -6170,14 +6170,14 @@ public fun testMm256CvtphEpi16() {
 public fun testMm256MaskCvtphEpi16() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm256SetEpi16(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm256MaskCvttphEpi16(src, 0x5555u, a)
+    val r = mm256MaskCvttphEpi16(src, 0x5555u.toUShort(), a)
     val e = mm256SetEpi16(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvtphEpi16() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm256MaskzCvttphEpi16(0x5555u, a)
+    val r = mm256MaskzCvttphEpi16(0x5555u.toUShort(), a)
     val e = mm256SetEpi16(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM256i(r, e)
 }
@@ -6236,14 +6236,14 @@ public fun testMmCvtphEpu16() {
 public fun testMmMaskCvtphEpu16() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val src = mmSetEpi16(10, 11, 12, 13, 14, 15, 16, 17)
-    val r = mmMaskCvttphEpu16(src, 0x55u, a)
+    val r = mmMaskCvttphEpu16(src, 0x55u.toUByte(), a)
     val e = mmSetEpi16(10, 2, 12, 4, 14, 6, 16, 8)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvtphEpu16() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mmMaskzCvttphEpu16(0x55u, a)
+    val r = mmMaskzCvttphEpu16(0x55u.toUByte(), a)
     val e = mmSetEpi16(0, 2, 0, 4, 0, 6, 0, 8)
     assertEqM128i(r, e)
 }
@@ -6258,14 +6258,14 @@ public fun testMm256CvtphEpu16() {
 public fun testMm256MaskCvtphEpu16() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm256SetEpi16(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm256MaskCvttphEpu16(src, 0x5555u, a)
+    val r = mm256MaskCvttphEpu16(src, 0x5555u.toUShort(), a)
     val e = mm256SetEpi16(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvtphEpu16() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm256MaskzCvttphEpu16(0x5555u, a)
+    val r = mm256MaskzCvttphEpu16(0x5555u.toUShort(), a)
     val e = mm256SetEpi16(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM256i(r, e)
 }
@@ -6324,14 +6324,14 @@ public fun testMmCvttphEpi16() {
 public fun testMmMaskCvttphEpi16() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val src = mmSetEpi16(10, 11, 12, 13, 14, 15, 16, 17)
-    val r = mmMaskCvttphEpi16(src, 0x55u, a)
+    val r = mmMaskCvttphEpi16(src, 0x55u.toUByte(), a)
     val e = mmSetEpi16(10, 2, 12, 4, 14, 6, 16, 8)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvttphEpi16() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mmMaskzCvttphEpi16(0x55u, a)
+    val r = mmMaskzCvttphEpi16(0x55u.toUByte(), a)
     val e = mmSetEpi16(0, 2, 0, 4, 0, 6, 0, 8)
     assertEqM128i(r, e)
 }
@@ -6346,14 +6346,14 @@ public fun testMm256CvttphEpi16() {
 public fun testMm256MaskCvttphEpi16() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm256SetEpi16(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm256MaskCvttphEpi16(src, 0x5555u, a)
+    val r = mm256MaskCvttphEpi16(src, 0x5555u.toUShort(), a)
     val e = mm256SetEpi16(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvttphEpi16() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm256MaskzCvttphEpi16(0x5555u, a)
+    val r = mm256MaskzCvttphEpi16(0x5555u.toUShort(), a)
     val e = mm256SetEpi16(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM256i(r, e)
 }
@@ -6412,14 +6412,14 @@ public fun testMmCvttphEpu16() {
 public fun testMmMaskCvttphEpu16() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val src = mmSetEpi16(10, 11, 12, 13, 14, 15, 16, 17)
-    val r = mmMaskCvttphEpu16(src, 0x55u, a)
+    val r = mmMaskCvttphEpu16(src, 0x55u.toUByte(), a)
     val e = mmSetEpi16(10, 2, 12, 4, 14, 6, 16, 8)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvttphEpu16() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mmMaskzCvttphEpu16(0x55u, a)
+    val r = mmMaskzCvttphEpu16(0x55u.toUByte(), a)
     val e = mmSetEpi16(0, 2, 0, 4, 0, 6, 0, 8)
     assertEqM128i(r, e)
 }
@@ -6434,14 +6434,14 @@ public fun testMm256CvttphEpu16() {
 public fun testMm256MaskCvttphEpu16() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm256SetEpi16(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm256MaskCvttphEpu16(src, 0x5555u, a)
+    val r = mm256MaskCvttphEpu16(src, 0x5555u.toUShort(), a)
     val e = mm256SetEpi16(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvttphEpu16() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm256MaskzCvttphEpu16(0x5555u, a)
+    val r = mm256MaskzCvttphEpu16(0x5555u.toUShort(), a)
     val e = mm256SetEpi16(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM256i(r, e)
 }
@@ -6500,14 +6500,14 @@ public fun testMmCvtphEpi32() {
 public fun testMmMaskCvtphEpi32() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
     val src = mmSetEpi32(10, 11, 12, 13)
-    val r = mmMaskCvtphEpi32(src, 0x5u, a)
+    val r = mmMaskCvtphEpi32(src, 0x5u.toUByte(), a)
     val e = mmSetEpi32(10, 2, 12, 4)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvtphEpi32() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mmMaskzCvtphEpi32(0x5u, a)
+    val r = mmMaskzCvtphEpi32(0x5u.toUByte(), a)
     val e = mmSetEpi32(0, 2, 0, 4)
     assertEqM128i(r, e)
 }
@@ -6522,14 +6522,14 @@ public fun testMm256CvtphEpi32() {
 public fun testMm256MaskCvtphEpi32() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val src = mm256SetEpi32(10, 11, 12, 13, 14, 15, 16, 17)
-    val r = mm256MaskCvtphEpi32(src, 0x55u, a)
+    val r = mm256MaskCvtphEpi32(src, 0x55u.toUByte(), a)
     val e = mm256SetEpi32(10, 2, 12, 4, 14, 6, 16, 8)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvtphEpi32() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm256MaskzCvtphEpi32(0x55u, a)
+    val r = mm256MaskzCvtphEpi32(0x55u.toUByte(), a)
     val e = mm256SetEpi32(0, 2, 0, 4, 0, 6, 0, 8)
     assertEqM256i(r, e)
 }
@@ -6544,14 +6544,14 @@ public fun testMm512CvtphEpi32() {
 public fun testMm512MaskCvtphEpi32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm512SetEpi32(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm512MaskCvtphEpi32(src, 0x5555u, a)
+    val r = mm512MaskCvtphEpi32(src, 0x5555u.toUShort(), a)
     val e = mm512SetEpi32(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvtphEpi32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskzCvtphEpi32(0x5555u, a)
+    val r = mm512MaskzCvtphEpi32(0x5555u.toUShort(), a)
     val e = mm512SetEpi32(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM512i(r, e)
 }
@@ -6566,14 +6566,14 @@ public fun testMm512CvtRoundphEpi32() {
 public fun testMm512MaskCvtRoundphEpi32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm512SetEpi32(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm512MaskCvtRoundphEpi32(src, 0x5555u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtRoundphEpi32(src, 0x5555u.toUShort(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetEpi32(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvtRoundphEpi32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskzCvtRoundphEpi32(0x5555u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtRoundphEpi32(0x5555u.toUShort(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetEpi32(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM512i(r, e)
 }
@@ -6600,14 +6600,14 @@ public fun testMmCvtphEpu32() {
 public fun testMmMaskCvtphEpu32() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
     val src = mmSetEpi32(10, 11, 12, 13)
-    val r = mmMaskCvtphEpu32(src, 0x5u, a)
+    val r = mmMaskCvtphEpu32(src, 0x5u.toUByte(), a)
     val e = mmSetEpi32(10, 2, 12, 4)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvtphEpu32() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mmMaskzCvtphEpu32(0x5u, a)
+    val r = mmMaskzCvtphEpu32(0x5u.toUByte(), a)
     val e = mmSetEpi32(0, 2, 0, 4)
     assertEqM128i(r, e)
 }
@@ -6622,14 +6622,14 @@ public fun testMm256CvtphEpu32() {
 public fun testMm256MaskCvtphEpu32() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val src = mm256SetEpi32(10, 11, 12, 13, 14, 15, 16, 17)
-    val r = mm256MaskCvtphEpu32(src, 0x55u, a)
+    val r = mm256MaskCvtphEpu32(src, 0x55u.toUByte(), a)
     val e = mm256SetEpi32(10, 2, 12, 4, 14, 6, 16, 8)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvtphEpu32() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm256MaskzCvtphEpu32(0x55u, a)
+    val r = mm256MaskzCvtphEpu32(0x55u.toUByte(), a)
     val e = mm256SetEpi32(0, 2, 0, 4, 0, 6, 0, 8)
     assertEqM256i(r, e)
 }
@@ -6644,14 +6644,14 @@ public fun testMm512CvtphEpu32() {
 public fun testMm512MaskCvtphEpu32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm512SetEpi32(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm512MaskCvtphEpu32(src, 0x5555u, a)
+    val r = mm512MaskCvtphEpu32(src, 0x5555u.toUShort(), a)
     val e = mm512SetEpi32(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvtphEpu32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskzCvtphEpu32(0x5555u, a)
+    val r = mm512MaskzCvtphEpu32(0x5555u.toUShort(), a)
     val e = mm512SetEpi32(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM512i(r, e)
 }
@@ -6666,14 +6666,14 @@ public fun testMm512CvtRoundphEpu32() {
 public fun testMm512MaskCvtRoundphEpu32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm512SetEpi32(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm512MaskCvtRoundphEpu32(src, 0x5555u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtRoundphEpu32(src, 0x5555u.toUShort(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetEpi32(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvtRoundphEpu32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskzCvtRoundphEpu32(0x5555u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtRoundphEpu32(0x5555u.toUShort(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetEpi32(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM512i(r, e)
 }
@@ -6700,14 +6700,14 @@ public fun testMmCvttphEpi32() {
 public fun testMmMaskCvttphEpi32() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
     val src = mmSetEpi32(10, 11, 12, 13)
-    val r = mmMaskCvttphEpi32(src, 0x5u, a)
+    val r = mmMaskCvttphEpi32(src, 0x5u.toUByte(), a)
     val e = mmSetEpi32(10, 2, 12, 4)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvttphEpi32() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mmMaskzCvttphEpi32(0x5u, a)
+    val r = mmMaskzCvttphEpi32(0x5u.toUByte(), a)
     val e = mmSetEpi32(0, 2, 0, 4)
     assertEqM128i(r, e)
 }
@@ -6722,14 +6722,14 @@ public fun testMm256CvttphEpi32() {
 public fun testMm256MaskCvttphEpi32() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val src = mm256SetEpi32(10, 11, 12, 13, 14, 15, 16, 17)
-    val r = mm256MaskCvttphEpi32(src, 0x55u, a)
+    val r = mm256MaskCvttphEpi32(src, 0x55u.toUByte(), a)
     val e = mm256SetEpi32(10, 2, 12, 4, 14, 6, 16, 8)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvttphEpi32() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm256MaskzCvttphEpi32(0x55u, a)
+    val r = mm256MaskzCvttphEpi32(0x55u.toUByte(), a)
     val e = mm256SetEpi32(0, 2, 0, 4, 0, 6, 0, 8)
     assertEqM256i(r, e)
 }
@@ -6744,14 +6744,14 @@ public fun testMm512CvttphEpi32() {
 public fun testMm512MaskCvttphEpi32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm512SetEpi32(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm512MaskCvttphEpi32(src, 0x5555u, a)
+    val r = mm512MaskCvttphEpi32(src, 0x5555u.toUShort(), a)
     val e = mm512SetEpi32(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttphEpi32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskzCvttphEpi32(0x5555u, a)
+    val r = mm512MaskzCvttphEpi32(0x5555u.toUShort(), a)
     val e = mm512SetEpi32(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM512i(r, e)
 }
@@ -6766,14 +6766,14 @@ public fun testMm512CvttRoundphEpi32() {
 public fun testMm512MaskCvttRoundphEpi32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm512SetEpi32(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm512MaskCvttRoundphEpi32(src, 0x5555u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskCvttRoundphEpi32(src, 0x5555u.toUShort(), a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi32(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttRoundphEpi32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskzCvttRoundphEpi32(0x5555u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvttRoundphEpi32(0x5555u.toUShort(), a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi32(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM512i(r, e)
 }
@@ -6800,14 +6800,14 @@ public fun testMmCvttphEpu32() {
 public fun testMmMaskCvttphEpu32() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
     val src = mmSetEpi32(10, 11, 12, 13)
-    val r = mmMaskCvttphEpu32(src, 0x5u, a)
+    val r = mmMaskCvttphEpu32(src, 0x5u.toUByte(), a)
     val e = mmSetEpi32(10, 2, 12, 4)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvttphEpu32() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mmMaskzCvttphEpu32(0x5u, a)
+    val r = mmMaskzCvttphEpu32(0x5u.toUByte(), a)
     val e = mmSetEpi32(0, 2, 0, 4)
     assertEqM128i(r, e)
 }
@@ -6822,14 +6822,14 @@ public fun testMm256CvttphEpu32() {
 public fun testMm256MaskCvttphEpu32() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
     val src = mm256SetEpi32(10, 11, 12, 13, 14, 15, 16, 17)
-    val r = mm256MaskCvttphEpu32(src, 0x55u, a)
+    val r = mm256MaskCvttphEpu32(src, 0x55u.toUByte(), a)
     val e = mm256SetEpi32(10, 2, 12, 4, 14, 6, 16, 8)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvttphEpu32() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm256MaskzCvttphEpu32(0x55u, a)
+    val r = mm256MaskzCvttphEpu32(0x55u.toUByte(), a)
     val e = mm256SetEpi32(0, 2, 0, 4, 0, 6, 0, 8)
     assertEqM256i(r, e)
 }
@@ -6844,14 +6844,14 @@ public fun testMm512CvttphEpu32() {
 public fun testMm512MaskCvttphEpu32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm512SetEpi32(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm512MaskCvttphEpu32(src, 0x5555u, a)
+    val r = mm512MaskCvttphEpu32(src, 0x5555u.toUShort(), a)
     val e = mm512SetEpi32(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttphEpu32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskzCvttphEpu32(0x5555u, a)
+    val r = mm512MaskzCvttphEpu32(0x5555u.toUShort(), a)
     val e = mm512SetEpi32(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM512i(r, e)
 }
@@ -6866,14 +6866,14 @@ public fun testMm512CvttRoundphEpu32() {
 public fun testMm512MaskCvttRoundphEpu32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
     val src = mm512SetEpi32(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25)
-    val r = mm512MaskCvttRoundphEpu32(src, 0x5555u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskCvttRoundphEpu32(src, 0x5555u.toUShort(), a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi32(10, 2, 12, 4, 14, 6, 16, 8, 18, 10, 20, 12, 22, 14, 24, 16)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttRoundphEpu32() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskzCvttRoundphEpu32(0x5555u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvttRoundphEpu32(0x5555u.toUShort(), a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi32(0, 2, 0, 4, 0, 6, 0, 8, 0, 10, 0, 12, 0, 14, 0, 16)
     assertEqM512i(r, e)
 }
@@ -6900,14 +6900,14 @@ public fun testMmCvtphEpi64() {
 public fun testMmMaskCvtphEpi64() {
     val src = mmSetEpi64x(3L, 4L)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
-    val r = mmMaskCvtphEpi64(src, 0x1u, a)
+    val r = mmMaskCvtphEpi64(src, 0x1u.toUByte(), a)
     val e = mmSetEpi64x(3L, 2L)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvtphEpi64() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
-    val r = mmMaskzCvtphEpi64(0x1u, a)
+    val r = mmMaskzCvtphEpi64(0x1u.toUByte(), a)
     val e = mmSetEpi64x(0L, 2L)
     assertEqM128i(r, e)
 }
@@ -6922,14 +6922,14 @@ public fun testMm256CvtphEpi64() {
 public fun testMm256MaskCvtphEpi64() {
     val src = mm256SetEpi64x(5L, 6L, 7L, 8L)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mm256MaskCvtphEpi64(src, 0x5u, a)
+    val r = mm256MaskCvtphEpi64(src, 0x5u.toUByte(), a)
     val e = mm256SetEpi64x(5L, 2L, 7L, 4L)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvtphEpi64() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mm256MaskzCvtphEpi64(0x5u, a)
+    val r = mm256MaskzCvtphEpi64(0x5u.toUByte(), a)
     val e = mm256SetEpi64x(0L, 2L, 0L, 4L)
     assertEqM256i(r, e)
 }
@@ -6944,14 +6944,14 @@ public fun testMm512CvtphEpi64() {
 public fun testMm512MaskCvtphEpi64() {
     val src = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskCvtphEpi64(src, 0x55u, a)
+    val r = mm512MaskCvtphEpi64(src, 0x55u.toUByte(), a)
     val e = mm512SetEpi64(9L, 2L, 11L, 4L, 13L, 6L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvtphEpi64() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskzCvtphEpi64(0x55u, a)
+    val r = mm512MaskzCvtphEpi64(0x55u.toUByte(), a)
     val e = mm512SetEpi64(0L, 2L, 0L, 4L, 0L, 6L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -6966,14 +6966,14 @@ public fun testMm512CvtRoundphEpi64() {
 public fun testMm512MaskCvtRoundphEpi64() {
     val src = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskCvtRoundphEpi64(src, 0x55u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtRoundphEpi64(src, 0x55u.toUByte(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(9L, 2L, 11L, 4L, 13L, 6L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvtRoundphEpi64() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskzCvtRoundphEpi64(0x55u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtRoundphEpi64(0x55u.toUByte(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(0L, 2L, 0L, 4L, 0L, 6L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -6988,14 +6988,14 @@ public fun testMmCvtphEpu64() {
 public fun testMmMaskCvtphEpu64() {
     val src = mmSetEpi64x(3L, 4L)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
-    val r = mmMaskCvtphEpu64(src, 0x1u, a)
+    val r = mmMaskCvtphEpu64(src, 0x1u.toUByte(), a)
     val e = mmSetEpi64x(3L, 2L)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvtphEpu64() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
-    val r = mmMaskzCvtphEpu64(0x1u, a)
+    val r = mmMaskzCvtphEpu64(0x1u.toUByte(), a)
     val e = mmSetEpi64x(0L, 2L)
     assertEqM128i(r, e)
 }
@@ -7010,14 +7010,14 @@ public fun testMm256CvtphEpu64() {
 public fun testMm256MaskCvtphEpu64() {
     val src = mm256SetEpi64x(5L, 6L, 7L, 8L)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mm256MaskCvtphEpu64(src, 0x5u, a)
+    val r = mm256MaskCvtphEpu64(src, 0x5u.toUByte(), a)
     val e = mm256SetEpi64x(5L, 2L, 7L, 4L)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvtphEpu64() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mm256MaskzCvtphEpu64(0x5u, a)
+    val r = mm256MaskzCvtphEpu64(0x5u.toUByte(), a)
     val e = mm256SetEpi64x(0L, 2L, 0L, 4L)
     assertEqM256i(r, e)
 }
@@ -7032,14 +7032,14 @@ public fun testMm512CvtphEpu64() {
 public fun testMm512MaskCvtphEpu64() {
     val src = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskCvtphEpu64(src, 0x55u, a)
+    val r = mm512MaskCvtphEpu64(src, 0x55u.toUByte(), a)
     val e = mm512SetEpi64(9L, 2L, 11L, 4L, 13L, 6L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvtphEpu64() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskzCvtphEpu64(0x55u, a)
+    val r = mm512MaskzCvtphEpu64(0x55u.toUByte(), a)
     val e = mm512SetEpi64(0L, 2L, 0L, 4L, 0L, 6L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -7054,14 +7054,14 @@ public fun testMm512CvtRoundphEpu64() {
 public fun testMm512MaskCvtRoundphEpu64() {
     val src = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskCvtRoundphEpu64(src, 0x55u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtRoundphEpu64(src, 0x55u.toUByte(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(9L, 2L, 11L, 4L, 13L, 6L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvtRoundphEpu64() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskzCvtRoundphEpu64(0x55u, a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtRoundphEpu64(0x55u.toUByte(), a, MM_FROUND_TO_NEAREST_INT or MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(0L, 2L, 0L, 4L, 0L, 6L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -7076,14 +7076,14 @@ public fun testMmCvttphEpi64() {
 public fun testMmMaskCvttphEpi64() {
     val src = mmSetEpi64x(3L, 4L)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
-    val r = mmMaskCvttphEpi64(src, 0x1u, a)
+    val r = mmMaskCvttphEpi64(src, 0x1u.toUByte(), a)
     val e = mmSetEpi64x(3L, 2L)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvttphEpi64() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
-    val r = mmMaskzCvttphEpi64(0x1u, a)
+    val r = mmMaskzCvttphEpi64(0x1u.toUByte(), a)
     val e = mmSetEpi64x(0L, 2L)
     assertEqM128i(r, e)
 }
@@ -7098,14 +7098,14 @@ public fun testMm256CvttphEpi64() {
 public fun testMm256MaskCvttphEpi64() {
     val src = mm256SetEpi64x(5L, 6L, 7L, 8L)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mm256MaskCvttphEpi64(src, 0x5u, a)
+    val r = mm256MaskCvttphEpi64(src, 0x5u.toUByte(), a)
     val e = mm256SetEpi64x(5L, 2L, 7L, 4L)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvttphEpi64() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mm256MaskzCvttphEpi64(0x5u, a)
+    val r = mm256MaskzCvttphEpi64(0x5u.toUByte(), a)
     val e = mm256SetEpi64x(0L, 2L, 0L, 4L)
     assertEqM256i(r, e)
 }
@@ -7120,14 +7120,14 @@ public fun testMm512CvttphEpi64() {
 public fun testMm512MaskCvttphEpi64() {
     val src = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskCvttphEpi64(src, 0x55u, a)
+    val r = mm512MaskCvttphEpi64(src, 0x55u.toUByte(), a)
     val e = mm512SetEpi64(9L, 2L, 11L, 4L, 13L, 6L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttphEpi64() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskzCvttphEpi64(0x55u, a)
+    val r = mm512MaskzCvttphEpi64(0x55u.toUByte(), a)
     val e = mm512SetEpi64(0L, 2L, 0L, 4L, 0L, 6L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -7142,14 +7142,14 @@ public fun testMm512CvttRoundphEpi64() {
 public fun testMm512MaskCvttRoundphEpi64() {
     val src = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskCvttRoundphEpi64(src, 0x55u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskCvttRoundphEpi64(src, 0x55u.toUByte(), a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(9L, 2L, 11L, 4L, 13L, 6L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttRoundphEpi64() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskzCvttRoundphEpi64(0x55u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvttRoundphEpi64(0x55u.toUByte(), a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(0L, 2L, 0L, 4L, 0L, 6L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -7164,14 +7164,14 @@ public fun testMmCvttphEpu64() {
 public fun testMmMaskCvttphEpu64() {
     val src = mmSetEpi64x(3L, 4L)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
-    val r = mmMaskCvttphEpu64(src, 0x1u, a)
+    val r = mmMaskCvttphEpu64(src, 0x1u.toUByte(), a)
     val e = mmSetEpi64x(3L, 2L)
     assertEqM128i(r, e)
 }
 
 public fun testMmMaskzCvttphEpu64() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
-    val r = mmMaskzCvttphEpu64(0x1u, a)
+    val r = mmMaskzCvttphEpu64(0x1u.toUByte(), a)
     val e = mmSetEpi64x(0L, 2L)
     assertEqM128i(r, e)
 }
@@ -7186,14 +7186,14 @@ public fun testMm256CvttphEpu64() {
 public fun testMm256MaskCvttphEpu64() {
     val src = mm256SetEpi64x(5L, 6L, 7L, 8L)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mm256MaskCvttphEpu64(src, 0x5u, a)
+    val r = mm256MaskCvttphEpu64(src, 0x5u.toUByte(), a)
     val e = mm256SetEpi64x(5L, 2L, 7L, 4L)
     assertEqM256i(r, e)
 }
 
 public fun testMm256MaskzCvttphEpu64() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mm256MaskzCvttphEpu64(0x5u, a)
+    val r = mm256MaskzCvttphEpu64(0x5u.toUByte(), a)
     val e = mm256SetEpi64x(0L, 2L, 0L, 4L)
     assertEqM256i(r, e)
 }
@@ -7208,14 +7208,14 @@ public fun testMm512CvttphEpu64() {
 public fun testMm512MaskCvttphEpu64() {
     val src = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskCvttphEpu64(src, 0x55u, a)
+    val r = mm512MaskCvttphEpu64(src, 0x55u.toUByte(), a)
     val e = mm512SetEpi64(9L, 2L, 11L, 4L, 13L, 6L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttphEpu64() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskzCvttphEpu64(0x55u, a)
+    val r = mm512MaskzCvttphEpu64(0x55u.toUByte(), a)
     val e = mm512SetEpi64(0L, 2L, 0L, 4L, 0L, 6L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -7230,14 +7230,14 @@ public fun testMm512CvttRoundphEpu64() {
 public fun testMm512MaskCvttRoundphEpu64() {
     val src = mm512SetEpi64(9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskCvttRoundphEpu64(src, 0x55u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskCvttRoundphEpu64(src, 0x55u.toUByte(), a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(9L, 2L, 11L, 4L, 13L, 6L, 15L, 8L)
     assertEqM512i(r, e)
 }
 
 public fun testMm512MaskzCvttRoundphEpu64() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskzCvttRoundphEpu64(0x55u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvttRoundphEpu64(0x55u.toUByte(), a, MM_FROUND_NO_EXC)
     val e = mm512SetEpi64(0L, 2L, 0L, 4L, 0L, 6L, 0L, 8L)
     assertEqM512i(r, e)
 }
@@ -7252,14 +7252,14 @@ public fun testMmCvtxphPs() {
 public fun testMmMaskCvtxphPs() {
     val src = mmSetPs(10.0f, 11.0f, 12.0f, 13.0f)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mmMaskCvtxphPs(src, 0x5u, a)
+    val r = mmMaskCvtxphPs(src, 0x5u.toUByte(), a)
     val e = mmSetPs(10.0f, 2.0f, 12.0f, 4.0f)
     assertEqM128(r, e)
 }
 
 public fun testMmMaskzCvtxphPs() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mmMaskzCvtxphPs(0x5u, a)
+    val r = mmMaskzCvtxphPs(0x5u.toUByte(), a)
     val e = mmSetPs(0.0f, 2.0f, 0.0f, 4.0f)
     assertEqM128(r, e)
 }
@@ -7274,14 +7274,14 @@ public fun testMm256CvtxphPs() {
 public fun testMm256MaskCvtxphPs() {
     val src = mm256SetPs(10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm256MaskCvtxphPs(src, 0x55u, a)
+    val r = mm256MaskCvtxphPs(src, 0x55u.toUByte(), a)
     val e = mm256SetPs(10.0f, 2.0f, 12.0f, 4.0f, 14.0f, 6.0f, 16.0f, 8.0f)
     assertEqM256(r, e)
 }
 
 public fun testMm256MaskzCvtxphPs() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm256MaskzCvtxphPs(0x55u, a)
+    val r = mm256MaskzCvtxphPs(0x55u.toUByte(), a)
     val e = mm256SetPs(0.0f, 2.0f, 0.0f, 4.0f, 0.0f, 6.0f, 0.0f, 8.0f)
     assertEqM256(r, e)
 }
@@ -7296,14 +7296,14 @@ public fun testMm512CvtxphPs() {
 public fun testMm512MaskCvtxphPs() {
     val src = mm512SetPs(10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f, 18.0f, 19.0f, 20.0f, 21.0f, 22.0f, 23.0f, 24.0f, 25.0f)
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskCvtxphPs(src, 0x5555u, a)
+    val r = mm512MaskCvtxphPs(src, 0x5555u.toUShort(), a)
     val e = mm512SetPs(10.0f, 2.0f, 12.0f, 4.0f, 14.0f, 6.0f, 16.0f, 8.0f, 18.0f, 10.0f, 20.0f, 12.0f, 22.0f, 14.0f, 24.0f, 16.0f)
     assertEqM512(r, e)
 }
 
 public fun testMm512MaskzCvtxphPs() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskzCvtxphPs(0x5555u, a)
+    val r = mm512MaskzCvtxphPs(0x5555u.toUShort(), a)
     val e = mm512SetPs(0.0f, 2.0f, 0.0f, 4.0f, 0.0f, 6.0f, 0.0f, 8.0f, 0.0f, 10.0f, 0.0f, 12.0f, 0.0f, 14.0f, 0.0f, 16.0f)
     assertEqM512(r, e)
 }
@@ -7318,14 +7318,14 @@ public fun testMm512CvtxRoundphPs() {
 public fun testMm512MaskCvtxRoundphPs() {
     val src = mm512SetPs(10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f, 18.0f, 19.0f, 20.0f, 21.0f, 22.0f, 23.0f, 24.0f, 25.0f)
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskCvtxRoundphPs(src, 0x5555u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtxRoundphPs(src, 0x5555u.toUShort(), a, MM_FROUND_NO_EXC)
     val e = mm512SetPs(10.0f, 2.0f, 12.0f, 4.0f, 14.0f, 6.0f, 16.0f, 8.0f, 18.0f, 10.0f, 20.0f, 12.0f, 22.0f, 14.0f, 24.0f, 16.0f)
     assertEqM512(r, e)
 }
 
 public fun testMm512MaskzCvtxRoundphPs() {
     val a = mm256SetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f), F16.fromFloat(9.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mm512MaskzCvtxRoundphPs(0x5555u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtxRoundphPs(0x5555u.toUShort(), a, MM_FROUND_NO_EXC)
     val e = mm512SetPs(0.0f, 2.0f, 0.0f, 4.0f, 0.0f, 6.0f, 0.0f, 8.0f, 0.0f, 10.0f, 0.0f, 12.0f, 0.0f, 14.0f, 0.0f, 16.0f)
     assertEqM512(r, e)
 }
@@ -7342,10 +7342,10 @@ public fun testMmMaskCvtshSs() {
     val src = mmSetrPs(3.0f, 11.0f, 12.0f, 13.0f)
     val a = mmSetrPs(2.0f, 20.0f, 21.0f, 22.0f)
     val b = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mmMaskCvtshSs(src, 0u, a, b)
+    val r = mmMaskCvtshSs(src, 0u.toUByte(), a, b)
     val e = mmSetrPs(3.0f, 20.0f, 21.0f, 22.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskCvtshSs(src, 1u, a, b)
+    val r1 = mmMaskCvtshSs(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPs(1.0f, 20.0f, 21.0f, 22.0f)
     assertEqM128(r1, e1)
 }
@@ -7353,10 +7353,10 @@ public fun testMmMaskCvtshSs() {
 public fun testMmMaskzCvtshSs() {
     val a = mmSetrPs(2.0f, 20.0f, 21.0f, 22.0f)
     val b = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mmMaskzCvtshSs(0u, a, b)
+    val r = mmMaskzCvtshSs(0u.toUByte(), a, b)
     val e = mmSetrPs(0.0f, 20.0f, 21.0f, 22.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskzCvtshSs(1u, a, b)
+    val r1 = mmMaskzCvtshSs(1u.toUByte(), a, b)
     val e1 = mmSetrPs(1.0f, 20.0f, 21.0f, 22.0f)
     assertEqM128(r1, e1)
 }
@@ -7373,10 +7373,10 @@ public fun testMmMaskCvtRoundshSs() {
     val src = mmSetrPs(3.0f, 11.0f, 12.0f, 13.0f)
     val a = mmSetrPs(2.0f, 20.0f, 21.0f, 22.0f)
     val b = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mmMaskCvtRoundshSs(src, 0u, a, b, MM_FROUND_NO_EXC)
+    val r = mmMaskCvtRoundshSs(src, 0u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e = mmSetrPs(3.0f, 20.0f, 21.0f, 22.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskCvtRoundshSs(src, 1u, a, b, MM_FROUND_NO_EXC)
+    val r1 = mmMaskCvtRoundshSs(src, 1u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e1 = mmSetrPs(1.0f, 20.0f, 21.0f, 22.0f)
     assertEqM128(r1, e1)
 }
@@ -7384,10 +7384,10 @@ public fun testMmMaskCvtRoundshSs() {
 public fun testMmMaskzCvtRoundshSs() {
     val a = mmSetrPs(2.0f, 20.0f, 21.0f, 22.0f)
     val b = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mmMaskzCvtRoundshSs(0u, a, b, MM_FROUND_NO_EXC)
+    val r = mmMaskzCvtRoundshSs(0u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e = mmSetrPs(0.0f, 20.0f, 21.0f, 22.0f)
     assertEqM128(r, e)
-    val r1 = mmMaskzCvtRoundshSs(1u, a, b, MM_FROUND_NO_EXC)
+    val r1 = mmMaskzCvtRoundshSs(1u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e1 = mmSetrPs(1.0f, 20.0f, 21.0f, 22.0f)
     assertEqM128(r1, e1)
 }
@@ -7402,14 +7402,14 @@ public fun testMmCvtphPd() {
 public fun testMmMaskCvtphPd() {
     val src = mmSetPd(10.0, 11.0)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
-    val r = mmMaskCvtphPd(src, 0x1u, a)
+    val r = mmMaskCvtphPd(src, 0x1u.toUByte(), a)
     val e = mmSetPd(10.0, 2.0)
     assertEqM128d(r, e)
 }
 
 public fun testMmMaskzCvtphPd() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f))
-    val r = mmMaskzCvtphPd(0x1u, a)
+    val r = mmMaskzCvtphPd(0x1u.toUByte(), a)
     val e = mmSetPd(0.0, 2.0)
     assertEqM128d(r, e)
 }
@@ -7424,14 +7424,14 @@ public fun testMm256CvtphPd() {
 public fun testMm256MaskCvtphPd() {
     val src = mm256SetPd(10.0, 11.0, 12.0, 13.0)
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mm256MaskCvtphPd(src, 0x5u, a)
+    val r = mm256MaskCvtphPd(src, 0x5u.toUByte(), a)
     val e = mm256SetPd(10.0, 2.0, 12.0, 4.0)
     assertEqM256d(r, e)
 }
 
 public fun testMm256MaskzCvtphPd() {
     val a = mmSetPh(F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(0.0f), F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f))
-    val r = mm256MaskzCvtphPd(0x5u, a)
+    val r = mm256MaskzCvtphPd(0x5u.toUByte(), a)
     val e = mm256SetPd(0.0, 2.0, 0.0, 4.0)
     assertEqM256d(r, e)
 }
@@ -7446,14 +7446,14 @@ public fun testMm512CvtphPd() {
 public fun testMm512MaskCvtphPd() {
     val src = mm512SetPd(10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskCvtphPd(src, 0x55u, a)
+    val r = mm512MaskCvtphPd(src, 0x55u.toUByte(), a)
     val e = mm512SetPd(10.0, 2.0, 12.0, 4.0, 14.0, 6.0, 16.0, 8.0)
     assertEqM512d(r, e)
 }
 
 public fun testMm512MaskzCvtphPd() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskzCvtphPd(0x55u, a)
+    val r = mm512MaskzCvtphPd(0x55u.toUByte(), a)
     val e = mm512SetPd(0.0, 2.0, 0.0, 4.0, 0.0, 6.0, 0.0, 8.0)
     assertEqM512d(r, e)
 }
@@ -7468,14 +7468,14 @@ public fun testMm512CvtRoundphPd() {
 public fun testMm512MaskCvtRoundphPd() {
     val src = mm512SetPd(10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0)
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskCvtRoundphPd(src, 0x55u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskCvtRoundphPd(src, 0x55u.toUByte(), a, MM_FROUND_NO_EXC)
     val e = mm512SetPd(10.0, 2.0, 12.0, 4.0, 14.0, 6.0, 16.0, 8.0)
     assertEqM512d(r, e)
 }
 
 public fun testMm512MaskzCvtRoundphPd() {
     val a = mmSetPh(F16.fromFloat(1.0f), F16.fromFloat(2.0f), F16.fromFloat(3.0f), F16.fromFloat(4.0f), F16.fromFloat(5.0f), F16.fromFloat(6.0f), F16.fromFloat(7.0f), F16.fromFloat(8.0f))
-    val r = mm512MaskzCvtRoundphPd(0x55u, a, MM_FROUND_NO_EXC)
+    val r = mm512MaskzCvtRoundphPd(0x55u.toUByte(), a, MM_FROUND_NO_EXC)
     val e = mm512SetPd(0.0, 2.0, 0.0, 4.0, 0.0, 6.0, 0.0, 8.0)
     assertEqM512d(r, e)
 }
@@ -7492,10 +7492,10 @@ public fun testMmMaskCvtshSd() {
     val src = mmSetrPd(3.0, 11.0)
     val a = mmSetrPd(2.0, 20.0)
     val b = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mmMaskCvtshSd(src, 0u, a, b)
+    val r = mmMaskCvtshSd(src, 0u.toUByte(), a, b)
     val e = mmSetrPd(3.0, 20.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskCvtshSd(src, 1u, a, b)
+    val r1 = mmMaskCvtshSd(src, 1u.toUByte(), a, b)
     val e1 = mmSetrPd(1.0, 20.0)
     assertEqM128d(r1, e1)
 }
@@ -7503,10 +7503,10 @@ public fun testMmMaskCvtshSd() {
 public fun testMmMaskzCvtshSd() {
     val a = mmSetrPd(2.0, 20.0)
     val b = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mmMaskzCvtshSd(0u, a, b)
+    val r = mmMaskzCvtshSd(0u.toUByte(), a, b)
     val e = mmSetrPd(0.0, 20.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskzCvtshSd(1u, a, b)
+    val r1 = mmMaskzCvtshSd(1u.toUByte(), a, b)
     val e1 = mmSetrPd(1.0, 20.0)
     assertEqM128d(r1, e1)
 }
@@ -7523,10 +7523,10 @@ public fun testMmMaskCvtRoundshSd() {
     val src = mmSetrPd(3.0, 11.0)
     val a = mmSetrPd(2.0, 20.0)
     val b = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mmMaskCvtRoundshSd(src, 0u, a, b, MM_FROUND_NO_EXC)
+    val r = mmMaskCvtRoundshSd(src, 0u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e = mmSetrPd(3.0, 20.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskCvtRoundshSd(src, 1u, a, b, MM_FROUND_NO_EXC)
+    val r1 = mmMaskCvtRoundshSd(src, 1u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e1 = mmSetrPd(1.0, 20.0)
     assertEqM128d(r1, e1)
 }
@@ -7534,10 +7534,10 @@ public fun testMmMaskCvtRoundshSd() {
 public fun testMmMaskzCvtRoundshSd() {
     val a = mmSetrPd(2.0, 20.0)
     val b = mmSetrPh(F16.fromFloat(1.0f), F16.fromFloat(10.0f), F16.fromFloat(11.0f), F16.fromFloat(12.0f), F16.fromFloat(13.0f), F16.fromFloat(14.0f), F16.fromFloat(15.0f), F16.fromFloat(16.0f))
-    val r = mmMaskzCvtRoundshSd(0u, a, b, MM_FROUND_NO_EXC)
+    val r = mmMaskzCvtRoundshSd(0u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e = mmSetrPd(0.0, 20.0)
     assertEqM128d(r, e)
-    val r1 = mmMaskzCvtRoundshSd(1u, a, b, MM_FROUND_NO_EXC)
+    val r1 = mmMaskzCvtRoundshSd(1u.toUByte(), a, b, MM_FROUND_NO_EXC)
     val e1 = mmSetrPd(1.0, 20.0)
     assertEqM128d(r1, e1)
 }

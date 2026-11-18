@@ -36,7 +36,7 @@ import io.github.kotlinmania.rustlang.std.path.PathBuf
 import io.github.kotlinmania.rustlang.procmacro.bridge.Methods as BridgeMethods
 import io.github.kotlinmania.rustlang.rustcliteralescaper.EscapeError as EE
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -730,7 +730,7 @@ public open class Punct internal constructor(
             if (!LEGAL_CHARS.contains(ch)) {
                 error("unsupported character `$ch`")
             }
-            return Punct(io.github.kotlinmania.rustlang.procmacro.bridge.Punct(ch = ch.toUByte(), joint = spacing == Spacing.Joint, span = Span.callSite().value))
+            return Punct(io.github.kotlinmania.rustlang.procmacro.bridge.Punct(ch = ch.code.toUByte(), joint = spacing == Spacing.Joint, span = Span.callSite().value))
         }
     }
 }

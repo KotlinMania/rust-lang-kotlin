@@ -9,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
 import io.github.kotlinmania.rustlang.core.ops.arith.Sub
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.core.result.and
 
 //
 
@@ -189,7 +188,7 @@ public open class Assume(
      *
      * @feature(pointerIsAlignedTo, transmutability)
      * public fun doctestEntry() {
-     *     val src: UByteArray = ubyteArrayOf(0xFFu, 0xFFu)
+     *     val src: UByteArray = ubyteArrayOf(0xFFu.toUByte(), 0xFFu.toUByte())
      *     val maybeDst: UShort? = if (ConstPtr.isAlignedTo(src, alignOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))) {
      *         // SAFETY: We have checked above that the address of `src` satisfies the
      *         // alignment requirements of `UShort`.
@@ -250,8 +249,8 @@ public open class Assume(
      *         // SAFETY: `val` must be an even number.
      *         public var value: UByte,
      *     )
-     *     val src: UByte = 42u
-     *     val maybeDst: EvenU8? = if (src % 2u == 0u.toUByte()) {
+     *     val src: UByte = 42u.toUByte()
+     *     val maybeDst: EvenU8? = if (src % 2u.toUByte() == 0u.toUByte()) {
      *         // SAFETY: We have checked above that the value of `src` is even.
      *         Any?.reinterpret(src)
      *     } else {
@@ -292,7 +291,7 @@ public open class Assume(
      *
      * @feature(transmutability)
      * public fun doctestEntry() {
-     *     val src: UByte = 1u
+     *     val src: UByte = 1u.toUByte()
      *     val maybeDst: Boolean? = if (src == 0u.toUByte() || src == 1u.toUByte()) {
      *         // SAFETY: We have checked above that the value of `src` is a bit-valid
      *         // instance of `Boolean`.
@@ -346,7 +345,7 @@ public open class Assume(
      *             null
      *         }
      *     }
-     *     val src: UByteArray = ubyteArrayOf(0xFFu, 0xFFu)
+     *     val src: UByteArray = ubyteArrayOf(0xFFu.toUByte(), 0xFFu.toUByte())
      *     // SAFETY: No safety obligations.
      *     val maybeDst: UShort? = tryTransmuteRef(src, Assume.NOTHING)
      * }

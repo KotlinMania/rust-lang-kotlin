@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
@@ -85,7 +86,6 @@ import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
@@ -257,7 +257,7 @@ public open class Socket(
         return Result.Ok<Int, Error>(n.toInt())
     }
 
-    public open fun setTimeout(dur: Duration?, kind: CInt): Result<Unit, Error> {
+    public open fun setTimeout(dur: Duration?, kind: io.github.kotlinmania.rustlang.core.ffi.primitives.CInt): Result<Unit, Error> {
         val timeout1 =
             when (dur) {
                 null -> Timeval(tvSec = 0, tvUsec = 0)
@@ -282,7 +282,7 @@ public open class Socket(
         return setsockopt(this, SOL_SOCKET, kind, timeout1)
     }
 
-    public open fun timeout(kind: CInt): Result<Duration?, Error> {
+    public open fun timeout(kind: io.github.kotlinmania.rustlang.core.ffi.primitives.CInt): Result<Duration?, Error> {
         val raw: Timeval = when (val tryResult = getsockopt(this, SOL_SOCKET, kind)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Duration?, Error>(tryResult.errValue()) }
         return if (raw.tvSec == 0 && raw.tvUsec == 0) {
             Result.Ok<Duration?, Error>(null)
@@ -314,21 +314,21 @@ public open class Socket(
         return Result.Ok<Duration?, Error>((value.lOnoff != 0u.toUShort()).then({ Duration.fromSecs(value.lLinger.toULong()) }))
     }
 
-    public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_KEEPALIVE, keepalive.toInt())
+    public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_KEEPALIVE, (if (keepalive) 1 else 0))
 
     public open fun keepalive(): Result<Boolean, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_KEEPALIVE)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
         return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
-    public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = setsockopt(this, IPPROTO_TCP, TCP_NODELAY, nodelay.toInt())
+    public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = setsockopt(this, IPPROTO_TCP, TCP_NODELAY, (if (nodelay) 1 else 0))
 
     public open fun nodelay(): Result<Boolean, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_NODELAY)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
         return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
-    public open fun setQuickack(quickack: Boolean): Result<Unit, Error> = setsockopt(this, IPPROTO_TCP, TCP_QUICKACK, quickack.toInt())
+    public open fun setQuickack(quickack: Boolean): Result<Unit, Error> = setsockopt(this, IPPROTO_TCP, TCP_QUICKACK, (if (quickack) 1 else 0))
 
     public open fun quickack(): Result<Boolean, Error> {
         val raw: CInt = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_QUICKACK)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
@@ -346,15 +346,15 @@ public open class Socket(
         return Result.Ok<Duration, Error>(Duration.fromSecs(raw))
     }
 
-    public open fun setPasscred(passcred: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_PASSCRED, passcred.toInt())
+    public open fun setPasscred(passcred: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_PASSCRED, (if (passcred) 1 else 0))
 
     public open fun passcred(): Result<Boolean, Error> {
-        val passcred: CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_PASSCRED)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
+        val passcred: io.github.kotlinmania.rustlang.core.ffi.primitives.CInt = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_PASSCRED)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
         return Result.Ok<Boolean, Error>((passcred != 0).toUByte())
     }
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> {
-        val localStorageL586C8 = AddressableLocal(nonblocking.toInt(), UnresolvedTypeLayout<CInt>())
+        val localStorageL586C8 = AddressableLocal((if (nonblocking) 1 else 0), UnresolvedTypeLayout<io.github.kotlinmania.rustlang.core.ffi.primitives.CInt>())
         return cvt(Ioctl(this.asRawFd(), FIONBIO, RustMutableReference(localStorageL586C8.asMutPtr(), localStorageL586C8.layout))).map({ drop(it) })
     }
 

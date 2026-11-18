@@ -208,7 +208,7 @@ public fun parsePartialNumber(s: List<UByte>): Pair<Decimal, Int>? {
         val c1 = matchVal2.first
         val pNext = matchVal2.second
         if (c1 == 46u.toUByte() || c1 == 48u.toUByte()) {
-            nDigits -= c1.saturatingSub(48u.toUByte() - 1u).toInt()
+            nDigits -= c1.saturatingSub(48u.toUByte() - 1u.toUByte()).toInt()
             p = pNext
         } else {
             break

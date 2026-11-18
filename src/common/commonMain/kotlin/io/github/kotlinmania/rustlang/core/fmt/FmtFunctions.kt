@@ -41,7 +41,7 @@ import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -66,7 +66,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -139,7 +139,7 @@ public fun write(output: Write<*>, fmt: Arguments): Result {
             }
         if (n1 == 0) {
             // End of template.
-            return RustResult.Ok(Unit)
+            return RustResult.Ok<Unit, Error>(Unit)
         } else if (n1 < 0x80) {
             // Literal string piece of length `n`.
             // SAFETY: We can assume the strings in the template are valid.
@@ -240,7 +240,7 @@ public fun pointerFmtInner(ptrAddr: Int, f: Formatter): Result {
     if (f.options.getAlternate()) {
         f.options.signAwareZeroPad(true)
         if (f.options.getWidth() == null) {
-            f.options.width((32u / 4u).toUShort() + 2u)
+            f.options.width((32u / 4u).toUShort() + 2u.toUShort())
         }
     }
     f.options.alternate(true)
@@ -252,11 +252,11 @@ public fun pointerFmtInner(ptrAddr: Int, f: Formatter): Result {
 /**
  * Formats a wide pointer (address and type-erased metadata) in `fmt.Pointer` style.
  */
-public fun widePointerFmtInner(ptrAddr: Int, metadata: Debug, f: Formatter): Result = DebugStruct(f, "Pointer").fieldWith("addr", { f1 -> pointerFmtInner(ptrAddr, f1) }).field("metadata", metadata).finish()
+public fun widePointerFmtInner(ptrAddr: Int, metadata: Debug, f: Formatter): Result = run { DebugStruct(f, "Pointer").fieldWith("addr", { f1 -> pointerFmtInner(ptrAddr, f1) }).field("metadata", metadata).finish(); RustResult.Ok<Unit, Error>(Unit) }
 
 public fun Nothing.fmt(arg0: Formatter): Result = this
 
-public fun Boolean.fmt(f: Formatter): Result = f.append((this).toString())
+public fun Boolean.fmt(f: Formatter): Result = run { f.append((this).toString()); RustResult.Ok<Unit, Error>(Unit) }
 
 public fun String.fmt(f: Formatter): Result {
     fun needsEscape(b: UByte): Boolean = b > 0x7Eu.toUByte() || b < 0x20u.toUByte() || b == 92u.toUByte() || b == 34u.toUByte()
@@ -291,14 +291,14 @@ public fun String.fmt(f: Formatter): Result {
         rest = chars.asStr()
     }
     f.append(this[printableRange])
-    return f.append('"')
+    return run { f.append('"'); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun Char.fmt(f: Formatter): Result {
     f.append('\'')
     val esc = this.escapeDebugExt(EscapeDebugExtArgs(escapeSingleQuote = true, escapeDoubleQuote = false))
     f.append((esc).toString())
-    return f.append('\'')
+    return run { f.append('\''); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun ConstPtr.fmt(f: Formatter): Result {
@@ -313,14 +313,14 @@ public fun ConstPtr.fmt(f: Formatter): Result {
     }
 }
 
-public fun MutPtr.fmt(f: Formatter): Result = f.append(((constPtrFromRustCast(this))).toString())
+public fun MutPtr.fmt(f: Formatter): Result = run { f.append(((constPtrFromRustCast(this))).toString()); RustResult.Ok<Unit, Error>(Unit) }
 
-public fun <T> T.fmt(f: Formatter): Result = f.append(((constPtrFromRustCast(this))).toString())
+public fun <T> T.fmt(f: Formatter): Result = run { f.append(((constPtrFromRustCast(this))).toString()); RustResult.Ok<Unit, Error>(Unit) }
 
 // Implementation of Display/Debug for various core types
-public fun ConstPtr.fmtFromConstPtrT(f: Formatter): Result = f.append((this).toString())
+public fun ConstPtr.fmtFromConstPtrT(f: Formatter): Result = run { f.append((this).toString()); RustResult.Ok<Unit, Error>(Unit) }
 
-public fun MutPtr.fmtFromMutPtrT(f: Formatter): Result = f.append((this).toString())
+public fun MutPtr.fmtFromMutPtrT(f: Formatter): Result = run { f.append((this).toString()); RustResult.Ok<Unit, Error>(Unit) }
 
 public fun <E : Debug, D : Debug, C : Debug, B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmt(f: Formatter): Result {
     val builder = DebugTuple(f, "")
@@ -337,7 +337,7 @@ public fun <E : Debug, D : Debug, C : Debug, B : Debug, A : Debug, Z : Debug, Y 
     builder.field(V)
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun <D : Debug, C : Debug, B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromDCBAZYXWVUT(f: Formatter): Result {
@@ -354,7 +354,7 @@ public fun <D : Debug, C : Debug, B : Debug, A : Debug, Z : Debug, Y : Debug, X 
     builder.field(V)
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun <C : Debug, B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromCBAZYXWVUT(f: Formatter): Result {
@@ -370,7 +370,7 @@ public fun <C : Debug, B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W 
     builder.field(V)
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun <B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromBAZYXWVUT(f: Formatter): Result {
@@ -385,7 +385,7 @@ public fun <B : Debug, A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V 
     builder.field(V)
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun <A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromAZYXWVUT(f: Formatter): Result {
@@ -399,7 +399,7 @@ public fun <A : Debug, Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U 
     builder.field(V)
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun <Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromZYXWVUT(f: Formatter): Result {
@@ -412,7 +412,7 @@ public fun <Z : Debug, Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T 
     builder.field(V)
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun <Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromYXWVUT(f: Formatter): Result {
@@ -424,7 +424,7 @@ public fun <Y : Debug, X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> Li
     builder.field(V)
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun <X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromXWVUT(f: Formatter): Result {
@@ -435,7 +435,7 @@ public fun <X : Debug, W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fm
     builder.field(V)
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun <W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromWVUT(f: Formatter): Result {
@@ -445,7 +445,7 @@ public fun <W : Debug, V : Debug, U : Debug, T : Debug> List<Any?>.fmtFromWVUT(f
     builder.field(V)
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun <V : Debug, U : Debug, T : Debug> Triple<V, U, T>.fmt(f: Formatter): Result {
@@ -454,7 +454,7 @@ public fun <V : Debug, U : Debug, T : Debug> Triple<V, U, T>.fmt(f: Formatter): 
     builder.field(V)
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
 public fun <U : Debug, T : Debug> Pair<U, T>.fmt(f: Formatter): Result {
@@ -462,14 +462,14 @@ public fun <U : Debug, T : Debug> Pair<U, T>.fmt(f: Formatter): Result {
     val (U, T) = this
     builder.field(U)
     builder.field(T)
-    return builder.finish()
+    return run { builder.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
-public fun <T : Debug> List<T>.fmtFromTSlice(f: Formatter): Result = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish()
+public fun <T : Debug> List<T>.fmtFromTSlice(f: Formatter): Result = run { object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { f.append(entries.joinToString(", ", "[", "]")) } }.entries(this.iter()).finish(); RustResult.Ok<Unit, Error>(Unit) }
 
-public fun Unit.fmt(f: Formatter): Result = f.append("()")
+public fun Unit.fmt(f: Formatter): Result = run { f.append("()"); RustResult.Ok<Unit, Error>(Unit) }
 
-public fun <T : Debug> Cell<T>.fmt(f: Formatter): Result = DebugStruct(f, "Cell").field("value", this.get()).finish()
+public fun <T : Debug> Cell<T>.fmt(f: Formatter): Result = run { DebugStruct(f, "Cell").field("value", this.get()).finish(); RustResult.Ok<Unit, Error>(Unit) }
 
 public fun <T : Debug> RefCell<T>.fmt(f: Formatter): Result {
     val d = DebugStruct(f, "RefCell")
@@ -482,13 +482,13 @@ public fun <T : Debug> RefCell<T>.fmt(f: Formatter): Result {
             d.field("value", "<borrowed>")
         } }
     }
-    return d.finish()
+    return run { d.finish(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
-public fun <T : Debug> Ref<T>.fmt(f: Formatter): Result = f.append((this).toString())
+public fun <T : Debug> Ref<T>.fmt(f: Formatter): Result = run { f.append((this).toString()); RustResult.Ok<Unit, Error>(Unit) }
 
-public fun <T : Debug> RefMut<T>.fmt(f: Formatter): Result = f.append((this.deref()).toString())
+public fun <T : Debug> RefMut<T>.fmt(f: Formatter): Result = run { f.append((this.deref()).toString()); RustResult.Ok<Unit, Error>(Unit) }
 
-public fun <T> UnsafeCell<T>.fmt(f: Formatter): Result = DebugStruct(f, "UnsafeCell").finishNonExhaustive()
+public fun <T> UnsafeCell<T>.fmt(f: Formatter): Result = run { DebugStruct(f, "UnsafeCell").finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
 
-public fun <T> SyncUnsafeCell<T>.fmt(f: Formatter): Result = DebugStruct(f, "SyncUnsafeCell").finishNonExhaustive()
+public fun <T> SyncUnsafeCell<T>.fmt(f: Formatter): Result = run { DebugStruct(f, "SyncUnsafeCell").finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }

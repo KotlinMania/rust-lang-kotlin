@@ -63,7 +63,7 @@ import io.github.kotlinmania.rustlang.core.U8x16 as Block
 //
 // [pattern-impls]: Pattern#implementors
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -751,8 +751,8 @@ public fun Char.intoSearcher(haystack: String): CharSearcher {
 }
 
 public fun Char.isContainedIn(haystack: String): Boolean =
-    if ((this.toUInt()) < 128u) {
-        haystack.encodeToByteArray().map { it.toUByte() }.contains((this.toUByte()))
+    if ((this.code.toUInt()) < 128u) {
+        haystack.encodeToByteArray().map { it.toUByte() }.contains((this.code.toUByte()))
     } else {
         val buffer = UByteArray(4) { 0u.toUByte() }
         this.encodeUtf8(buffer).isContainedIn(haystack)

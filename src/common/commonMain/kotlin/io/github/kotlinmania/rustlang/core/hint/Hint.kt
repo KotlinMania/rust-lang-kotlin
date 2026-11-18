@@ -371,7 +371,7 @@ public fun spinLoop() {
  * // has no side-effects. This function has no effect if its result is unused. (An example of a
  * // function *with* side-effects is `println()`.)
  * fun increment(x: UByte): UByte {
- *     return (x + 1u).toUByte()
+ *     return x + 1u.toUByte()
  * }
  * // Here, we call `increment` but discard its result. The compiler, seeing this and knowing that
  * // `increment` is pure, will eliminate this function call entirely. This may not be desired,

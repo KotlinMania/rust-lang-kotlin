@@ -12,11 +12,8 @@ import io.github.kotlinmania.rustlang.core.io.util.Take
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -241,7 +238,7 @@ public open class Copier<R : Read<R>, W : Write<W>>(
     public var read: R,
     public var write: W,
 ) : SpecCopy {
-    public override fun copy(): Result<CopyState> = RustResult.Ok(CopyState.Fallback(0))
+    public override fun copy(): Result<CopyState> = RustResult.Ok<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(CopyState.Fallback(0))
 
     public open fun copySpecCopy(): Result<CopyState> {
         val (reader, writer) = Pair(this.read, this.write)
@@ -253,7 +250,7 @@ public open class Copier<R : Read<R>, W : Write<W>>(
                 val bytes = when (val tryResult = reader.drainTo(writer, ULong.MAX_VALUE)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return@closure RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                 // BufWriter buffered bytes have already been accounted for in earlier write() calls
                 when (val tryResult = writer.flush()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return@closure RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-                RustResult.Ok(bytes)
+                RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(bytes)
             }
         var written = 0uL
         if (Pair(rCfg, wCfg) != null) {
@@ -269,11 +266,11 @@ public open class Copier<R : Read<R>, W : Write<W>>(
                 when (result) {
                     is CopyResult.Ended -> {
                         val (bytesCopied) = result
-                        return RustResult.Ok(CopyState.Ended(bytesCopied + written))
+                        return RustResult.Ok<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(CopyState.Ended(bytesCopied + written))
                     }
                     is CopyResult.Error -> {
                         val (e, _) = result
-                        return RustResult.Err(e)
+                        return RustResult.Err<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(e)
                     }
                     is CopyResult.Fallback -> {
                         val (bytes) = result
@@ -292,11 +289,11 @@ public open class Copier<R : Read<R>, W : Write<W>>(
                 when (result1) {
                     is CopyResult.Ended -> {
                         val (bytesCopied1) = result1
-                        return RustResult.Ok(CopyState.Ended(bytesCopied1 + written))
+                        return RustResult.Ok<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(CopyState.Ended(bytesCopied1 + written))
                     }
                     is CopyResult.Error -> {
                         val (e1, _) = result1
-                        return RustResult.Err(e1)
+                        return RustResult.Err<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(e1)
                     }
                     is CopyResult.Fallback -> {
                         val (bytes1) = result1
@@ -310,11 +307,11 @@ public open class Copier<R : Read<R>, W : Write<W>>(
                 when {
                     result2 is CopyResult.Ended -> {
                         val (bytesCopied2) = result2
-                        return RustResult.Ok(CopyState.Ended(bytesCopied2 + written))
+                        return RustResult.Ok<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(CopyState.Ended(bytesCopied2 + written))
                     }
                     result2 is CopyResult.Error -> {
                         val (e2, _) = result2
-                        return RustResult.Err(e2)
+                        return RustResult.Err<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(e2)
                     }
                     result2 is CopyResult.Fallback && result2.value == 0 -> {
                         // use the fallback below
@@ -326,7 +323,7 @@ public open class Copier<R : Read<R>, W : Write<W>>(
             }
         }
         // fallback if none of the more specialized syscalls wants to work with these file descriptors
-        return RustResult.Ok(CopyState.Fallback(written))
+        return RustResult.Ok<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(CopyState.Fallback(written))
     }
 }
 
@@ -344,7 +341,7 @@ public interface CopyRead<T> : Read<T> {
      * This is necessary to directly bypass the wrapper types while preserving the data order
      * when operating directly on the underlying file descriptors.
      */
-    public fun <W : Write<W>> drainTo(writer: W, limit: ULong): Result<ULong> = RustResult.Ok(0)
+    public fun <W : Write<W>> drainTo(writer: W, limit: ULong): Result<ULong> = RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(0uL)
 
     /**
      * Updates `Take` wrappers to remove the number of bytes copied.
@@ -401,7 +398,7 @@ public fun <W : Write<W>> StdinLock.drainTo(writer: W, outerLimit: ULong): Resul
     val bytesDrained = buf1.len()
     when (val tryResult = writer.writeAll(buf1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     bufReader.consume(bytesDrained)
-    return RustResult.Ok(bytesDrained.toULong())
+    return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(bytesDrained.toULong())
 }
 
 public fun StdinLock.properties(): CopyParams = CopyParams(fdToMeta(this), this.asRawFd())
@@ -416,7 +413,7 @@ public fun <T : CopyRead<T>, W : Write<W>> Take<T>.drainTo(writer: W, outerLimit
     val bytesDrained = when (val tryResult = this.getMut().drainTo(writer, combinedLimit)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     // update limit since read() was bypassed
     this.setLimit(localLimit - bytesDrained)
-    return RustResult.Ok(bytesDrained)
+    return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(bytesDrained)
 }
 
 public fun <T : CopyRead<T>> Take<T>.taken(bytes: ULong) {
@@ -437,7 +434,7 @@ public fun <T : CopyRead<T>, W : Write<W>> BufReader<T>.drainTo(writer: W, outer
     val remaining = outerLimit - bytes.toULong()
     // in case of nested bufreaders we also need to drain the ones closer to the source
     val innerBytes = when (val tryResult = this.getMut().drainTo(writer, remaining)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-    return RustResult.Ok(bytes.toULong() + innerBytes)
+    return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(bytes.toULong() + innerBytes)
 }
 
 public fun <T : CopyRead<T>> BufReader<T>.taken(bytes: ULong) {
@@ -507,12 +504,12 @@ public val INVALID_FD: RawFd = -1
  * if one of the files' cursor +`maxLen` would exceed u64.Max (`EOVERFLOW`).
  */
 public fun copyRegularFiles(reader: RawFd, writer: RawFd, maxLen: ULong): CopyResult {
-    val NOT_PROBED: UByte = 0u
-    val UNAVAILABLE: UByte = 1u
-    val AVAILABLE: UByte = 2u
+    val NOT_PROBED: UByte = 0u.toUByte()
+    val UNAVAILABLE: UByte = 1u.toUByte()
+    val AVAILABLE: UByte = 2u.toUByte()
     // Kernel prior to 4.5 don't have copyFileRange
     // We store the availability in a global to avoid unnecessary syscalls
-    val HAS_COPY_FILE_RANGE: Atomic<UByte, Align1<UByte>>  = AtomicU8.new(NOT_PROBED)
+    val HAS_COPY_FILE_RANGE: AtomicU8  = AtomicU8.new(NOT_PROBED)
     fun probeCopyFileRangeSupport(): UByte {
         // In some cases, we cannot determine availability from the first
         // `copyFileRange` call. In this case, we probe with an invalid file
@@ -664,8 +661,8 @@ public sealed class SpliceMode {
  * Does _not_ fall back to a generic copy loop.
  */
 public fun sendfileSplice(mode: SpliceMode, reader: RawFd, writer: RawFd, len: ULong): CopyResult {
-    val HAS_SENDFILE: Atomic<Boolean, Align1<UByte>>  = AtomicBool.new(true)
-    val HAS_SPLICE: Atomic<Boolean, Align1<UByte>>  = AtomicBool.new(true)
+    val HAS_SENDFILE: AtomicBool  = AtomicBool.new(true)
+    val HAS_SPLICE: AtomicBool  = AtomicBool.new(true)
     // Android builds use feature level 14, but the libc wrapper for splice is
     // gated on feature level 21+, so we have to invoke the syscall directly.
     syscall(splice, srcfd, libc, cInt, srcOffset, dstfd, libc, cInt, dstOffset, len, libc, sizeT, flags, libc, cInt, libc, ssizeT)

@@ -6,7 +6,6 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
@@ -39,7 +38,7 @@ import io.github.kotlinmania.rustlang.std.sys.paths.unix.getcwd
 // counterpart ending in `os`. Those ending in `os` will return an [OsString]
 // and those without will return a [String].
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

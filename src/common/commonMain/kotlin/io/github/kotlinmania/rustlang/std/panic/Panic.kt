@@ -4,8 +4,6 @@ package io.github.kotlinmania.rustlang.std.panic
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.panic.location.Location
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
@@ -412,9 +410,9 @@ public sealed class BacktraceStyle {
 
     public open fun asU8(): UByte =
         when (this) {
-            BacktraceStyle.Short -> 1u
-            BacktraceStyle.Full -> 2u
-            BacktraceStyle.Off -> 3u
+            BacktraceStyle.Short -> 1u.toUByte()
+            BacktraceStyle.Full -> 2u.toUByte()
+            BacktraceStyle.Off -> 3u.toUByte()
         }
 
     public companion object {
@@ -439,7 +437,7 @@ public sealed class BacktraceStyle {
 // that backtrace.
 //
 // Internally stores equivalent of an Option<BacktraceStyle>.
-public var SHOULD_CAPTURE: Atomic<UByte, Align1<UByte>> = AtomicU8.new(0)
+public var SHOULD_CAPTURE: AtomicU8 = AtomicU8.new(0u.toUByte())
 
 /**
  * Configures whether the default panic hook will capture and display a
@@ -511,7 +509,7 @@ public fun getBacktraceStyle(): BacktraceStyle? {
             }
         }
     return run {
-        val matchVal2 = SHOULD_CAPTURE.compareExchange(0, format.asU8(), Ordering.Relaxed, Ordering.Relaxed)
+        val matchVal2 = SHOULD_CAPTURE.compareExchange(0u.toUByte(), format.asU8(), Ordering.Relaxed, Ordering.Relaxed)
         when (matchVal2) { is RustResult.Ok<*, *> -> {
             format
         }; is RustResult.Err<*, *> -> {

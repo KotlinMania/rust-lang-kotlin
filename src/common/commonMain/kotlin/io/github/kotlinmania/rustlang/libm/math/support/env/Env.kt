@@ -164,7 +164,7 @@ public open class Status(
         f.append("Status(")
         var any = false
         for (shift in 0 until 8u) {
-            if (this.value and ((1u.toUInt() shl (shift.toInt())).toUByte()) != 0u.toUByte()) {
+            if (this.value and (((1u.toUByte()).toUInt() shl (shift.toInt())).toUByte()) != 0u.toUByte()) {
                 if (any) {
                     f.append(" | ")
                 }

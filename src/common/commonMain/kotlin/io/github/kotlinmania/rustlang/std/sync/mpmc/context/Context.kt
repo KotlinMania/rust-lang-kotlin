@@ -4,9 +4,6 @@ package io.github.kotlinmania.rustlang.std.sync.mpmc.context
 import io.github.kotlinmania.rustlang.core.cell.Cell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -142,9 +139,15 @@ public open class Context(
 /**
  * Inner representation of `Context`.
  */
-public open class Inner internal constructor(
-    selectCtorArg: Atomic<Int, Align8<Int>>,
-    packetCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
+public open class Inner(
+    /**
+     * Selected operation.
+     */
+    public var select: AtomicUsize,
+    /**
+     * A slot into which another thread may store a pointer to its `Packet`.
+     */
+    public var packet: AtomicPtr,
     /**
      * Thread handle.
      */
@@ -153,30 +156,4 @@ public open class Inner internal constructor(
      * Thread id.
      */
     public var threadId: Int,
-) {
-    /**
-     * Selected operation.
-     */
-    public var select: Atomic<Int, Align8<Int>> = selectCtorArg
-        internal set
-
-    /**
-     * A slot into which another thread may store a pointer to its `Packet`.
-     */
-    public var packet: Atomic<MutPtr, Align8<MutPtr>> = packetCtorArg
-        internal set
-
-    public companion object {
-        public operator fun invoke(
-            select: Atomic<Int, Align8<Int>>,
-            packet: Atomic<MutPtr, Align8<MutPtr>>,
-            thread: Thread,
-            threadId: Int,
-        ): Inner = Inner(
-            selectCtorArg = select,
-            packetCtorArg = packet,
-            thread = thread,
-            threadId = threadId,
-        )
-    }
-}
+)

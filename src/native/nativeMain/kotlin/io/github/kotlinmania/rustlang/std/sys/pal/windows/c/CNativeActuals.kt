@@ -2,9 +2,9 @@
 
 package io.github.kotlinmania.rustlang.std.sys.pal.windows.c
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.cinterop.stdSysPalWindowsCAtexit
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.cinterop.stdSysPalWindowsCNtCreateNamedPipeFile
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.cinterop.stdSysPalWindowsCProcessPrng

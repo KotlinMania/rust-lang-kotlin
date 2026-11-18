@@ -54,7 +54,7 @@ public fun fromU32Unchecked(i: UInt): Char {
  * check(4 == sizeOfVal(u))
  * ```
  */
-public fun UInt.Companion.from(c: Char): UInt = c.toUInt()
+public fun UInt.Companion.from(c: Char): UInt = c.code.toUInt()
 
 /**
  * Converts a [char] into a [u64].
@@ -70,7 +70,7 @@ public fun UInt.Companion.from(c: Char): UInt = c.toUInt()
 public fun ULong.Companion.from(c: Char): ULong {
     // The char is casted to the value of the code point, then zero-extended to 64 bit.
     // See [https://doc.rust-lang.org/reference/expressions/operator-expr.html#semantics]
-    return c.toULong()
+    return c.code.toULong()
 }
 
 /**
@@ -87,7 +87,7 @@ public fun ULong.Companion.from(c: Char): ULong {
 public fun U128.Companion.from(c: Char): U128 {
     // The char is casted to the value of the code point, then zero-extended to 128 bit.
     // See [https://doc.rust-lang.org/reference/expressions/operator-expr.html#semantics]
-    return U128.fromLong(c.toLong())
+    return U128.fromInt(c.code)
 }
 
 /**
@@ -335,7 +335,7 @@ public open class CharTryFromError(
 
     public open fun clone(): CharTryFromError = CharTryFromError(value)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = "converted integer out of range for `char`".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("converted integer out of range for `char`"); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<CharTryFromError> =
@@ -372,7 +372,7 @@ public fun fromDigit(num: UInt, radix: UInt): Char? {
         if (num1 < 10u.toUByte()) {
             (48u.toUByte() + num1).toInt().toChar()
         } else {
-            (97u.toUByte() + num1 - 10u).toInt().toChar()
+            (97u.toUByte() + num1 - 10u.toUByte()).toInt().toChar()
         }
     } else {
         null

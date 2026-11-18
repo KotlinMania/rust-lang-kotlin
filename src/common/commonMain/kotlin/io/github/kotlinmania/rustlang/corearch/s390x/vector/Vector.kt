@@ -1496,8 +1496,8 @@ public fun genmask(mask: UShort): UByteArray {
     var i = 0
     while (i < 16) {
         elements[i] = when (bits and (((1u.toUShort()).toUInt() shl 15).toUShort())) {
-            0u.toUShort() -> 0u
-            else -> 0xFFu
+            0u.toUShort() -> 0u.toUByte()
+            else -> 0xFFu.toUByte()
         }
         bits = ((bits).toUInt() shl 1).toUShort()
         i += 1
@@ -1511,11 +1511,11 @@ public fun genmasks(bitWidth: UInt, a: UByte, b: UByte): ULong {
     val a1 = a % bitWidth1
     var b2 = b1 % bitWidth1
     if (a1 > b2) {
-        b2 = (bitWidth1 - 1u).toUByte()
+        b2 = bitWidth1 - 1u.toUByte()
     }
     // of course these indices start from the left
-    val a2 = (bitWidth1 - 1u) - a1
-    val b3 = (bitWidth1 - 1u) - b2
+    val a2 = (bitWidth1 - 1u.toUByte()) - a1
+    val b3 = (bitWidth1 - 1u.toUByte()) - b2
     return ((1uL.wrappingShl(a2.toUInt() + 1u)) - 1uL) and ((1uL.wrappingShl(b3.toUInt())) - 1uL).inv()
 }
 
@@ -2026,7 +2026,7 @@ public fun vecSubcU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsi
 public fun vecAddcU128(a: VectorUnsignedChar, b: VectorUnsignedChar): VectorUnsignedChar {
     val a1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(a, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
     val b1: U128 = transmuteWithLayouts<VectorUnsignedChar, U128>(b, VectorUnsignedChar.typeLayout(), UnresolvedTypeLayout<U128>())
-    return transmuteWithLayouts<U128, VectorUnsignedChar>(U128.fromLong((a1.overflowingAdd(b1).second).toLong()), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
+    return transmuteWithLayouts<U128, VectorUnsignedChar>((if (a1.overflowingAdd(b1).second) U128.ONE else U128.ZERO), PrimitiveLayouts.u128Layout(::U128, { it.high }, { it.low }), VectorUnsignedChar.typeLayout())
 }
 
 /**
@@ -2662,22 +2662,22 @@ public fun <Result, T : VectorEqualityIdx<T, Result>> vecCmpneOr0IdxCc(a: T, b: 
 /**
  * All Elements Equal
  */
-public fun <Result, T : VectorEquality<T, Result>> vecAllEq(a: T, b: T): Int = (run { val simdArg0 = vecCmpeq(a, b); false }).toInt()
+public fun <Result, T : VectorEquality<T, Result>> vecAllEq(a: T, b: T): Int = (if (run { val simdArg0 = vecCmpeq(a, b); false }) 1 else 0)
 
 /**
  * All Elements Not Equal
  */
-public fun <Result, T : VectorEquality<T, Result>> vecAllNe(a: T, b: T): Int = (run { val simdArg0 = vecCmpne(a, b); false }).toInt()
+public fun <Result, T : VectorEquality<T, Result>> vecAllNe(a: T, b: T): Int = (if (run { val simdArg0 = vecCmpne(a, b); false }) 1 else 0)
 
 /**
  * Any Element Equal
  */
-public fun <Result, T : VectorEquality<T, Result>> vecAnyEq(a: T, b: T): Int = (run { val simdArg0 = vecCmpeq(a, b); false }).toInt()
+public fun <Result, T : VectorEquality<T, Result>> vecAnyEq(a: T, b: T): Int = (if (run { val simdArg0 = vecCmpeq(a, b); false }) 1 else 0)
 
 /**
  * Any Element Not Equal
  */
-public fun <Result, T : VectorEquality<T, Result>> vecAnyNe(a: T, b: T): Int = (run { val simdArg0 = vecCmpne(a, b); false }).toInt()
+public fun <Result, T : VectorEquality<T, Result>> vecAnyNe(a: T, b: T): Int = (if (run { val simdArg0 = vecCmpne(a, b); false }) 1 else 0)
 
 /**
  * All Elements Less Than

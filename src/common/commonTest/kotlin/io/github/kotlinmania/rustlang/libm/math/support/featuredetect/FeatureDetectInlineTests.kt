@@ -24,7 +24,7 @@ public class FeatureDetectInlineTests {
     @kotlin.test.Test
     public fun flagCacheIsUsed() {
         // Sanity check that flags are only ever set once
-        val CACHE: AtomicU32  = AtomicU32.new(0)
+        val CACHE: AtomicU32  = AtomicU32.new(0u)
         val f1 = Flags.fromBits(0x1u)
         val f2 = Flags.fromBits(0x2u)
         val r1 = getOrInitFlagsCache(CACHE, { f1 })
@@ -38,7 +38,7 @@ public class FeatureDetectInlineTests {
     @kotlin.test.Test
     public fun selectCacheIsUsed() {
         // Sanity check that cache is used
-        val CALLED: AtomicU32  = AtomicU32.new(0)
+        val CALLED: AtomicU32  = AtomicU32.new(0u)
         fun inner() {
             fun nop() {}
             selectOnce(sig, init, CALLED, fetchAdd, 1, Ordering, Relaxed, nop, call, fnPtr, Func, fnPtr)

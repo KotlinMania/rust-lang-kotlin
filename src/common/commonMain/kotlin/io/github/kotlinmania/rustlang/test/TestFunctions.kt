@@ -5,7 +5,6 @@ import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.iterMut
 import io.github.kotlinmania.rustlang.core.time.Duration
@@ -376,7 +375,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
             val event3 = TestEvent.TeResult(completedTest)
             when (val tryResult = notifyAboutTestEvent(event3)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             if (failFast) {
-                return RustResult.Ok(Unit)
+                return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
             }
         }
     } else {
@@ -437,7 +436,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
             if (failFast1) {
                 // Prevent remaining test threads from panicking
                 forget(rx)
-                return RustResult.Ok(Unit)
+                return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
             }
         }
     }
@@ -454,7 +453,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
             when (val tryResult = notifyAboutTestEvent(event8)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
     }
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun filterTests(opts: TestOpts, tests: TestList): List<TestDescAndFn> {

@@ -26,8 +26,8 @@ public open class OwnedStore<T> internal constructor(
         internal set
 
     public open fun alloc(x: T): Handle {
-        val counter = this.counter.fetchAdd(1, Ordering.Relaxed)
-        val handle = NonZero.new(counter).expect("`proc_macro` handle counter overflowed")
+        val counter = this.counter.fetchAdd(1u, Ordering.Relaxed)
+        val handle = NonZero.new<NonZeroU32Inner, UInt>(counter).expect("`proc_macro` handle counter overflowed")
         check(this.data.put(handle, x) == null)
         return handle
     }
@@ -48,7 +48,7 @@ public open class OwnedStore<T> internal constructor(
         public fun <T> new(counter: AtomicU32): OwnedStore<T> {
             // Ensure the handle counter isn't 0, which would panic later,
             // when `NonZero.new` (aka `Handle.new`) is called in `alloc`.
-            check(counter.load(Ordering.Relaxed) != 0)
+            check(counter.load(Ordering.Relaxed) != 0u)
             return OwnedStore(counter = counter, data = mutableMapOf())
         }
     }

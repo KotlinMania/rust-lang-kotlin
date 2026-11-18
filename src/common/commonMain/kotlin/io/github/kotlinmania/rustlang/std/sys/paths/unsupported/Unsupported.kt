@@ -54,7 +54,7 @@ public fun splitPaths(unparsed: OsStr): SplitPaths {
 public fun splitPathsRef(unparsed: OsStr): SplitPathsRef? = null
 
 public open class JoinPathsError {
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = "not supported on this platform yet".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("not supported on this platform yet"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<JoinPathsError> =

@@ -4,9 +4,6 @@ package io.github.kotlinmania.rustlang.std.thread.scoped
 import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -24,7 +21,7 @@ import io.github.kotlinmania.rustlang.std.thread.lifecycle.spawnUnchecked
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -183,17 +180,11 @@ public open class ScopedJoinHandle<T>(
     public open fun fmt(f: StringBuilder): RustResult<Unit, Error> = run { DebugStruct(f, "ScopedJoinHandle").finishNonExhaustive(); RustResult.Ok<Unit, Error>(Unit) }
 }
 
-public open class ScopeData internal constructor(
-    numRunningThreadsCtorArg: Atomic<Int, Align8<Int>>,
-    aThreadPanickedCtorArg: Atomic<Boolean, Align1<UByte>>,
+public open class ScopeData(
+    public var numRunningThreads: AtomicUsize,
+    public var aThreadPanicked: AtomicBool,
     public var mainThread: Thread,
 ) {
-    public var numRunningThreads: Atomic<Int, Align8<Int>> = numRunningThreadsCtorArg
-        internal set
-
-    public var aThreadPanicked: Atomic<Boolean, Align1<UByte>> = aThreadPanickedCtorArg
-        internal set
-
     public open fun incrementNumRunningThreads() {
         // We check for `overflow` with usize.Max / 2, to make sure there's no
         // chance it overflows to 0, which would result in unsoundness.
@@ -215,18 +206,6 @@ public open class ScopeData internal constructor(
         if (this.numRunningThreads.fetchSub(1, Ordering.Release) == 1) {
             this.mainThread.unpark()
         }
-    }
-
-    public companion object {
-        public operator fun invoke(
-            numRunningThreads: Atomic<Int, Align8<Int>>,
-            aThreadPanicked: Atomic<Boolean, Align1<UByte>>,
-            mainThread: Thread,
-        ): ScopeData = ScopeData(
-            numRunningThreadsCtorArg = numRunningThreads,
-            aThreadPanickedCtorArg = aThreadPanicked,
-            mainThread = mainThread,
-        )
     }
 }
 

@@ -286,7 +286,7 @@ public fun sliceWrite(posMut: RustMutableReference<ULong>, slice: MutableList<UB
     val amt = minOf(buf.size, dst.size)
     run { val dstTmp0 = dst; val srcTmp0 = ((buf).subList(0, amt)); for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] }
     (posMut1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (amt.toULong()); targetPlace.write(currentValue) }
-    return RustResult.Ok(amt)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(amt)
 }
 
 /**
@@ -302,7 +302,7 @@ public fun sliceWriteVectored(posMut: RustMutableReference<ULong>, slice: Mutabl
             break
         }
     }
-    return RustResult.Ok(nwritten)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(nwritten)
 }
 
 /**
@@ -312,9 +312,9 @@ public fun sliceWriteVectored(posMut: RustMutableReference<ULong>, slice: Mutabl
 public fun sliceWriteAll(posMut: RustMutableReference<ULong>, slice: MutableList<UByte>, buf: List<UByte>): Result<Unit> {
     val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     return if (n < buf.size) {
-        RustResult.Err(WRITE_ALL_EOF)
+        RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(WRITE_ALL_EOF)
     } else {
-        RustResult.Ok(Unit)
+        RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 }
 
@@ -326,10 +326,10 @@ public fun sliceWriteAllVectored(posMut: RustMutableReference<ULong>, slice: Mut
     for (buf in bufs) {
         val n = when (val tryResult = sliceWrite(posMut, slice, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         if (n < buf.len()) {
-            return RustResult.Err(WRITE_ALL_EOF)
+            return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(WRITE_ALL_EOF)
         }
     }
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun Cursor<MutableList<UByte>>.write(buf: List<UByte>): Result<Int> {
@@ -354,7 +354,7 @@ public fun Cursor<MutableList<UByte>>.writeAllVectored(bufs: MutableList<IoSlice
     return sliceWriteAllVectored(pos, inner, bufs)
 }
 
-public fun Cursor<MutableList<UByte>>.flush(): Result<Unit> = RustResult.Ok(Unit)
+public fun Cursor<MutableList<UByte>>.flush(): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
 public fun Cursor<UByteArray>.write(buf: List<UByte>, n: Int = 0): Result<Int> {
     val (pos, inner) = this.intoPartsMut()
@@ -378,7 +378,7 @@ public fun Cursor<UByteArray>.writeAllVectored(bufs: MutableList<IoSlice>, n: In
     return sliceWriteAllVectored(pos, inner, bufs)
 }
 
-public fun Cursor<UByteArray>.flush(n: Int = 0): Result<Unit> = RustResult.Ok(Unit)
+public fun Cursor<UByteArray>.flush(n: Int = 0): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
 public fun Cursor<T>.seek(style: SeekFrom): Result<ULong> {
     val (basePos, offset) =
@@ -386,7 +386,7 @@ public fun Cursor<T>.seek(style: SeekFrom): Result<ULong> {
             is SeekFrom.Start -> {
                 val (n) = style
                 this.setPosition(n)
-                return RustResult.Ok(n)
+                return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(n)
             }
             is SeekFrom.End -> {
                 val (n1) = style
@@ -398,18 +398,18 @@ public fun Cursor<T>.seek(style: SeekFrom): Result<ULong> {
             }
         }
     return when (val matchVal = basePos.checkedAddSigned(offset)) {
-        null -> RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "invalid seek to a negative or overflowing position")))
+        null -> RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "invalid seek to a negative or overflowing position")))
         else -> {
             val n3 = matchVal
             this.setPosition(n3)
-            RustResult.Ok(n3)
+            RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(n3)
         }
     }
 }
 
-public fun Cursor<T>.streamLen(): Result<ULong> = RustResult.Ok(this.getRef().len().toULong())
+public fun Cursor<T>.streamLen(): Result<ULong> = RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(this.getRef().len().toULong())
 
-public fun Cursor<T>.streamPosition(): Result<ULong> = RustResult.Ok(this.position())
+public fun Cursor<T>.streamPosition(): Result<ULong> = RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(this.position())
 
 /**
  * Trait used to allow indirect implementation of `Write` for `Cursor<Self>`.

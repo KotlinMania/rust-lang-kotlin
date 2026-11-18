@@ -16922,7 +16922,7 @@ public fun vshrNU8(a: Uint8x8T, n: Int): Uint8x8T {
     }
     val n: Int =
         if (n == 8) {
-            return vdupNU8(0u)
+            return vdupNU8(0u.toUByte())
         } else {
             n
         }
@@ -16939,7 +16939,7 @@ public fun vshrqNU8(a: Uint8x16T, n: Int): Uint8x16T {
     }
     val n: Int =
         if (n == 8) {
-            return vdupqNU8(0u)
+            return vdupqNU8(0u.toUByte())
         } else {
             n
         }
@@ -16956,7 +16956,7 @@ public fun vshrNU16(a: Uint16x4T, n: Int): Uint16x4T {
     }
     val n: Int =
         if (n == 16) {
-            return vdupNU16(0u)
+            return vdupNU16(0u.toUShort())
         } else {
             n
         }
@@ -16973,7 +16973,7 @@ public fun vshrqNU16(a: Uint16x8T, n: Int): Uint16x8T {
     }
     val n: Int =
         if (n == 16) {
-            return vdupqNU16(0u)
+            return vdupqNU16(0u.toUShort())
         } else {
             n
         }

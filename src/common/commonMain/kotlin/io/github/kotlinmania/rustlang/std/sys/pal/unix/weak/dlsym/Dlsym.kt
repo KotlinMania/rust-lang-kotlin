@@ -9,8 +9,6 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
@@ -22,7 +20,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription
 
 public open class DlsymWeak<F> internal constructor(
     nameCtorArg: ConstPtr,
-    funcCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
+    public var func: AtomicPtr,
     public var marker: Unit,
 ) {
     // Use a pointer instead of `CStr` to save space.
@@ -31,9 +29,6 @@ public open class DlsymWeak<F> internal constructor(
      * A pointer to the nul-terminated name of the symbol.
      */
     public var name: ConstPtr = nameCtorArg
-        internal set
-
-    public var func: Atomic<MutPtr, Align8<MutPtr>> = funcCtorArg
         internal set
 
     public open fun get(): F? {
@@ -100,11 +95,11 @@ public open class DlsymWeak<F> internal constructor(
     public companion object {
         public operator fun <F> invoke(
             name: ConstPtr,
-            func: Atomic<MutPtr, Align8<MutPtr>>,
+            func: AtomicPtr,
             marker: Unit,
         ): DlsymWeak<F> = DlsymWeak<F>(
             nameCtorArg = name,
-            funcCtorArg = func,
+            func = func,
             marker = marker,
         )
 

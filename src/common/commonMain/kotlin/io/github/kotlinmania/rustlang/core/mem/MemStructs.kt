@@ -4,7 +4,7 @@ import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.result.Result
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {

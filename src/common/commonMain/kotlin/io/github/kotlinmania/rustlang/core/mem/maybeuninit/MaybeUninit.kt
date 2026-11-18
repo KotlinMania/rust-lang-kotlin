@@ -243,7 +243,7 @@ import io.github.kotlinmania.rustlang.core.slice.splitLastMut
  *     // All the fields are initialized, so we call `assumeInit` to get an initialized Foo.
  *     uninit.assumeInit()
  * }
- * check(foo == Foo(name = "Bob".toString(), list = mutableListOf(0u, 1u, 2u)))
+ * check(foo == Foo(name = "Bob".toString(), list = mutableListOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte())))
  * ```
  * [raw.mut]: https://doc.rust-lang.org/reference/types/pointer.html#r-type.pointer.raw.constructor
  * [validity]: ../../reference/behavior-considered-undefined.html#r-undefined.validity

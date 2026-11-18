@@ -105,7 +105,7 @@ public open class MergeState<T>(
                         right1
                     }
                 copyNonoverlapping(src, (typeLayoutT).readNative((out).rawAddress), 1)
-                (typeLayoutT).writeNative((left).rawAddress, MutPtr((left).rawAddress + ((consumeLeft.toInt()).toLong() * (typeLayoutT).strideBytes)))
+                (typeLayoutT).writeNative((left).rawAddress, MutPtr((left).rawAddress + (((if (consumeLeft) 1 else 0)).toLong() * (typeLayoutT).strideBytes)))
                 right1 = ConstPtr((right1).rawAddress + (((if (!consumeLeft) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
                 (typeLayoutT).writeNative((out).rawAddress, MutPtr((out).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes)))
             }
@@ -135,7 +135,7 @@ public open class MergeState<T>(
                 }
             copyNonoverlapping((src).asConstPtr(), out1, 1)
             this.dst = MutPtr((left).rawAddress + (((if (!consumeLeft) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
-            this.end = MutPtr((right).rawAddress + ((consumeLeft.toInt()).toLong() * (typeLayoutT).strideBytes))
+            this.end = MutPtr((right).rawAddress + (((if (consumeLeft) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
             if ((((this.dst).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong() == (leftEnd).rawAddress.toULong()) || (((this.end).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).rawAddress.toULong() == (rightEnd).rawAddress.toULong())) {
                 break
             }

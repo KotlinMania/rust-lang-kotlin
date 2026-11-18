@@ -40,7 +40,7 @@ public fun MutableList<UByte>.write(data: List<UByte>): Result<Int> {
     val (a, b) = take(selfMut).splitAtMut(amt)
     a.copyFromSlice(((data).subList(0, amt)))
     selfMut = b
-    return RustResult.Ok(amt)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(amt)
 }
 
 public fun MutableList<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int> {
@@ -51,34 +51,34 @@ public fun MutableList<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int> {
             break
         }
     }
-    return RustResult.Ok(nwritten)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(nwritten)
 }
 
 public fun MutableList<UByte>.isWriteVectored(): Boolean = true
 
 public fun MutableList<UByte>.writeAll(data: List<UByte>): Result<Unit> {
     return if (when (val tryResult = this.write(data)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) } < data.size) {
-        RustResult.Err(WRITE_ALL_EOF)
+        RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(WRITE_ALL_EOF)
     } else {
-        RustResult.Ok(Unit)
+        RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 }
 
 public fun MutableList<UByte>.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> {
     for (buf in bufs) {
         if (when (val tryResult = this.write(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) } < buf.len()) {
-            return RustResult.Err(WRITE_ALL_EOF)
+            return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(WRITE_ALL_EOF)
         }
     }
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
-public fun MutableList<UByte>.flush(): Result<Unit> = RustResult.Ok(Unit)
+public fun MutableList<UByte>.flush(): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
 public fun BorrowedCursor<UByte>.write(buf: List<UByte>): Result<Int> {
     val amt = minOf(buf.size, this.capacity())
     this.append(((buf).subList(0, amt)))
-    return RustResult.Ok(amt)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(amt)
 }
 
 public fun BorrowedCursor<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int> {
@@ -90,26 +90,26 @@ public fun BorrowedCursor<UByte>.writeVectored(bufs: List<IoSlice>): Result<Int>
             break
         }
     }
-    return RustResult.Ok(nwritten)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(nwritten)
 }
 
 public fun BorrowedCursor<UByte>.isWriteVectored(): Boolean = true
 
 public fun BorrowedCursor<UByte>.writeAll(buf: List<UByte>): Result<Unit> {
     return if (when (val tryResult = this.write(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) } < buf.size) {
-        RustResult.Err(WRITE_ALL_EOF)
+        RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(WRITE_ALL_EOF)
     } else {
-        RustResult.Ok(Unit)
+        RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 }
 
 public fun BorrowedCursor<UByte>.writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> {
     for (buf in bufs) {
         if (when (val tryResult = this.write(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) } < buf.len()) {
-            return RustResult.Err(WRITE_ALL_EOF)
+            return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(WRITE_ALL_EOF)
         }
     }
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
-public fun BorrowedCursor<UByte>.flush(): Result<Unit> = RustResult.Ok(Unit)
+public fun BorrowedCursor<UByte>.flush(): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)

@@ -115,7 +115,7 @@ public fun F16.toIntChecked(): UByte? {
         }
     val HIGH_THRESHOLD: F16 =
         run {
-            val half = (UByte.MAX_VALUE / 2u) + 1u
+            val half = (UByte.MAX_VALUE / 2u.toUByte()) + 1u.toUByte()
             F16.fromUByte(half) + F16.fromUByte(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
@@ -142,7 +142,7 @@ public fun F16.toIntCheckedUShort(): UShort? {
         }
     val HIGH_THRESHOLD: F16 =
         run {
-            val half = (UShort.MAX_VALUE / 2u) + 1u
+            val half = (UShort.MAX_VALUE / 2u.toUShort()) + 1u.toUShort()
             F16.fromUShort(half) + F16.fromUShort(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
@@ -385,7 +385,7 @@ public fun kotlin.Float.toIntChecked(): UByte? {
         }
     val HIGH_THRESHOLD: kotlin.Float =
         run {
-            val half = (UByte.MAX_VALUE / 2u) + 1u
+            val half = (UByte.MAX_VALUE / 2u.toUByte()) + 1u.toUByte()
             half.toFloat() + half.toFloat()
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
@@ -412,7 +412,7 @@ public fun kotlin.Float.toIntCheckedUShort(): UShort? {
         }
     val HIGH_THRESHOLD: kotlin.Float =
         run {
-            val half = (UShort.MAX_VALUE / 2u) + 1u
+            val half = (UShort.MAX_VALUE / 2u.toUShort()) + 1u.toUShort()
             half.toFloat() + half.toFloat()
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
@@ -655,7 +655,7 @@ public fun Double.toIntChecked(): UByte? {
         }
     val HIGH_THRESHOLD: Double =
         run {
-            val half = (UByte.MAX_VALUE / 2u) + 1u
+            val half = (UByte.MAX_VALUE / 2u.toUByte()) + 1u.toUByte()
             half.toDouble() + half.toDouble()
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
@@ -682,7 +682,7 @@ public fun Double.toIntCheckedUShort(): UShort? {
         }
     val HIGH_THRESHOLD: Double =
         run {
-            val half = (UShort.MAX_VALUE / 2u) + 1u
+            val half = (UShort.MAX_VALUE / 2u.toUShort()) + 1u.toUShort()
             half.toDouble() + half.toDouble()
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
@@ -925,7 +925,7 @@ public fun F128.toIntChecked(): UByte? {
         }
     val HIGH_THRESHOLD: F128 =
         run {
-            val half = (UByte.MAX_VALUE / 2u) + 1u
+            val half = (UByte.MAX_VALUE / 2u.toUByte()) + 1u.toUByte()
             F128.fromUByte(half) + F128.fromUByte(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
@@ -952,7 +952,7 @@ public fun F128.toIntCheckedUShort(): UShort? {
         }
     val HIGH_THRESHOLD: F128 =
         run {
-            val half = (UShort.MAX_VALUE / 2u) + 1u
+            val half = (UShort.MAX_VALUE / 2u.toUShort()) + 1u.toUShort()
             F128.fromUShort(half) + F128.fromUShort(half)
         }
     return if (LOW_THRESHOLD < this && this < HIGH_THRESHOLD) {
@@ -1227,7 +1227,7 @@ public fun F128.castF128(): F128 = this
  * ```kotlin
  * ```
  */
-public fun UByte.Companion.from(b: Boolean): UByte = b.toUByte()
+public fun UByte.Companion.from(b: Boolean): UByte = (if (b) 1u else 0u).toUByte()
 
 /**
  * Converts from [bool] to
@@ -1238,7 +1238,7 @@ public fun UByte.Companion.from(b: Boolean): UByte = b.toUByte()
  * ```kotlin
  * ```
  */
-public fun UShort.Companion.from(b: Boolean): UShort = b.toUShort()
+public fun UShort.Companion.from(b: Boolean): UShort = (if (b) 1u else 0u).toUShort()
 
 /**
  * Converts from [bool] to
@@ -1249,7 +1249,7 @@ public fun UShort.Companion.from(b: Boolean): UShort = b.toUShort()
  * ```kotlin
  * ```
  */
-public fun UInt.Companion.from(b: Boolean): UInt = b.toUInt()
+public fun UInt.Companion.from(b: Boolean): UInt = (if (b) 1u else 0u)
 
 /**
  * Converts from [bool] to
@@ -1260,7 +1260,7 @@ public fun UInt.Companion.from(b: Boolean): UInt = b.toUInt()
  * ```kotlin
  * ```
  */
-public fun ULong.Companion.from(b: Boolean): ULong = b.toULong()
+public fun ULong.Companion.from(b: Boolean): ULong = (if (b) 1uL else 0uL)
 
 /**
  * Converts from [bool] to
@@ -1271,7 +1271,7 @@ public fun ULong.Companion.from(b: Boolean): ULong = b.toULong()
  * ```kotlin
  * ```
  */
-public fun U128.Companion.from(b: Boolean): U128 = U128.fromLong(b.toLong())
+public fun U128.Companion.from(b: Boolean): U128 = (if (b) U128.ONE else U128.ZERO)
 
 /**
  * Converts from [bool] to
@@ -1282,7 +1282,7 @@ public fun U128.Companion.from(b: Boolean): U128 = U128.fromLong(b.toLong())
  * ```kotlin
  * ```
  */
-public fun Int.Companion.from(b: Boolean): Int = b.toInt()
+public fun Int.Companion.from(b: Boolean): Int = (if (b) 1 else 0)
 
 /**
  * Converts from [bool] to
@@ -1293,7 +1293,7 @@ public fun Int.Companion.from(b: Boolean): Int = b.toInt()
  * ```kotlin
  * ```
  */
-public fun Byte.Companion.from(b: Boolean): Byte = b.toByte()
+public fun Byte.Companion.from(b: Boolean): Byte = (if (b) 1 else 0).toByte()
 
 /**
  * Converts from [bool] to
@@ -1304,7 +1304,7 @@ public fun Byte.Companion.from(b: Boolean): Byte = b.toByte()
  * ```kotlin
  * ```
  */
-public fun Short.Companion.from(b: Boolean): Short = b.toShort()
+public fun Short.Companion.from(b: Boolean): Short = (if (b) 1 else 0).toShort()
 
 /**
  * Converts from [bool] to
@@ -1315,7 +1315,7 @@ public fun Short.Companion.from(b: Boolean): Short = b.toShort()
  * ```kotlin
  * ```
  */
-public fun Long.Companion.from(b: Boolean): Long = b.toLong()
+public fun Long.Companion.from(b: Boolean): Long = (if (b) 1L else 0L)
 
 /**
  * Converts from [bool] to
@@ -1326,7 +1326,7 @@ public fun Long.Companion.from(b: Boolean): Long = b.toLong()
  * ```kotlin
  * ```
  */
-public fun I128.Companion.from(b: Boolean): I128 = I128.fromLong(b.toLong())
+public fun I128.Companion.from(b: Boolean): I128 = (if (b) I128.ONE else I128.ZERO)
 
 public fun UShort.Companion.from(small: UByte): UShort {
     if (false) {
@@ -1901,7 +1901,7 @@ public fun F128.Companion.from(small: Double): F128 {
  * }
  * ```
  */
-public fun F16.Companion.from(small: Boolean): F16 = F16.fromUByte((small.toUByte()))
+public fun F16.Companion.from(small: Boolean): F16 = F16.fromUByte(((if (small) 1u else 0u).toUByte()))
 
 /**
  * The resulting value is positive `0.0` for `false` and `1.0` for `true` values.
@@ -1913,7 +1913,7 @@ public fun F16.Companion.from(small: Boolean): F16 = F16.fromUByte((small.toUByt
  * check(y == 1.0)
  * ```
  */
-public fun kotlin.Float.Companion.from(small: Boolean): kotlin.Float = (small.toUByte()).toFloat()
+public fun kotlin.Float.Companion.from(small: Boolean): kotlin.Float = ((if (small) 1u else 0u).toUByte()).toFloat()
 
 /**
  * The resulting value is positive `0.0` for `false` and `1.0` for `true` values.
@@ -1925,7 +1925,7 @@ public fun kotlin.Float.Companion.from(small: Boolean): kotlin.Float = (small.to
  * check(y == 1.0)
  * ```
  */
-public fun Double.Companion.from(small: Boolean): Double = (small.toUByte()).toDouble()
+public fun Double.Companion.from(small: Boolean): Double = ((if (small) 1u else 0u).toUByte()).toDouble()
 
 /**
  * The resulting value is positive `0.0` for `false` and `1.0` for `true` values.
@@ -1940,7 +1940,7 @@ public fun Double.Companion.from(small: Boolean): Double = (small.toUByte()).toD
  * }
  * ```
  */
-public fun F128.Companion.from(small: Boolean): F128 = F128.fromUByte((small.toUByte()))
+public fun F128.Companion.from(small: Boolean): F128 = F128.fromUByte(((if (small) 1u else 0u).toUByte()))
 
 /**
  * Tries to create a bool from an integer type.

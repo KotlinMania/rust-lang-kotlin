@@ -401,7 +401,7 @@ import io.github.kotlinmania.rustlang.core.str.len
 //     var bt = mutableMapOf()
 //     bt.put(20u.toUByte(), "foo")
 //     bt.put(42u.toUByte(), "bar")
-//     val res = ubyteArrayOf(0u.toUByte(), 1u, 11u, 200u, 22u).map({ x ->
+//     val res = ubyteArrayOf(0u.toUByte(), 1u.toUByte(), 11u.toUByte(), 200u.toUByte(), 22u.toUByte()).map({ x ->
 //         // `checkedSub()` returns `None` on error
 //         (x.checkedSub(1)?.let({ x1 -> x1.checkedMul(2) })?.let({ x1 -> bt.get(x1) }) ?: "error!")!!
 //     }).collect<Vec>()
@@ -2508,7 +2508,7 @@ public open class OptionFlatten<A>(
  * ```kotlin
  * val items = mutableListOf(0u.toUShort(), 1, 2)
  * val res: List<UShort>? = ArrayDeque((ArrayDeque(items)).map({ x -> x.checkedAdd(1) })).toMutableList()
- * check(res == mutableListOf(1u, 2u, 3u))
+ * check(res == mutableListOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
  * ```
  *
  * As you can see, this will return the expected, valid items.

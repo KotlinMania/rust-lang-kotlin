@@ -27,18 +27,18 @@ public var STRINGNAMES: List<String> = listOf("cbt", "_", "cr", "csr", "tbc", "c
 public fun readLeU16(r: Read<*>): Result<UShort> {
     val b = MutableList(2) { 0 }
     when (val tryResult = r.readExact(b)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<UShort, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-    return RustResult.Ok((b[0].toUShort()) or (((b[1].toUShort()).toUInt() shl 8).toUShort()))
+    return RustResult.Ok<UShort, io.github.kotlinmania.rustlang.core.io.error.Error>((b[0].toUShort()) or (((b[1].toUShort()).toUInt() shl 8).toUShort()))
 }
 
 public fun readLeU32(r: Read<*>): Result<UInt> {
     val b = MutableList(4) { 0 }
     when (val tryResult = r.readExact(b)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<UInt, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-    return RustResult.Ok((b[0].toUInt()) or ((b[1].toUInt()) shl 8) or ((b[2].toUInt()) shl 16) or ((b[3].toUInt()) shl 24))
+    return RustResult.Ok<UInt, io.github.kotlinmania.rustlang.core.io.error.Error>((b[0].toUInt()) or ((b[1].toUInt()) shl 8) or ((b[2].toUInt()) shl 16) or ((b[3].toUInt()) shl 24))
 }
 
 public fun readByte(r: Read<*>): Result<UByte> =
     when (val matchVal = r.bytes().next()) {
-        null -> RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Other, message = "end of file")))
+        null -> RustResult.Err<UByte, io.github.kotlinmania.rustlang.core.io.error.Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Other, message = "end of file")))
         else -> {
             val s = matchVal
             s

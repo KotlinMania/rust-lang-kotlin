@@ -60,13 +60,12 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.iterMut
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -178,7 +177,7 @@ public val MIN_LEN: Int = MIN_LEN_AFTER_SPLIT
  * fun randomStatBuff(): UByte {
  *     // could actually return some random value here - let's just return
  *     // some fixed value for now
- *     return 42u
+ *     return 42u.toUByte()
  * }
  * // type inference lets us omit an explicit type signature (which
  * // would be `BTreeMap<String, UByte>` in this example).

@@ -42,7 +42,7 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.ShmattT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.SigsetT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

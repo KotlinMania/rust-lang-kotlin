@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> copysign(x: F, y: F, fromBitsFFn: (Int) -> F): F {
     var ux = x.toBits()
     val uy = y.toBits()
-    ux = ux and F.SIGN_MASK.inv()
-    ux = ux or (uy and F.SIGN_MASK)
+    ux = ux and x.SIGN_MASK.inv()
+    ux = ux or (uy and x.SIGN_MASK)
     return fromBitsFFn(ux)
 }

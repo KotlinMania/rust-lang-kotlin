@@ -5,6 +5,10 @@ package io.github.kotlinmania.rustlang.std.sys.pal.windows.c
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -15,10 +19,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
-import io.github.kotlinmania.rustlang.std.os.raw.CUint
-import io.github.kotlinmania.rustlang.std.os.raw.CUlong
-import io.github.kotlinmania.rustlang.std.os.raw.CUshort
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.AF_INET
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.AF_INET6
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.AF_UNIX

@@ -4,9 +4,9 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.float.sub
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.add.adddf3
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.add.addhf3
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.add.addsf3
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.compilerbuiltins.float.add.addkf3 as addtf3
 
 public fun subhf3(a: F16, b: F16): F16 = addhf3(a, F16.fromBits(b.toBits() xor F16.SIGN_MASK.toUShort()))

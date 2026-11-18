@@ -11,8 +11,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.iter
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.core.sync.atomic.load
@@ -124,7 +122,7 @@ public open class Backtrace(
             }
             dbg.entries(frame.symbols)
         }
-        return dbg.finish()
+        return run { dbg.finish(); Result.Ok<Unit, Error>(Unit) }
     }
 
     /**
@@ -212,7 +210,7 @@ public open class Backtrace(
             // Cache the result of reading the environment variables to make
             // backtrace captures speedy, because otherwise reading environment
             // variables every time can be somewhat slow.
-            val ENABLED: Atomic<UByte, Align1<UByte>>  = AtomicU8.new(0)
+            val ENABLED: AtomicU8  = AtomicU8.new(0u.toUByte())
             when (ENABLED.load(Relaxed)) {
                 0 -> {}
                 1 -> { return false }
@@ -236,7 +234,7 @@ public open class Backtrace(
                         }
                     } }
                 }
-            ENABLED.store(enabled.toUByte() + 1u, Relaxed)
+            ENABLED.store(enabled.toUByte() + 1u.toUByte(), Relaxed)
             return enabled
         }
 
@@ -415,7 +413,7 @@ public open class BacktraceFrame(
     public open fun fmt(fmt: StringBuilder): Result<Unit, Error> {
         val dbg = object { val entries = mutableListOf<Any?>(); fun entry(v: Any?) = apply { entries.add(v) }; fun entries(iter: Iterable<*>) = apply { for (e in iter) entries.add(e) }; fun finish() { fmt.append(entries.joinToString(", ", "[", "]")) } }
         dbg.entries(this.symbols)
-        return dbg.finish()
+        return run { dbg.finish(); Result.Ok<Unit, Error>(Unit) }
     }
 }
 

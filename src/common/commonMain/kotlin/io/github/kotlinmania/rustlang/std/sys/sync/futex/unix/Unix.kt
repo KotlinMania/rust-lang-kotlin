@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.std.sys.sync.futex.unix
 
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align4
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
+import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.core.sync.atomic.load
 import io.github.kotlinmania.rustlang.core.time.Duration
@@ -46,7 +46,7 @@ public typealias SmallPrimitive = UInt
  *
  * Returns false on timeout, and true in all other cases.
  */
-public fun futexWait(futex: Atomic<UInt, Align4<UInt>>, expected: UInt, timeout: Duration?): Boolean {
+public fun futexWait(futex: AtomicU32, expected: UInt, timeout: Duration?): Boolean {
     // Calculate the timeout as an absolute timespec.
     //
     // Overflows are rounded up to an infinite timeout (None).
@@ -73,7 +73,7 @@ public fun futexWait(futex: Atomic<UInt, Align4<UInt>>, expected: UInt, timeout:
  *
  * On some platforms, this always returns false.
  */
-public fun futexWake(futex: Atomic<UInt, Align4<UInt>>): Boolean {
+public fun futexWake(futex: AtomicU32): Boolean {
     val ptr = (constPtrFromRustCast(futex)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
     val op = FUTEX_WAKE or FUTEX_PRIVATE_FLAG
     return syscall(SysFutex, ptr.rawAddress, op.toLong(), 1L) > 0
@@ -82,7 +82,7 @@ public fun futexWake(futex: Atomic<UInt, Align4<UInt>>): Boolean {
 /**
  * Wakes up all threads that are waiting on `futexWait` on this futex.
  */
-public fun futexWakeAll(futex: Atomic<UInt, Align4<UInt>>) {
+public fun futexWakeAll(futex: AtomicU32) {
     val ptr = (constPtrFromRustCast(futex)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
     val op = FUTEX_WAKE or FUTEX_PRIVATE_FLAG
     run {

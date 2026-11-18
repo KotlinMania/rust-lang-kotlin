@@ -105,9 +105,9 @@ public fun testMmMaskPermutex2varEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val idx = mmSetEpi8(1, (1.toInt() shl 4).toByte(), 2, (1.toInt() shl 4).toByte(), 3, (1.toInt() shl 4).toByte(), 4, (1.toInt() shl 4).toByte(), 5, (1.toInt() shl 4).toByte(), 6, (1.toInt() shl 4).toByte(), 7, (1.toInt() shl 4).toByte(), 8, (1.toInt() shl 4).toByte())
     val b = mmSet1Epi8(100)
-    val r = mmMaskPermutex2varEpi8(a, 0u, idx, b)
+    val r = mmMaskPermutex2varEpi8(a, 0u.toUShort(), idx, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskPermutex2varEpi8(a, 0xFFFFu, idx, b)
+    val r1 = mmMaskPermutex2varEpi8(a, 0xFFFFu.toUShort(), idx, b)
     val e = mmSetEpi8(14, 100, 13, 100, 12, 100, 11, 100, 10, 100, 9, 100, 8, 100, 7, 100)
     assertEqM128i(r1, e)
 }
@@ -116,9 +116,9 @@ public fun testMmMaskzPermutex2varEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val idx = mmSetEpi8(1, (1.toInt() shl 4).toByte(), 2, (1.toInt() shl 4).toByte(), 3, (1.toInt() shl 4).toByte(), 4, (1.toInt() shl 4).toByte(), 5, (1.toInt() shl 4).toByte(), 6, (1.toInt() shl 4).toByte(), 7, (1.toInt() shl 4).toByte(), 8, (1.toInt() shl 4).toByte())
     val b = mmSet1Epi8(100)
-    val r = mmMaskzPermutex2varEpi8(0u, a, idx, b)
+    val r = mmMaskzPermutex2varEpi8(0u.toUShort(), a, idx, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzPermutex2varEpi8(0xFFFFu, a, idx, b)
+    val r1 = mmMaskzPermutex2varEpi8(0xFFFFu.toUShort(), a, idx, b)
     val e = mmSetEpi8(14, 100, 13, 100, 12, 100, 11, 100, 10, 100, 9, 100, 8, 100, 7, 100)
     assertEqM128i(r1, e)
 }
@@ -127,15 +127,15 @@ public fun testMmMask2Permutex2varEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val idx = mmSetEpi8(1, (1.toInt() shl 4).toByte(), 2, (1.toInt() shl 4).toByte(), 3, (1.toInt() shl 4).toByte(), 4, (1.toInt() shl 4).toByte(), 5, (1.toInt() shl 4).toByte(), 6, (1.toInt() shl 4).toByte(), 7, (1.toInt() shl 4).toByte(), 8, (1.toInt() shl 4).toByte())
     val b = mmSet1Epi8(100)
-    val r = mmMask2Permutex2varEpi8(a, idx, 0u, b)
+    val r = mmMask2Permutex2varEpi8(a, idx, 0u.toUShort(), b)
     assertEqM128i(r, idx)
-    val r1 = mmMask2Permutex2varEpi8(a, idx, 0xFFFFu, b)
+    val r1 = mmMask2Permutex2varEpi8(a, idx, 0xFFFFu.toUShort(), b)
     val e = mmSetEpi8(14, 100, 13, 100, 12, 100, 11, 100, 10, 100, 9, 100, 8, 100, 7, 100)
     assertEqM128i(r1, e)
 }
 
 public fun testMm512PermutexvarEpi8() {
-    val idxArr: UByteArray = ubyteArrayOf(34u, 58u, 27u, 72u, 19u, 38u, 53u, 0u, 44u, 15u, 29u, 81u, 20u, 35u, 62u, 6u, 24u, 49u, 10u, 68u, 22u, 57u, 40u, 13u, 52u, 1u, 30u, 95u, 16u, 33u, 4u, 55u, 26u, 47u, 11u, 74u, 21u, 59u, 36u, 8u, 50u, 3u, 28u, 99u, 14u, 45u, 61u, 2u, 18u, 39u, 7u, 64u, 23u, 54u, 9u, 127u, 12u, 31u, 88u, 5u, 42u, 17u, 0u, 63u)
+    val idxArr: UByteArray = ubyteArrayOf(34u.toUByte(), 58u.toUByte(), 27u.toUByte(), 72u.toUByte(), 19u.toUByte(), 38u.toUByte(), 53u.toUByte(), 0u.toUByte(), 44u.toUByte(), 15u.toUByte(), 29u.toUByte(), 81u.toUByte(), 20u.toUByte(), 35u.toUByte(), 62u.toUByte(), 6u.toUByte(), 24u.toUByte(), 49u.toUByte(), 10u.toUByte(), 68u.toUByte(), 22u.toUByte(), 57u.toUByte(), 40u.toUByte(), 13u.toUByte(), 52u.toUByte(), 1u.toUByte(), 30u.toUByte(), 95u.toUByte(), 16u.toUByte(), 33u.toUByte(), 4u.toUByte(), 55u.toUByte(), 26u.toUByte(), 47u.toUByte(), 11u.toUByte(), 74u.toUByte(), 21u.toUByte(), 59u.toUByte(), 36u.toUByte(), 8u.toUByte(), 50u.toUByte(), 3u.toUByte(), 28u.toUByte(), 99u.toUByte(), 14u.toUByte(), 45u.toUByte(), 61u.toUByte(), 2u.toUByte(), 18u.toUByte(), 39u.toUByte(), 7u.toUByte(), 64u.toUByte(), 23u.toUByte(), 54u.toUByte(), 9u.toUByte(), 127u.toUByte(), 12u.toUByte(), 31u.toUByte(), 88u.toUByte(), 5u.toUByte(), 42u.toUByte(), 17u.toUByte(), 0u.toUByte(), 63u.toUByte())
     val aArr: ByteArray = byteArrayOf((-93).toByte(), (-94).toByte(), (-95).toByte(), (-96).toByte(), (-97).toByte(), (-98).toByte(), (-99).toByte(), (-100).toByte(), (-101).toByte(), (-102).toByte(), (-103).toByte(), (-104).toByte(), (-105).toByte(), (-106).toByte(), (-107).toByte(), (-108).toByte(), (-109).toByte(), (-110).toByte(), (-111).toByte(), (-112).toByte(), (-113).toByte(), (-114).toByte(), (-115).toByte(), (-116).toByte(), (-117).toByte(), (-118).toByte(), (-119).toByte(), (-120).toByte(), (-121).toByte(), (-122).toByte(), (-123).toByte(), (-124).toByte(), (-125).toByte(), (-126).toByte(), (-127).toByte(), (-128).toByte(), 127, 126, 125, 124, 123, 122, 121, 120, 119, 118, 117, 116, 115, 114, 113, 112, 111, 110, 109, 108, 107, 106, 105, 104, 103, 102, 101, 100)
     val idx = transmuteWithLayouts<UByteArray, Unit>(idxArr, PrimitiveArrayLayouts.uByteArray((64).toInt()), UnresolvedTypeLayout<Unit>())
     val a = transmuteWithLayouts<ByteArray, Unit>(aArr, PrimitiveArrayLayouts.byteArray((64).toInt()), UnresolvedTypeLayout<Unit>())
@@ -166,7 +166,7 @@ public fun testMm512MaskzPermutexvarEpi8() {
 }
 
 public fun testMm256PermutexvarEpi8() {
-    val idxArr: UByteArray = ubyteArrayOf(26u, 47u, 11u, 42u, 21u, 59u, 36u, 8u, 18u, 3u, 28u, 31u, 14u, 45u, 29u, 2u, 24u, 17u, 10u, 30u, 22u, 25u, 12u, 13u, 20u, 1u, 6u, 15u, 16u, 9u, 0u, 63u)
+    val idxArr: UByteArray = ubyteArrayOf(26u.toUByte(), 47u.toUByte(), 11u.toUByte(), 42u.toUByte(), 21u.toUByte(), 59u.toUByte(), 36u.toUByte(), 8u.toUByte(), 18u.toUByte(), 3u.toUByte(), 28u.toUByte(), 31u.toUByte(), 14u.toUByte(), 45u.toUByte(), 29u.toUByte(), 2u.toUByte(), 24u.toUByte(), 17u.toUByte(), 10u.toUByte(), 30u.toUByte(), 22u.toUByte(), 25u.toUByte(), 12u.toUByte(), 13u.toUByte(), 20u.toUByte(), 1u.toUByte(), 6u.toUByte(), 15u.toUByte(), 16u.toUByte(), 9u.toUByte(), 0u.toUByte(), 63u.toUByte())
     val aArr: ByteArray = byteArrayOf((-93).toByte(), (-94).toByte(), (-95).toByte(), (-96).toByte(), (-97).toByte(), (-98).toByte(), (-99).toByte(), (-100).toByte(), (-101).toByte(), (-102).toByte(), (-103).toByte(), (-104).toByte(), (-105).toByte(), (-106).toByte(), (-107).toByte(), (-108).toByte(), (-109).toByte(), (-110).toByte(), (-111).toByte(), (-112).toByte(), (-113).toByte(), (-114).toByte(), (-115).toByte(), (-116).toByte(), (-117).toByte(), (-118).toByte(), (-119).toByte(), (-120).toByte(), (-121).toByte(), (-122).toByte(), (-123).toByte(), (-124).toByte())
     val idx = transmuteWithLayouts<UByteArray, Unit>(idxArr, PrimitiveArrayLayouts.uByteArray((32).toInt()), UnresolvedTypeLayout<Unit>())
     val a = transmuteWithLayouts<ByteArray, Unit>(aArr, PrimitiveArrayLayouts.byteArray((32).toInt()), UnresolvedTypeLayout<Unit>())
@@ -197,7 +197,7 @@ public fun testMm256MaskzPermutexvarEpi8() {
 }
 
 public fun testMmPermutexvarEpi8() {
-    val idxArr: UByteArray = ubyteArrayOf(14u, 3u, 12u, 7u, 8u, 1u, 10u, 15u, 4u, 9u, 2u, 13u, 6u, 11u, 0u, 31u)
+    val idxArr: UByteArray = ubyteArrayOf(14u.toUByte(), 3u.toUByte(), 12u.toUByte(), 7u.toUByte(), 8u.toUByte(), 1u.toUByte(), 10u.toUByte(), 15u.toUByte(), 4u.toUByte(), 9u.toUByte(), 2u.toUByte(), 13u.toUByte(), 6u.toUByte(), 11u.toUByte(), 0u.toUByte(), 31u.toUByte())
     val aArr: ByteArray = byteArrayOf((-93).toByte(), (-94).toByte(), (-95).toByte(), (-96).toByte(), (-97).toByte(), (-98).toByte(), (-99).toByte(), (-100).toByte(), (-101).toByte(), (-102).toByte(), (-103).toByte(), (-104).toByte(), (-105).toByte(), (-106).toByte(), (-107).toByte(), (-108).toByte())
     val idx = transmuteWithLayouts<UByteArray, Unit>(idxArr, PrimitiveArrayLayouts.uByteArray((16).toInt()), UnresolvedTypeLayout<Unit>())
     val a = transmuteWithLayouts<ByteArray, Unit>(aArr, PrimitiveArrayLayouts.byteArray((16).toInt()), UnresolvedTypeLayout<Unit>())
@@ -210,9 +210,9 @@ public fun testMmPermutexvarEpi8() {
 public fun testMmMaskPermutexvarEpi8() {
     val idx = mmSet1Epi8(1)
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = mmMaskPermutexvarEpi8(a, 0u, idx, a)
+    val r = mmMaskPermutexvarEpi8(a, 0u.toUShort(), idx, a)
     assertEqM128i(r, a)
-    val r1 = mmMaskPermutexvarEpi8(a, 0xFFFFu, idx, a)
+    val r1 = mmMaskPermutexvarEpi8(a, 0xFFFFu.toUShort(), idx, a)
     val e = mmSet1Epi8(14)
     assertEqM128i(r1, e)
 }
@@ -220,9 +220,9 @@ public fun testMmMaskPermutexvarEpi8() {
 public fun testMmMaskzPermutexvarEpi8() {
     val idx = mmSet1Epi8(1)
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = mmMaskzPermutexvarEpi8(0u, idx, a)
+    val r = mmMaskzPermutexvarEpi8(0u.toUShort(), idx, a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzPermutexvarEpi8(0xFFFFu, idx, a)
+    val r1 = mmMaskzPermutexvarEpi8(0xFFFFu.toUShort(), idx, a)
     val e = mmSet1Epi8(14)
     assertEqM128i(r1, e)
 }
@@ -294,9 +294,9 @@ public fun testMmMultishiftEpi64Epi8() {
 public fun testMmMaskMultishiftEpi64Epi8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(1)
-    val r = mmMaskMultishiftEpi64Epi8(a, 0u, a, b)
+    val r = mmMaskMultishiftEpi64Epi8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMultishiftEpi64Epi8(a, 0xFFFFu, a, b)
+    val r1 = mmMaskMultishiftEpi64Epi8(a, 0xFFFFu.toUShort(), a, b)
     val e = mmSet1Epi8((1.toInt() shl 7).toByte())
     assertEqM128i(r1, e)
 }
@@ -304,9 +304,9 @@ public fun testMmMaskMultishiftEpi64Epi8() {
 public fun testMmMaskzMultishiftEpi64Epi8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(1)
-    val r = mmMaskzMultishiftEpi64Epi8(0u, a, b)
+    val r = mmMaskzMultishiftEpi64Epi8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMultishiftEpi64Epi8(0xFFFFu, a, b)
+    val r1 = mmMaskzMultishiftEpi64Epi8(0xFFFFu.toUShort(), a, b)
     val e = mmSet1Epi8((1.toInt() shl 7).toByte())
     assertEqM128i(r1, e)
 }

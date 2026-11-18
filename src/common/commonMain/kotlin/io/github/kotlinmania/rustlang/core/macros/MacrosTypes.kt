@@ -267,7 +267,7 @@ public fun optionEnv(name: String = ""): String =
  *
  * @feature(concatBytes)
  * public fun doctestEntry() {
- *     val s: UByteArray = concatBytes(65u.toUByte(), "BC".encodeToByteArray().toUByteArray(), ubyteArrayOf(68u, 69u.toUByte(), 70u))
+ *     val s: UByteArray = concatBytes(65u.toUByte(), "BC".encodeToByteArray().toUByteArray(), ubyteArrayOf(68u.toUByte(), 69u.toUByte(), 70u.toUByte()))
  *     check(s == "ABCDEF".encodeToByteArray())
  * }
  * ```

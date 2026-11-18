@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.unix.net.ancillary
 
 import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
@@ -51,7 +52,6 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.MSG_TRUNC
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Ucred
 import io.github.kotlinmania.rustlang.libc.wasi.SOL_SOCKET
 import io.github.kotlinmania.rustlang.std.os.fd.RawFd
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.unix.net.SockaddrUn
 import io.github.kotlinmania.rustlang.std.os.unix.net.SocketAddr
 import io.github.kotlinmania.rustlang.std.path.Path

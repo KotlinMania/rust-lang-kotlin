@@ -466,7 +466,7 @@ public fun ConstPtr.byteOffset(count: Int): ConstPtr {
  *
  * public fun doctestEntry(): Result<Unit> {
  *     // Iterate using a raw pointer in increments of two elements
- *     val data = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u)
+ *     val data = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte())
  *     var ptr: ConstPtr = data.asPtr()
  *     val step = 2
  *     val endRoundedUp = ConstPtr((ptr).rawAddress + ((6).toLong() * (PrimitiveLayouts.U8).strideBytes))
@@ -951,7 +951,7 @@ public fun ConstPtr.byteSub(count: Int): ConstPtr {
  *
  * public fun doctestEntry(): Result<Unit> {
  *     // Iterate using a raw pointer in increments of two elements
- *     val data = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u)
+ *     val data = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte())
  *     var ptr: ConstPtr = data.asPtr()
  *     val step = 2
  *     val endRoundedUp = ConstPtr((ptr).rawAddress + ((6).toLong() * (PrimitiveLayouts.U8).strideBytes))
@@ -1023,7 +1023,7 @@ public fun ConstPtr.wrappingByteAdd(count: Int): ConstPtr = ConstPtr((ConstPtr((
  *
  * public fun doctestEntry(): Result<Unit> {
  *     // Iterate using a raw pointer in increments of two elements (backwards)
- *     val data = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u)
+ *     val data = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte())
  *     var ptr: ConstPtr = data.asPtr()
  *     val startRoundedDown = ConstPtr((ptr).rawAddress - ((2).toLong() * (PrimitiveLayouts.U8).strideBytes))
  *     ptr = ConstPtr((ptr).rawAddress + ((4).toLong() * (PrimitiveLayouts.U8).strideBytes))
@@ -1160,12 +1160,12 @@ public fun <T> ConstPtr.copyToNonoverlapping(dest: MutPtr, count: Int, typeLayou
  *
  * public fun doctestEntry() {
  *     run {
- *         val x = ubyteArrayOf(5u.toUByte(), 6u, 7u, 8u, 9u)
+ *         val x = ubyteArrayOf(5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte())
  *         val ptr = x.asPtr()
  *         val offset = ptr.alignOffset(alignOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))
  *         if (offset < x.size - 1) {
  *             val u16Ptr = ConstPtr((ConstPtr((ptr).rawAddress + ((offset).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress)
- *             check((PrimitiveLayouts.U16).readNative((u16Ptr).rawAddress) == run { val bytesTmp0 = ubyteArrayOf(5u, 6u); ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort() } || (PrimitiveLayouts.U16).readNative((u16Ptr).rawAddress) == run { val bytesTmp1 = ubyteArrayOf(6u, 7u); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
+ *             check((PrimitiveLayouts.U16).readNative((u16Ptr).rawAddress) == run { val bytesTmp0 = ubyteArrayOf(5u.toUByte(), 6u.toUByte()); ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort() } || (PrimitiveLayouts.U16).readNative((u16Ptr).rawAddress) == run { val bytesTmp1 = ubyteArrayOf(6u.toUByte(), 7u.toUByte()); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
  *         } else {
  *             // while the pointer can be aligned via `offset`, it would point
  *             // outside the allocation

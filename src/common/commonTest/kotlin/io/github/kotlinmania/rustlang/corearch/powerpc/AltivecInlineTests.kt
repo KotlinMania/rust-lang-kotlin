@@ -1355,7 +1355,7 @@ public fun testVecAvgI16x8() {
 }
 
 public fun testVecAvgU16x8() {
-    val a: VectorUnsignedShort = Simd<UShort>((ushortArrayOf(UShort.MAX_VALUE, 0u, 1u, 2u, 0u, 0u, 0u, 0u)).toList()).into()
+    val a: VectorUnsignedShort = Simd<UShort>((ushortArrayOf(UShort.MAX_VALUE, 0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())).toList()).into()
     val b: VectorUnsignedShort = Simd<UShort>((listOf(2, 1, 0, 0, 0, 0, 0, 0)).toList()).into()
     val d = Simd<UShort>((listOf(32769, 1, 1, 1, 0, 0, 0, 0)).toList())
     val r = U16x8.from(vecAvg(a, b))
@@ -1371,7 +1371,7 @@ public fun testVecAvgI8x16() {
 }
 
 public fun testVecAvgU8x16() {
-    val a: VectorUnsignedChar = Simd<UByte>((ubyteArrayOf(UByte.MAX_VALUE, 0u, 1u, 2u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)).toList()).into()
+    val a: VectorUnsignedChar = Simd<UByte>((ubyteArrayOf(UByte.MAX_VALUE, 0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())).toList()).into()
     val b: VectorUnsignedChar = Simd<UByte>((listOf(2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)).toList()).into()
     val d = Simd<UByte>((listOf(129, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)).toList())
     val r = U8x16.from(vecAvg(a, b))
@@ -1403,9 +1403,9 @@ public fun testVecAddsI16x8() {
 }
 
 public fun testVecAddsU16x8() {
-    val a: VectorUnsignedShort = Simd<UShort>((ushortArrayOf(UShort.MAX_VALUE, 0u, 1u, 2u, 0u, 0u, 0u, 0u)).toList()).into()
+    val a: VectorUnsignedShort = Simd<UShort>((ushortArrayOf(UShort.MAX_VALUE, 0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())).toList()).into()
     val b: VectorUnsignedShort = Simd<UShort>((listOf(2, 1, 0, 0, 0, 0, 0, 0)).toList()).into()
-    val d = Simd<UShort>((ushortArrayOf(UShort.MAX_VALUE, 1u, 1u, 2u, 0u, 0u, 0u, 0u)).toList())
+    val d = Simd<UShort>((ushortArrayOf(UShort.MAX_VALUE, 1u.toUShort(), 1u.toUShort(), 2u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())).toList())
     val r = U16x8.from(vecAdds(a, b))
     check(d == r)
 }
@@ -1419,9 +1419,9 @@ public fun testVecAddsI8x16() {
 }
 
 public fun testVecAddsU8x16() {
-    val a: VectorUnsignedChar = Simd<UByte>((ubyteArrayOf(UByte.MAX_VALUE, 0u, 1u, 2u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)).toList()).into()
+    val a: VectorUnsignedChar = Simd<UByte>((ubyteArrayOf(UByte.MAX_VALUE, 0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())).toList()).into()
     val b: VectorUnsignedChar = Simd<UByte>((listOf(2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)).toList()).into()
-    val d = Simd<UByte>((ubyteArrayOf(UByte.MAX_VALUE, 1u, 1u, 2u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)).toList())
+    val d = Simd<UByte>((ubyteArrayOf(UByte.MAX_VALUE, 1u.toUByte(), 1u.toUByte(), 2u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())).toList())
     val r = U8x16.from(vecAdds(a, b))
     check(d == r)
 }
@@ -1932,7 +1932,7 @@ public fun testVecMsumSignedChar() {
 }
 
 public fun testVecMsumUnsignedShort() {
-    val a = VectorUnsignedShort.from(Simd<UShort>(listOf((0u * 256u).toUShort(), (1u * 256u).toUShort(), (2u * 256u).toUShort(), (3u * 256u).toUShort(), (4u * 256u).toUShort(), (5u * 256u).toUShort(), (6u * 256u).toUShort(), (7u * 256u).toUShort())))
+    val a = VectorUnsignedShort.from(Simd<UShort>(listOf(0u.toUShort() * 256u.toUShort(), 1u.toUShort() * 256u.toUShort(), 2u.toUShort() * 256u.toUShort(), 3u.toUShort() * 256u.toUShort(), 4u.toUShort() * 256u.toUShort(), 5u.toUShort() * 256u.toUShort(), 6u.toUShort() * 256u.toUShort(), 7u.toUShort() * 256u.toUShort())))
     val b = VectorUnsignedShort.from(Simd<UShort>(listOf(256u.toUShort(), 256u.toUShort(), 256u.toUShort(), 256u.toUShort(), 256u.toUShort(), 256u.toUShort(), 256u.toUShort(), 256u.toUShort())))
     val c = VectorUnsignedInt.from(Simd<UInt>(listOf(0u, 1u, 2u, 3u)))
     val d = Simd<UInt>(listOf((0u + 1u) * 256u * 256u + 0u, (2u + 3u) * 256u * 256u + 1u, (4u + 5u) * 256u * 256u + 2u, (6u + 7u) * 256u * 256u + 3u))
@@ -1948,7 +1948,7 @@ public fun testVecMsumSignedShort() {
 }
 
 public fun testVecMsumsUnsigned() {
-    val a = VectorUnsignedShort.from(Simd<UShort>(listOf((0u * 256u).toUShort(), (1u * 256u).toUShort(), (2u * 256u).toUShort(), (3u * 256u).toUShort(), (4u * 256u).toUShort(), (5u * 256u).toUShort(), (6u * 256u).toUShort(), (7u * 256u).toUShort())))
+    val a = VectorUnsignedShort.from(Simd<UShort>(listOf(0u.toUShort() * 256u.toUShort(), 1u.toUShort() * 256u.toUShort(), 2u.toUShort() * 256u.toUShort(), 3u.toUShort() * 256u.toUShort(), 4u.toUShort() * 256u.toUShort(), 5u.toUShort() * 256u.toUShort(), 6u.toUShort() * 256u.toUShort(), 7u.toUShort() * 256u.toUShort())))
     val b = VectorUnsignedShort.from(Simd<UShort>(listOf(256u.toUShort(), 256u.toUShort(), 256u.toUShort(), 256u.toUShort(), 256u.toUShort(), 256u.toUShort(), 256u.toUShort(), 256u.toUShort())))
     val c = VectorUnsignedInt.from(Simd<UInt>(listOf(0u, 1u, 2u, 3u)))
     val d = Simd<UInt>(listOf((0u + 1u) * 256u * 256u + 0u, (2u + 3u) * 256u * 256u + 1u, (4u + 5u) * 256u * 256u + 2u, (6u + 7u) * 256u * 256u + 3u))
@@ -1993,7 +1993,7 @@ public fun testVecSum4sSignedShort() {
 
 public fun testVecMuleUnsignedChar() {
     val a = VectorUnsignedChar.from(Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte())))
-    val d = Simd<UShort>(listOf((0u * 0u).toUShort(), (2u * 2u).toUShort(), (4u * 4u).toUShort(), (6u * 6u).toUShort(), (0u * 0u).toUShort(), (2u * 2u).toUShort(), (4u * 4u).toUShort(), (6u * 6u).toUShort()))
+    val d = Simd<UShort>(listOf(0u.toUShort() * 0u.toUShort(), 2u.toUShort() * 2u.toUShort(), 4u.toUShort() * 4u.toUShort(), 6u.toUShort() * 6u.toUShort(), 0u.toUShort() * 0u.toUShort(), 2u.toUShort() * 2u.toUShort(), 4u.toUShort() * 4u.toUShort(), 6u.toUShort() * 6u.toUShort()))
     check(d == U16x8.from(vecMule(a, a)))
 }
 
@@ -2017,7 +2017,7 @@ public fun testVecMuleSignedShort() {
 
 public fun testVecMuloUnsignedChar() {
     val a = VectorUnsignedChar.from(Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte())))
-    val d = Simd<UShort>(listOf((1u * 1u).toUShort(), (3u * 3u).toUShort(), (5u * 5u).toUShort(), (7u * 7u).toUShort(), (1u * 1u).toUShort(), (3u * 3u).toUShort(), (5u * 5u).toUShort(), (7u * 7u).toUShort()))
+    val d = Simd<UShort>(listOf(1u.toUShort() * 1u.toUShort(), 3u.toUShort() * 3u.toUShort(), 5u.toUShort() * 5u.toUShort(), 7u.toUShort() * 7u.toUShort(), 1u.toUShort() * 1u.toUShort(), 3u.toUShort() * 3u.toUShort(), 5u.toUShort() * 5u.toUShort(), 7u.toUShort() * 7u.toUShort()))
     check(d == U16x8.from(vecMulo(a, a)))
 }
 

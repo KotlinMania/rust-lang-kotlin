@@ -111,15 +111,15 @@ public fun doCountChars(s: String): Int {
 // false), and bytes which are non-continuation bytes are left as `0x01` (e.g.
 // true)
 public fun containsNonContinuationByte(w: Int): Int {
-    val LSB: Int = Int.repeatU8(0x01u)
+    val LSB: Int = Int.repeatU8(0x01u.toUByte())
     return ((w.inv() shr 7) or (w shr 6)) and LSB
 }
 
 // Morally equivalent to `values.toNeBytes().intoIter().sum<Int>()`, but
 // more efficient.
 public fun sumBytesInUsize(values: Int): Int {
-    val LSB_SHORTS: Int = Int.repeatU16(0x0001u)
-    val SKIP_BYTES: Int = Int.repeatU16(0x00ffu)
+    val LSB_SHORTS: Int = Int.repeatU16(0x0001u.toUShort())
+    val SKIP_BYTES: Int = Int.repeatU16(0x00ffu.toUShort())
     val pairSum: Int = (values and SKIP_BYTES) + ((values shr 8) and SKIP_BYTES)
     return (pairSum * (LSB_SHORTS.toInt())) shr ((USIZE_SIZE - 2) * 8)
 }

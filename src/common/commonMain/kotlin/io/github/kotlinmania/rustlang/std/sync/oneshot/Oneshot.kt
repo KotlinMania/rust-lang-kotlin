@@ -13,7 +13,7 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 //
 // This is an experimental module, so the API will likely change.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -38,7 +38,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -455,8 +455,8 @@ public sealed class TryRecvError<T> {
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is TryRecvError.Empty<*> -> "receiving on an empty oneshot channel".fmt(f)
-            is TryRecvError.Disconnected<*> -> "receiving on a closed oneshot channel".fmt(f)
+            is TryRecvError.Empty<*> -> run { f.append("receiving on an empty oneshot channel"); Result.Ok<Unit, Error>(Unit) }
+            is TryRecvError.Disconnected<*> -> run { f.append("receiving on a closed oneshot channel"); Result.Ok<Unit, Error>(Unit) }
         }
 
     public companion object {
@@ -535,8 +535,8 @@ public sealed class RecvTimeoutError<T> {
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is RecvTimeoutError.Timeout<*> -> "timed out waiting on oneshot channel".fmt(f)
-            is RecvTimeoutError.Disconnected<*> -> "receiving on a closed oneshot channel".fmt(f)
+            is RecvTimeoutError.Timeout<*> -> run { f.append("timed out waiting on oneshot channel"); Result.Ok<Unit, Error>(Unit) }
+            is RecvTimeoutError.Disconnected<*> -> run { f.append("receiving on a closed oneshot channel"); Result.Ok<Unit, Error>(Unit) }
         }
 
     public companion object {

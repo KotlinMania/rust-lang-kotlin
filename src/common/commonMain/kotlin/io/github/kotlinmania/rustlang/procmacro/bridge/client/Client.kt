@@ -9,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.procmacro.bridge.ApiTags
 import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
 import io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic

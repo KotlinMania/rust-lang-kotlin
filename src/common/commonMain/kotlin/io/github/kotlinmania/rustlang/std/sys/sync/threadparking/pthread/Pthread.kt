@@ -6,8 +6,6 @@ import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Acquire
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
@@ -26,14 +24,11 @@ public val PARKED: Int = 1
 
 public val NOTIFIED: Int = 2
 
-public open class Parker internal constructor(
-    stateCtorArg: Atomic<Int, Align8<Int>>,
+public open class Parker(
+    public var state: AtomicUsize,
     public var lock: Mutex,
     public var cvar: Condvar,
 ) {
-    public var state: Atomic<Int, Align8<Int>> = stateCtorArg
-        internal set
-
     public open fun lock(): Pin<Mutex> = this.mapUnchecked({ p -> p.lock })
 
     public open fun cvar(): Pin<Condvar> = this.mapUnchecked({ p -> p.cvar })
@@ -169,16 +164,6 @@ public open class Parker internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(
-            state: Atomic<Int, Align8<Int>>,
-            lock: Mutex,
-            cvar: Condvar,
-        ): Parker = Parker(
-            stateCtorArg = state,
-            lock = lock,
-            cvar = cvar,
-        )
-
         /**
          * Constructs the UNIX parker in-place.
          *

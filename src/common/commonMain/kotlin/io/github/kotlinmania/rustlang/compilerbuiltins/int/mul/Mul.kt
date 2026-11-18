@@ -1,13 +1,13 @@
 // port-lint: source int/mul.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.mul
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.DInt
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 public interface Mul<T> : DInt, Int {
     public fun mul(rhs: T): T
@@ -150,21 +150,21 @@ public fun multi3(a: I128, b: I128): I128 = a.mul(b)
 public fun mulosi4(a: Int, b: Int, oflow: RustMutableReference<Int>): Int {
     val oflow1 = oflow
     val (mul, o) = i32OverflowingMul(a, b)
-    (oflow1).write(o.toInt())
+    (oflow1).write((if (o) 1 else 0))
     return mul
 }
 
 public fun mulodi4(a: Long, b: Long, oflow: RustMutableReference<Int>): Long {
     val oflow1 = oflow
     val (mul, o) = i64OverflowingMul(a, b)
-    (oflow1).write(o.toInt())
+    (oflow1).write((if (o) 1 else 0))
     return mul
 }
 
 public fun muloti4(a: I128, b: I128, oflow: RustMutableReference<Int>): I128 {
     val oflow1 = oflow
     val (mul, o) = i128OverflowingMul(a, b)
-    (oflow1).write(o.toInt())
+    (oflow1).write((if (o) 1 else 0))
     return mul
 }
 

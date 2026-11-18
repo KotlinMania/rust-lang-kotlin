@@ -204,9 +204,9 @@ public fun testTileRelease() {
     }
 }
 
-public val BF16_1: UShort = 0x3f80u
+public val BF16_1: UShort = 0x3f80u.toUShort()
 
-public val BF16_2: UShort = 0x4000u
+public val BF16_2: UShort = 0x4000u.toUShort()
 
 public fun testTileDpbf16ps() {
     run {
@@ -396,13 +396,13 @@ public fun testTileCmmrlfp16ps() {
     }
 }
 
-public val BF8_ONE: UByte = 0x3cu
+public val BF8_ONE: UByte = 0x3cu.toUByte()
 
-public val BF8_TWO: UByte = 0x40u
+public val BF8_TWO: UByte = 0x40u.toUByte()
 
-public val HF8_ONE: UByte = 0x38u
+public val HF8_ONE: UByte = 0x38u.toUByte()
 
-public val HF8_TWO: UByte = 0x40u
+public val HF8_TWO: UByte = 0x40u.toUByte()
 
 public fun testTileDpbf8ps() {
     run {

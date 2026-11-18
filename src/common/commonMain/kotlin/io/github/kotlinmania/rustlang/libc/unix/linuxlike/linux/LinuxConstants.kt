@@ -1696,169 +1696,169 @@ public val IW_EV_POINT_PK_LEN: Int = 8
 
 // IW_EV_LCP_PK_LEN + 4;
 // linux/neighbor.h
-public val NUD_NONE: UShort = 0x00u
+public val NUD_NONE: UShort = 0x00u.toUShort()
 
-public val NUD_INCOMPLETE: UShort = 0x01u
+public val NUD_INCOMPLETE: UShort = 0x01u.toUShort()
 
-public val NUD_REACHABLE: UShort = 0x02u
+public val NUD_REACHABLE: UShort = 0x02u.toUShort()
 
-public val NUD_STALE: UShort = 0x04u
+public val NUD_STALE: UShort = 0x04u.toUShort()
 
-public val NUD_DELAY: UShort = 0x08u
+public val NUD_DELAY: UShort = 0x08u.toUShort()
 
-public val NUD_PROBE: UShort = 0x10u
+public val NUD_PROBE: UShort = 0x10u.toUShort()
 
-public val NUD_FAILED: UShort = 0x20u
+public val NUD_FAILED: UShort = 0x20u.toUShort()
 
-public val NUD_NOARP: UShort = 0x40u
+public val NUD_NOARP: UShort = 0x40u.toUShort()
 
-public val NUD_PERMANENT: UShort = 0x80u
+public val NUD_PERMANENT: UShort = 0x80u.toUShort()
 
-public val NTF_USE: UByte = 0x01u
+public val NTF_USE: UByte = 0x01u.toUByte()
 
-public val NTF_SELF: UByte = 0x02u
+public val NTF_SELF: UByte = 0x02u.toUByte()
 
-public val NTF_MASTER: UByte = 0x04u
+public val NTF_MASTER: UByte = 0x04u.toUByte()
 
-public val NTF_PROXY: UByte = 0x08u
+public val NTF_PROXY: UByte = 0x08u.toUByte()
 
-public val NTF_ROUTER: UByte = 0x80u
+public val NTF_ROUTER: UByte = 0x80u.toUByte()
 
-public val NDA_UNSPEC: CUshort = 0u
+public val NDA_UNSPEC: CUshort = 0u.toUShort()
 
-public val NDA_DST: CUshort = 1u
+public val NDA_DST: CUshort = 1u.toUShort()
 
-public val NDA_LLADDR: CUshort = 2u
+public val NDA_LLADDR: CUshort = 2u.toUShort()
 
-public val NDA_CACHEINFO: CUshort = 3u
+public val NDA_CACHEINFO: CUshort = 3u.toUShort()
 
-public val NDA_PROBES: CUshort = 4u
+public val NDA_PROBES: CUshort = 4u.toUShort()
 
-public val NDA_VLAN: CUshort = 5u
+public val NDA_VLAN: CUshort = 5u.toUShort()
 
-public val NDA_PORT: CUshort = 6u
+public val NDA_PORT: CUshort = 6u.toUShort()
 
-public val NDA_VNI: CUshort = 7u
+public val NDA_VNI: CUshort = 7u.toUShort()
 
-public val NDA_IFINDEX: CUshort = 8u
+public val NDA_IFINDEX: CUshort = 8u.toUShort()
 
 // linux/netlink.h
 public val NLM_F_BULK: CInt = 0x200
 
 // linux/rtnetlink.h
-public val TCA_UNSPEC: CUshort = 0u
+public val TCA_UNSPEC: CUshort = 0u.toUShort()
 
-public val TCA_KIND: CUshort = 1u
+public val TCA_KIND: CUshort = 1u.toUShort()
 
-public val TCA_OPTIONS: CUshort = 2u
+public val TCA_OPTIONS: CUshort = 2u.toUShort()
 
-public val TCA_STATS: CUshort = 3u
+public val TCA_STATS: CUshort = 3u.toUShort()
 
-public val TCA_XSTATS: CUshort = 4u
+public val TCA_XSTATS: CUshort = 4u.toUShort()
 
-public val TCA_RATE: CUshort = 5u
+public val TCA_RATE: CUshort = 5u.toUShort()
 
-public val TCA_FCNT: CUshort = 6u
+public val TCA_FCNT: CUshort = 6u.toUShort()
 
-public val TCA_STATS2: CUshort = 7u
+public val TCA_STATS2: CUshort = 7u.toUShort()
 
-public val TCA_STAB: CUshort = 8u
+public val TCA_STAB: CUshort = 8u.toUShort()
 
-public val RTM_NEWLINK: UShort = 16u
+public val RTM_NEWLINK: UShort = 16u.toUShort()
 
-public val RTM_DELLINK: UShort = 17u
+public val RTM_DELLINK: UShort = 17u.toUShort()
 
-public val RTM_GETLINK: UShort = 18u
+public val RTM_GETLINK: UShort = 18u.toUShort()
 
-public val RTM_SETLINK: UShort = 19u
+public val RTM_SETLINK: UShort = 19u.toUShort()
 
-public val RTM_NEWADDR: UShort = 20u
+public val RTM_NEWADDR: UShort = 20u.toUShort()
 
-public val RTM_DELADDR: UShort = 21u
+public val RTM_DELADDR: UShort = 21u.toUShort()
 
-public val RTM_GETADDR: UShort = 22u
+public val RTM_GETADDR: UShort = 22u.toUShort()
 
-public val RTM_NEWROUTE: UShort = 24u
+public val RTM_NEWROUTE: UShort = 24u.toUShort()
 
-public val RTM_DELROUTE: UShort = 25u
+public val RTM_DELROUTE: UShort = 25u.toUShort()
 
-public val RTM_GETROUTE: UShort = 26u
+public val RTM_GETROUTE: UShort = 26u.toUShort()
 
-public val RTM_NEWNEIGH: UShort = 28u
+public val RTM_NEWNEIGH: UShort = 28u.toUShort()
 
-public val RTM_DELNEIGH: UShort = 29u
+public val RTM_DELNEIGH: UShort = 29u.toUShort()
 
-public val RTM_GETNEIGH: UShort = 30u
+public val RTM_GETNEIGH: UShort = 30u.toUShort()
 
-public val RTM_NEWRULE: UShort = 32u
+public val RTM_NEWRULE: UShort = 32u.toUShort()
 
-public val RTM_DELRULE: UShort = 33u
+public val RTM_DELRULE: UShort = 33u.toUShort()
 
-public val RTM_GETRULE: UShort = 34u
+public val RTM_GETRULE: UShort = 34u.toUShort()
 
-public val RTM_NEWQDISC: UShort = 36u
+public val RTM_NEWQDISC: UShort = 36u.toUShort()
 
-public val RTM_DELQDISC: UShort = 37u
+public val RTM_DELQDISC: UShort = 37u.toUShort()
 
-public val RTM_GETQDISC: UShort = 38u
+public val RTM_GETQDISC: UShort = 38u.toUShort()
 
-public val RTM_NEWTCLASS: UShort = 40u
+public val RTM_NEWTCLASS: UShort = 40u.toUShort()
 
-public val RTM_DELTCLASS: UShort = 41u
+public val RTM_DELTCLASS: UShort = 41u.toUShort()
 
-public val RTM_GETTCLASS: UShort = 42u
+public val RTM_GETTCLASS: UShort = 42u.toUShort()
 
-public val RTM_NEWTFILTER: UShort = 44u
+public val RTM_NEWTFILTER: UShort = 44u.toUShort()
 
-public val RTM_DELTFILTER: UShort = 45u
+public val RTM_DELTFILTER: UShort = 45u.toUShort()
 
-public val RTM_GETTFILTER: UShort = 46u
+public val RTM_GETTFILTER: UShort = 46u.toUShort()
 
-public val RTM_NEWACTION: UShort = 48u
+public val RTM_NEWACTION: UShort = 48u.toUShort()
 
-public val RTM_DELACTION: UShort = 49u
+public val RTM_DELACTION: UShort = 49u.toUShort()
 
-public val RTM_GETACTION: UShort = 50u
+public val RTM_GETACTION: UShort = 50u.toUShort()
 
-public val RTM_NEWPREFIX: UShort = 52u
+public val RTM_NEWPREFIX: UShort = 52u.toUShort()
 
-public val RTM_GETMULTICAST: UShort = 58u
+public val RTM_GETMULTICAST: UShort = 58u.toUShort()
 
-public val RTM_GETANYCAST: UShort = 62u
+public val RTM_GETANYCAST: UShort = 62u.toUShort()
 
-public val RTM_NEWNEIGHTBL: UShort = 64u
+public val RTM_NEWNEIGHTBL: UShort = 64u.toUShort()
 
-public val RTM_GETNEIGHTBL: UShort = 66u
+public val RTM_GETNEIGHTBL: UShort = 66u.toUShort()
 
-public val RTM_SETNEIGHTBL: UShort = 67u
+public val RTM_SETNEIGHTBL: UShort = 67u.toUShort()
 
-public val RTM_NEWNDUSEROPT: UShort = 68u
+public val RTM_NEWNDUSEROPT: UShort = 68u.toUShort()
 
-public val RTM_NEWADDRLABEL: UShort = 72u
+public val RTM_NEWADDRLABEL: UShort = 72u.toUShort()
 
-public val RTM_DELADDRLABEL: UShort = 73u
+public val RTM_DELADDRLABEL: UShort = 73u.toUShort()
 
-public val RTM_GETADDRLABEL: UShort = 74u
+public val RTM_GETADDRLABEL: UShort = 74u.toUShort()
 
-public val RTM_GETDCB: UShort = 78u
+public val RTM_GETDCB: UShort = 78u.toUShort()
 
-public val RTM_SETDCB: UShort = 79u
+public val RTM_SETDCB: UShort = 79u.toUShort()
 
-public val RTM_NEWNETCONF: UShort = 80u
+public val RTM_NEWNETCONF: UShort = 80u.toUShort()
 
-public val RTM_GETNETCONF: UShort = 82u
+public val RTM_GETNETCONF: UShort = 82u.toUShort()
 
-public val RTM_NEWMDB: UShort = 84u
+public val RTM_NEWMDB: UShort = 84u.toUShort()
 
-public val RTM_DELMDB: UShort = 85u
+public val RTM_DELMDB: UShort = 85u.toUShort()
 
-public val RTM_GETMDB: UShort = 86u
+public val RTM_GETMDB: UShort = 86u.toUShort()
 
-public val RTM_NEWNSID: UShort = 88u
+public val RTM_NEWNSID: UShort = 88u.toUShort()
 
-public val RTM_DELNSID: UShort = 89u
+public val RTM_DELNSID: UShort = 89u.toUShort()
 
-public val RTM_GETNSID: UShort = 90u
+public val RTM_GETNSID: UShort = 90u.toUShort()
 
 public val RTM_F_NOTIFY: CUint = 0x100u
 
@@ -1868,98 +1868,98 @@ public val RTM_F_EQUALIZE: CUint = 0x400u
 
 public val RTM_F_PREFIX: CUint = 0x800u
 
-public val RTA_UNSPEC: CUshort = 0u
+public val RTA_UNSPEC: CUshort = 0u.toUShort()
 
-public val RTA_DST: CUshort = 1u
+public val RTA_DST: CUshort = 1u.toUShort()
 
-public val RTA_SRC: CUshort = 2u
+public val RTA_SRC: CUshort = 2u.toUShort()
 
-public val RTA_IIF: CUshort = 3u
+public val RTA_IIF: CUshort = 3u.toUShort()
 
-public val RTA_OIF: CUshort = 4u
+public val RTA_OIF: CUshort = 4u.toUShort()
 
-public val RTA_GATEWAY: CUshort = 5u
+public val RTA_GATEWAY: CUshort = 5u.toUShort()
 
-public val RTA_PRIORITY: CUshort = 6u
+public val RTA_PRIORITY: CUshort = 6u.toUShort()
 
-public val RTA_PREFSRC: CUshort = 7u
+public val RTA_PREFSRC: CUshort = 7u.toUShort()
 
-public val RTA_METRICS: CUshort = 8u
+public val RTA_METRICS: CUshort = 8u.toUShort()
 
-public val RTA_MULTIPATH: CUshort = 9u
+public val RTA_MULTIPATH: CUshort = 9u.toUShort()
 
-public val RTA_PROTOINFO: CUshort = 10u
-
-// No longer used
-public val RTA_FLOW: CUshort = 11u
-
-public val RTA_CACHEINFO: CUshort = 12u
-
-public val RTA_SESSION: CUshort = 13u
+public val RTA_PROTOINFO: CUshort = 10u.toUShort()
 
 // No longer used
-public val RTA_MP_ALGO: CUshort = 14u
+public val RTA_FLOW: CUshort = 11u.toUShort()
+
+public val RTA_CACHEINFO: CUshort = 12u.toUShort()
+
+public val RTA_SESSION: CUshort = 13u.toUShort()
 
 // No longer used
-public val RTA_TABLE: CUshort = 15u
+public val RTA_MP_ALGO: CUshort = 14u.toUShort()
 
-public val RTA_MARK: CUshort = 16u
+// No longer used
+public val RTA_TABLE: CUshort = 15u.toUShort()
 
-public val RTA_MFC_STATS: CUshort = 17u
+public val RTA_MARK: CUshort = 16u.toUShort()
 
-public val RTN_UNSPEC: CUchar = 0u
+public val RTA_MFC_STATS: CUshort = 17u.toUShort()
 
-public val RTN_UNICAST: CUchar = 1u
+public val RTN_UNSPEC: CUchar = 0u.toUByte()
 
-public val RTN_LOCAL: CUchar = 2u
+public val RTN_UNICAST: CUchar = 1u.toUByte()
 
-public val RTN_BROADCAST: CUchar = 3u
+public val RTN_LOCAL: CUchar = 2u.toUByte()
 
-public val RTN_ANYCAST: CUchar = 4u
+public val RTN_BROADCAST: CUchar = 3u.toUByte()
 
-public val RTN_MULTICAST: CUchar = 5u
+public val RTN_ANYCAST: CUchar = 4u.toUByte()
 
-public val RTN_BLACKHOLE: CUchar = 6u
+public val RTN_MULTICAST: CUchar = 5u.toUByte()
 
-public val RTN_UNREACHABLE: CUchar = 7u
+public val RTN_BLACKHOLE: CUchar = 6u.toUByte()
 
-public val RTN_PROHIBIT: CUchar = 8u
+public val RTN_UNREACHABLE: CUchar = 7u.toUByte()
 
-public val RTN_THROW: CUchar = 9u
+public val RTN_PROHIBIT: CUchar = 8u.toUByte()
 
-public val RTN_NAT: CUchar = 10u
+public val RTN_THROW: CUchar = 9u.toUByte()
 
-public val RTN_XRESOLVE: CUchar = 11u
+public val RTN_NAT: CUchar = 10u.toUByte()
 
-public val RTPROT_UNSPEC: CUchar = 0u
+public val RTN_XRESOLVE: CUchar = 11u.toUByte()
 
-public val RTPROT_REDIRECT: CUchar = 1u
+public val RTPROT_UNSPEC: CUchar = 0u.toUByte()
 
-public val RTPROT_KERNEL: CUchar = 2u
+public val RTPROT_REDIRECT: CUchar = 1u.toUByte()
 
-public val RTPROT_BOOT: CUchar = 3u
+public val RTPROT_KERNEL: CUchar = 2u.toUByte()
 
-public val RTPROT_STATIC: CUchar = 4u
+public val RTPROT_BOOT: CUchar = 3u.toUByte()
 
-public val RT_SCOPE_UNIVERSE: CUchar = 0u
+public val RTPROT_STATIC: CUchar = 4u.toUByte()
 
-public val RT_SCOPE_SITE: CUchar = 200u
+public val RT_SCOPE_UNIVERSE: CUchar = 0u.toUByte()
 
-public val RT_SCOPE_LINK: CUchar = 253u
+public val RT_SCOPE_SITE: CUchar = 200u.toUByte()
 
-public val RT_SCOPE_HOST: CUchar = 254u
+public val RT_SCOPE_LINK: CUchar = 253u.toUByte()
 
-public val RT_SCOPE_NOWHERE: CUchar = 255u
+public val RT_SCOPE_HOST: CUchar = 254u.toUByte()
 
-public val RT_TABLE_UNSPEC: CUchar = 0u
+public val RT_SCOPE_NOWHERE: CUchar = 255u.toUByte()
 
-public val RT_TABLE_COMPAT: CUchar = 252u
+public val RT_TABLE_UNSPEC: CUchar = 0u.toUByte()
 
-public val RT_TABLE_DEFAULT: CUchar = 253u
+public val RT_TABLE_COMPAT: CUchar = 252u.toUByte()
 
-public val RT_TABLE_MAIN: CUchar = 254u
+public val RT_TABLE_DEFAULT: CUchar = 253u.toUByte()
 
-public val RT_TABLE_LOCAL: CUchar = 255u
+public val RT_TABLE_MAIN: CUchar = 254u.toUByte()
+
+public val RT_TABLE_LOCAL: CUchar = 255u.toUByte()
 
 public val RTMSG_OVERRUN: UInt = NLMSG_OVERRUN.toUInt()
 
@@ -2759,30 +2759,30 @@ public val NFT_NG_RANDOM: CInt = 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val FF_MAX: U16 = 0x7fu
+public val FF_MAX: U16 = 0x7fu.toUShort()
 
 public val FF_CNT: Int = FF_MAX.toInt() + 1
 
 // linux/input-event-codes.h
-public val INPUT_PROP_POINTER: U16 = 0x00u
+public val INPUT_PROP_POINTER: U16 = 0x00u.toUShort()
 
-public val INPUT_PROP_DIRECT: U16 = 0x01u
+public val INPUT_PROP_DIRECT: U16 = 0x01u.toUShort()
 
-public val INPUT_PROP_BUTTONPAD: U16 = 0x02u
+public val INPUT_PROP_BUTTONPAD: U16 = 0x02u.toUShort()
 
-public val INPUT_PROP_SEMI_MT: U16 = 0x03u
+public val INPUT_PROP_SEMI_MT: U16 = 0x03u.toUShort()
 
-public val INPUT_PROP_TOPBUTTONPAD: U16 = 0x04u
+public val INPUT_PROP_TOPBUTTONPAD: U16 = 0x04u.toUShort()
 
-public val INPUT_PROP_POINTING_STICK: U16 = 0x05u
+public val INPUT_PROP_POINTING_STICK: U16 = 0x05u.toUShort()
 
-public val INPUT_PROP_ACCELEROMETER: U16 = 0x06u
+public val INPUT_PROP_ACCELEROMETER: U16 = 0x06u.toUShort()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val INPUT_PROP_MAX: U16 = 0x1fu
+public val INPUT_PROP_MAX: U16 = 0x1fu.toUShort()
 
 public val INPUT_PROP_CNT: Int = INPUT_PROP_MAX.toInt() + 1
 
@@ -2790,7 +2790,7 @@ public val INPUT_PROP_CNT: Int = INPUT_PROP_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val EV_MAX: U16 = 0x1fu
+public val EV_MAX: U16 = 0x1fu.toUShort()
 
 public val EV_CNT: Int = EV_MAX.toInt() + 1
 
@@ -2798,7 +2798,7 @@ public val EV_CNT: Int = EV_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val SYN_MAX: U16 = 0xfu
+public val SYN_MAX: U16 = 0xfu.toUShort()
 
 public val SYN_CNT: Int = SYN_MAX.toInt() + 1
 
@@ -2806,7 +2806,7 @@ public val SYN_CNT: Int = SYN_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val KEY_MAX: U16 = 0x2ffu
+public val KEY_MAX: U16 = 0x2ffu.toUShort()
 
 public val KEY_CNT: Int = KEY_MAX.toInt() + 1
 
@@ -2814,7 +2814,7 @@ public val KEY_CNT: Int = KEY_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val REL_MAX: U16 = 0x0fu
+public val REL_MAX: U16 = 0x0fu.toUShort()
 
 public val REL_CNT: Int = REL_MAX.toInt() + 1
 
@@ -2822,7 +2822,7 @@ public val REL_CNT: Int = REL_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val ABS_MAX: U16 = 0x3fu
+public val ABS_MAX: U16 = 0x3fu.toUShort()
 
 public val ABS_CNT: Int = ABS_MAX.toInt() + 1
 
@@ -2830,7 +2830,7 @@ public val ABS_CNT: Int = ABS_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val SW_MAX: U16 = 0x11u
+public val SW_MAX: U16 = 0x11u.toUShort()
 
 public val SW_CNT: Int = SW_MAX.toInt() + 1
 
@@ -2838,7 +2838,7 @@ public val SW_CNT: Int = SW_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val MSC_MAX: U16 = 0x07u
+public val MSC_MAX: U16 = 0x07u.toUShort()
 
 public val MSC_CNT: Int = MSC_MAX.toInt() + 1
 
@@ -2846,7 +2846,7 @@ public val MSC_CNT: Int = MSC_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val LED_MAX: U16 = 0x0fu
+public val LED_MAX: U16 = 0x0fu.toUShort()
 
 public val LED_CNT: Int = LED_MAX.toInt() + 1
 
@@ -2854,7 +2854,7 @@ public val LED_CNT: Int = LED_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val REP_MAX: U16 = 0x01u
+public val REP_MAX: U16 = 0x01u.toUShort()
 
 public val REP_CNT: Int = REP_MAX.toInt() + 1
 
@@ -2862,7 +2862,7 @@ public val REP_CNT: Int = REP_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val SND_MAX: U16 = 0x07u
+public val SND_MAX: U16 = 0x07u.toUShort()
 
 public val SND_CNT: Int = SND_MAX.toInt() + 1
 
@@ -2976,25 +2976,25 @@ public val FAN_MARK_FILESYSTEM: CUint = 0x00000100u
 
 public val FAN_MARK_IGNORE_SURV: CUint = FAN_MARK_IGNORE or FAN_MARK_IGNORED_SURV_MODIFY
 
-public val FANOTIFY_METADATA_VERSION: UByte = 3u
+public val FANOTIFY_METADATA_VERSION: UByte = 3u.toUByte()
 
-public val FAN_EVENT_INFO_TYPE_FID: UByte = 1u
+public val FAN_EVENT_INFO_TYPE_FID: UByte = 1u.toUByte()
 
-public val FAN_EVENT_INFO_TYPE_DFID_NAME: UByte = 2u
+public val FAN_EVENT_INFO_TYPE_DFID_NAME: UByte = 2u.toUByte()
 
-public val FAN_EVENT_INFO_TYPE_DFID: UByte = 3u
+public val FAN_EVENT_INFO_TYPE_DFID: UByte = 3u.toUByte()
 
-public val FAN_EVENT_INFO_TYPE_PIDFD: UByte = 4u
+public val FAN_EVENT_INFO_TYPE_PIDFD: UByte = 4u.toUByte()
 
-public val FAN_EVENT_INFO_TYPE_ERROR: UByte = 5u
+public val FAN_EVENT_INFO_TYPE_ERROR: UByte = 5u.toUByte()
 
-public val FAN_EVENT_INFO_TYPE_OLD_DFID_NAME: UByte = 10u
+public val FAN_EVENT_INFO_TYPE_OLD_DFID_NAME: UByte = 10u.toUByte()
 
-public val FAN_EVENT_INFO_TYPE_NEW_DFID_NAME: UByte = 12u
+public val FAN_EVENT_INFO_TYPE_NEW_DFID_NAME: UByte = 12u.toUByte()
 
-public val FAN_RESPONSE_INFO_NONE: UByte = 0u
+public val FAN_RESPONSE_INFO_NONE: UByte = 0u.toUByte()
 
-public val FAN_RESPONSE_INFO_AUDIT_RULE: UByte = 1u
+public val FAN_RESPONSE_INFO_AUDIT_RULE: UByte = 1u.toUByte()
 
 public val FAN_ALLOW: UInt = 0x01u
 
@@ -3038,15 +3038,15 @@ public val LINUX_REBOOT_CMD_POWER_OFF: CInt = 0x4321FEDC
 public val LINUX_REBOOT_CMD_KEXEC: CInt = 0x45584543
 
 // linux/errqueue.h
-public val SO_EE_ORIGIN_NONE: UByte = 0u
+public val SO_EE_ORIGIN_NONE: UByte = 0u.toUByte()
 
-public val SO_EE_ORIGIN_LOCAL: UByte = 1u
+public val SO_EE_ORIGIN_LOCAL: UByte = 1u.toUByte()
 
-public val SO_EE_ORIGIN_ICMP: UByte = 2u
+public val SO_EE_ORIGIN_ICMP: UByte = 2u.toUByte()
 
-public val SO_EE_ORIGIN_ICMP6: UByte = 3u
+public val SO_EE_ORIGIN_ICMP6: UByte = 3u.toUByte()
 
-public val SO_EE_ORIGIN_TXSTATUS: UByte = 4u
+public val SO_EE_ORIGIN_TXSTATUS: UByte = 4u.toUByte()
 
 public val SO_EE_ORIGIN_TIMESTAMPING: UByte = SO_EE_ORIGIN_TXSTATUS
 

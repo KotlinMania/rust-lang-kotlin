@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -191,7 +191,7 @@ public open class Utf8Chunks(
     public open fun debug(): Debug = Debug(this.source)
 
     public open fun next(): Utf8Chunk? {
-        val TAG_CONT_U8: UByte = 128u
+        val TAG_CONT_U8: UByte = 128u.toUByte()
         fun safeGet(xs: List<UByte>, i: Int): UByte = (xs.get(i) ?: 0)
         if (this.source.isEmpty()) {
             return null

@@ -62,7 +62,7 @@ public fun <S> decodeInt(r: List<UByte>, arg1: S): Int {
 }
 
 public fun <S> Boolean.encode(w: Buffer, s: S) {
-    (this.toUByte()).encode(w, s)
+    ((if (this) 1u else 0u).toUByte()).encode(w, s)
 }
 
 public fun <S> decodeBoolean(r: List<UByte>, s: S): Boolean =

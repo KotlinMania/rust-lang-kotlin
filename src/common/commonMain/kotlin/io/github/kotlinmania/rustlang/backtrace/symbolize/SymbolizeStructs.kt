@@ -1,6 +1,6 @@
 package io.github.kotlinmania.rustlang.backtrace.symbolize
 
-import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
+import io.github.kotlinmania.rustlang.backtrace.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.fmt.Debug
 import io.github.kotlinmania.rustlang.core.fmt.Display
 import io.github.kotlinmania.rustlang.core.fmt.Error
@@ -8,7 +8,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.rustcdemangle.Demangle
 import io.github.kotlinmania.rustlang.rustcdemangle.demangle
 import io.github.kotlinmania.rustlang.rustcdemangle.tryDemangle
@@ -18,7 +17,7 @@ public fun interface FnCallback {
     public operator fun invoke(arg0: String, arg1: StringBuilder): Result<Unit, Error>
 }
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -145,7 +144,7 @@ public open class Symbol(
                 d.field("lineno", lineno)
             }
         }
-        return d.finish()
+        return run { d.finish(); Result.Ok<Unit, Error>(Unit) }
     }
 }
 

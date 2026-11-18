@@ -1,15 +1,13 @@
 // port-lint: source thread/lifecycle.rs
 package io.github.kotlinmania.rustlang.std.thread.lifecycle
 
+import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.maybedangling.MaybeDangling
 import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.panic.unwindsafe.AssertUnwindSafe
-import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.getMut
@@ -19,7 +17,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.store
 import io.github.kotlinmania.rustlang.std.env.varOs
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustBeginShortBacktrace
@@ -41,7 +38,7 @@ import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 public fun <T> spawnUnchecked(name: String?, stackSize: Int?, noHooks: Boolean, scopeData: ScopeData?, f: () -> T): RustResult<JoinInner<T>, Error> {
     val stackSize1 =
         (stackSize ?: closure1@{
-            var MIN: Atomic<Int, Align8<Int>> = AtomicUsize.new(0)
+            var MIN: AtomicUsize = AtomicUsize.new(0)
             when (val matchVal = MIN.load(Ordering.Relaxed)) {
                 0 -> {}
                 else -> {

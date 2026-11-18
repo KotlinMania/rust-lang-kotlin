@@ -20,13 +20,12 @@ import io.github.kotlinmania.rustlang.core.io.sizehint.SizeHint
 import io.github.kotlinmania.rustlang.core.mem.drop
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
-import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -140,11 +139,11 @@ public open class BufReader<R>(
             val new = when (val tryResult = this.buf.readMore(this.inner)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             if (new == 0) {
                 // end of file, no more bytes to read
-                return RustResult.Ok(this.buf.buffer())
+                return RustResult.Ok<List<UByte>, io.github.kotlinmania.rustlang.core.io.error.Error>(this.buf.buffer())
             }
             check(this.buf.pos() == 0)
         }
-        return RustResult.Ok(this.buf.buffer()[0 until n])
+        return RustResult.Ok<List<UByte>, io.github.kotlinmania.rustlang.core.io.error.Error>(this.buf.buffer()[0 until n])
     }
 
     /**
@@ -285,7 +284,7 @@ public open class BufReader<R>(
                 null -> {}
                 else -> {
                     this.buf.unconsume((-offset).toInt())
-                    return RustResult.Ok(Unit)
+                    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
                 }
             }
         } else when (val matchVal1 = pos.checkedAdd(offset.toULong())) {
@@ -294,7 +293,7 @@ public open class BufReader<R>(
                 val newPos = matchVal1
                 if (newPos <= this.buf.filled().toULong()) {
                     this.buf.consume(offset.toInt())
-                    return RustResult.Ok(Unit)
+                    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
                 }
             }
         }
@@ -304,7 +303,7 @@ public open class BufReader<R>(
     public override fun specReadByte(): Result<UByte>? {
         var byte = 0
         if (this.buf.consumeWith(1, { claimed -> byte = claimed[0] })) {
-            return RustResult.Ok(byte)
+            return RustResult.Ok<UByte, io.github.kotlinmania.rustlang.core.io.error.Error>(byte)
         }
         // Fallback case, only reached once per buffer refill.
         return uninlinedSlowReadByte(this)
@@ -339,7 +338,7 @@ public open class BufReader<R>(
         public fun <R> tryNewWith(f: () -> Result<R>): Result<BufReader<R>> {
             val buf = when (val tryResult = Buffer.tryWithCapacity(DEFAULT_BUF_SIZE)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufReader<R>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             val inner = when (val tryResult = f()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufReader<R>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-            return RustResult.Ok(BufReader(inner = inner, buf = buf))
+            return RustResult.Ok<BufReader<R>, io.github.kotlinmania.rustlang.core.io.error.Error>(BufReader(inner = inner, buf = buf))
         }
 
         /**
@@ -375,7 +374,7 @@ public fun <R : Read<R>> BufReader<R>.read(buf: MutableList<UByte>): Result<Int>
     val rem = when (val tryResult = this.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     val nread = when (val tryResult = rem.read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.consume(nread)
-    return RustResult.Ok(nread)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(nread)
 }
 
 public fun <R : Read<R>> BufReader<R>.readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> {
@@ -392,7 +391,7 @@ public fun <R : Read<R>> BufReader<R>.readBuf(cursor: BorrowedCursor<UByte>): Re
     // actually never fails
     this.consume(cursor.written() - prev)
     // slice impl of readBuf known to never unfill buf
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 // Small readExacts from a BufReader are extremely common when used with a deserializer.
@@ -401,14 +400,14 @@ public fun <R : Read<R>> BufReader<R>.readBuf(cursor: BorrowedCursor<UByte>): Re
 // buffer.
 public fun <R : Read<R>> BufReader<R>.readExact(buf: MutableList<UByte>): Result<Unit> {
     if (this.buf.consumeWith(buf.size, { claimed -> run { val dstTmp0 = buf; val srcTmp0 = claimed; for (idxTmp0 in srcTmp0.indices) dstTmp0[idxTmp0] = srcTmp0[idxTmp0] } })) {
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
     return defaultReadExact(this, buf)
 }
 
 public fun <R : Read<R>> BufReader<R>.readBufExact(cursor: BorrowedCursor<UByte>): Result<Unit> {
     if (this.buf.consumeWith(cursor.capacity(), { claimed -> cursor.append(claimed) })) {
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
     return defaultReadBufExact(this, cursor)
 }
@@ -422,7 +421,7 @@ public fun <R : Read<R>> BufReader<R>.readVectored(bufs: MutableList<IoSliceMut>
     val rem = when (val tryResult = this.fillBuf()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     val nread = when (val tryResult = rem.readVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.consume(nread)
-    return RustResult.Ok(nread)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(nread)
 }
 
 public fun <R : Read<R>> BufReader<R>.isReadVectored(): Boolean = this.inner.isReadVectored()
@@ -435,7 +434,7 @@ public fun <R : Read<R>> BufReader<R>.readToEnd(buf: MutableList<UByte>): Result
     when (val tryResult = buf.tryExtendFromSliceOfBytes(innerBuf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     val nread = innerBuf.size
     this.discardBuffer()
-    return RustResult.Ok(nread + when (val tryResult = this.inner.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) })
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(nread + when (val tryResult = this.inner.readToEnd(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) })
 }
 
 // The inner reader might have an optimized `readToEnd`. Drain our buffer and then
@@ -466,7 +465,7 @@ public fun <R : Read<R>> BufReader<R>.readToString(buf: String): Result<Int> {
         when (val tryResult = this.readToEnd(bytes)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         val string = when (val tryResult = fromUtf8(bytes).mapErr({ io.github.kotlinmania.rustlang.core.io.error.Error.INVALID_UTF8 })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         when (val tryResult = buf.tryPushStr(string)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-        RustResult.Ok(string.len())
+        RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(string.len())
     }
 }
 
@@ -527,7 +526,7 @@ public fun <R : Seek> BufReader<R>.seek(pos: SeekFrom): Result<ULong> {
         result = when (val tryResult = this.inner.seek(pos)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     }
     this.discardBuffer()
-    return RustResult.Ok(result)
+    return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(result)
 }
 
 /**

@@ -5,8 +5,6 @@ import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU64Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU64
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchangeWeak
@@ -77,7 +75,7 @@ public open class ThreadId internal constructor(
             fun exhausted(): Nothing {
                 error("failed to generate unique thread ID: bitspace exhausted")
             }
-            val COUNTER: Atomic<ULong, Align8<ULong>>  = AtomicU64.new(0)
+            val COUNTER: AtomicU64  = AtomicU64.new(0uL)
             var last = COUNTER.load(Ordering.Relaxed)
             while (true) {
                 val id = last.checkedAdd(1) ?: exhausted()

@@ -219,6 +219,6 @@ public class RawTestMapInlineTests {
             check(table.find(idx3, { (k, _) -> k == idx3 }) == null) { "Index: $idx" }
         }
         // All allocator clones should already be dropped.
-        check(dropped.load(Ordering.SeqCst) == 1)
+        check(dropped.load(Ordering.SeqCst) == 1.toByte())
     }
 }

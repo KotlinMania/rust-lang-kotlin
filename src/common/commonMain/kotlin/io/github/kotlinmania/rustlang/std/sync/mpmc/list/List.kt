@@ -25,8 +25,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -82,18 +80,15 @@ public val MARK_BIT: Int = 1
  */
 public open class Slot<T> internal constructor(
     msgCtorArg: UnsafeCell<MaybeUninit<T>>,
-    stateCtorArg: Atomic<Int, Align8<Int>>,
+    /**
+     * The state of the slot.
+     */
+    public var state: AtomicUsize,
 ) {
     /**
      * The message.
      */
     public var msg: UnsafeCell<MaybeUninit<T>> = msgCtorArg
-        internal set
-
-    /**
-     * The state of the slot.
-     */
-    public var state: Atomic<Int, Align8<Int>> = stateCtorArg
         internal set
 
     /**
@@ -109,10 +104,10 @@ public open class Slot<T> internal constructor(
     public companion object {
         public operator fun <T> invoke(
             msg: UnsafeCell<MaybeUninit<T>>,
-            state: Atomic<Int, Align8<Int>>,
+            state: AtomicUsize,
         ): Slot<T> = Slot<T>(
             msgCtorArg = msg,
-            stateCtorArg = state,
+            state = state,
         )
     }
 }
@@ -122,19 +117,16 @@ public open class Slot<T> internal constructor(
  *
  * Each block in the list can hold up to `BLOCK_CAP` messages.
  */
-public open class Block<T> internal constructor(
-    nextCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
+public open class Block<T>(
+    /**
+     * The next block in the linked list.
+     */
+    public var next: AtomicPtr,
     /**
      * Slots for messages.
      */
     public var slots: List<Slot<T>>,
 ) {
-    /**
-     * The next block in the linked list.
-     */
-    public var next: Atomic<MutPtr, Align8<MutPtr>> = nextCtorArg
-        internal set
-
     /**
      * Waits until the next pointer is set.
      */
@@ -150,14 +142,6 @@ public open class Block<T> internal constructor(
     }
 
     public companion object {
-        public operator fun <T> invoke(
-            next: Atomic<MutPtr, Align8<MutPtr>>,
-            slots: List<Slot<T>>,
-        ): Block<T> = Block<T>(
-            nextCtorArg = next,
-            slots = slots,
-        )
-
         /**
          * Creates an empty block.
          */
@@ -194,32 +178,16 @@ public open class Block<T> internal constructor(
 /**
  * A position in a channel.
  */
-public open class Position<T> internal constructor(
-    indexCtorArg: Atomic<Int, Align8<Int>>,
-    blockCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
-) {
+public open class Position<T>(
     /**
      * The index in the channel.
      */
-    public var index: Atomic<Int, Align8<Int>> = indexCtorArg
-        internal set
-
+    public var index: AtomicUsize,
     /**
      * The block in the linked list.
      */
-    public var block: Atomic<MutPtr, Align8<MutPtr>> = blockCtorArg
-        internal set
-
-    public companion object {
-        public operator fun <T> invoke(
-            index: Atomic<Int, Align8<Int>>,
-            block: Atomic<MutPtr, Align8<MutPtr>>,
-        ): Position<T> = Position<T>(
-            indexCtorArg = index,
-            blockCtorArg = block,
-        )
-    }
-}
+    public var block: AtomicPtr,
+)
 
 /**
  * The token type for the list flavor.

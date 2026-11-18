@@ -74,14 +74,14 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.store
 /**
  * non-zero if the host supports LSE atomics.
  */
-public var HAVE_LSE_ATOMICS: AtomicU8 = AtomicU8.new(0)
+public var HAVE_LSE_ATOMICS: AtomicU8 = AtomicU8.new(0u.toUByte())
 
 /**
  * Call to enable LSE in outline atomic operations. The caller must verify
  * LSE operations are supported.
  */
 public fun rustEnableLse() {
-    HAVE_LSE_ATOMICS.store(1, Ordering.Relaxed)
+    HAVE_LSE_ATOMICS.store(1u.toUByte(), Ordering.Relaxed)
 }
 
 /**
@@ -100,7 +100,7 @@ public fun setHaveLseAtomics(hasLse: Boolean) {
 /**
  * Function to obtain whether LSE is enabled or not. To be used only for testing purposes.
  */
-public fun getHaveLseAtomics(): Boolean = HAVE_LSE_ATOMICS.load(Ordering.Relaxed) != 0
+public fun getHaveLseAtomics(): Boolean = HAVE_LSE_ATOMICS.load(Ordering.Relaxed) != 0u.toUByte()
 
 private const val FOREACH_ORDERING_TEMPLATE: String = "\$macro!(Relaxed, \$bytes, \$ {concat(\$name, relax)}); \$macro!(Acquire, \$bytes, \$ {concat(\$name, acq)}); \$macro!(Release, \$bytes, \$ {concat(\$name, rel)}); \$macro!(AcqRel, \$bytes, \$ {concat(\$name, acqRel)});"
 

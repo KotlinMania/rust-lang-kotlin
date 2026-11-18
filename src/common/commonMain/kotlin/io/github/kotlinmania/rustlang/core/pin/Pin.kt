@@ -1156,7 +1156,7 @@ public open class Pin<Ptr>(
      * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
      * import std.pin.Pin
      *
-     * val localStorageL5C0 = AddressableLocal(5u, PrimitiveLayouts.U8)
+     * val localStorageL5C0 = AddressableLocal(5u.toUByte(), PrimitiveLayouts.U8)
      * var pinned: Pin<RustMutableReference<UByte>> = Pin.new(RustMutableReference(localStorageL5C0.asMutPtr(), localStorageL5C0.layout))
      * println("$pinned")
      * // 5
@@ -1204,7 +1204,7 @@ public open class Pin<Ptr>(
          * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
          * import std.pin.Pin
          *
-         * val localStorageL5C0 = AddressableLocal(5u, PrimitiveLayouts.U8)
+         * val localStorageL5C0 = AddressableLocal(5u.toUByte(), PrimitiveLayouts.U8)
          * // Since `val` doesn't care about being moved, we can safely create a "facade" `Pin`
          * // which will allow `val` to participate in `Pin`-bound apis  without checking that
          * // pinning guarantees are actually upheld.
@@ -1231,7 +1231,7 @@ public open class Pin<Ptr>(
          * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
          * import std.pin.Pin
          *
-         * val localStorageL5C0 = AddressableLocal(5u, PrimitiveLayouts.U8)
+         * val localStorageL5C0 = AddressableLocal(5u.toUByte(), PrimitiveLayouts.U8)
          * val pinned: Pin<RustMutableReference<UByte>> = Pin.new(RustMutableReference(localStorageL5C0.asMutPtr(), localStorageL5C0.layout))
          * // Unwrap the pin to get the underlying mutable reference to the value. We can do
          * // this because `val` doesn't care about being moved, so the `Pin` was just

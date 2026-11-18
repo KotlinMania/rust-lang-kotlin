@@ -25,9 +25,6 @@ import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -456,7 +453,7 @@ public fun decompressZstd(input: List<UByte>, output: MutableList<UByte>): Unit?
 public val DEBUG_PATH: String = "/usr/lib/debug"
 
 public fun debugPathExists(): Boolean {
-    val DEBUG_PATH_EXISTS: AtomicU8  = AtomicU8.new(0)
+    val DEBUG_PATH_EXISTS: AtomicU8  = AtomicU8.new(0u.toUByte())
     var exists = DEBUG_PATH_EXISTS.load(Ordering.Relaxed)
     if (exists == 0) {
         exists = if (Path.new(DEBUG_PATH).isDir()) {

@@ -58,7 +58,7 @@ public fun rndr(value: MutPtr): Int {
     val bits = structVal.bits
     val status = structVal.status
     (PrimitiveLayouts.U64).writeNative((value1).rawAddress, bits)
-    return status.toInt()
+    return (if (status) 1 else 0)
 }
 
 /**
@@ -73,5 +73,5 @@ public fun rndrrs(value: MutPtr): Int {
     val bits = structVal.bits
     val status = structVal.status
     (PrimitiveLayouts.U64).writeNative((value1).rawAddress, bits)
-    return status.toInt()
+    return (if (status) 1 else 0)
 }

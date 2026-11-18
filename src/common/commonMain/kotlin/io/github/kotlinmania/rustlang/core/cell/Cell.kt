@@ -268,7 +268,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * import std.cell.Cell
  *
  * open class SomeStruct(public var regularField: UByte, public var specialField: Cell<UByte>)
- * val myStruct = SomeStruct(regularField = 0u, specialField = Cell.new(1))
+ * val myStruct = SomeStruct(regularField = 0u.toUByte(), specialField = Cell.new(1))
  * val newValue = 100
  * // ERROR: `myStruct` is immutable
  * // myStruct.regularField = newValue;

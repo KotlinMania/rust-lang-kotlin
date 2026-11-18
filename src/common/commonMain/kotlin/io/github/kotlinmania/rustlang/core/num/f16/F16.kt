@@ -401,7 +401,7 @@ public fun F16.isSignNegative(): Boolean {
     // IEEE754 says: isSignMinus(x) is true if and only if x has negative sign. isSignMinus
     // applies to zeros and NaNs as well.
     // SAFETY: This is just transmuting to get the sign bit, it's fine.
-    return (this.toBits() and ((1u.toUInt() shl 15).toUShort())) != 0u.toUShort()
+    return (this.toBits() and (((1u.toUShort()).toUInt() shl 15).toUShort())) != 0u.toUShort()
 }
 
 /**
@@ -451,9 +451,9 @@ public fun F16.nextUp(): F16 {
         if (abs == 0u.toUShort()) {
             F16.TINY_BITS
         } else if (bits == abs) {
-            bits + 1u
+            bits + 1u.toUShort()
         } else {
-            bits - 1u
+            bits - 1u.toUShort()
         }
     return F16.fromBits(nextBits)
 }
@@ -505,9 +505,9 @@ public fun F16.nextDown(): F16 {
         if (abs == 0u.toUShort()) {
             F16.NEG_TINY_BITS
         } else if (bits == abs) {
-            bits - 1u
+            bits - 1u.toUShort()
         } else {
-            bits + 1u
+            bits + 1u.toUShort()
         }
     return F16.fromBits(nextBits)
 }
@@ -924,7 +924,7 @@ public fun F16.Companion.fromBits(v: UShort): F16 {
  * @feature(f16)
  * public fun doctestEntry() {
  *     val bytes = (F16.fromFloat(12.5f)).toBeBytes()
- *     check(bytes == ubyteArrayOf(0x4au, 0x40u))
+ *     check(bytes == ubyteArrayOf(0x4au.toUByte(), 0x40u.toUByte()))
  * }
  * ```
  */
@@ -947,7 +947,7 @@ public fun F16.toBeBytes(): UByteArray = run { val rawBits = this.toBits().toUIn
  * @feature(f16)
  * public fun doctestEntry() {
  *     val bytes = (F16.fromFloat(12.5f)).toLeBytes()
- *     check(bytes == ubyteArrayOf(0x40u, 0x4au))
+ *     check(bytes == ubyteArrayOf(0x40u.toUByte(), 0x4au.toUByte()))
  * }
  * ```
  */
@@ -999,7 +999,7 @@ public fun F16.toNeBytes(): UByteArray = run { val rawBits = this.toBits().toUIn
  *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val value = F16.fromBeBytes(ubyteArrayOf(0x4au, 0x40u))
+ *     val value = F16.fromBeBytes(ubyteArrayOf(0x4au.toUByte(), 0x40u.toUByte()))
  *     check(value == F16.fromFloat(12.5f))
  * }
  * ```
@@ -1021,7 +1021,7 @@ public fun F16.Companion.fromBeBytes(bytes: UByteArray): F16 = F16.fromBits(run 
  *
  * @feature(f16)
  * public fun doctestEntry() {
- *     val value = F16.fromLeBytes(ubyteArrayOf(0x40u, 0x4au))
+ *     val value = F16.fromLeBytes(ubyteArrayOf(0x40u.toUByte(), 0x4au.toUByte()))
  *     check(value == F16.fromFloat(12.5f))
  * }
  * ```
@@ -1051,9 +1051,9 @@ public fun F16.Companion.fromLeBytes(bytes: UByteArray): F16 = F16.fromBits(run 
  * @feature(f16)
  * public fun doctestEntry() {
  *     val value = F16.fromLeBytes(if (false) {
- *         ubyteArrayOf(0x4au, 0x40u)
+ *         ubyteArrayOf(0x4au.toUByte(), 0x40u.toUByte())
  *     } else {
- *         ubyteArrayOf(0x40u, 0x4au)
+ *         ubyteArrayOf(0x40u.toUByte(), 0x4au.toUByte())
  *     })
  *     check(value == F16.fromFloat(12.5f))
  * }

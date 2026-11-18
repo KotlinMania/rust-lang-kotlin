@@ -7,8 +7,6 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
@@ -36,7 +34,7 @@ public fun interface F {
  * If it succeeds, `PTR` is set to the address of that symbol.
  * If it fails, then `PTR` is set to `fallback`.
  */
-public var PTR: Atomic<MutPtr, Align8<MutPtr>> = AtomicPtr.new(mutPtrFromRustCast(((::load as Any?) as F)))
+public var PTR: AtomicPtr = AtomicPtr.new(mutPtrFromRustCast(((::load as Any?) as F)))
 
 public fun load(rfid: ConstPtr, dwflags: UInt, htoken: Handle, ppszpath: MutPtr): Hresult {
     val MODULE: LazyModule  = LazyModule.new(SHELL32)
@@ -70,6 +68,6 @@ public fun fallback(rfid: ConstPtr, dwflags: UInt, htoken: Handle, ppszpath: Mut
 
 public fun call(rfid: ConstPtr, dwflags: UInt, htoken: Handle, ppszpath: MutPtr): Hresult =
     run {
-        val func: F = transmuteWithLayouts<Any?, F>(PTR.load(Ordering.Relaxed), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<F>())
+        val func: F = transmuteWithLayouts<MutPtr, F>(PTR.load(Ordering.Relaxed), UnresolvedTypeLayout<MutPtr>(), UnresolvedTypeLayout<F>())
         func(rfid, dwflags, htoken, ppszpath)
     }

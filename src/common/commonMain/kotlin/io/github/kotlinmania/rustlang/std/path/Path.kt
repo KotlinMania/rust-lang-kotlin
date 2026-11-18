@@ -3,6 +3,8 @@ package io.github.kotlinmania.rustlang.std.path
 
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
+import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
+import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.char.methods.isAscii
@@ -37,9 +39,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.and
-import io.github.kotlinmania.rustlang.core.result.or
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.splitLast
@@ -53,14 +52,14 @@ import io.github.kotlinmania.rustlang.std.fs.metadata
 import io.github.kotlinmania.rustlang.std.fs.readDir
 import io.github.kotlinmania.rustlang.std.fs.symlinkMetadata
 import io.github.kotlinmania.rustlang.std.path.Prefix.*
-import io.github.kotlinmania.rustlang.std.rc.Rc
-import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.args.unix.init
 import io.github.kotlinmania.rustlang.std.sys.path.isSepByte
 import io.github.kotlinmania.rustlang.std.sys.path.unix.HAS_PREFIXES
 import io.github.kotlinmania.rustlang.std.sys.path.unix.isVerbatimSep
 import io.github.kotlinmania.rustlang.std.sys.path.unix.parsePrefix
+import kotlin.experimental.and
 import kotlin.experimental.inv
+import kotlin.experimental.or
 
 // Cross-platform path manipulation.
 //
@@ -135,7 +134,7 @@ import kotlin.experimental.inv
 // [components]: Path.components
 // [push]: PathBuf.push
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -340,7 +339,7 @@ public sealed class Prefix {
  * check(!isSeparator('\u2764'))
  * ```
  */
-public fun isSeparator(c: Char): Boolean = (c.isAscii() && isSepByte(c.toUByte())).toUByte()
+public fun isSeparator(c: Char): Boolean = (c.isAscii() && isSepByte(c.code.toUByte())).toUByte()
 
 /**
  * All path separators recognized on the current platform, represented as [char]s; for example,
@@ -3371,7 +3370,7 @@ public open class StripPrefixError(
 
     public open fun clone(): StripPrefixError = StripPrefixError(value)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = "prefix not found".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("prefix not found"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<StripPrefixError> =

@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.MutexGuard
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.guardLock
 import io.github.kotlinmania.rustlang.std.time.Instant
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

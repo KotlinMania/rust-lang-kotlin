@@ -118,8 +118,8 @@ public open class PipeReader internal constructor(
      * import std.process.Command
      *
      * public fun doctestEntry(): Result<Unit> {
-     *     val NUM_SLOT: UByte = 2u
-     *     val NUM_PROC: UByte = 5u
+     *     val NUM_SLOT: UByte = 2u.toUByte()
+     *     val NUM_PROC: UByte = 5u.toUByte()
      *     val OUTPUT: String = "work.txt"
      *     var jobs = mutableListOf()
      *     var (reader, writer) = pipe().getOrElse { return Result.failure(it) }

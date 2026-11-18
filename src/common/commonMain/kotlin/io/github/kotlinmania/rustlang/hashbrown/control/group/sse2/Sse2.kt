@@ -18,7 +18,7 @@ public typealias NonZeroBitMaskWord = NonZeroU16
 
 public val BITMASK_STRIDE: Int = 1
 
-public val BITMASK_ITER_MASK: BitMaskWord = (0u.inv()).toUShort()
+public val BITMASK_ITER_MASK: BitMaskWord = (0u.toUShort()).inv()
 
 /**
  * Abstraction over a group of control tags which can be scanned in

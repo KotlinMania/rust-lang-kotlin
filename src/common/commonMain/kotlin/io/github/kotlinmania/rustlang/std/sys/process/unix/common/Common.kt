@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.process.unix.common
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
@@ -24,7 +26,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.nullVal
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
@@ -47,8 +48,6 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
 import io.github.kotlinmania.rustlang.std.io.stdio.Stderr
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.os.fd.BorrowedFd
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
-import io.github.kotlinmania.rustlang.std.os.raw.CUlong
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.intoVec
@@ -69,7 +68,7 @@ import io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray.C
 import io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray.CStringIter
 import kotlin.experimental.or
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -94,7 +93,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -344,7 +343,7 @@ public open class Command internal constructor(
             run {
                 debugCommand.field("create_pidfd", this.createPidfd)
             }
-            debugCommand.finish()
+            run { debugCommand.finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
         } else {
             when (val matchVal = this.cwd) {
                 null -> {}
@@ -447,10 +446,10 @@ public open class ChildPipes(
 
 public sealed class ChildStdio {
     public data object Inherit : ChildStdio()
-    public data class Explicit(public var value: CInt) : ChildStdio()
+    public data class Explicit(public var value: io.github.kotlinmania.rustlang.std.os.raw.CInt) : ChildStdio()
     public data class Owned(public var value: FileDesc) : ChildStdio()
 
-    public open fun fd(): CInt? =
+    public open fun fd(): io.github.kotlinmania.rustlang.std.os.raw.CInt? =
         when (this) {
             ChildStdio.Inherit -> null
             is ChildStdio.Explicit -> {

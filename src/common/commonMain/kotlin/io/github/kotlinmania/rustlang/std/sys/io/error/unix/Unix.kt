@@ -4,6 +4,7 @@
 package io.github.kotlinmania.rustlang.std.sys.io.error.unix
 
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -55,7 +56,6 @@ import io.github.kotlinmania.rustlang.libc.wasi.ETIMEDOUT
 import io.github.kotlinmania.rustlang.libc.wasi.ETXTBSY
 import io.github.kotlinmania.rustlang.libc.wasi.EWOULDBLOCK
 import io.github.kotlinmania.rustlang.libc.wasi.EXDEV
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
 
 // SAFETY: this will always return the same pointer on a given thread.
@@ -75,7 +75,7 @@ public fun setErrno(e: Int) {
     (UnresolvedTypeLayout<CInt>()).writeNative((errnoLocation()).rawAddress, e)
 }
 
-public expect var LIBC_ERRNO: CInt
+public expect var LIBC_ERRNO: io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 
 public fun isInterrupted(errno: Int): Boolean = (errno == EINTR).toUByte()
 

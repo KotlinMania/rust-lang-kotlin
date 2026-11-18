@@ -229,7 +229,7 @@ public interface SizedSetFileInformation {
     public val CLASS: Int
 }
 
-public val CLASS: Int = T.CLASS
+public val CLASS: Int = this.CLASS
 
 public fun <T : SizedSetFileInformation> T.asPtr(): ConstPtr = ConstPtr(((this)).rawAddress)
 
@@ -258,7 +258,7 @@ public fun <T : SetFileInformation> setFileInformationByHandle(handle: Handle, i
             (result != 0).thenSome(Unit).okOrElse(::getLastError)
         }
     // SAFETY: The `SetFileInformation` trait ensures that this is safe.
-    return setInfo(handle, T.CLASS, info.asPtr(), info.size())
+    return setInfo(handle, info.CLASS, info.asPtr(), info.size())
 }
 
 /**
@@ -379,7 +379,7 @@ public open class UnicodeStrRef(
                 if (slice.isEmpty()) {
                     Triple(0, 2, MutPtr((EMPTY_STRING_NULL_TERMINATED.asPtr()).rawAddress))
                 } else {
-                    val len = slice.size - (isNullTerminated.toInt())
+                    val len = slice.size - ((if (isNullTerminated) 1 else 0))
                     Triple(len * 2, sizeOfVal(slice, typeLayoutT = UnresolvedTypeLayout<List<UShort>>()), MutPtr((slice.asPtr()).rawAddress))
                 }
             return UnicodeStrRef(s = UnicodeString(length = len1.toUShort(), maximumLength = maxLen.toUShort(), buffer = ptr), lifetime = Unit)

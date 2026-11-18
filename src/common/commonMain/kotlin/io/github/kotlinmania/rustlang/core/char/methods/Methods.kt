@@ -407,10 +407,10 @@ public fun Char.toDigit(radix: UInt): UInt? {
             // Add Overflow Safety:
             // By applying the mask after the subtraction, the first addendum is
             // constrained such that it never exceeds u32.Max - 0x20.
-            (((this.toUInt()) - ('A'.code.toUInt())) and TO_UPPERCASE_MASK) + 10u
+            (((this.code.toUInt()) - ('A'.code.toUInt())) and TO_UPPERCASE_MASK) + 10u
         } else {
             // convert digit to value, non-digits wrap to values > 36
-            ((this.toUInt()) - ('0'.code.toUInt()))
+            ((this.code.toUInt()) - ('0'.code.toUInt()))
         }
     // Note(const-Note): once thenSome is const fn, use it here
     return if (value < radix) {
@@ -618,7 +618,7 @@ public fun Char.escapeDefault(): EscapeDefault =
  * check(len == tokyo.len())
  * ```
  */
-public fun Char.lenUtf8(): Int = lenUtf8(this.toUInt())
+public fun Char.lenUtf8(): Int = lenUtf8(this.code.toUInt())
 
 /**
  * Returns the number of 16-bit code units this `char` would need if
@@ -645,7 +645,7 @@ public fun Char.lenUtf8(): Int = lenUtf8(this.toUInt())
  * check(len == 2)
  * ```
  */
-public fun Char.lenUtf16(): Int = lenUtf16(this.toUInt())
+public fun Char.lenUtf16(): Int = lenUtf16(this.code.toUInt())
 
 /**
  * Encodes this character as UTF-8 into the provided byte buffer,
@@ -677,7 +677,7 @@ public fun Char.lenUtf16(): Int = lenUtf16(this.toUInt())
  */
 public fun Char.encodeUtf8(dst: MutableList<UByte>): String {
     // SAFETY: `char` is not a surrogate, so this is valid UTF-8.
-    return fromUtf8UncheckedMut(encodeUtf8Raw(this.toUInt(), dst))
+    return fromUtf8UncheckedMut(encodeUtf8Raw(this.code.toUInt(), dst))
 }
 
 /**
@@ -707,7 +707,7 @@ public fun Char.encodeUtf8(dst: MutableList<UByte>): String {
  * 0x1d54a.encodeUtf16(b)
  * ```
  */
-public fun Char.encodeUtf16(dst: MutableList<UShort>): MutableList<UShort> = encodeUtf16Raw(this.toUInt(), dst)
+public fun Char.encodeUtf16(dst: MutableList<UShort>): MutableList<UShort> = encodeUtf16Raw(this.code.toUInt(), dst)
 
 /**
  * Returns `true` if this `char` has the `Alphabetic` property.
@@ -1811,7 +1811,7 @@ public fun Char.toCasefoldUnnormalized(): ToCasefold = ToCasefold(CaseMappingIte
  * }
  * ```
  */
-public fun Char.toU32(): UInt = this.toUInt()
+public fun Char.toU32(): UInt = this.code.toUInt()
 
 /**
  * Checks if the value is within the ASCII range.
@@ -1825,7 +1825,7 @@ public fun Char.toU32(): UInt = this.toUInt()
  * check(!nonAscii.isAscii())
  * ```
  */
-public fun Char.isAscii(): Boolean = this.toUInt() <= 0x7Fu
+public fun Char.isAscii(): Boolean = this.code.toUInt() <= 0x7Fu
 
 /**
  * Returns `Some` if the value is within the ASCII range,
@@ -1838,7 +1838,7 @@ public fun Char.isAscii(): Boolean = this.toUInt() <= 0x7Fu
 public fun Char.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? =
     if (this.isAscii()) {
         // SAFETY: Just checked that this is ASCII.
-        Char.fromU8Unchecked(this.toUByte())
+        Char.fromU8Unchecked(this.code.toUByte())
     } else {
         null
     }
@@ -1854,7 +1854,7 @@ public fun Char.asAscii(): io.github.kotlinmania.rustlang.core.ascii.Char? =
 public fun Char.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.Char {
     Unit
     // SAFETY: the caller promised that this char is ASCII.
-    return Char.fromU8Unchecked(this.toUByte())
+    return Char.fromU8Unchecked(this.code.toUByte())
 }
 
 /**
@@ -1882,7 +1882,7 @@ public fun Char.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.Ch
  */
 public fun Char.toAsciiUppercase(): Char =
     if (this.isAsciiLowercase()) {
-        (this.toUByte()).asciiChangeCaseUnchecked().toInt().toChar()
+        (this.code.toUByte()).asciiChangeCaseUnchecked().toInt().toChar()
     } else {
         this
     }
@@ -1912,7 +1912,7 @@ public fun Char.toAsciiUppercase(): Char =
  */
 public fun Char.toAsciiLowercase(): Char =
     if (this.isAsciiUppercase()) {
-        (this.toUByte()).asciiChangeCaseUnchecked().toInt().toChar()
+        (this.code.toUByte()).asciiChangeCaseUnchecked().toInt().toChar()
     } else {
         this
     }

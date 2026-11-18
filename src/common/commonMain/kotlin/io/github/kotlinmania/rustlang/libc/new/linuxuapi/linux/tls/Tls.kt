@@ -23,19 +23,19 @@ public val TLS_TX_ZEROCOPY_RO: CInt = 3
 
 public val TLS_RX_EXPECT_NO_PAD: CInt = 4
 
-public val TLS_1_2_VERSION_MAJOR: U8 = 0x3u
+public val TLS_1_2_VERSION_MAJOR: U8 = 0x3u.toUByte()
 
-public val TLS_1_2_VERSION_MINOR: U8 = 0x3u
+public val TLS_1_2_VERSION_MINOR: U8 = 0x3u.toUByte()
 
 public val TLS_1_2_VERSION: U16 = (((TLS_1_2_VERSION_MAJOR.toUShort()).toUInt() shl 8).toUShort()) or (TLS_1_2_VERSION_MINOR.toUShort())
 
-public val TLS_1_3_VERSION_MAJOR: U8 = 0x3u
+public val TLS_1_3_VERSION_MAJOR: U8 = 0x3u.toUByte()
 
-public val TLS_1_3_VERSION_MINOR: U8 = 0x4u
+public val TLS_1_3_VERSION_MINOR: U8 = 0x4u.toUByte()
 
 public val TLS_1_3_VERSION: U16 = (((TLS_1_3_VERSION_MAJOR.toUShort()).toUInt() shl 8).toUShort()) or (TLS_1_3_VERSION_MINOR.toUShort())
 
-public val TLS_CIPHER_AES_GCM_128: U16 = 51u
+public val TLS_CIPHER_AES_GCM_128: U16 = 51u.toUShort()
 
 public val TLS_CIPHER_AES_GCM_128_IV_SIZE: Int = 8
 
@@ -47,7 +47,7 @@ public val TLS_CIPHER_AES_GCM_128_TAG_SIZE: Int = 16
 
 public val TLS_CIPHER_AES_GCM_128_REC_SEQ_SIZE: Int = 8
 
-public val TLS_CIPHER_AES_GCM_256: U16 = 52u
+public val TLS_CIPHER_AES_GCM_256: U16 = 52u.toUShort()
 
 public val TLS_CIPHER_AES_GCM_256_IV_SIZE: Int = 8
 
@@ -59,7 +59,7 @@ public val TLS_CIPHER_AES_GCM_256_TAG_SIZE: Int = 16
 
 public val TLS_CIPHER_AES_GCM_256_REC_SEQ_SIZE: Int = 8
 
-public val TLS_CIPHER_AES_CCM_128: U16 = 53u
+public val TLS_CIPHER_AES_CCM_128: U16 = 53u.toUShort()
 
 public val TLS_CIPHER_AES_CCM_128_IV_SIZE: Int = 8
 
@@ -71,7 +71,7 @@ public val TLS_CIPHER_AES_CCM_128_TAG_SIZE: Int = 16
 
 public val TLS_CIPHER_AES_CCM_128_REC_SEQ_SIZE: Int = 8
 
-public val TLS_CIPHER_CHACHA20_POLY1305: U16 = 54u
+public val TLS_CIPHER_CHACHA20_POLY1305: U16 = 54u.toUShort()
 
 public val TLS_CIPHER_CHACHA20_POLY1305_IV_SIZE: Int = 12
 
@@ -83,7 +83,7 @@ public val TLS_CIPHER_CHACHA20_POLY1305_TAG_SIZE: Int = 16
 
 public val TLS_CIPHER_CHACHA20_POLY1305_REC_SEQ_SIZE: Int = 8
 
-public val TLS_CIPHER_SM4_GCM: U16 = 55u
+public val TLS_CIPHER_SM4_GCM: U16 = 55u.toUShort()
 
 public val TLS_CIPHER_SM4_GCM_IV_SIZE: Int = 8
 
@@ -95,7 +95,7 @@ public val TLS_CIPHER_SM4_GCM_TAG_SIZE: Int = 16
 
 public val TLS_CIPHER_SM4_GCM_REC_SEQ_SIZE: Int = 8
 
-public val TLS_CIPHER_SM4_CCM: U16 = 56u
+public val TLS_CIPHER_SM4_CCM: U16 = 56u.toUShort()
 
 public val TLS_CIPHER_SM4_CCM_IV_SIZE: Int = 8
 
@@ -107,7 +107,7 @@ public val TLS_CIPHER_SM4_CCM_TAG_SIZE: Int = 16
 
 public val TLS_CIPHER_SM4_CCM_REC_SEQ_SIZE: Int = 8
 
-public val TLS_CIPHER_ARIA_GCM_128: U16 = 57u
+public val TLS_CIPHER_ARIA_GCM_128: U16 = 57u.toUShort()
 
 public val TLS_CIPHER_ARIA_GCM_128_IV_SIZE: Int = 8
 
@@ -119,7 +119,7 @@ public val TLS_CIPHER_ARIA_GCM_128_TAG_SIZE: Int = 16
 
 public val TLS_CIPHER_ARIA_GCM_128_REC_SEQ_SIZE: Int = 8
 
-public val TLS_CIPHER_ARIA_GCM_256: U16 = 58u
+public val TLS_CIPHER_ARIA_GCM_256: U16 = 58u.toUShort()
 
 public val TLS_CIPHER_ARIA_GCM_256_IV_SIZE: Int = 8
 

@@ -21,7 +21,7 @@ import io.github.kotlinmania.rustlang.std.sync.poison.TryLockError
 import io.github.kotlinmania.rustlang.std.sync.poison.TryLockResult
 import io.github.kotlinmania.rustlang.std.sync.poison.mapResult
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -611,7 +611,7 @@ public open class Mutex<T>(
             }
         }
         d.field("poisoned", this.poison.get())
-        return d.finishNonExhaustive()
+        return run { d.finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
     }
 
     public companion object {

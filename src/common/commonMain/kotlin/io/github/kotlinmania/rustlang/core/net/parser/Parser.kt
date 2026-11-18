@@ -13,8 +13,6 @@ import io.github.kotlinmania.rustlang.core.net.socketaddr.SocketAddrV6
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
 import kotlin.experimental.or
 
@@ -31,7 +29,7 @@ public interface ReadNumberHelper<T> {
     public fun checkedAdd(other: UInt): T?
 }
 
-public val ZERO: UByte = 0u
+public val ZERO: UByte = 0u.toUByte()
 
 public fun UByte.checkedMul(other: UInt): UByte? {
     return UByte.checkedMul(this, (other.tryInto().ok() ?: return null))
@@ -41,7 +39,7 @@ public fun UByte.checkedAdd(other: UInt): UByte? {
     return UByte.checkedAdd(this, (other.tryInto().ok() ?: return null))
 }
 
-public val ZERO1: UShort = 0u
+public val ZERO1: UShort = 0u.toUShort()
 
 public fun UShort.checkedMul(other: UInt): UShort? {
     return UShort.checkedMul(this, (other.tryInto().ok() ?: return null))

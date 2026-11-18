@@ -1,9 +1,9 @@
 // port-lint: source float/cmp.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import kotlin.experimental.and
 import kotlin.experimental.or
 
@@ -84,9 +84,9 @@ public fun <F : Float> cmp(a: F, b: F): Result {
     val one = F.Int.ONE
     val zero = F.Int.ZERO
     val szero = F.SignedInt.ZERO
-    val signBit = F.SIGN_MASK.toInt()
+    val signBit = a.SIGN_MASK.toInt()
     val absMask = signBit - one
-    val exponentMask = F.EXP_MASK
+    val exponentMask = a.EXP_MASK
     val infRep = exponentMask
     val aRep = a.toBits()
     val bRep = b.toBits()
@@ -127,9 +127,9 @@ public fun <F : Float> cmp(a: F, b: F): Result {
 
 public fun <F : Float> unord(a: F, b: F): Boolean {
     val one = F.Int.ONE
-    val signBit = F.SIGN_MASK.toInt()
+    val signBit = a.SIGN_MASK.toInt()
     val absMask = signBit - one
-    val exponentMask = F.EXP_MASK
+    val exponentMask = a.EXP_MASK
     val infRep = exponentMask
     val aRep = a.toBits()
     val bRep = b.toBits()
@@ -142,7 +142,7 @@ public fun lehf2(a: F16, b: F16): CmpResult = cmp(a, b).toDefaultCmpResult()
 
 public fun gehf2(a: F16, b: F16): CmpResult = cmp(a, b).toGtGeCmpResult()
 
-public fun unordhf2(a: F16, b: F16): CmpResult = unord(a, b).toInt()
+public fun unordhf2(a: F16, b: F16): CmpResult = (if (unord(a, b)) 1 else 0)
 
 public fun eqhf2(a: F16, b: F16): CmpResult = cmp(a, b).toDefaultCmpResult()
 
@@ -156,7 +156,7 @@ public fun lesf2(a: Float, b: Float): CmpResult = cmp(a, b).toDefaultCmpResult()
 
 public fun gesf2(a: Float, b: Float): CmpResult = cmp(a, b).toGtGeCmpResult()
 
-public fun unordsf2(a: Float, b: Float): CmpResult = unord(a, b).toInt()
+public fun unordsf2(a: Float, b: Float): CmpResult = (if (unord(a, b)) 1 else 0)
 
 public fun eqsf2(a: Float, b: Float): CmpResult = cmp(a, b).toDefaultCmpResult()
 
@@ -170,7 +170,7 @@ public fun ledf2(a: Double, b: Double): CmpResult = cmp(a, b).toDefaultCmpResult
 
 public fun gedf2(a: Double, b: Double): CmpResult = cmp(a, b).toGtGeCmpResult()
 
-public fun unorddf2(a: Double, b: Double): CmpResult = unord(a, b).toInt()
+public fun unorddf2(a: Double, b: Double): CmpResult = (if (unord(a, b)) 1 else 0)
 
 public fun eqdf2(a: Double, b: Double): CmpResult = cmp(a, b).toDefaultCmpResult()
 
@@ -188,9 +188,9 @@ public fun getf2(a: F128, b: F128): CmpResult = cmp(a, b).toGtGeCmpResult()
 
 public fun gekf2(a: F128, b: F128): CmpResult = cmp(a, b).toGtGeCmpResult()
 
-public fun unordtf2(a: F128, b: F128): CmpResult = unord(a, b).toInt()
+public fun unordtf2(a: F128, b: F128): CmpResult = (if (unord(a, b)) 1 else 0)
 
-public fun unordkf2(a: F128, b: F128): CmpResult = unord(a, b).toInt()
+public fun unordkf2(a: F128, b: F128): CmpResult = (if (unord(a, b)) 1 else 0)
 
 public fun eqtf2(a: F128, b: F128): CmpResult = cmp(a, b).toDefaultCmpResult()
 

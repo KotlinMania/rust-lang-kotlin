@@ -26,37 +26,37 @@ import kotlin.experimental.inv
 // A reference implementation may be found in the GCC source tree
 // (`<root> / libgcc / unwind - c.c` as of this writing).
 
-public val DW_EH_PE_OMIT: UByte = 0xFFu
+public val DW_EH_PE_OMIT: UByte = 0xFFu.toUByte()
 
-public val DW_EH_PE_ABSPTR: UByte = 0x00u
+public val DW_EH_PE_ABSPTR: UByte = 0x00u.toUByte()
 
-public val DW_EH_PE_ULEB128: UByte = 0x01u
+public val DW_EH_PE_ULEB128: UByte = 0x01u.toUByte()
 
-public val DW_EH_PE_UDATA2: UByte = 0x02u
+public val DW_EH_PE_UDATA2: UByte = 0x02u.toUByte()
 
-public val DW_EH_PE_UDATA4: UByte = 0x03u
+public val DW_EH_PE_UDATA4: UByte = 0x03u.toUByte()
 
-public val DW_EH_PE_UDATA8: UByte = 0x04u
+public val DW_EH_PE_UDATA8: UByte = 0x04u.toUByte()
 
-public val DW_EH_PE_SLEB128: UByte = 0x09u
+public val DW_EH_PE_SLEB128: UByte = 0x09u.toUByte()
 
-public val DW_EH_PE_SDATA2: UByte = 0x0Au
+public val DW_EH_PE_SDATA2: UByte = 0x0Au.toUByte()
 
-public val DW_EH_PE_SDATA4: UByte = 0x0Bu
+public val DW_EH_PE_SDATA4: UByte = 0x0Bu.toUByte()
 
-public val DW_EH_PE_SDATA8: UByte = 0x0Cu
+public val DW_EH_PE_SDATA8: UByte = 0x0Cu.toUByte()
 
-public val DW_EH_PE_PCREL: UByte = 0x10u
+public val DW_EH_PE_PCREL: UByte = 0x10u.toUByte()
 
-public val DW_EH_PE_TEXTREL: UByte = 0x20u
+public val DW_EH_PE_TEXTREL: UByte = 0x20u.toUByte()
 
-public val DW_EH_PE_DATAREL: UByte = 0x30u
+public val DW_EH_PE_DATAREL: UByte = 0x30u.toUByte()
 
-public val DW_EH_PE_FUNCREL: UByte = 0x40u
+public val DW_EH_PE_FUNCREL: UByte = 0x40u.toUByte()
 
-public val DW_EH_PE_ALIGNED: UByte = 0x50u
+public val DW_EH_PE_ALIGNED: UByte = 0x50u.toUByte()
 
-public val DW_EH_PE_INDIRECT: UByte = 0x80u
+public val DW_EH_PE_INDIRECT: UByte = 0x80u.toUByte()
 
 public open class EHContext internal constructor(
     ipCtorArg: ConstPtr,

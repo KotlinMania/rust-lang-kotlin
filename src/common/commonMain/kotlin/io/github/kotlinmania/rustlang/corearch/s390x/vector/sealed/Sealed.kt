@@ -3412,85 +3412,85 @@ public interface VectorCompare<T> {
     public fun vecAllGe(other: T): Int
 }
 
-public fun VectorSignedChar.vecAllLt(other: VectorSignedChar): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }).toInt()
+public fun VectorSignedChar.vecAllLt(other: VectorSignedChar): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }) 1 else 0)
 
-public fun VectorSignedChar.vecAllLe(other: VectorSignedChar): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }).toInt()
+public fun VectorSignedChar.vecAllLe(other: VectorSignedChar): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }) 1 else 0)
 
-public fun VectorSignedChar.vecAllGt(other: VectorSignedChar): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }).toInt()
+public fun VectorSignedChar.vecAllGt(other: VectorSignedChar): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }) 1 else 0)
 
-public fun VectorSignedChar.vecAllGe(other: VectorSignedChar): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }).toInt()
+public fun VectorSignedChar.vecAllGe(other: VectorSignedChar): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }) 1 else 0)
 
-public fun VectorUnsignedChar.vecAllLt(other: VectorUnsignedChar): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }).toInt()
+public fun VectorUnsignedChar.vecAllLt(other: VectorUnsignedChar): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }) 1 else 0)
 
-public fun VectorUnsignedChar.vecAllLe(other: VectorUnsignedChar): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }).toInt()
+public fun VectorUnsignedChar.vecAllLe(other: VectorUnsignedChar): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }) 1 else 0)
 
-public fun VectorUnsignedChar.vecAllGt(other: VectorUnsignedChar): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }).toInt()
+public fun VectorUnsignedChar.vecAllGt(other: VectorUnsignedChar): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }) 1 else 0)
 
-public fun VectorUnsignedChar.vecAllGe(other: VectorUnsignedChar): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }).toInt()
+public fun VectorUnsignedChar.vecAllGe(other: VectorUnsignedChar): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolChar() }; false }) 1 else 0)
 
-public fun VectorSignedShort.vecAllLt(other: VectorSignedShort): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }).toInt()
+public fun VectorSignedShort.vecAllLt(other: VectorSignedShort): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }) 1 else 0)
 
-public fun VectorSignedShort.vecAllLe(other: VectorSignedShort): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }).toInt()
+public fun VectorSignedShort.vecAllLe(other: VectorSignedShort): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }) 1 else 0)
 
-public fun VectorSignedShort.vecAllGt(other: VectorSignedShort): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }).toInt()
+public fun VectorSignedShort.vecAllGt(other: VectorSignedShort): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }) 1 else 0)
 
-public fun VectorSignedShort.vecAllGe(other: VectorSignedShort): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }).toInt()
+public fun VectorSignedShort.vecAllGe(other: VectorSignedShort): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }) 1 else 0)
 
-public fun VectorUnsignedShort.vecAllLt(other: VectorUnsignedShort): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }).toInt()
+public fun VectorUnsignedShort.vecAllLt(other: VectorUnsignedShort): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }) 1 else 0)
 
-public fun VectorUnsignedShort.vecAllLe(other: VectorUnsignedShort): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }).toInt()
+public fun VectorUnsignedShort.vecAllLe(other: VectorUnsignedShort): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }) 1 else 0)
 
-public fun VectorUnsignedShort.vecAllGt(other: VectorUnsignedShort): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }).toInt()
+public fun VectorUnsignedShort.vecAllGt(other: VectorUnsignedShort): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }) 1 else 0)
 
-public fun VectorUnsignedShort.vecAllGe(other: VectorUnsignedShort): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }).toInt()
+public fun VectorUnsignedShort.vecAllGe(other: VectorUnsignedShort): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolShort() }; false }) 1 else 0)
 
-public fun VectorSignedInt.vecAllLt(other: VectorSignedInt): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorSignedInt.vecAllLt(other: VectorSignedInt): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorSignedInt.vecAllLe(other: VectorSignedInt): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorSignedInt.vecAllLe(other: VectorSignedInt): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorSignedInt.vecAllGt(other: VectorSignedInt): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorSignedInt.vecAllGt(other: VectorSignedInt): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorSignedInt.vecAllGe(other: VectorSignedInt): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorSignedInt.vecAllGe(other: VectorSignedInt): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorUnsignedInt.vecAllLt(other: VectorUnsignedInt): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorUnsignedInt.vecAllLt(other: VectorUnsignedInt): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorUnsignedInt.vecAllLe(other: VectorUnsignedInt): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorUnsignedInt.vecAllLe(other: VectorUnsignedInt): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorUnsignedInt.vecAllGt(other: VectorUnsignedInt): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorUnsignedInt.vecAllGt(other: VectorUnsignedInt): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorUnsignedInt.vecAllGe(other: VectorUnsignedInt): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorUnsignedInt.vecAllGe(other: VectorUnsignedInt): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorFloat.vecAllLt(other: VectorFloat): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorFloat.vecAllLt(other: VectorFloat): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorFloat.vecAllLe(other: VectorFloat): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorFloat.vecAllLe(other: VectorFloat): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorFloat.vecAllGt(other: VectorFloat): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorFloat.vecAllGt(other: VectorFloat): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorFloat.vecAllGe(other: VectorFloat): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }).toInt()
+public fun VectorFloat.vecAllGe(other: VectorFloat): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolInt() }; false }) 1 else 0)
 
-public fun VectorSignedLongLong.vecAllLt(other: VectorSignedLongLong): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorSignedLongLong.vecAllLt(other: VectorSignedLongLong): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorSignedLongLong.vecAllLe(other: VectorSignedLongLong): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorSignedLongLong.vecAllLe(other: VectorSignedLongLong): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorSignedLongLong.vecAllGt(other: VectorSignedLongLong): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorSignedLongLong.vecAllGt(other: VectorSignedLongLong): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorSignedLongLong.vecAllGe(other: VectorSignedLongLong): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorSignedLongLong.vecAllGe(other: VectorSignedLongLong): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorUnsignedLongLong.vecAllLt(other: VectorUnsignedLongLong): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllLt(other: VectorUnsignedLongLong): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorUnsignedLongLong.vecAllLe(other: VectorUnsignedLongLong): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllLe(other: VectorUnsignedLongLong): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorUnsignedLongLong.vecAllGt(other: VectorUnsignedLongLong): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllGt(other: VectorUnsignedLongLong): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorUnsignedLongLong.vecAllGe(other: VectorUnsignedLongLong): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorUnsignedLongLong.vecAllGe(other: VectorUnsignedLongLong): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorDouble.vecAllLt(other: VectorDouble): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorDouble.vecAllLt(other: VectorDouble): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorDouble.vecAllLe(other: VectorDouble): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorDouble.vecAllLe(other: VectorDouble): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorDouble.vecAllGt(other: VectorDouble): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorDouble.vecAllGt(other: VectorDouble): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
-public fun VectorDouble.vecAllGe(other: VectorDouble): Int = (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }).toInt()
+public fun VectorDouble.vecAllGe(other: VectorDouble): Int = (if (run { val simdArg0 = run { val simdArg0 = this; val simdArg1 = other; VectorBoolLongLong() }; false }) 1 else 0)
 
 public interface VectorTestMask<Mask> {
     public fun vecTestMask(other: Mask): Int
@@ -4706,9 +4706,9 @@ public interface VectorInsertAndZero<T, ElementType> {
     public fun vecInsertAndZero(a: ConstPtr): T
 }
 
-public fun vllezb(x: ConstPtr): VectorUnsignedChar = VectorUnsignedChar(ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, (PrimitiveLayouts.U8).readNative((x).rawAddress), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u))
+public fun vllezb(x: ConstPtr): VectorUnsignedChar = VectorUnsignedChar(ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), (PrimitiveLayouts.U8).readNative((x).rawAddress), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte()))
 
-public fun vllezh(x: ConstPtr): VectorUnsignedShort = VectorUnsignedShort(ushortArrayOf(0u, 0u, 0u, (PrimitiveLayouts.U16).readNative((x).rawAddress), 0u, 0u, 0u, 0u))
+public fun vllezh(x: ConstPtr): VectorUnsignedShort = VectorUnsignedShort(ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), (PrimitiveLayouts.U16).readNative((x).rawAddress), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort()))
 
 public fun vllezf(x: ConstPtr): VectorUnsignedInt = VectorUnsignedInt(uintArrayOf(0u, (PrimitiveLayouts.U32).readNative((x).rawAddress), 0u, 0u))
 

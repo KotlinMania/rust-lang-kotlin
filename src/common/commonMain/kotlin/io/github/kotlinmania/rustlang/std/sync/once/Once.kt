@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 // This primitive is meant to be used to run one-time initialization. An
 // example use case would be for initializing an FFI library.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

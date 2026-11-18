@@ -1513,51 +1513,51 @@ public val POLLRDBAND: CShort = 0x080
 
 public val POLLRDHUP: CShort = 0x2000
 
-public val IPTOS_LOWDELAY: UByte = 0x10u
+public val IPTOS_LOWDELAY: UByte = 0x10u.toUByte()
 
-public val IPTOS_THROUGHPUT: UByte = 0x08u
+public val IPTOS_THROUGHPUT: UByte = 0x08u.toUByte()
 
-public val IPTOS_RELIABILITY: UByte = 0x04u
+public val IPTOS_RELIABILITY: UByte = 0x04u.toUByte()
 
-public val IPTOS_MINCOST: UByte = 0x02u
+public val IPTOS_MINCOST: UByte = 0x02u.toUByte()
 
-public val IPTOS_PREC_NETCONTROL: UByte = 0xe0u
+public val IPTOS_PREC_NETCONTROL: UByte = 0xe0u.toUByte()
 
-public val IPTOS_PREC_INTERNETCONTROL: UByte = 0xc0u
+public val IPTOS_PREC_INTERNETCONTROL: UByte = 0xc0u.toUByte()
 
-public val IPTOS_PREC_CRITIC_ECP: UByte = 0xa0u
+public val IPTOS_PREC_CRITIC_ECP: UByte = 0xa0u.toUByte()
 
-public val IPTOS_PREC_FLASHOVERRIDE: UByte = 0x80u
+public val IPTOS_PREC_FLASHOVERRIDE: UByte = 0x80u.toUByte()
 
-public val IPTOS_PREC_FLASH: UByte = 0x60u
+public val IPTOS_PREC_FLASH: UByte = 0x60u.toUByte()
 
-public val IPTOS_PREC_IMMEDIATE: UByte = 0x40u
+public val IPTOS_PREC_IMMEDIATE: UByte = 0x40u.toUByte()
 
-public val IPTOS_PREC_PRIORITY: UByte = 0x20u
+public val IPTOS_PREC_PRIORITY: UByte = 0x20u.toUByte()
 
-public val IPTOS_PREC_ROUTINE: UByte = 0x00u
+public val IPTOS_PREC_ROUTINE: UByte = 0x00u.toUByte()
 
-public val IPTOS_ECN_MASK: UByte = 0x03u
+public val IPTOS_ECN_MASK: UByte = 0x03u.toUByte()
 
-public val IPTOS_ECN_ECT1: UByte = 0x01u
+public val IPTOS_ECN_ECT1: UByte = 0x01u.toUByte()
 
-public val IPTOS_ECN_ECT0: UByte = 0x02u
+public val IPTOS_ECN_ECT0: UByte = 0x02u.toUByte()
 
-public val IPTOS_ECN_CE: UByte = 0x03u
+public val IPTOS_ECN_CE: UByte = 0x03u.toUByte()
 
-public val IPOPT_COPY: UByte = 0x80u
+public val IPOPT_COPY: UByte = 0x80u.toUByte()
 
-public val IPOPT_CLASS_MASK: UByte = 0x60u
+public val IPOPT_CLASS_MASK: UByte = 0x60u.toUByte()
 
-public val IPOPT_NUMBER_MASK: UByte = 0x1fu
+public val IPOPT_NUMBER_MASK: UByte = 0x1fu.toUByte()
 
-public val IPOPT_CONTROL: UByte = 0x00u
+public val IPOPT_CONTROL: UByte = 0x00u.toUByte()
 
-public val IPOPT_RESERVED1: UByte = 0x20u
+public val IPOPT_RESERVED1: UByte = 0x20u.toUByte()
 
-public val IPOPT_MEASUREMENT: UByte = 0x40u
+public val IPOPT_MEASUREMENT: UByte = 0x40u.toUByte()
 
-public val IPOPT_RESERVED2: UByte = 0x60u
+public val IPOPT_RESERVED2: UByte = 0x60u.toUByte()
 
 public val IPOPT_END: UByte = 0u.toUByte() or IPOPT_CONTROL
 
@@ -1577,21 +1577,21 @@ public val IPOPT_SSRR: UByte = 9u.toUByte() or IPOPT_CONTROL or IPOPT_COPY
 
 public val IPOPT_RA: UByte = 20u.toUByte() or IPOPT_CONTROL or IPOPT_COPY
 
-public val IPVERSION: UByte = 4u
+public val IPVERSION: UByte = 4u.toUByte()
 
-public val MAXTTL: UByte = 255u
+public val MAXTTL: UByte = 255u.toUByte()
 
-public val IPDEFTTL: UByte = 64u
+public val IPDEFTTL: UByte = 64u.toUByte()
 
-public val IPOPT_OPTVAL: UByte = 0u
+public val IPOPT_OPTVAL: UByte = 0u.toUByte()
 
-public val IPOPT_OLEN: UByte = 1u
+public val IPOPT_OLEN: UByte = 1u.toUByte()
 
-public val IPOPT_OFFSET: UByte = 2u
+public val IPOPT_OFFSET: UByte = 2u.toUByte()
 
-public val IPOPT_MINOFF: UByte = 4u
+public val IPOPT_MINOFF: UByte = 4u.toUByte()
 
-public val MAX_IPOPTLEN: UByte = 40u
+public val MAX_IPOPTLEN: UByte = 40u.toUByte()
 
 public val IPOPT_NOP: UByte = IPOPT_NOOP
 
@@ -1599,141 +1599,141 @@ public val IPOPT_EOL: UByte = IPOPT_END
 
 public val IPOPT_TS: UByte = IPOPT_TIMESTAMP
 
-public val IPOPT_TS_TSONLY: UByte = 0u
+public val IPOPT_TS_TSONLY: UByte = 0u.toUByte()
 
-public val IPOPT_TS_TSANDADDR: UByte = 1u
+public val IPOPT_TS_TSANDADDR: UByte = 1u.toUByte()
 
-public val IPOPT_TS_PRESPEC: UByte = 3u
+public val IPOPT_TS_PRESPEC: UByte = 3u.toUByte()
 
-public val ARPOP_RREQUEST: UShort = 3u
+public val ARPOP_RREQUEST: UShort = 3u.toUShort()
 
-public val ARPOP_RREPLY: UShort = 4u
+public val ARPOP_RREPLY: UShort = 4u.toUShort()
 
-public val ARPOP_IN_REQUEST: UShort = 8u
+public val ARPOP_IN_REQUEST: UShort = 8u.toUShort()
 
-public val ARPOP_IN_REPLY: UShort = 9u
+public val ARPOP_IN_REPLY: UShort = 9u.toUShort()
 
-public val ARPOP_NAK: UShort = 10u
+public val ARPOP_NAK: UShort = 10u.toUShort()
 
 public val ATF_NETMASK: CInt = 0x20
 
 public val ATF_DONTPUB: CInt = 0x40
 
-public val ARPHRD_NETROM: UShort = 0u
+public val ARPHRD_NETROM: UShort = 0u.toUShort()
 
-public val ARPHRD_ETHER: UShort = 1u
+public val ARPHRD_ETHER: UShort = 1u.toUShort()
 
-public val ARPHRD_EETHER: UShort = 2u
+public val ARPHRD_EETHER: UShort = 2u.toUShort()
 
-public val ARPHRD_AX25: UShort = 3u
+public val ARPHRD_AX25: UShort = 3u.toUShort()
 
-public val ARPHRD_PRONET: UShort = 4u
+public val ARPHRD_PRONET: UShort = 4u.toUShort()
 
-public val ARPHRD_CHAOS: UShort = 5u
+public val ARPHRD_CHAOS: UShort = 5u.toUShort()
 
-public val ARPHRD_IEEE802: UShort = 6u
+public val ARPHRD_IEEE802: UShort = 6u.toUShort()
 
-public val ARPHRD_ARCNET: UShort = 7u
+public val ARPHRD_ARCNET: UShort = 7u.toUShort()
 
-public val ARPHRD_APPLETLK: UShort = 8u
+public val ARPHRD_APPLETLK: UShort = 8u.toUShort()
 
-public val ARPHRD_DLCI: UShort = 15u
+public val ARPHRD_DLCI: UShort = 15u.toUShort()
 
-public val ARPHRD_ATM: UShort = 19u
+public val ARPHRD_ATM: UShort = 19u.toUShort()
 
-public val ARPHRD_METRICOM: UShort = 23u
+public val ARPHRD_METRICOM: UShort = 23u.toUShort()
 
-public val ARPHRD_IEEE1394: UShort = 24u
+public val ARPHRD_IEEE1394: UShort = 24u.toUShort()
 
-public val ARPHRD_EUI64: UShort = 27u
+public val ARPHRD_EUI64: UShort = 27u.toUShort()
 
-public val ARPHRD_INFINIBAND: UShort = 32u
+public val ARPHRD_INFINIBAND: UShort = 32u.toUShort()
 
-public val ARPHRD_SLIP: UShort = 256u
+public val ARPHRD_SLIP: UShort = 256u.toUShort()
 
-public val ARPHRD_CSLIP: UShort = 257u
+public val ARPHRD_CSLIP: UShort = 257u.toUShort()
 
-public val ARPHRD_SLIP6: UShort = 258u
+public val ARPHRD_SLIP6: UShort = 258u.toUShort()
 
-public val ARPHRD_CSLIP6: UShort = 259u
+public val ARPHRD_CSLIP6: UShort = 259u.toUShort()
 
-public val ARPHRD_RSRVD: UShort = 260u
+public val ARPHRD_RSRVD: UShort = 260u.toUShort()
 
-public val ARPHRD_ADAPT: UShort = 264u
+public val ARPHRD_ADAPT: UShort = 264u.toUShort()
 
-public val ARPHRD_ROSE: UShort = 270u
+public val ARPHRD_ROSE: UShort = 270u.toUShort()
 
-public val ARPHRD_X25: UShort = 271u
+public val ARPHRD_X25: UShort = 271u.toUShort()
 
-public val ARPHRD_HWX25: UShort = 272u
+public val ARPHRD_HWX25: UShort = 272u.toUShort()
 
-public val ARPHRD_CAN: UShort = 280u
+public val ARPHRD_CAN: UShort = 280u.toUShort()
 
-public val ARPHRD_PPP: UShort = 512u
+public val ARPHRD_PPP: UShort = 512u.toUShort()
 
-public val ARPHRD_CISCO: UShort = 513u
+public val ARPHRD_CISCO: UShort = 513u.toUShort()
 
 public val ARPHRD_HDLC: UShort = ARPHRD_CISCO
 
-public val ARPHRD_LAPB: UShort = 516u
+public val ARPHRD_LAPB: UShort = 516u.toUShort()
 
-public val ARPHRD_DDCMP: UShort = 517u
+public val ARPHRD_DDCMP: UShort = 517u.toUShort()
 
-public val ARPHRD_RAWHDLC: UShort = 518u
+public val ARPHRD_RAWHDLC: UShort = 518u.toUShort()
 
-public val ARPHRD_TUNNEL: UShort = 768u
+public val ARPHRD_TUNNEL: UShort = 768u.toUShort()
 
-public val ARPHRD_TUNNEL6: UShort = 769u
+public val ARPHRD_TUNNEL6: UShort = 769u.toUShort()
 
-public val ARPHRD_FRAD: UShort = 770u
+public val ARPHRD_FRAD: UShort = 770u.toUShort()
 
-public val ARPHRD_SKIP: UShort = 771u
+public val ARPHRD_SKIP: UShort = 771u.toUShort()
 
-public val ARPHRD_LOOPBACK: UShort = 772u
+public val ARPHRD_LOOPBACK: UShort = 772u.toUShort()
 
-public val ARPHRD_LOCALTLK: UShort = 773u
+public val ARPHRD_LOCALTLK: UShort = 773u.toUShort()
 
-public val ARPHRD_FDDI: UShort = 774u
+public val ARPHRD_FDDI: UShort = 774u.toUShort()
 
-public val ARPHRD_BIF: UShort = 775u
+public val ARPHRD_BIF: UShort = 775u.toUShort()
 
-public val ARPHRD_SIT: UShort = 776u
+public val ARPHRD_SIT: UShort = 776u.toUShort()
 
-public val ARPHRD_IPDDP: UShort = 777u
+public val ARPHRD_IPDDP: UShort = 777u.toUShort()
 
-public val ARPHRD_IPGRE: UShort = 778u
+public val ARPHRD_IPGRE: UShort = 778u.toUShort()
 
-public val ARPHRD_PIMREG: UShort = 779u
+public val ARPHRD_PIMREG: UShort = 779u.toUShort()
 
-public val ARPHRD_HIPPI: UShort = 780u
+public val ARPHRD_HIPPI: UShort = 780u.toUShort()
 
-public val ARPHRD_ASH: UShort = 781u
+public val ARPHRD_ASH: UShort = 781u.toUShort()
 
-public val ARPHRD_ECONET: UShort = 782u
+public val ARPHRD_ECONET: UShort = 782u.toUShort()
 
-public val ARPHRD_IRDA: UShort = 783u
+public val ARPHRD_IRDA: UShort = 783u.toUShort()
 
-public val ARPHRD_FCPP: UShort = 784u
+public val ARPHRD_FCPP: UShort = 784u.toUShort()
 
-public val ARPHRD_FCAL: UShort = 785u
+public val ARPHRD_FCAL: UShort = 785u.toUShort()
 
-public val ARPHRD_FCPL: UShort = 786u
+public val ARPHRD_FCPL: UShort = 786u.toUShort()
 
-public val ARPHRD_FCFABRIC: UShort = 787u
+public val ARPHRD_FCFABRIC: UShort = 787u.toUShort()
 
-public val ARPHRD_IEEE802_TR: UShort = 800u
+public val ARPHRD_IEEE802_TR: UShort = 800u.toUShort()
 
-public val ARPHRD_IEEE80211: UShort = 801u
+public val ARPHRD_IEEE80211: UShort = 801u.toUShort()
 
-public val ARPHRD_IEEE80211_PRISM: UShort = 802u
+public val ARPHRD_IEEE80211_PRISM: UShort = 802u.toUShort()
 
-public val ARPHRD_IEEE80211_RADIOTAP: UShort = 803u
+public val ARPHRD_IEEE80211_RADIOTAP: UShort = 803u.toUShort()
 
-public val ARPHRD_IEEE802154: UShort = 804u
+public val ARPHRD_IEEE802154: UShort = 804u.toUShort()
 
-public val ARPHRD_VOID: UShort = 0xFFFFu
+public val ARPHRD_VOID: UShort = 0xFFFFu.toUShort()
 
-public val ARPHRD_NONE: UShort = 0xFFFEu
+public val ARPHRD_NONE: UShort = 0xFFFEu.toUShort()
 
 // linux/ifTun.h
 // TUNSETIFF ifr flags

@@ -29,5 +29,5 @@ public fun hostname(): Result<OsString> {
     // SAFETY: the length of the name is `len`, hence `len` bytes have been
     // initialized by `GetHostNameW`.
     val name = buffer[0 until len].assumeInitRef()
-    return RustResult.Ok(OsString.fromWide(name))
+    return RustResult.Ok<OsString, io.github.kotlinmania.rustlang.core.io.error.Error>(OsString.fromWide(name))
 }

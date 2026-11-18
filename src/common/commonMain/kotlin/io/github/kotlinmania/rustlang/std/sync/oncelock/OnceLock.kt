@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -99,7 +99,7 @@ public class DebugTuple(
  * }
  * // Let's exercise this new Sync append-only list by doing a little counting
  * var LIST: OnceList<UInt> = OnceList.new()
- * var COUNTER: AtomicU32 = AtomicU32.new(0)
+ * var COUNTER: AtomicU32 = AtomicU32.new(0u)
  * val LEN: UInt = 1000u
  * thread.scope({ s ->
  *     for (unused in 0 until thread.availableParallelism().unwrap().get()) {
@@ -601,7 +601,7 @@ public open class OnceLock<T> internal constructor(
                 d.field(v)
             }
         }
-        return d.finish()
+        return run { d.finish(); Result.Ok<Unit, Error>(Unit) }
     }
 
     public open fun clone(): OnceLock<T> = this.get().mapOrDefault(OnceLock::from)

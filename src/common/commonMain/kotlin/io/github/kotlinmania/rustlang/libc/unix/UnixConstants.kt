@@ -20,21 +20,21 @@ public val SIG_ERR: SighandlerT = (0.inv()).toULong()
 // Note(1.0): We want to remove these directives and instead expect that no-std users add their
 // own link configuration when required, rather than unconditionally linking everything that may
 // possibly be needed.
-public val DT_UNKNOWN: UByte = 0u
+public val DT_UNKNOWN: UByte = 0u.toUByte()
 
-public val DT_FIFO: UByte = 1u
+public val DT_FIFO: UByte = 1u.toUByte()
 
-public val DT_CHR: UByte = 2u
+public val DT_CHR: UByte = 2u.toUByte()
 
-public val DT_DIR: UByte = 4u
+public val DT_DIR: UByte = 4u.toUByte()
 
-public val DT_BLK: UByte = 6u
+public val DT_BLK: UByte = 6u.toUByte()
 
-public val DT_REG: UByte = 8u
+public val DT_REG: UByte = 8u.toUByte()
 
-public val DT_LNK: UByte = 10u
+public val DT_LNK: UByte = 10u.toUByte()
 
-public val DT_SOCK: UByte = 12u
+public val DT_SOCK: UByte = 12u.toUByte()
 
 public val FD_CLOEXEC: CInt = 0x1
 
@@ -142,13 +142,13 @@ public val INADDR_BROADCAST: InAddrT = 4294967295u
 
 public val INADDR_NONE: InAddrT = 4294967295u
 
-public val IN6ADDR_LOOPBACK_INIT: In6Addr = In6Addr(s6Addr = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 1u), fieldLayout = PrimitiveArrayLayouts.uByteArray((16).toInt()))
+public val IN6ADDR_LOOPBACK_INIT: In6Addr = In6Addr(s6Addr = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 1u.toUByte()), fieldLayout = PrimitiveArrayLayouts.uByteArray((16).toInt()))
 
-public val IN6ADDR_ANY_INIT: In6Addr = In6Addr(s6Addr = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), fieldLayout = PrimitiveArrayLayouts.uByteArray((16).toInt()))
+public val IN6ADDR_ANY_INIT: In6Addr = In6Addr(s6Addr = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte()), fieldLayout = PrimitiveArrayLayouts.uByteArray((16).toInt()))
 
-public val ARPOP_REQUEST: UShort = 1u
+public val ARPOP_REQUEST: UShort = 1u.toUShort()
 
-public val ARPOP_REPLY: UShort = 2u
+public val ARPOP_REPLY: UShort = 2u.toUShort()
 
 public val ATF_COM: CInt = 0x02
 

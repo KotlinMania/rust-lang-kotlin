@@ -354,10 +354,10 @@ public val NEG_INFINITY: F16 = F16.NEG_INFINITY
 
 public val MAX: F16 = -F16.MIN
 
-public val MIN: F16 = F16.fromBits((F16.Int.MAX and ((1u.toUInt() shl (F16.SIG_BITS.toInt())).toUShort()).inv()).toUShort())
+public val MIN: F16 = F16.fromBits((F16.Int.MAX and (((1u.toUShort()).toUInt() shl (F16.SIG_BITS.toInt())).toUShort()).inv()).toUShort())
 
 public val NAN: F16 = F16.fromBits((if (MIPS_NAN) {
-    F16.EXP_MASK or (F16.SIG_TOP_BIT - 1u)
+    F16.EXP_MASK or (F16.SIG_TOP_BIT - 1u.toUShort())
 } else {
     F16.EXP_MASK or F16.SIG_TOP_BIT
 }).toUShort())
@@ -382,7 +382,7 @@ public val NEG_QSNAN: F16 = F16.fromBits((F16.QSNAN.toBits() or F16.SIGN_MASK).t
 
 public val EPSILON: F16 = F16.EPSILON
 
-public val MIN_POSITIVE_NORMAL: F16 = F16.fromBits((1u.toUInt() shl (F16.SIG_BITS.toInt())).toUShort())
+public val MIN_POSITIVE_NORMAL: F16 = F16.fromBits(((1u.toUShort()).toUInt() shl (F16.SIG_BITS.toInt())).toUShort())
 
 public val MIN_POSITIVE_SUBNORMAL: F16 = F16.fromBits(1u.toUShort())
 
@@ -396,13 +396,13 @@ public val BITS: UInt = 16u
 
 public val SIG_BITS: UInt = 10u
 
-public val SIGN_MASK: UShort = (1u.toUInt() shl ((F16.BITS - 1).toInt())).toUShort()
+public val SIGN_MASK: UShort = ((1u.toUShort()).toUInt() shl ((F16.BITS - 1).toInt())).toUShort()
 
-public val SIG_MASK: UShort = (((1u.toUInt() shl (F16.SIG_BITS.toInt())).toUShort()) - 1u).toUShort()
+public val SIG_MASK: UShort = (((1u.toUShort()).toUInt() shl (F16.SIG_BITS.toInt())).toUShort()) - 1u.toUShort()
 
 public val EXP_MASK: UShort = ((F16.SIGN_MASK or F16.SIG_MASK).inv()).toUShort()
 
-public val IMPLICIT_BIT: UShort = (1u.toUInt() shl (F16.SIG_BITS.toInt())).toUShort()
+public val IMPLICIT_BIT: UShort = ((1u.toUShort()).toUInt() shl (F16.SIG_BITS.toInt())).toUShort()
 
 public val SIG_TOP_BIT: UShort = (F16.IMPLICIT_BIT.toUInt() shr 1).toUShort()
 

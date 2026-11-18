@@ -64,14 +64,14 @@ public open class TerseFormatter<T>(
             // `stamp` in the Rust CI).
             when (val tryResult = this.writeProgress()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     public open fun writeProgress(): Result<Unit> {
         val out = " ${this.testCount}/${this.totalTestCount}\n"
         when (val tryResult = this.writePlain(out)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         this.testColumn = 0
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     public open fun writePretty(word: String, color: Color.Color): Result<Unit> {
@@ -123,7 +123,7 @@ public open class TerseFormatter<T>(
         for (name in successes) {
             when (val tryResult = this.writePlain("    $name\n")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     public open fun writeFailures(state: ConsoleTestState): Result<Unit> {
@@ -148,7 +148,7 @@ public open class TerseFormatter<T>(
         for (name in failures) {
             when (val tryResult = this.writePlain("    $name\n")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     public open fun writeTestName(desc: TestDesc): Result<Unit> {
@@ -162,7 +162,7 @@ public open class TerseFormatter<T>(
                 when (val tryResult = this.writePlain("test $name - $testMode ... ")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     public companion object {
@@ -170,11 +170,11 @@ public open class TerseFormatter<T>(
     }
 }
 
-public fun <T : Write<T>> TerseFormatter<T>.writeDiscoveryStart(): Result<Unit> = RustResult.Ok(Unit)
+public fun <T : Write<T>> TerseFormatter<T>.writeDiscoveryStart(): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
 public fun <T : Write<T>> TerseFormatter<T>.writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> = this.writePlain("${desc.name}: $testType\n")
 
-public fun <T : Write<T>> TerseFormatter<T>.writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> = RustResult.Ok(Unit)
+public fun <T : Write<T>> TerseFormatter<T>.writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
 public fun <T : Write<T>> TerseFormatter<T>.writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
     this.totalTestCount = testCount
@@ -201,7 +201,7 @@ public fun <T : Write<T>> TerseFormatter<T>.writeTestStart(desc: TestDesc): Resu
     if (!this.isMultithreaded && desc.name.padding() == NamePadding.PadOnRight) {
         when (val tryResult = this.writeTestName(desc)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     }
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun <T : Write<T>> TerseFormatter<T>.writeResult(desc: TestDesc, result: TestResult, arg2: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit> {
@@ -268,7 +268,7 @@ public fun <T : Write<T>> TerseFormatter<T>.writeRunFinish(state: ConsoleTestSta
             }
         }
     }
-    return RustResult.Ok(success)
+    return RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(success)
 }
 
 public fun <T : Write<T>> TerseFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")

@@ -387,7 +387,7 @@ public fun mm512Zextph128Ph512(a: M128h): M512h = run { val simdArg0 = a; val si
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cmp_ph_mask)
  */
-public fun mmCmpPhMask(a: M128h, b: M128h, imm5: Int): Mmask8 = mmMaskCmpPhMask((0u.inv()).toUByte(), a, b, imm5)
+public fun mmCmpPhMask(a: M128h, b: M128h, imm5: Int): Mmask8 = mmMaskCmpPhMask((0u.toUByte()).inv(), a, b, imm5)
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b based on the comparison
@@ -410,7 +410,7 @@ public fun mmMaskCmpPhMask(k1: Mmask8, a: M128h, b: M128h, imm5: Int): Mmask8 =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cmp_ph_mask)
  */
-public fun mm256CmpPhMask(a: M256h, b: M256h, imm5: Int): Mmask16 = mm256MaskCmpPhMask((0u.inv()).toUShort(), a, b, imm5)
+public fun mm256CmpPhMask(a: M256h, b: M256h, imm5: Int): Mmask16 = mm256MaskCmpPhMask((0u.toUShort()).inv(), a, b, imm5)
 
 /**
  * Compare packed half-precision (16-bit) floating-point elements in a and b based on the comparison
@@ -488,7 +488,7 @@ public fun mmCmpRoundShMask(a: M128h, b: M128h, imm5: Int, sae: Int): Mmask8 {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mmMaskCmpRoundShMask(0xffu, a, b, imm5, sae)
+    return mmMaskCmpRoundShMask(0xffu.toUByte(), a, b, imm5, sae)
 }
 
 /**
@@ -1038,7 +1038,7 @@ public fun mmAddRoundSh(a: M128h, b: M128h, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mmMaskAddRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, rounding)
+    return mmMaskAddRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, rounding)
 }
 
 /**
@@ -1303,7 +1303,7 @@ public fun mmSubRoundSh(a: M128h, b: M128h, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mmMaskSubRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, rounding)
+    return mmMaskSubRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, rounding)
 }
 
 /**
@@ -1568,7 +1568,7 @@ public fun mmMulRoundSh(a: M128h, b: M128h, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mmMaskMulRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, rounding)
+    return mmMaskMulRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, rounding)
 }
 
 /**
@@ -1833,7 +1833,7 @@ public fun mmDivRoundSh(a: M128h, b: M128h, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mmMaskDivRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, rounding)
+    return mmMaskDivRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, rounding)
 }
 
 /**
@@ -1931,7 +1931,7 @@ public fun mmMaskzDivSh(k: Mmask8, a: M128h, b: M128h): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mul_pch)
  */
-public fun mmMulPch(a: M128h, b: M128h): M128h = mmMaskMulPch(mmUndefinedPh(), 0xffu, a, b)
+public fun mmMulPch(a: M128h, b: M128h): M128h = mmMaskMulPch(mmUndefinedPh(), 0xffu.toUByte(), a, b)
 
 /**
  * Multiply packed complex numbers in a and b, and store the results in dst using writemask k (the element
@@ -1958,7 +1958,7 @@ public fun mmMaskzMulPch(k: Mmask8, a: M128h, b: M128h): M128h = mmMaskMulPch(mm
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_mul_pch)
  */
-public fun mm256MulPch(a: M256h, b: M256h): M256h = mm256MaskMulPch(mm256UndefinedPh(), 0xffu, a, b)
+public fun mm256MulPch(a: M256h, b: M256h): M256h = mm256MaskMulPch(mm256UndefinedPh(), 0xffu.toUByte(), a, b)
 
 /**
  * Multiply packed complex numbers in a and b, and store the results in dst using writemask k (the element
@@ -1985,7 +1985,7 @@ public fun mm256MaskzMulPch(k: Mmask8, a: M256h, b: M256h): M256h = mm256MaskMul
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_mul_pch)
  */
-public fun mm512MulPch(a: M512h, b: M512h): M512h = mm512MaskMulPch(mm512UndefinedPh(), 0xffffu, a, b)
+public fun mm512MulPch(a: M512h, b: M512h): M512h = mm512MaskMulPch(mm512UndefinedPh(), 0xffffu.toUShort(), a, b)
 
 /**
  * Multiply packed complex numbers in a and b, and store the results in dst using writemask k (the element
@@ -2024,7 +2024,7 @@ public fun mm512MulRoundPch(a: M512h, b: M512h, rounding: Int): M512h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mm512MaskMulRoundPch(mm512UndefinedPh(), 0xffffu, a, b, rounding)
+    return mm512MaskMulRoundPch(mm512UndefinedPh(), 0xffffu.toUShort(), a, b, rounding)
 }
 
 /**
@@ -2080,7 +2080,7 @@ public fun mm512MaskzMulRoundPch(k: Mmask16, a: M512h, b: M512h, rounding: Int):
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_mul_sch)
  */
-public fun mmMulSch(a: M128h, b: M128h): M128h = mmMaskMulSch(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b)
+public fun mmMulSch(a: M128h, b: M128h): M128h = mmMaskMulSch(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b)
 
 /**
  * Multiply the lower complex numbers in a and b, and store the result in the lower elements of dst using
@@ -2122,7 +2122,7 @@ public fun mmMulRoundSch(a: M128h, b: M128h, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mmMaskMulRoundSch(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, rounding)
+    return mmMaskMulRoundSch(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, rounding)
 }
 
 /**
@@ -2414,7 +2414,7 @@ public fun mmMaskzFmulRoundSch(k: Mmask8, a: M128h, b: M128h, rounding: Int): M1
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cmul_pch)
  */
-public fun mmCmulPch(a: M128h, b: M128h): M128h = mmMaskCmulPch(mmUndefinedPh(), 0xffu, a, b)
+public fun mmCmulPch(a: M128h, b: M128h): M128h = mmMaskCmulPch(mmUndefinedPh(), 0xffu.toUByte(), a, b)
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, and
@@ -2444,7 +2444,7 @@ public fun mmMaskzCmulPch(k: Mmask8, a: M128h, b: M128h): M128h = mmMaskCmulPch(
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cmul_pch)
  */
-public fun mm256CmulPch(a: M256h, b: M256h): M256h = mm256MaskCmulPch(mm256UndefinedPh(), 0xffu, a, b)
+public fun mm256CmulPch(a: M256h, b: M256h): M256h = mm256MaskCmulPch(mm256UndefinedPh(), 0xffu.toUByte(), a, b)
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, and
@@ -2474,7 +2474,7 @@ public fun mm256MaskzCmulPch(k: Mmask8, a: M256h, b: M256h): M256h = mm256MaskCm
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cmul_pch)
  */
-public fun mm512CmulPch(a: M512h, b: M512h): M512h = mm512MaskCmulPch(mm512UndefinedPh(), 0xffffu, a, b)
+public fun mm512CmulPch(a: M512h, b: M512h): M512h = mm512MaskCmulPch(mm512UndefinedPh(), 0xffffu.toUShort(), a, b)
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, and
@@ -2516,7 +2516,7 @@ public fun mm512CmulRoundPch(a: M512h, b: M512h, rounding: Int): M512h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mm512MaskCmulRoundPch(mm512UndefinedPh(), 0xffffu, a, b, rounding)
+    return mm512MaskCmulRoundPch(mm512UndefinedPh(), 0xffffu.toUShort(), a, b, rounding)
 }
 
 /**
@@ -2573,7 +2573,7 @@ public fun mm512MaskzCmulRoundPch(k: Mmask16, a: M512h, b: M512h, rounding: Int)
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cmul_sch)
  */
-public fun mmCmulSch(a: M128h, b: M128h): M128h = mmMaskCmulSch(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b)
+public fun mmCmulSch(a: M128h, b: M128h): M128h = mmMaskCmulSch(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b)
 
 /**
  * Multiply the lower complex numbers in a by the complex conjugates of the lower complex numbers in b,
@@ -2614,7 +2614,7 @@ public fun mmCmulRoundSch(a: M128h, b: M128h, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mmMaskCmulRoundSch(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, rounding)
+    return mmMaskCmulRoundSch(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, rounding)
 }
 
 /**
@@ -3051,7 +3051,7 @@ public fun mm512MaskzConjPch(k: Mmask16, a: M512h): M512h = mm512MaskConjPch(mm5
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_fmadd_pch)
  */
-public fun mmFmaddPch(a: M128h, b: M128h, c: M128h): M128h = mmMask3FmaddPch(a, b, c, 0xffu)
+public fun mmFmaddPch(a: M128h, b: M128h, c: M128h): M128h = mmMask3FmaddPch(a, b, c, 0xffu.toUByte())
 
 /**
  * Multiply packed complex numbers in a and b, accumulate to the corresponding complex numbers in c,
@@ -3095,7 +3095,7 @@ public fun mmMaskzFmaddPch(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = tra
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_fmadd_pch)
  */
-public fun mm256FmaddPch(a: M256h, b: M256h, c: M256h): M256h = mm256Mask3FmaddPch(a, b, c, 0xffu)
+public fun mm256FmaddPch(a: M256h, b: M256h, c: M256h): M256h = mm256Mask3FmaddPch(a, b, c, 0xffu.toUByte())
 
 /**
  * Multiply packed complex numbers in a and b, accumulate to the corresponding complex numbers in c,
@@ -3190,7 +3190,7 @@ public fun mm512FmaddRoundPch(a: M512h, b: M512h, c: M512h, rounding: Int): M512
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mm512Mask3FmaddRoundPch(a, b, c, 0xffffu, rounding)
+    return mm512Mask3FmaddRoundPch(a, b, c, 0xffffu.toUShort(), rounding)
 }
 
 /**
@@ -3330,7 +3330,7 @@ public fun mmFmaddRoundSch(a: M128h, b: M128h, c: M128h, rounding: Int): M128h =
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmuteWithLayouts<M128, M128h>(vfmaddcshMask(transmuteWithLayouts<M128h, M128>(a, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128h, M128>(b, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128h, M128>(c, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), 0xffu, rounding), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
+        transmuteWithLayouts<M128, M128h>(vfmaddcshMask(transmuteWithLayouts<M128h, M128>(a, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128h, M128>(b, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128h, M128>(c, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), 0xffu.toUByte(), rounding), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -3421,7 +3421,7 @@ public fun mmMaskzFmaddRoundSch(k: Mmask8, a: M128h, b: M128h, c: M128h, roundin
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_fcmadd_pch)
  */
-public fun mmFcmaddPch(a: M128h, b: M128h, c: M128h): M128h = mmMask3FcmaddPch(a, b, c, 0xffu)
+public fun mmFcmaddPch(a: M128h, b: M128h, c: M128h): M128h = mmMask3FcmaddPch(a, b, c, 0xffu.toUByte())
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, accumulate
@@ -3469,7 +3469,7 @@ public fun mmMaskzFcmaddPch(k: Mmask8, a: M128h, b: M128h, c: M128h): M128h = tr
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_fcmadd_pch)
  */
-public fun mm256FcmaddPch(a: M256h, b: M256h, c: M256h): M256h = mm256Mask3FcmaddPch(a, b, c, 0xffu)
+public fun mm256FcmaddPch(a: M256h, b: M256h, c: M256h): M256h = mm256Mask3FcmaddPch(a, b, c, 0xffu.toUByte())
 
 /**
  * Multiply packed complex numbers in a by the complex conjugates of packed complex numbers in b, accumulate
@@ -3572,7 +3572,7 @@ public fun mm512FcmaddRoundPch(a: M512h, b: M512h, c: M512h, rounding: Int): M51
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mm512Mask3FcmaddRoundPch(a, b, c, 0xffffu, rounding)
+    return mm512Mask3FcmaddRoundPch(a, b, c, 0xffffu.toUShort(), rounding)
 }
 
 /**
@@ -3721,7 +3721,7 @@ public fun mmFcmaddRoundSch(a: M128h, b: M128h, c: M128h, rounding: Int): M128h 
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        transmuteWithLayouts<M128, M128h>(vfcmaddcshMask(transmuteWithLayouts<M128h, M128>(a, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128h, M128>(b, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128h, M128>(c, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), 0xffu, rounding), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
+        transmuteWithLayouts<M128, M128h>(vfcmaddcshMask(transmuteWithLayouts<M128h, M128>(a, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128h, M128>(b, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), transmuteWithLayouts<M128h, M128>(c, UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>()), 0xffu.toUByte(), rounding), UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -5764,7 +5764,7 @@ public fun mm512MaskzFmsubaddRoundPh(k: Mmask32, a: M512h, b: M512h, c: M512h, r
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_rcp_ph)
  */
-public fun mmRcpPh(a: M128h): M128h = mmMaskRcpPh(mmUndefinedPh(), 0xffu, a)
+public fun mmRcpPh(a: M128h): M128h = mmMaskRcpPh(mmUndefinedPh(), 0xffu.toUByte(), a)
 
 /**
  * Compute the approximate reciprocal of packed 16-bit floating-point elements in `a` and stores the results in `dst`
@@ -5790,7 +5790,7 @@ public fun mmMaskzRcpPh(k: Mmask8, a: M128h): M128h = mmMaskRcpPh(mmSetzeroPh(),
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_rcp_ph)
  */
-public fun mm256RcpPh(a: M256h): M256h = mm256MaskRcpPh(mm256UndefinedPh(), 0xffffu, a)
+public fun mm256RcpPh(a: M256h): M256h = mm256MaskRcpPh(mm256UndefinedPh(), 0xffffu.toUShort(), a)
 
 /**
  * Compute the approximate reciprocal of packed 16-bit floating-point elements in `a` and stores the results in `dst`
@@ -5844,7 +5844,7 @@ public fun mm512MaskzRcpPh(k: Mmask32, a: M512h): M512h = mm512MaskRcpPh(mm512Se
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_rcp_sh)
  */
-public fun mmRcpSh(a: M128h, b: M128h): M128h = mmMaskRcpSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b)
+public fun mmRcpSh(a: M128h, b: M128h): M128h = mmMaskRcpSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b)
 
 /**
  * Compute the approximate reciprocal of the lower half-precision (16-bit) floating-point element in b,
@@ -5873,7 +5873,7 @@ public fun mmMaskzRcpSh(k: Mmask8, a: M128h, b: M128h): M128h = mmMaskRcpSh(Simd
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_rsqrt_ph)
  */
-public fun mmRsqrtPh(a: M128h): M128h = mmMaskRsqrtPh(mmUndefinedPh(), 0xffu, a)
+public fun mmRsqrtPh(a: M128h): M128h = mmMaskRsqrtPh(mmUndefinedPh(), 0xffu.toUByte(), a)
 
 /**
  * Compute the approximate reciprocal square root of packed half-precision (16-bit) floating-point
@@ -5902,7 +5902,7 @@ public fun mmMaskzRsqrtPh(k: Mmask8, a: M128h): M128h = mmMaskRsqrtPh(mmSetzeroP
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_rsqrt_ph)
  */
-public fun mm256RsqrtPh(a: M256h): M256h = mm256MaskRsqrtPh(mm256UndefinedPh(), 0xffffu, a)
+public fun mm256RsqrtPh(a: M256h): M256h = mm256MaskRsqrtPh(mm256UndefinedPh(), 0xffffu.toUShort(), a)
 
 /**
  * Compute the approximate reciprocal square root of packed half-precision (16-bit) floating-point
@@ -5961,7 +5961,7 @@ public fun mm512MaskzRsqrtPh(k: Mmask32, a: M512h): M512h = mm512MaskRsqrtPh(mm5
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_rsqrt_sh)
  */
-public fun mmRsqrtSh(a: M128h, b: M128h): M128h = mmMaskRsqrtSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b)
+public fun mmRsqrtSh(a: M128h, b: M128h): M128h = mmMaskRsqrtSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b)
 
 /**
  * Compute the approximate reciprocal square root of the lower half-precision (16-bit) floating-point
@@ -6125,7 +6125,7 @@ public fun mm512MaskzSqrtRoundPh(k: Mmask32, a: M512h, rounding: Int): M512h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_sqrt_sh)
  */
-public fun mmSqrtSh(a: M128h, b: M128h): M128h = mmMaskSqrtSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b)
+public fun mmSqrtSh(a: M128h, b: M128h): M128h = mmMaskSqrtSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b)
 
 /**
  * Compute the square root of the lower half-precision (16-bit) floating-point element in b, store
@@ -6163,7 +6163,7 @@ public fun mmSqrtRoundSh(a: M128h, b: M128h, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mmMaskSqrtRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, rounding)
+    return mmMaskSqrtRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, rounding)
 }
 
 /**
@@ -6352,7 +6352,7 @@ public fun mm512MaskzMaxRoundPh(k: Mmask32, a: M512h, b: M512h, sae: Int): M512h
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_max_sh)
  */
-public fun mmMaxSh(a: M128h, b: M128h): M128h = mmMaskMaxSh(mmUndefinedPh(), 0xffu, a, b)
+public fun mmMaxSh(a: M128h, b: M128h): M128h = mmMaskMaxSh(mmUndefinedPh(), 0xffu.toUByte(), a, b)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b, store the maximum
@@ -6386,7 +6386,7 @@ public fun mmMaxRoundSh(a: M128h, b: M128h, sae: Int): M128h {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mmMaskMaxRoundSh(mmUndefinedPh(), 0xffu, a, b, sae)
+    return mmMaskMaxRoundSh(mmUndefinedPh(), 0xffu.toUByte(), a, b, sae)
 }
 
 /**
@@ -6564,7 +6564,7 @@ public fun mm512MaskzMinRoundPh(k: Mmask32, a: M512h, b: M512h, sae: Int): M512h
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_min_sh)
  */
-public fun mmMinSh(a: M128h, b: M128h): M128h = mmMaskMinSh(mmUndefinedPh(), 0xffu, a, b)
+public fun mmMinSh(a: M128h, b: M128h): M128h = mmMaskMinSh(mmUndefinedPh(), 0xffu.toUByte(), a, b)
 
 /**
  * Compare the lower half-precision (16-bit) floating-point elements in a and b, store the minimum
@@ -6598,7 +6598,7 @@ public fun mmMinRoundSh(a: M128h, b: M128h, sae: Int): M128h {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mmMaskMinRoundSh(mmUndefinedPh(), 0xffu, a, b, sae)
+    return mmMaskMinRoundSh(mmUndefinedPh(), 0xffu.toUByte(), a, b, sae)
 }
 
 /**
@@ -6641,7 +6641,7 @@ public fun mmMaskzMinRoundSh(k: Mmask8, a: M128h, b: M128h, sae: Int): M128h {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_getexp_ph)
  */
-public fun mmGetexpPh(a: M128h): M128h = mmMaskGetexpPh(mmUndefinedPh(), 0xffu, a)
+public fun mmGetexpPh(a: M128h): M128h = mmMaskGetexpPh(mmUndefinedPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert the exponent of each packed half-precision (16-bit) floating-point element in a to a half-precision
@@ -6670,7 +6670,7 @@ public fun mmMaskzGetexpPh(k: Mmask8, a: M128h): M128h = mmMaskGetexpPh(mmSetzer
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_getexp_ph)
  */
-public fun mm256GetexpPh(a: M256h): M256h = mm256MaskGetexpPh(mm256UndefinedPh(), 0xffffu, a)
+public fun mm256GetexpPh(a: M256h): M256h = mm256MaskGetexpPh(mm256UndefinedPh(), 0xffffu.toUShort(), a)
 
 /**
  * Convert the exponent of each packed half-precision (16-bit) floating-point element in a to a half-precision
@@ -6775,7 +6775,7 @@ public fun mm512MaskzGetexpRoundPh(k: Mmask32, a: M512h, sae: Int): M512h {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_getexp_sh)
  */
-public fun mmGetexpSh(a: M128h, b: M128h): M128h = mmMaskGetexpSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b)
+public fun mmGetexpSh(a: M128h, b: M128h): M128h = mmMaskGetexpSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b)
 
 /**
  * Convert the exponent of the lower half-precision (16-bit) floating-point element in b to a half-precision
@@ -6812,7 +6812,7 @@ public fun mmGetexpRoundSh(a: M128h, b: M128h, sae: Int): M128h {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mmMaskGetexpRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, sae)
+    return mmMaskGetexpRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, sae)
 }
 
 /**
@@ -6875,7 +6875,7 @@ public fun mmGetmantPh(a: M128h, norm: MmMantissaNormEnum, sign: MmMantissaSignE
     run {
         check(0 <= sign && sign < (1 shl 2)) { "SIGN doesn't fit in 2 bits (unsigned)" }
     }
-    return mmMaskGetmantPh(mmUndefinedPh(), 0xffu, a, norm, sign)
+    return mmMaskGetmantPh(mmUndefinedPh(), 0xffu.toUByte(), a, norm, sign)
 }
 
 /**
@@ -6968,7 +6968,7 @@ public fun mm256GetmantPh(a: M256h, norm: MmMantissaNormEnum, sign: MmMantissaSi
     run {
         check(0 <= sign && sign < (1 shl 2)) { "SIGN doesn't fit in 2 bits (unsigned)" }
     }
-    return mm256MaskGetmantPh(mm256UndefinedPh(), 0xffffu, a, norm, sign)
+    return mm256MaskGetmantPh(mm256UndefinedPh(), 0xffffu.toUShort(), a, norm, sign)
 }
 
 /**
@@ -7265,7 +7265,7 @@ public fun mmGetmantSh(a: M128h, b: M128h, norm: MmMantissaNormEnum, sign: MmMan
     run {
         check(0 <= sign && sign < (1 shl 2)) { "SIGN doesn't fit in 2 bits (unsigned)" }
     }
-    return mmMaskGetmantSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, norm, sign)
+    return mmMaskGetmantSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, norm, sign)
 }
 
 /**
@@ -7366,7 +7366,7 @@ public fun mmGetmantRoundSh(a: M128h, b: M128h, norm: MmMantissaNormEnum, sign: 
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mmMaskGetmantRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, norm, sign, sae)
+    return mmMaskGetmantRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, norm, sign, sae)
 }
 
 /**
@@ -7462,7 +7462,7 @@ public fun mmRoundscalePh(a: M128h, imm8: Int): M128h {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return mmMaskRoundscalePh(mmUndefinedPh(), 0xffu, a, imm8)
+    return mmMaskRoundscalePh(mmUndefinedPh(), 0xffu.toUByte(), a, imm8)
 }
 
 /**
@@ -7528,7 +7528,7 @@ public fun mm256RoundscalePh(a: M256h, imm8: Int): M256h {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return mm256MaskRoundscalePh(mm256UndefinedPh(), 0xffffu, a, imm8)
+    return mm256MaskRoundscalePh(mm256UndefinedPh(), 0xffffu.toUShort(), a, imm8)
 }
 
 /**
@@ -7737,7 +7737,7 @@ public fun mmRoundscaleSh(a: M128h, b: M128h, imm8: Int): M128h {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return mmMaskRoundscaleSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, imm8)
+    return mmMaskRoundscaleSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, imm8)
 }
 
 /**
@@ -7808,7 +7808,7 @@ public fun mmRoundscaleRoundSh(a: M128h, b: M128h, imm8: Int, sae: Int): M128h {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mmMaskRoundscaleRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, imm8, sae)
+    return mmMaskRoundscaleRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, imm8, sae)
 }
 
 /**
@@ -7872,7 +7872,7 @@ public fun mmMaskzRoundscaleRoundSh(k: Mmask8, a: M128h, b: M128h, imm8: Int, sa
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_scalef_ph)
  */
-public fun mmScalefPh(a: M128h, b: M128h): M128h = mmMaskScalefPh(mmUndefinedPh(), 0xffu, a, b)
+public fun mmScalefPh(a: M128h, b: M128h): M128h = mmMaskScalefPh(mmUndefinedPh(), 0xffu.toUByte(), a, b)
 
 /**
  * Scale the packed half-precision (16-bit) floating-point elements in a using values from b, and store
@@ -7896,7 +7896,7 @@ public fun mmMaskzScalefPh(k: Mmask8, a: M128h, b: M128h): M128h = mmMaskScalefP
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_scalef_ph)
  */
-public fun mm256ScalefPh(a: M256h, b: M256h): M256h = mm256MaskScalefPh(mm256UndefinedPh(), 0xffffu, a, b)
+public fun mm256ScalefPh(a: M256h, b: M256h): M256h = mm256MaskScalefPh(mm256UndefinedPh(), 0xffffu.toUShort(), a, b)
 
 /**
  * Scale the packed half-precision (16-bit) floating-point elements in a using values from b, and store
@@ -8009,7 +8009,7 @@ public fun mm512MaskzScalefRoundPh(k: Mmask32, a: M512h, b: M512h, rounding: Int
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_scalef_sh)
  */
-public fun mmScalefSh(a: M128h, b: M128h): M128h = mmMaskScalefSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b)
+public fun mmScalefSh(a: M128h, b: M128h): M128h = mmMaskScalefSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b)
 
 /**
  * Scale the packed single-precision (32-bit) floating-point elements in a using values from b, store
@@ -8048,7 +8048,7 @@ public fun mmScalefRoundSh(a: M128h, b: M128h, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mmMaskScalefRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, rounding)
+    return mmMaskScalefRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, rounding)
 }
 
 /**
@@ -8114,7 +8114,7 @@ public fun mmReducePh(a: M128h, imm8: Int): M128h {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return mmMaskReducePh(mmUndefinedPh(), 0xffu, a, imm8)
+    return mmMaskReducePh(mmUndefinedPh(), 0xffu.toUByte(), a, imm8)
 }
 
 /**
@@ -8180,7 +8180,7 @@ public fun mm256ReducePh(a: M256h, imm8: Int): M256h {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return mm256MaskReducePh(mm256UndefinedPh(), 0xffffu, a, imm8)
+    return mm256MaskReducePh(mm256UndefinedPh(), 0xffffu.toUShort(), a, imm8)
 }
 
 /**
@@ -8393,7 +8393,7 @@ public fun mmReduceSh(a: M128h, b: M128h, imm8: Int): M128h {
     run {
         check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
     }
-    return mmMaskReduceSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, imm8)
+    return mmMaskReduceSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, imm8)
 }
 
 /**
@@ -8466,7 +8466,7 @@ public fun mmReduceRoundSh(a: M128h, b: M128h, imm8: Int, sae: Int): M128h {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mmMaskReduceRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, imm8, sae)
+    return mmMaskReduceRoundSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, imm8, sae)
 }
 
 /**
@@ -8837,7 +8837,7 @@ public fun mm512MaskFpclassPhMask(k1: Mmask32, a: M512h, imm8: Int): Mmask32 = m
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_fpclass_sh_mask)
  */
-public fun mmFpclassShMask(a: M128h, imm8: Int): Mmask8 = mmMaskFpclassShMask(0xffu, a, imm8)
+public fun mmFpclassShMask(a: M128h, imm8: Int): Mmask8 = mmMaskFpclassShMask(0xffu.toUByte(), a, imm8)
 
 /**
  * Test the lower half-precision (16-bit) floating-point element in a for special categories specified
@@ -9224,7 +9224,7 @@ public fun mm512MaskzCvtRoundepu16Ph(k: Mmask32, a: M512i, rounding: Int): M512h
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtepi32_ph)
  */
-public fun mmCvtepi32Ph(a: M128i): M128h = mmMaskCvtepi32Ph(mmSetzeroPh(), 0xffu, a)
+public fun mmCvtepi32Ph(a: M128i): M128h = mmMaskCvtepi32Ph(mmSetzeroPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed signed 32-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9398,7 +9398,7 @@ public fun mmCvtRoundi32Sh(a: M128h, b: Int, rounding: Int): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtepu32_ph)
  */
-public fun mmCvtepu32Ph(a: M128i): M128h = mmMaskCvtepu32Ph(mmSetzeroPh(), 0xffu, a)
+public fun mmCvtepu32Ph(a: M128i): M128h = mmMaskCvtepu32Ph(mmSetzeroPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed unsigned 32-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9572,7 +9572,7 @@ public fun mmCvtRoundu32Sh(a: M128h, b: UInt, rounding: Int): M128h =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtepi64_ph)
  */
-public fun mmCvtepi64Ph(a: M128i): M128h = mmMaskCvtepi64Ph(mmSetzeroPh(), 0xffu, a)
+public fun mmCvtepi64Ph(a: M128i): M128h = mmMaskCvtepi64Ph(mmSetzeroPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed signed 64-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9598,7 +9598,7 @@ public fun mmMaskzCvtepi64Ph(k: Mmask8, a: M128i): M128h = mmMaskCvtepi64Ph(mmSe
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtepi64_ph)
  */
-public fun mm256Cvtepi64Ph(a: M256i): M128h = mm256MaskCvtepi64Ph(mmSetzeroPh(), 0xffu, a)
+public fun mm256Cvtepi64Ph(a: M256i): M128h = mm256MaskCvtepi64Ph(mmSetzeroPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed signed 64-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9715,7 +9715,7 @@ public fun mm512MaskzCvtRoundepi64Ph(k: Mmask8, a: M512i, rounding: Int): M128h 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtepu64_ph)
  */
-public fun mmCvtepu64Ph(a: M128i): M128h = mmMaskCvtepu64Ph(mmSetzeroPh(), 0xffu, a)
+public fun mmCvtepu64Ph(a: M128i): M128h = mmMaskCvtepu64Ph(mmSetzeroPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9741,7 +9741,7 @@ public fun mmMaskzCvtepu64Ph(k: Mmask8, a: M128i): M128h = mmMaskCvtepu64Ph(mmSe
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtepu64_ph)
  */
-public fun mm256Cvtepu64Ph(a: M256i): M128h = mm256MaskCvtepu64Ph(mmSetzeroPh(), 0xffu, a)
+public fun mm256Cvtepu64Ph(a: M256i): M128h = mm256MaskCvtepu64Ph(mmSetzeroPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed half-precision (16-bit) floating-point elements,
@@ -9858,7 +9858,7 @@ public fun mm512MaskzCvtRoundepu64Ph(k: Mmask8, a: M512i, rounding: Int): M128h 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtxps_ph)
  */
-public fun mmCvtxpsPh(a: M128): M128h = mmMaskCvtxpsPh(mmSetzeroPh(), 0xffu, a)
+public fun mmCvtxpsPh(a: M128): M128h = mmMaskCvtxpsPh(mmSetzeroPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed half-precision (16-bit)
@@ -9884,7 +9884,7 @@ public fun mmMaskzCvtxpsPh(k: Mmask8, a: M128): M128h = mmMaskCvtxpsPh(mmSetzero
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtxps_ph)
  */
-public fun mm256CvtxpsPh(a: M256): M128h = mm256MaskCvtxpsPh(mmSetzeroPh(), 0xffu, a)
+public fun mm256CvtxpsPh(a: M256): M128h = mm256MaskCvtxpsPh(mmSetzeroPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed half-precision (16-bit)
@@ -9910,7 +9910,7 @@ public fun mm256MaskzCvtxpsPh(k: Mmask8, a: M256): M128h = mm256MaskCvtxpsPh(mmS
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtxps_ph)
  */
-public fun mm512CvtxpsPh(a: M512): M256h = mm512MaskCvtxpsPh(Simd<F16>(List(16) { F16.fromFloat(0.0f) }).asM256h(), 0xffffu, a)
+public fun mm512CvtxpsPh(a: M512): M256h = mm512MaskCvtxpsPh(Simd<F16>(List(16) { F16.fromFloat(0.0f) }).asM256h(), 0xffffu.toUShort(), a)
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed half-precision (16-bit)
@@ -9948,7 +9948,7 @@ public fun mm512CvtxRoundpsPh(a: M512, rounding: Int): M256h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mm512MaskCvtxRoundpsPh(Simd<F16>(List(16) { F16.fromFloat(0.0f) }).asM256h(), 0xffffu, a, rounding)
+    return mm512MaskCvtxRoundpsPh(Simd<F16>(List(16) { F16.fromFloat(0.0f) }).asM256h(), 0xffffu.toUShort(), a, rounding)
 }
 
 /**
@@ -10003,7 +10003,7 @@ public fun mm512MaskzCvtxRoundpsPh(k: Mmask16, a: M512, rounding: Int): M256h {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtss_sh)
  */
-public fun mmCvtssSh(a: M128h, b: M128): M128h = mmMaskCvtssSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b)
+public fun mmCvtssSh(a: M128h, b: M128): M128h = mmMaskCvtssSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b)
 
 /**
  * Convert the lower single-precision (32-bit) floating-point element in b to a half-precision (16-bit)
@@ -10044,7 +10044,7 @@ public fun mmCvtRoundssSh(a: M128h, b: M128, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mmMaskCvtRoundssSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, rounding)
+    return mmMaskCvtRoundssSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, rounding)
 }
 
 /**
@@ -10100,7 +10100,7 @@ public fun mmMaskzCvtRoundssSh(k: Mmask8, a: M128h, b: M128, rounding: Int): M12
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtpd_ph)
  */
-public fun mmCvtpdPh(a: M128d): M128h = mmMaskCvtpdPh(mmSetzeroPh(), 0xffu, a)
+public fun mmCvtpdPh(a: M128d): M128h = mmMaskCvtpdPh(mmSetzeroPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed half-precision (16-bit)
@@ -10126,7 +10126,7 @@ public fun mmMaskzCvtpdPh(k: Mmask8, a: M128d): M128h = mmMaskCvtpdPh(mmSetzeroP
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtpd_ph)
  */
-public fun mm256CvtpdPh(a: M256d): M128h = mm256MaskCvtpdPh(mmSetzeroPh(), 0xffu, a)
+public fun mm256CvtpdPh(a: M256d): M128h = mm256MaskCvtpdPh(mmSetzeroPh(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed half-precision (16-bit)
@@ -10152,7 +10152,7 @@ public fun mm256MaskzCvtpdPh(k: Mmask8, a: M256d): M128h = mm256MaskCvtpdPh(mmSe
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtpd_ph)
  */
-public fun mm512CvtpdPh(a: M512d): M128h = mm512MaskCvtpdPh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a)
+public fun mm512CvtpdPh(a: M512d): M128h = mm512MaskCvtpdPh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed half-precision (16-bit)
@@ -10190,7 +10190,7 @@ public fun mm512CvtRoundpdPh(a: M512d, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mm512MaskCvtRoundpdPh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, rounding)
+    return mm512MaskCvtRoundpdPh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, rounding)
 }
 
 /**
@@ -10245,7 +10245,7 @@ public fun mm512MaskzCvtRoundpdPh(k: Mmask8, a: M512d, rounding: Int): M128h {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtsd_sh)
  */
-public fun mmCvtsdSh(a: M128h, b: M128d): M128h = mmMaskCvtsdSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b)
+public fun mmCvtsdSh(a: M128h, b: M128d): M128h = mmMaskCvtsdSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b)
 
 /**
  * Convert the lower double-precision (64-bit) floating-point element in b to a half-precision (16-bit)
@@ -10286,7 +10286,7 @@ public fun mmCvtRoundsdSh(a: M128h, b: M128d, rounding: Int): M128h {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mmMaskCvtRoundsdSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu, a, b, rounding)
+    return mmMaskCvtRoundsdSh(Simd<F16>(List(8) { F16.fromFloat(0.0f) }).asM128h(), 0xffu.toUByte(), a, b, rounding)
 }
 
 /**
@@ -10342,7 +10342,7 @@ public fun mmMaskzCvtRoundsdSh(k: Mmask8, a: M128h, b: M128d, rounding: Int): M1
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtph_epi16)
  */
-public fun mmCvtphEpi16(a: M128h): M128i = mmMaskCvtphEpi16(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvtphEpi16(a: M128h): M128i = mmMaskCvtphEpi16(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 16-bit integers, and
@@ -10367,7 +10367,7 @@ public fun mmMaskzCvtphEpi16(k: Mmask8, a: M128h): M128i = mmMaskCvtphEpi16(mmSe
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtph_epi16)
  */
-public fun mm256CvtphEpi16(a: M256h): M256i = mm256MaskCvtphEpi16(mm256UndefinedSi256(), 0xffffu, a)
+public fun mm256CvtphEpi16(a: M256h): M256i = mm256MaskCvtphEpi16(mm256UndefinedSi256(), 0xffffu.toUShort(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 16-bit integers, and
@@ -10482,7 +10482,7 @@ public fun mm512MaskzCvtRoundphEpi16(k: Mmask32, a: M512h, rounding: Int): M512i
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtph_epu16)
  */
-public fun mmCvtphEpu16(a: M128h): M128i = mmMaskCvtphEpu16(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvtphEpu16(a: M128h): M128i = mmMaskCvtphEpu16(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed unsigned 16-bit integers,
@@ -10507,7 +10507,7 @@ public fun mmMaskzCvtphEpu16(k: Mmask8, a: M128h): M128i = mmMaskCvtphEpu16(mmSe
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtph_epu16)
  */
-public fun mm256CvtphEpu16(a: M256h): M256i = mm256MaskCvtphEpu16(mm256UndefinedSi256(), 0xffffu, a)
+public fun mm256CvtphEpu16(a: M256h): M256i = mm256MaskCvtphEpu16(mm256UndefinedSi256(), 0xffffu.toUShort(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed unsigned 16-bit integers,
@@ -10604,7 +10604,7 @@ public fun mm512MaskzCvtRoundphEpu16(k: Mmask32, a: M512h, sae: Int): M512i {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvttph_epi16)
  */
-public fun mmCvttphEpi16(a: M128h): M128i = mmMaskCvttphEpi16(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvttphEpi16(a: M128h): M128i = mmMaskCvttphEpi16(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 16-bit integers with
@@ -10630,7 +10630,7 @@ public fun mmMaskzCvttphEpi16(k: Mmask8, a: M128h): M128i = mmMaskCvttphEpi16(mm
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvttph_epi16)
  */
-public fun mm256CvttphEpi16(a: M256h): M256i = mm256MaskCvttphEpi16(mm256UndefinedSi256(), 0xffffu, a)
+public fun mm256CvttphEpi16(a: M256h): M256i = mm256MaskCvttphEpi16(mm256UndefinedSi256(), 0xffffu.toUShort(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 16-bit integers with
@@ -10730,7 +10730,7 @@ public fun mm512MaskzCvttRoundphEpi16(k: Mmask32, a: M512h, sae: Int): M512i {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvttph_epu16)
  */
-public fun mmCvttphEpu16(a: M128h): M128i = mmMaskCvttphEpu16(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvttphEpu16(a: M128h): M128i = mmMaskCvttphEpu16(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed unsigned 16-bit integers with
@@ -10756,7 +10756,7 @@ public fun mmMaskzCvttphEpu16(k: Mmask8, a: M128h): M128i = mmMaskCvttphEpu16(mm
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvttph_epu16)
  */
-public fun mm256CvttphEpu16(a: M256h): M256i = mm256MaskCvttphEpu16(mm256UndefinedSi256(), 0xffffu, a)
+public fun mm256CvttphEpu16(a: M256h): M256i = mm256MaskCvttphEpu16(mm256UndefinedSi256(), 0xffffu.toUShort(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed unsigned 16-bit integers with
@@ -10856,7 +10856,7 @@ public fun mm512MaskzCvttRoundphEpu16(k: Mmask32, a: M512h, sae: Int): M512i {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtph_epi32)
  */
-public fun mmCvtphEpi32(a: M128h): M128i = mmMaskCvtphEpi32(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvtphEpi32(a: M128h): M128i = mmMaskCvtphEpi32(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers, and store the
@@ -10880,7 +10880,7 @@ public fun mmMaskzCvtphEpi32(k: Mmask8, a: M128h): M128i = mmMaskCvtphEpi32(mmSe
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtph_epi32)
  */
-public fun mm256CvtphEpi32(a: M128h): M256i = mm256MaskCvtphEpi32(mm256UndefinedSi256(), 0xffu, a)
+public fun mm256CvtphEpi32(a: M128h): M256i = mm256MaskCvtphEpi32(mm256UndefinedSi256(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers, and store the
@@ -10904,7 +10904,7 @@ public fun mm256MaskzCvtphEpi32(k: Mmask8, a: M128h): M256i = mm256MaskCvtphEpi3
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtph_epi32)
  */
-public fun mm512CvtphEpi32(a: M256h): M512i = mm512MaskCvtphEpi32(mm512UndefinedEpi32(), 0xffffu, a)
+public fun mm512CvtphEpi32(a: M256h): M512i = mm512MaskCvtphEpi32(mm512UndefinedEpi32(), 0xffffu.toUShort(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers, and store the
@@ -10940,7 +10940,7 @@ public fun mm512CvtRoundphEpi32(a: M256h, rounding: Int): M512i {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mm512MaskCvtRoundphEpi32(mm512UndefinedEpi32(), 0xffffu, a, rounding)
+    return mm512MaskCvtRoundphEpi32(mm512UndefinedEpi32(), 0xffffu.toUShort(), a, rounding)
 }
 
 /**
@@ -11022,7 +11022,7 @@ public fun mmCvtRoundshI32(a: M128h, rounding: Int): Int =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtph_epu32)
  */
-public fun mmCvtphEpu32(a: M128h): M128i = mmMaskCvtphEpu32(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvtphEpu32(a: M128h): M128i = mmMaskCvtphEpu32(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers, and store
@@ -11046,7 +11046,7 @@ public fun mmMaskzCvtphEpu32(k: Mmask8, a: M128h): M128i = mmMaskCvtphEpu32(mmSe
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtph_epu32)
  */
-public fun mm256CvtphEpu32(a: M128h): M256i = mm256MaskCvtphEpu32(mm256UndefinedSi256(), 0xffu, a)
+public fun mm256CvtphEpu32(a: M128h): M256i = mm256MaskCvtphEpu32(mm256UndefinedSi256(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers, and store
@@ -11070,7 +11070,7 @@ public fun mm256MaskzCvtphEpu32(k: Mmask8, a: M128h): M256i = mm256MaskCvtphEpu3
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtph_epu32)
  */
-public fun mm512CvtphEpu32(a: M256h): M512i = mm512MaskCvtphEpu32(mm512UndefinedEpi32(), 0xffffu, a)
+public fun mm512CvtphEpu32(a: M256h): M512i = mm512MaskCvtphEpu32(mm512UndefinedEpi32(), 0xffffu.toUShort(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers, and store
@@ -11106,7 +11106,7 @@ public fun mm512CvtRoundphEpu32(a: M256h, rounding: Int): M512i {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mm512MaskCvtRoundphEpu32(mm512UndefinedEpi32(), 0xffffu, a, rounding)
+    return mm512MaskCvtRoundphEpu32(mm512UndefinedEpi32(), 0xffffu.toUShort(), a, rounding)
 }
 
 /**
@@ -11182,7 +11182,7 @@ public fun mmCvtRoundshU32(a: M128h, sae: Int): UInt =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvttph_epi32)
  */
-public fun mmCvttphEpi32(a: M128h): M128i = mmMaskCvttphEpi32(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvttphEpi32(a: M128h): M128i = mmMaskCvttphEpi32(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers with truncation, and
@@ -11206,7 +11206,7 @@ public fun mmMaskzCvttphEpi32(k: Mmask8, a: M128h): M128i = mmMaskCvttphEpi32(mm
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvttph_epi32)
  */
-public fun mm256CvttphEpi32(a: M128h): M256i = mm256MaskCvttphEpi32(mm256UndefinedSi256(), 0xffu, a)
+public fun mm256CvttphEpi32(a: M128h): M256i = mm256MaskCvttphEpi32(mm256UndefinedSi256(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers with truncation, and
@@ -11230,7 +11230,7 @@ public fun mm256MaskzCvttphEpi32(k: Mmask8, a: M128h): M256i = mm256MaskCvttphEp
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvttph_epi32)
  */
-public fun mm512CvttphEpi32(a: M256h): M512i = mm512MaskCvttphEpi32(mm512UndefinedEpi32(), 0xffffu, a)
+public fun mm512CvttphEpi32(a: M256h): M512i = mm512MaskCvttphEpi32(mm512UndefinedEpi32(), 0xffffu.toUShort(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit integers with truncation, and
@@ -11260,7 +11260,7 @@ public fun mm512CvttRoundphEpi32(a: M256h, sae: Int): M512i {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mm512MaskCvttRoundphEpi32(mm512UndefinedEpi32(), 0xffffu, a, sae)
+    return mm512MaskCvttRoundphEpi32(mm512UndefinedEpi32(), 0xffffu.toUShort(), a, sae)
 }
 
 /**
@@ -11324,7 +11324,7 @@ public fun mmCvttRoundshI32(a: M128h, sae: Int): Int =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvttph_epu32)
  */
-public fun mmCvttphEpu32(a: M128h): M128i = mmMaskCvttphEpu32(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvttphEpu32(a: M128h): M128i = mmMaskCvttphEpu32(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers with truncation, and
@@ -11348,7 +11348,7 @@ public fun mmMaskzCvttphEpu32(k: Mmask8, a: M128h): M128i = mmMaskCvttphEpu32(mm
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvttph_epu32)
  */
-public fun mm256CvttphEpu32(a: M128h): M256i = mm256MaskCvttphEpu32(mm256UndefinedSi256(), 0xffu, a)
+public fun mm256CvttphEpu32(a: M128h): M256i = mm256MaskCvttphEpu32(mm256UndefinedSi256(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers with truncation, and
@@ -11372,7 +11372,7 @@ public fun mm256MaskzCvttphEpu32(k: Mmask8, a: M128h): M256i = mm256MaskCvttphEp
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvttph_epu32)
  */
-public fun mm512CvttphEpu32(a: M256h): M512i = mm512MaskCvttphEpu32(mm512UndefinedEpi32(), 0xffffu, a)
+public fun mm512CvttphEpu32(a: M256h): M512i = mm512MaskCvttphEpu32(mm512UndefinedEpi32(), 0xffffu.toUShort(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 32-bit unsigned integers with truncation, and
@@ -11402,7 +11402,7 @@ public fun mm512CvttRoundphEpu32(a: M256h, sae: Int): M512i {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mm512MaskCvttRoundphEpu32(mm512UndefinedEpi32(), 0xffffu, a, sae)
+    return mm512MaskCvttRoundphEpu32(mm512UndefinedEpi32(), 0xffffu.toUShort(), a, sae)
 }
 
 /**
@@ -11466,7 +11466,7 @@ public fun mmCvttRoundshU32(a: M128h, sae: Int): UInt =
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtph_epi64)
  */
-public fun mmCvtphEpi64(a: M128h): M128i = mmMaskCvtphEpi64(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvtphEpi64(a: M128h): M128i = mmMaskCvtphEpi64(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers, and
@@ -11490,7 +11490,7 @@ public fun mmMaskzCvtphEpi64(k: Mmask8, a: M128h): M128i = mmMaskCvtphEpi64(mmSe
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtph_epi64)
  */
-public fun mm256CvtphEpi64(a: M128h): M256i = mm256MaskCvtphEpi64(mm256UndefinedSi256(), 0xffu, a)
+public fun mm256CvtphEpi64(a: M128h): M256i = mm256MaskCvtphEpi64(mm256UndefinedSi256(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers, and
@@ -11514,7 +11514,7 @@ public fun mm256MaskzCvtphEpi64(k: Mmask8, a: M128h): M256i = mm256MaskCvtphEpi6
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtph_epi64)
  */
-public fun mm512CvtphEpi64(a: M128h): M512i = mm512MaskCvtphEpi64(mm512UndefinedEpi32(), 0xffu, a)
+public fun mm512CvtphEpi64(a: M128h): M512i = mm512MaskCvtphEpi64(mm512UndefinedEpi32(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers, and
@@ -11550,7 +11550,7 @@ public fun mm512CvtRoundphEpi64(a: M128h, rounding: Int): M512i {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mm512MaskCvtRoundphEpi64(mm512UndefinedEpi32(), 0xffu, a, rounding)
+    return mm512MaskCvtRoundphEpi64(mm512UndefinedEpi32(), 0xffu.toUByte(), a, rounding)
 }
 
 /**
@@ -11602,7 +11602,7 @@ public fun mm512MaskzCvtRoundphEpi64(k: Mmask8, a: M128h, rounding: Int): M512i 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtph_epu64)
  */
-public fun mmCvtphEpu64(a: M128h): M128i = mmMaskCvtphEpu64(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvtphEpu64(a: M128h): M128i = mmMaskCvtphEpu64(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers, and
@@ -11626,7 +11626,7 @@ public fun mmMaskzCvtphEpu64(k: Mmask8, a: M128h): M128i = mmMaskCvtphEpu64(mmSe
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtph_epu64)
  */
-public fun mm256CvtphEpu64(a: M128h): M256i = mm256MaskCvtphEpu64(mm256UndefinedSi256(), 0xffu, a)
+public fun mm256CvtphEpu64(a: M128h): M256i = mm256MaskCvtphEpu64(mm256UndefinedSi256(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers, and
@@ -11650,7 +11650,7 @@ public fun mm256MaskzCvtphEpu64(k: Mmask8, a: M128h): M256i = mm256MaskCvtphEpu6
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtph_epu64)
  */
-public fun mm512CvtphEpu64(a: M128h): M512i = mm512MaskCvtphEpu64(mm512UndefinedEpi32(), 0xffu, a)
+public fun mm512CvtphEpu64(a: M128h): M512i = mm512MaskCvtphEpu64(mm512UndefinedEpi32(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers, and
@@ -11686,7 +11686,7 @@ public fun mm512CvtRoundphEpu64(a: M128h, rounding: Int): M512i {
     run {
         check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
     }
-    return mm512MaskCvtRoundphEpu64(mm512UndefinedEpi32(), 0xffu, a, rounding)
+    return mm512MaskCvtRoundphEpu64(mm512UndefinedEpi32(), 0xffu.toUByte(), a, rounding)
 }
 
 /**
@@ -11738,7 +11738,7 @@ public fun mm512MaskzCvtRoundphEpu64(k: Mmask8, a: M128h, rounding: Int): M512i 
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvttph_epi64)
  */
-public fun mmCvttphEpi64(a: M128h): M128i = mmMaskCvttphEpi64(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvttphEpi64(a: M128h): M128i = mmMaskCvttphEpi64(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers with truncation, and
@@ -11762,7 +11762,7 @@ public fun mmMaskzCvttphEpi64(k: Mmask8, a: M128h): M128i = mmMaskCvttphEpi64(mm
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvttph_epi64)
  */
-public fun mm256CvttphEpi64(a: M128h): M256i = mm256MaskCvttphEpi64(mm256UndefinedSi256(), 0xffu, a)
+public fun mm256CvttphEpi64(a: M128h): M256i = mm256MaskCvttphEpi64(mm256UndefinedSi256(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers with truncation, and
@@ -11786,7 +11786,7 @@ public fun mm256MaskzCvttphEpi64(k: Mmask8, a: M128h): M256i = mm256MaskCvttphEp
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvttph_epi64)
  */
-public fun mm512CvttphEpi64(a: M128h): M512i = mm512MaskCvttphEpi64(mm512UndefinedEpi32(), 0xffu, a)
+public fun mm512CvttphEpi64(a: M128h): M512i = mm512MaskCvttphEpi64(mm512UndefinedEpi32(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit integers with truncation, and
@@ -11816,7 +11816,7 @@ public fun mm512CvttRoundphEpi64(a: M128h, sae: Int): M512i {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mm512MaskCvttRoundphEpi64(mm512UndefinedEpi32(), 0xffu, a, sae)
+    return mm512MaskCvttRoundphEpi64(mm512UndefinedEpi32(), 0xffu.toUByte(), a, sae)
 }
 
 /**
@@ -11856,7 +11856,7 @@ public fun mm512MaskzCvttRoundphEpi64(k: Mmask8, a: M128h, sae: Int): M512i {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvttph_epu64)
  */
-public fun mmCvttphEpu64(a: M128h): M128i = mmMaskCvttphEpu64(mmUndefinedSi128(), 0xffu, a)
+public fun mmCvttphEpu64(a: M128h): M128i = mmMaskCvttphEpu64(mmUndefinedSi128(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers with truncation, and
@@ -11880,7 +11880,7 @@ public fun mmMaskzCvttphEpu64(k: Mmask8, a: M128h): M128i = mmMaskCvttphEpu64(mm
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvttph_epu64)
  */
-public fun mm256CvttphEpu64(a: M128h): M256i = mm256MaskCvttphEpu64(mm256UndefinedSi256(), 0xffu, a)
+public fun mm256CvttphEpu64(a: M128h): M256i = mm256MaskCvttphEpu64(mm256UndefinedSi256(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers with truncation, and
@@ -11904,7 +11904,7 @@ public fun mm256MaskzCvttphEpu64(k: Mmask8, a: M128h): M256i = mm256MaskCvttphEp
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvttph_epu64)
  */
-public fun mm512CvttphEpu64(a: M128h): M512i = mm512MaskCvttphEpu64(mm512UndefinedEpi32(), 0xffu, a)
+public fun mm512CvttphEpu64(a: M128h): M512i = mm512MaskCvttphEpu64(mm512UndefinedEpi32(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed 64-bit unsigned integers with truncation, and
@@ -11934,7 +11934,7 @@ public fun mm512CvttRoundphEpu64(a: M128h, sae: Int): M512i {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mm512MaskCvttRoundphEpu64(mm512UndefinedEpi32(), 0xffu, a, sae)
+    return mm512MaskCvttRoundphEpu64(mm512UndefinedEpi32(), 0xffu.toUByte(), a, sae)
 }
 
 /**
@@ -11974,7 +11974,7 @@ public fun mm512MaskzCvttRoundphEpu64(k: Mmask8, a: M128h, sae: Int): M512i {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtxph_ps)
  */
-public fun mmCvtxphPs(a: M128h): M128 = mmMaskCvtxphPs(mmSetzeroPs(), 0xffu, a)
+public fun mmCvtxphPs(a: M128h): M128 = mmMaskCvtxphPs(mmSetzeroPs(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed single-precision (32-bit)
@@ -12000,7 +12000,7 @@ public fun mmMaskzCvtxphPs(k: Mmask8, a: M128h): M128 = mmMaskCvtxphPs(mmSetzero
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtxph_ps)
  */
-public fun mm256CvtxphPs(a: M128h): M256 = mm256MaskCvtxphPs(mm256SetzeroPs(), 0xffu, a)
+public fun mm256CvtxphPs(a: M128h): M256 = mm256MaskCvtxphPs(mm256SetzeroPs(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed single-precision (32-bit)
@@ -12026,7 +12026,7 @@ public fun mm256MaskzCvtxphPs(k: Mmask8, a: M128h): M256 = mm256MaskCvtxphPs(mm2
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtxph_ps)
  */
-public fun mm512CvtxphPs(a: M256h): M512 = mm512MaskCvtxphPs(mm512SetzeroPs(), 0xffffu, a)
+public fun mm512CvtxphPs(a: M256h): M512 = mm512MaskCvtxphPs(mm512SetzeroPs(), 0xffffu.toUShort(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed single-precision (32-bit)
@@ -12058,7 +12058,7 @@ public fun mm512CvtxRoundphPs(a: M256h, sae: Int): M512 {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mm512MaskCvtxRoundphPs(mm512SetzeroPs(), 0xffffu, a, sae)
+    return mm512MaskCvtxRoundphPs(mm512SetzeroPs(), 0xffffu.toUShort(), a, sae)
 }
 
 /**
@@ -12101,7 +12101,7 @@ public fun mm512MaskzCvtxRoundphPs(k: Mmask16, a: M256h, sae: Int): M512 {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtsh_ss)
  */
-public fun mmCvtshSs(a: M128, b: M128h): M128 = mmMaskCvtshSs(a, 0xffu, a, b)
+public fun mmCvtshSs(a: M128, b: M128h): M128 = mmMaskCvtshSs(a, 0xffu.toUByte(), a, b)
 
 /**
  * Convert the lower half-precision (16-bit) floating-point element in b to a single-precision (32-bit)
@@ -12136,7 +12136,7 @@ public fun mmCvtRoundshSs(a: M128, b: M128h, sae: Int): M128 {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mmMaskCvtRoundshSs(mmUndefinedPs(), 0xffu, a, b, sae)
+    return mmMaskCvtRoundshSs(mmUndefinedPs(), 0xffu.toUByte(), a, b, sae)
 }
 
 /**
@@ -12180,7 +12180,7 @@ public fun mmMaskzCvtRoundshSs(k: Mmask8, a: M128, b: M128h, sae: Int): M128 {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtph_pd)
  */
-public fun mmCvtphPd(a: M128h): M128d = mmMaskCvtphPd(mmSetzeroPd(), 0xffu, a)
+public fun mmCvtphPd(a: M128h): M128d = mmMaskCvtphPd(mmSetzeroPd(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed double-precision (64-bit)
@@ -12206,7 +12206,7 @@ public fun mmMaskzCvtphPd(k: Mmask8, a: M128h): M128d = mmMaskCvtphPd(mmSetzeroP
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_cvtph_pd)
  */
-public fun mm256CvtphPd(a: M128h): M256d = mm256MaskCvtphPd(mm256SetzeroPd(), 0xffu, a)
+public fun mm256CvtphPd(a: M128h): M256d = mm256MaskCvtphPd(mm256SetzeroPd(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed double-precision (64-bit)
@@ -12232,7 +12232,7 @@ public fun mm256MaskzCvtphPd(k: Mmask8, a: M128h): M256d = mm256MaskCvtphPd(mm25
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_cvtph_pd)
  */
-public fun mm512CvtphPd(a: M128h): M512d = mm512MaskCvtphPd(mm512SetzeroPd(), 0xffu, a)
+public fun mm512CvtphPd(a: M128h): M512d = mm512MaskCvtphPd(mm512SetzeroPd(), 0xffu.toUByte(), a)
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed double-precision (64-bit)
@@ -12264,7 +12264,7 @@ public fun mm512CvtRoundphPd(a: M128h, sae: Int): M512d {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mm512MaskCvtRoundphPd(mm512SetzeroPd(), 0xffu, a, sae)
+    return mm512MaskCvtRoundphPd(mm512SetzeroPd(), 0xffu.toUByte(), a, sae)
 }
 
 /**
@@ -12307,7 +12307,7 @@ public fun mm512MaskzCvtRoundphPd(k: Mmask8, a: M128h, sae: Int): M512d {
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtsh_sd)
  */
-public fun mmCvtshSd(a: M128d, b: M128h): M128d = mmMaskCvtshSd(a, 0xffu, a, b)
+public fun mmCvtshSd(a: M128d, b: M128h): M128d = mmMaskCvtshSd(a, 0xffu.toUByte(), a, b)
 
 /**
  * Convert the lower half-precision (16-bit) floating-point element in b to a double-precision (64-bit)
@@ -12341,7 +12341,7 @@ public fun mmCvtRoundshSd(a: M128d, b: M128h, sae: Int): M128d {
     run {
         check(sae == 4 || sae == 8) { "Invalid IMM value" }
     }
-    return mmMaskCvtRoundshSd(a, 0xffu, a, b, sae)
+    return mmMaskCvtRoundshSd(a, 0xffu.toUByte(), a, b, sae)
 }
 
 /**

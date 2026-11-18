@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.thread.thread
 
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
+import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.addrOfMut
@@ -18,14 +19,13 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.alloc.System
 import io.github.kotlinmania.rustlang.std.process.abort
-import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.sync.threadparking.darwin.Parker
 import io.github.kotlinmania.rustlang.std.sys.thread.unix.currentOsId
 import io.github.kotlinmania.rustlang.std.thread.mainthread.get
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

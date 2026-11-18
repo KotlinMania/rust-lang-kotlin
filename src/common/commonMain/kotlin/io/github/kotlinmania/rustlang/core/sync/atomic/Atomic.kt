@@ -107,10 +107,10 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
 // import std.sync.atomic.Ordering
 // import std.thread
 //
-// val atomic = AtomicU16.new(0)
+// val atomic = AtomicU16.new(0u.toUShort())
 // thread.scope({ s ->
 //     // This is UB: conflicting non-synchronized accesses, at least one of which is non-atomic.
-//     s.spawn({ atomic.store(1, Ordering.Relaxed) })
+//     s.spawn({ atomic.store(1u.toUShort(), Ordering.Relaxed) })
 //     // atomic store
 //     s.spawn({ atomic.asPtr().write(2) })
 // })
@@ -125,7 +125,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
 // thread.scope({ s ->
 //     // This is fine: `join` synchronizes the code in a way such that the atomic
 //     // store happens-before the non-atomic write.
-//     val handle = s.spawn({ atomic.store(1, Ordering.Relaxed) })
+//     val handle = s.spawn({ atomic.store(1u.toUShort(), Ordering.Relaxed) })
 //     // atomic store
 //     handle.join().expect("thread won't panic")
 //     // synchronize
@@ -133,7 +133,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
 // })
 // thread.scope({ s ->
 //     // This is UB: non-synchronized conflicting differently-sized atomic accesses.
-//     s.spawn({ atomic.store(1, Ordering.Relaxed) })
+//     s.spawn({ atomic.store(1u.toUShort(), Ordering.Relaxed) })
 //     s.spawn({ run {
 //         val differentlySized = transmuteWithLayouts<AtomicU16, AtomicU8>(atomic, UnresolvedTypeLayout<AtomicU16>(), UnresolvedTypeLayout<AtomicU8>())
 //         differentlySized.store(2, Ordering.Relaxed)
@@ -142,7 +142,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.*
 // thread.scope({ s ->
 //     // This is fine: `join` synchronizes the code in a way such that
 //     // the 1-byte store happens-before the 2-byte store.
-//     val handle = s.spawn({ atomic.store(1, Ordering.Relaxed) })
+//     val handle = s.spawn({ atomic.store(1u.toUShort(), Ordering.Relaxed) })
 //     handle.join().expect("thread won't panic")
 //     s.spawn({ run {
 //         val differentlySized = transmuteWithLayouts<AtomicU16, AtomicU8>(atomic, UnresolvedTypeLayout<AtomicU16>(), UnresolvedTypeLayout<AtomicU8>())
@@ -856,7 +856,7 @@ public fun AtomicBool.store(value: Boolean, order: Ordering) {
     // SAFETY: any data races are prevented by atomic intrinsics and the raw
     // pointer passed in is valid because we got it from a reference.
     run {
-        atomicStore(MutPtr((this.v.get()).rawAddress), value.toUByte(), order, false, typeLayoutT = PrimitiveLayouts.U8)
+        atomicStore(MutPtr((this.v.get()).rawAddress), (if (value) 1u else 0u).toUByte(), order, false, typeLayoutT = PrimitiveLayouts.U8)
     }
 }
 
@@ -884,7 +884,7 @@ public fun AtomicBool.store(value: Boolean, order: Ordering) {
 public fun AtomicBool.storeVolatile(value: Boolean, order: Ordering) {
     // SAFETY: follows from our own safety requirements.
     run {
-        atomicStore(this.cast().castMut(), value.toUByte(), order, true, typeLayoutT = PrimitiveLayouts.U8)
+        atomicStore(this.cast().castMut(), (if (value) 1u else 0u).toUByte(), order, true, typeLayoutT = PrimitiveLayouts.U8)
     }
 }
 
@@ -921,7 +921,7 @@ public fun AtomicBool.swap(value: Boolean, order: Ordering): Boolean =
         }
     } else {
         // SAFETY: data races are prevented by atomic intrinsics.
-        atomicSwap(MutPtr((this.v.get()).rawAddress), value.toUByte(), order, typeLayoutT = PrimitiveLayouts.U8) != 0
+        atomicSwap(MutPtr((this.v.get()).rawAddress), (if (value) 1u else 0u).toUByte(), order, typeLayoutT = PrimitiveLayouts.U8) != 0
     }
 
 // even without panics, this helps for Miri backtraces
@@ -1072,7 +1072,7 @@ public fun AtomicBool.compareExchange(current: Boolean, new: Boolean, success: O
     } else {
         // SAFETY: data races are prevented by atomic intrinsics.
         run {
-            val matchVal1 = atomicCompareExchange(MutPtr((this.v.get()).rawAddress), current.toUByte(), new.toUByte(), success, failure, typeLayoutT = PrimitiveLayouts.U8)
+            val matchVal1 = atomicCompareExchange(MutPtr((this.v.get()).rawAddress), (if (current) 1u else 0u).toUByte(), (if (new) 1u else 0u).toUByte(), success, failure, typeLayoutT = PrimitiveLayouts.U8)
             when (matchVal1) { is Result.Ok<*, *> -> {
                 val x = matchVal1.okValue()
                 Result.Ok<Boolean, Boolean>(x != 0)
@@ -1145,7 +1145,7 @@ public fun AtomicBool.compareExchangeWeak(current: Boolean, new: Boolean, succes
     }
     // SAFETY: data races are prevented by atomic intrinsics.
     return run {
-        val matchVal = atomicCompareExchangeWeak(MutPtr((this.v.get()).rawAddress), current.toUByte(), new.toUByte(), success, failure, typeLayoutT = PrimitiveLayouts.U8)
+        val matchVal = atomicCompareExchangeWeak(MutPtr((this.v.get()).rawAddress), (if (current) 1u else 0u).toUByte(), (if (new) 1u else 0u).toUByte(), success, failure, typeLayoutT = PrimitiveLayouts.U8)
         when (matchVal) { is Result.Ok<*, *> -> {
             val x = matchVal.okValue()
             Result.Ok<Boolean, Boolean>(x != 0)
@@ -1193,7 +1193,7 @@ public fun AtomicBool.compareExchangeWeak(current: Boolean, new: Boolean, succes
  */
 public fun AtomicBool.fetchAnd(value: Boolean, order: Ordering): Boolean {
     // SAFETY: data races are prevented by atomic intrinsics.
-    return atomicAnd(MutPtr((this.v.get()).rawAddress), value.toUByte(), order, typeLayoutT = PrimitiveLayouts.U8, typeLayoutU = PrimitiveLayouts.U8) != 0
+    return atomicAnd(MutPtr((this.v.get()).rawAddress), (if (value) 1u else 0u).toUByte(), order, typeLayoutT = PrimitiveLayouts.U8, typeLayoutU = PrimitiveLayouts.U8) != 0
 }
 
 // even without panics, this helps for Miri backtraces
@@ -1285,7 +1285,7 @@ public fun AtomicBool.fetchNand(value: Boolean, order: Ordering): Boolean {
  */
 public fun AtomicBool.fetchOr(value: Boolean, order: Ordering): Boolean {
     // SAFETY: data races are prevented by atomic intrinsics.
-    return atomicOr(MutPtr((this.v.get()).rawAddress), value.toUByte(), order, typeLayoutT = PrimitiveLayouts.U8, typeLayoutU = PrimitiveLayouts.U8) != 0
+    return atomicOr(MutPtr((this.v.get()).rawAddress), (if (value) 1u else 0u).toUByte(), order, typeLayoutT = PrimitiveLayouts.U8, typeLayoutU = PrimitiveLayouts.U8) != 0
 }
 
 // even without panics, this helps for Miri backtraces
@@ -1325,7 +1325,7 @@ public fun AtomicBool.fetchOr(value: Boolean, order: Ordering): Boolean {
  */
 public fun AtomicBool.fetchXor(value: Boolean, order: Ordering): Boolean {
     // SAFETY: data races are prevented by atomic intrinsics.
-    return atomicXor(MutPtr((this.v.get()).rawAddress), value.toUByte(), order, typeLayoutT = PrimitiveLayouts.U8, typeLayoutU = PrimitiveLayouts.U8) != 0
+    return atomicXor(MutPtr((this.v.get()).rawAddress), (if (value) 1u else 0u).toUByte(), order, typeLayoutT = PrimitiveLayouts.U8, typeLayoutU = PrimitiveLayouts.U8) != 0
 }
 
 // even without panics, this helps for Miri backtraces

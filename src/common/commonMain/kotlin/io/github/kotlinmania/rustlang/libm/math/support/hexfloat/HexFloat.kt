@@ -467,8 +467,8 @@ public fun decDigit(c: UByte): UByte? =
 public fun hexDigit(c: UByte): UByte? =
     when (c) {
         in 48u.toUByte()..57u.toUByte() -> { c - 48u.toUByte() }
-        in 97u.toUByte()..102u.toUByte() -> { (c - 97u.toUByte() + 10u).toUByte() }
-        in 65u.toUByte()..70u.toUByte() -> (c - 65u.toUByte() + 10u).toUByte()
+        in 97u.toUByte()..102u.toUByte() -> { c - 97u.toUByte() + 10u.toUByte() }
+        in 65u.toUByte()..70u.toUByte() -> c - 65u.toUByte() + 10u.toUByte()
         else -> null
     }
 
@@ -485,18 +485,18 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fmtAnyHex(x: F, f: Str
         } else if (x.isNan()) {
             f.append("qNaN")
         }
-        val payload = x.frac() and F.SIG_TOP_BIT.inv()
+        val payload = x.frac() and x.SIG_TOP_BIT.inv()
         f.append("($payload)")
         return Result.Ok<Unit, Error>(Unit)
     }
     if (x.isInfinite()) {
         return run { f.append("inf"); Result.Ok<Unit, Error>(Unit) }
-    } else if (x == F.ZERO) {
+    } else if (x == x.ZERO) {
         return run { f.append("0x0p+0"); Result.Ok<Unit, Error>(Unit) }
     }
     var exponent = x.expUnbiased()
-    val sig = x.toBits() and F.SIG_MASK
-    val bias = ((F.EXP_BIAS as Any?) as kotlin.Int)
+    val sig = x.toBits() and x.SIG_MASK
+    val bias = ((x.EXP_BIAS as Any?) as kotlin.Int)
     // The mantissa MSB needs to be shifted up to the nearest nibble.
     // The width is rounded up to the nearest char (4 bits)
     val leading =

@@ -1,12 +1,12 @@
 // port-lint: source float/extend.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.extend
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.wrappingShl
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 /**
  * Generic conversion from a narrower to a wider IEEE-754 floating-point type
@@ -14,14 +14,14 @@ import io.github.kotlinmania.rustlang.core.num.wrappingShl
 public fun <F : Float, R : Float> extend(a: F, fromBitsRFn: (Int) -> R): R {
     val srcZero = F.Int.ZERO
     val srcOne = F.Int.ONE
-    val srcBits = F.BITS
-    val srcSigBits = F.SIG_BITS
-    val srcExpBias = F.EXP_BIAS
-    val srcMinNormal = F.IMPLICIT_BIT
-    val srcInfinity = F.EXP_MASK
-    val srcSignMask = F.SIGN_MASK
+    val srcBits = a.BITS
+    val srcSigBits = a.SIG_BITS
+    val srcExpBias = a.EXP_BIAS
+    val srcMinNormal = a.IMPLICIT_BIT
+    val srcInfinity = a.EXP_MASK
+    val srcSignMask = a.SIGN_MASK
     val srcAbsMask = srcSignMask - srcOne
-    val srcQnan = F.SIG_MASK
+    val srcQnan = a.SIG_MASK
     val srcNanCode = srcQnan - srcOne
     val dstBits = R.BITS
     val dstSigBits = R.SIG_BITS

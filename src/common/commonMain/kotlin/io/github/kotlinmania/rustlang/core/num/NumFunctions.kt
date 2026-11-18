@@ -172,7 +172,7 @@ public fun <T> canNotOverflow(radix: UInt, isSignedTy: Boolean, digits: List<UBy
     // == T.Max
     //
     // Therefore this condition is sufficient for having no overflow.
-    return radix <= 16u && digits.size <= sizeOf<T>(typeLayoutT = typeLayoutT) * 2 - isSignedTy.toInt()
+    return radix <= 16u && digits.size <= sizeOf<T>(typeLayoutT = typeLayoutT) * 2 - (if (isSignedTy) 1 else 0)
 }
 
 public fun fromAsciiBytesRadixPanic(radix: UInt): Nothing {
@@ -414,7 +414,7 @@ public fun Byte.saturatingCastUnsigned(): UByte =
     if (this >= 0.toByte()) {
         this.castUnsigned()
     } else {
-        0u
+        0u.toUByte()
     }
 
 /**
@@ -2132,7 +2132,7 @@ public fun Byte.overflowingAdd(rhs: Byte): Pair<Byte, Boolean> {
  */
 public fun Byte.carryingAdd(rhs: Byte, carry: Boolean): Pair<Byte, Boolean> {
     val (a, b) = this.overflowingAdd(rhs)
-    val (c, d) = a.overflowingAdd(carry.toByte())
+    val (c, d) = a.overflowingAdd((if (carry) 1 else 0).toByte())
     return Pair(c, b != d)
 }
 
@@ -2213,7 +2213,7 @@ public fun Byte.overflowingSub(rhs: Byte): Pair<Byte, Boolean> {
  */
 public fun Byte.borrowingSub(rhs: Byte, borrow: Boolean): Pair<Byte, Boolean> {
     val (a, b) = this.overflowingSub(rhs)
-    val (c, d) = a.overflowingSub(borrow.toByte())
+    val (c, d) = a.overflowingSub((if (borrow) 1 else 0).toByte())
     return Pair(c, b != d)
 }
 
@@ -3576,7 +3576,7 @@ public fun Short.saturatingCastUnsigned(): UShort =
     if (this >= 0.toShort()) {
         this.castUnsigned()
     } else {
-        0u
+        0u.toUShort()
     }
 
 /**
@@ -5294,7 +5294,7 @@ public fun Short.overflowingAdd(rhs: Short): Pair<Short, Boolean> {
  */
 public fun Short.carryingAdd(rhs: Short, carry: Boolean): Pair<Short, Boolean> {
     val (a, b) = this.overflowingAdd(rhs)
-    val (c, d) = a.overflowingAdd(carry.toShort())
+    val (c, d) = a.overflowingAdd((if (carry) 1 else 0).toShort())
     return Pair(c, b != d)
 }
 
@@ -5375,7 +5375,7 @@ public fun Short.overflowingSub(rhs: Short): Pair<Short, Boolean> {
  */
 public fun Short.borrowingSub(rhs: Short, borrow: Boolean): Pair<Short, Boolean> {
     val (a, b) = this.overflowingSub(rhs)
-    val (c, d) = a.overflowingSub(borrow.toShort())
+    val (c, d) = a.overflowingSub((if (borrow) 1 else 0).toShort())
     return Pair(c, b != d)
 }
 
@@ -8426,7 +8426,7 @@ public fun Int.overflowingAdd(rhs: Int): Pair<Int, Boolean> {
  */
 public fun Int.carryingAdd(rhs: Int, carry: Boolean): Pair<Int, Boolean> {
     val (a, b) = this.overflowingAdd(rhs)
-    val (c, d) = a.overflowingAdd(carry.toInt())
+    val (c, d) = a.overflowingAdd((if (carry) 1 else 0))
     return Pair(c, b != d)
 }
 
@@ -8507,7 +8507,7 @@ public fun Int.overflowingSub(rhs: Int): Pair<Int, Boolean> {
  */
 public fun Int.borrowingSub(rhs: Int, borrow: Boolean): Pair<Int, Boolean> {
     val (a, b) = this.overflowingSub(rhs)
-    val (c, d) = a.overflowingSub(borrow.toInt())
+    val (c, d) = a.overflowingSub((if (borrow) 1 else 0))
     return Pair(c, b != d)
 }
 
@@ -11558,7 +11558,7 @@ public fun Long.overflowingAdd(rhs: Long): Pair<Long, Boolean> {
  */
 public fun Long.carryingAdd(rhs: Long, carry: Boolean): Pair<Long, Boolean> {
     val (a, b) = this.overflowingAdd(rhs)
-    val (c, d) = a.overflowingAdd(carry.toLong())
+    val (c, d) = a.overflowingAdd((if (carry) 1L else 0L))
     return Pair(c, b != d)
 }
 
@@ -11639,7 +11639,7 @@ public fun Long.overflowingSub(rhs: Long): Pair<Long, Boolean> {
  */
 public fun Long.borrowingSub(rhs: Long, borrow: Boolean): Pair<Long, Boolean> {
     val (a, b) = this.overflowingSub(rhs)
-    val (c, d) = a.overflowingSub(borrow.toLong())
+    val (c, d) = a.overflowingSub((if (borrow) 1L else 0L))
     return Pair(c, b != d)
 }
 
@@ -14698,7 +14698,7 @@ public fun I128.overflowingAdd(rhs: I128): Pair<I128, Boolean> {
  */
 public fun I128.carryingAdd(rhs: I128, carry: Boolean): Pair<I128, Boolean> {
     val (a, b) = this.overflowingAdd(rhs)
-    val (c, d) = a.overflowingAdd(I128.fromLong(carry.toLong()))
+    val (c, d) = a.overflowingAdd((if (carry) I128.ONE else I128.ZERO))
     return Pair(c, b != d)
 }
 
@@ -14779,7 +14779,7 @@ public fun I128.overflowingSub(rhs: I128): Pair<I128, Boolean> {
  */
 public fun I128.borrowingSub(rhs: I128, borrow: Boolean): Pair<I128, Boolean> {
     val (a, b) = this.overflowingSub(rhs)
-    val (c, d) = a.overflowingSub(I128.fromLong(borrow.toLong()))
+    val (c, d) = a.overflowingSub((if (borrow) I128.ONE else I128.ZERO))
     return Pair(c, b != d)
 }
 
@@ -16115,7 +16115,7 @@ public fun Int.clampMagnitude(limit: Int): Int =
  * ```kotlin
  * ```
  */
-public val MIN6: UByte = 0u
+public val MIN6: UByte = 0u.toUByte()
 
 /**
  * The largest value that can be represented by this integer type
@@ -16125,7 +16125,7 @@ public val MIN6: UByte = 0u
  * ```kotlin
  * ```
  */
-public val MAX6: UByte = (0u.inv()).toUByte()
+public val MAX6: UByte = (0u.toUByte()).inv()
 
 /**
  * The size of this integer type in bits.
@@ -16163,7 +16163,7 @@ public val BITS6: UInt = UByte.MAX_VALUE.countOnes()
  * }
  * ```
  */
-public fun UByte.bit(index: UInt): Boolean = (this and (1u shl index.toInt())) != 0u.toUByte()
+public fun UByte.bit(index: UInt): Boolean = (this and (1u.toUByte() shl index.toInt())) != 0u.toUByte()
 
 /**
  * Sets the value of a specific bit.
@@ -16193,8 +16193,8 @@ public fun UByte.bit(index: UInt): Boolean = (this and (1u shl index.toInt())) !
  * ```
  */
 public fun UByte.setBit(index: UInt, value: Boolean): UByte {
-    (this and (1u shl index.toInt()).inv()).let {}
-    (this or (((value.toUByte()).toUInt() shl (index.toInt())).toUByte())).let {}
+    (this and (1u.toUByte() shl index.toInt()).inv()).let {}
+    (this or ((((if (value) 1u else 0u).toUByte()).toUInt() shl (index.toInt())).toUByte())).let {}
     return this
 }
 
@@ -17644,7 +17644,7 @@ public fun UByte.unboundedShl(rhs: UInt): UByte =
     if (rhs < 8u) {
         ((this).toUInt() shl rhs.toInt()).toUByte()
     } else {
-        0u
+        0u.toUByte()
     }
 
 /**
@@ -17764,7 +17764,7 @@ public fun UByte.unboundedShr(rhs: UInt): UByte =
     if (rhs < 8u) {
         ((this).toUInt() shr rhs.toInt()).toUByte()
     } else {
-        0u
+        0u.toUByte()
     }
 
 /**
@@ -17814,7 +17814,7 @@ public fun UByte.uncheckedShrExact(rhs: UInt): UByte {
 public fun UByte.checkedPow(exp: UInt): UByte? {
     var exp1 = exp
     var base = this
-    var acc: UByte = 1u
+    var acc: UByte = 1u.toUByte()
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
         val shift =
@@ -17828,7 +17828,7 @@ public fun UByte.checkedPow(exp: UInt): UByte? {
         return (1.toUByte()).checkedShl(shift.toUInt())
     }
     if (exp1 == 0u) {
-        return 1u
+        return 1u.toUByte()
     }
     if (false) {
         while (exp1 > 1u) {
@@ -17932,7 +17932,7 @@ public fun UByte.saturatingAddSigned(rhs: Byte): UByte {
     } else if (overflow) {
         UByte.MAX_VALUE
     } else {
-        0u
+        0u.toUByte()
     }
 }
 
@@ -17963,7 +17963,7 @@ public fun UByte.saturatingSubSigned(rhs: Byte): UByte {
     } else if (rhs < 0.toByte()) {
         UByte.MAX_VALUE
     } else {
-        0u
+        0u.toUByte()
     }
 }
 
@@ -18286,7 +18286,7 @@ public fun UByte.overflowingAdd(rhs: UByte): Pair<UByte, Boolean> {
  */
 public fun UByte.carryingAdd(rhs: UByte, carry: Boolean): Pair<UByte, Boolean> {
     val (a, c1) = this.overflowingAdd(rhs)
-    val (b, c2) = a.overflowingAdd(carry.toUByte())
+    val (b, c2) = a.overflowingAdd((if (carry) 1u else 0u).toUByte())
     return Pair(b, disjointBitor(c1, c2))
 }
 
@@ -18347,7 +18347,7 @@ public fun UByte.overflowingSub(rhs: UByte): Pair<UByte, Boolean> {
  */
 public fun UByte.borrowingSub(rhs: UByte, borrow: Boolean): Pair<UByte, Boolean> {
     val (a, c1) = this.overflowingSub(rhs)
-    val (b, c2) = a.overflowingSub(borrow.toUByte())
+    val (b, c2) = a.overflowingSub((if (borrow) 1u else 0u).toUByte())
     return Pair(b, disjointBitor(c1, c2))
 }
 
@@ -18449,11 +18449,11 @@ public fun UByte.overflowingMul(rhs: UByte): Pair<UByte, Boolean> {
  *     }
  * }
  * var v = mutableListOf(10, 20)
- * scalarMulEq(v, 3u)
+ * scalarMulEq(v, 3u.toUShort())
  * check(v == listOf(30, 60))
  * check(0x87654321uL * 0xFEEDuL == 0x86D3D159E38DuL)
  * var v1 = mutableListOf(0x4321, 0x8765)
- * scalarMulEq(v1, 0xFEEDu)
+ * scalarMulEq(v1, 0xFEEDu.toUShort())
  * check(v1 == listOf(0xE38D, 0xD159, 0x86D3))
  * ```
  *
@@ -18531,7 +18531,7 @@ public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UBy
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u, 0u, 0u))
+ *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u.toUByte(), 0u.toUByte(), 0u.toUByte()))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -18683,7 +18683,7 @@ public fun UByte.overflowingShr(rhs: UInt): Pair<UByte, Boolean> = Pair(this.wra
 public fun UByte.overflowingPow(exp: UInt): Pair<UByte, Boolean> {
     var exp1 = exp
     var base = this
-    var acc: UByte = 1u
+    var acc: UByte = 1u.toUByte()
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -18832,7 +18832,7 @@ public fun UByte.divCeil(rhs: UByte): UByte {
     val d = this / rhs
     val r = this % rhs
     return if (r > 0u.toUByte()) {
-        d + 1u
+        d + 1u.toUByte()
     } else {
         d
     }
@@ -18934,7 +18934,7 @@ public fun UByte.isPowerOfTwo(): Boolean = this.countOnes() == 1u
 public fun UByte.nextPowerOfTwo(): UByte =
     when (val matchVal = this.checkedNextPowerOfTwo()) {
         null -> {
-            UByte.MAX_VALUE + 1u
+            UByte.MAX_VALUE + 1u.toUByte()
         }
         else -> {
             val npot = matchVal
@@ -18956,7 +18956,7 @@ public fun UByte.checkedNextPowerOfTwo(): UByte? {
     val m1 = this.saturatingSub(1u.toUByte())
     return if (m1.castSigned() >= 0.toByte()) {
         val exp = m1.bitWidth()
-        (1u shl exp.toInt()).toUByte()
+        (1u.toUByte() shl exp.toInt()).toUByte()
     } else {
         null
     }
@@ -18974,7 +18974,7 @@ public fun UByte.checkedNextPowerOfTwo(): UByte? {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UByte.wrappingNextPowerOfTwo(): UByte = (this.checkedNextPowerOfTwo() ?: 0u)
+public fun UByte.wrappingNextPowerOfTwo(): UByte = (this.checkedNextPowerOfTwo() ?: 0u.toUByte())
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -19264,7 +19264,7 @@ public fun <T : CheckedCastFromInt<UByte, T>> UByte.uncheckedCast(uncheckedCastF
  * ```kotlin
  * ```
  */
-public fun UByte.midpoint(rhs: UByte): UByte = ((this.toUShort() + rhs.toUShort()) / 2u).toUByte()
+public fun UByte.midpoint(rhs: UByte): UByte = ((this.toUShort() + rhs.toUShort()) / 2u.toUShort()).toUByte()
 
 /**
  * Widening multiplication. Computes `self * rhs`, widening to a larger integer.
@@ -19380,7 +19380,7 @@ public fun UByte.asAsciiUnchecked(): io.github.kotlinmania.rustlang.core.ascii.C
  */
 public fun UByte.toAsciiUppercase(): UByte {
     // Toggle the 6th bit if this is a lowercase letter
-    return this xor ((this.isAsciiLowercase().toUByte()) * ASCII_CASE_MASK)
+    return this xor (((if (this.isAsciiLowercase()) 1u else 0u).toUByte()) * ASCII_CASE_MASK)
 }
 
 /**
@@ -19402,7 +19402,7 @@ public fun UByte.toAsciiUppercase(): UByte {
  */
 public fun UByte.toAsciiLowercase(): UByte {
     // Set the 6th bit if this is an uppercase letter
-    return this or (this.isAsciiUppercase().toUByte() * ASCII_CASE_MASK)
+    return this or ((if (this.isAsciiUppercase()) 1u else 0u).toUByte() * ASCII_CASE_MASK)
 }
 
 /**
@@ -19926,7 +19926,7 @@ public fun UByte.isUtf8CharBoundary(): Boolean {
  * ```kotlin
  * ```
  */
-public val MIN7: UShort = 0u
+public val MIN7: UShort = 0u.toUShort()
 
 /**
  * The largest value that can be represented by this integer type
@@ -19936,7 +19936,7 @@ public val MIN7: UShort = 0u
  * ```kotlin
  * ```
  */
-public val MAX7: UShort = (0u.inv()).toUShort()
+public val MAX7: UShort = (0u.toUShort()).inv()
 
 /**
  * The size of this integer type in bits.
@@ -19974,7 +19974,7 @@ public val BITS7: UInt = UShort.MAX_VALUE.countOnes()
  * }
  * ```
  */
-public fun UShort.bit(index: UInt): Boolean = (this and (1u shl index.toInt())) != 0u.toUShort()
+public fun UShort.bit(index: UInt): Boolean = (this and (1u.toUShort() shl index.toInt())) != 0u.toUShort()
 
 /**
  * Sets the value of a specific bit.
@@ -20004,8 +20004,8 @@ public fun UShort.bit(index: UInt): Boolean = (this and (1u shl index.toInt())) 
  * ```
  */
 public fun UShort.setBit(index: UInt, value: Boolean): UShort {
-    (this and (1u shl index.toInt()).inv()).let {}
-    (this or (((value.toUShort()).toUInt() shl (index.toInt())).toUShort())).let {}
+    (this and (1u.toUShort() shl index.toInt()).inv()).let {}
+    (this or ((((if (value) 1u else 0u).toUShort()).toUInt() shl (index.toInt())).toUShort())).let {}
     return this
 }
 
@@ -21455,7 +21455,7 @@ public fun UShort.unboundedShl(rhs: UInt): UShort =
     if (rhs < 16u) {
         ((this).toUInt() shl rhs.toInt()).toUShort()
     } else {
-        0u
+        0u.toUShort()
     }
 
 /**
@@ -21575,7 +21575,7 @@ public fun UShort.unboundedShr(rhs: UInt): UShort =
     if (rhs < 16u) {
         ((this).toUInt() shr rhs.toInt()).toUShort()
     } else {
-        0u
+        0u.toUShort()
     }
 
 /**
@@ -21625,7 +21625,7 @@ public fun UShort.uncheckedShrExact(rhs: UInt): UShort {
 public fun UShort.checkedPow(exp: UInt): UShort? {
     var exp1 = exp
     var base = this
-    var acc: UShort = 1u
+    var acc: UShort = 1u.toUShort()
     if (false && base.isPowerOfTwo()) {
         val k = base.ilog2()
         val shift =
@@ -21639,7 +21639,7 @@ public fun UShort.checkedPow(exp: UInt): UShort? {
         return (1.toUShort()).checkedShl(shift.toUInt())
     }
     if (exp1 == 0u) {
-        return 1u
+        return 1u.toUShort()
     }
     if (false) {
         while (exp1 > 1u) {
@@ -21743,7 +21743,7 @@ public fun UShort.saturatingAddSigned(rhs: Short): UShort {
     } else if (overflow) {
         UShort.MAX_VALUE
     } else {
-        0u
+        0u.toUShort()
     }
 }
 
@@ -21774,7 +21774,7 @@ public fun UShort.saturatingSubSigned(rhs: Short): UShort {
     } else if (rhs < 0.toShort()) {
         UShort.MAX_VALUE
     } else {
-        0u
+        0u.toUShort()
     }
 }
 
@@ -22097,7 +22097,7 @@ public fun UShort.overflowingAdd(rhs: UShort): Pair<UShort, Boolean> {
  */
 public fun UShort.carryingAdd(rhs: UShort, carry: Boolean): Pair<UShort, Boolean> {
     val (a, c1) = this.overflowingAdd(rhs)
-    val (b, c2) = a.overflowingAdd(carry.toUShort())
+    val (b, c2) = a.overflowingAdd((if (carry) 1u else 0u).toUShort())
     return Pair(b, disjointBitor(c1, c2))
 }
 
@@ -22158,7 +22158,7 @@ public fun UShort.overflowingSub(rhs: UShort): Pair<UShort, Boolean> {
  */
 public fun UShort.borrowingSub(rhs: UShort, borrow: Boolean): Pair<UShort, Boolean> {
     val (a, c1) = this.overflowingSub(rhs)
-    val (b, c2) = a.overflowingSub(borrow.toUShort())
+    val (b, c2) = a.overflowingSub((if (borrow) 1u else 0u).toUShort())
     return Pair(b, disjointBitor(c1, c2))
 }
 
@@ -22260,11 +22260,11 @@ public fun UShort.overflowingMul(rhs: UShort): Pair<UShort, Boolean> {
  *     }
  * }
  * var v = mutableListOf(10, 20)
- * scalarMulEq(v, 3u)
+ * scalarMulEq(v, 3u.toUShort())
  * check(v == listOf(30, 60))
  * check(0x87654321uL * 0xFEEDuL == 0x86D3D159E38DuL)
  * var v1 = mutableListOf(0x4321, 0x8765)
- * scalarMulEq(v1, 0xFEEDu)
+ * scalarMulEq(v1, 0xFEEDu.toUShort())
  * check(v1 == listOf(0xE38D, 0xD159, 0x86D3))
  * ```
  *
@@ -22342,7 +22342,7 @@ public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> 
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u, 0u, 0u))
+ *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u.toUByte(), 0u.toUByte(), 0u.toUByte()))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -22494,7 +22494,7 @@ public fun UShort.overflowingShr(rhs: UInt): Pair<UShort, Boolean> = Pair(this.w
 public fun UShort.overflowingPow(exp: UInt): Pair<UShort, Boolean> {
     var exp1 = exp
     var base = this
-    var acc: UShort = 1u
+    var acc: UShort = 1u.toUShort()
     var overflow = false
     var tmpOverflow: Any?
     if (false && base.isPowerOfTwo()) {
@@ -22643,7 +22643,7 @@ public fun UShort.divCeil(rhs: UShort): UShort {
     val d = this / rhs
     val r = this % rhs
     return if (r > 0u.toUShort()) {
-        d + 1u
+        d + 1u.toUShort()
     } else {
         d
     }
@@ -22745,7 +22745,7 @@ public fun UShort.isPowerOfTwo(): Boolean = this.countOnes() == 1u
 public fun UShort.nextPowerOfTwo(): UShort =
     when (val matchVal = this.checkedNextPowerOfTwo()) {
         null -> {
-            UShort.MAX_VALUE + 1u
+            UShort.MAX_VALUE + 1u.toUShort()
         }
         else -> {
             val npot = matchVal
@@ -22767,7 +22767,7 @@ public fun UShort.checkedNextPowerOfTwo(): UShort? {
     val m1 = this.saturatingSub(1u.toUShort())
     return if (m1.castSigned() >= 0.toShort()) {
         val exp = m1.bitWidth()
-        (1u shl exp.toInt()).toUShort()
+        (1u.toUShort() shl exp.toInt()).toUShort()
     } else {
         null
     }
@@ -22785,7 +22785,7 @@ public fun UShort.checkedNextPowerOfTwo(): UShort? {
  * public fun doctestEntry() {}
  * ```
  */
-public fun UShort.wrappingNextPowerOfTwo(): UShort = (this.checkedNextPowerOfTwo() ?: 0u)
+public fun UShort.wrappingNextPowerOfTwo(): UShort = (this.checkedNextPowerOfTwo() ?: 0u.toUShort())
 
 /**
  * Returns the memory representation of this integer as a byte array in
@@ -23224,7 +23224,7 @@ public fun UInt.bit(index: UInt): Boolean = (this and (1u shl index.toInt())) !=
  */
 public fun UInt.setBit(index: UInt, value: Boolean): UInt {
     (this and (1u shl index.toInt()).inv()).let {}
-    (this or ((value.toUInt()) shl index.toInt())).let {}
+    (this or (((if (value) 1u else 0u)) shl index.toInt())).let {}
     return this
 }
 
@@ -25316,7 +25316,7 @@ public fun UInt.overflowingAdd(rhs: UInt): Pair<UInt, Boolean> {
  */
 public fun UInt.carryingAdd(rhs: UInt, carry: Boolean): Pair<UInt, Boolean> {
     val (a, c1) = this.overflowingAdd(rhs)
-    val (b, c2) = a.overflowingAdd(carry.toUInt())
+    val (b, c2) = a.overflowingAdd((if (carry) 1u else 0u))
     return Pair(b, disjointBitor(c1, c2))
 }
 
@@ -25377,7 +25377,7 @@ public fun UInt.overflowingSub(rhs: UInt): Pair<UInt, Boolean> {
  */
 public fun UInt.borrowingSub(rhs: UInt, borrow: Boolean): Pair<UInt, Boolean> {
     val (a, c1) = this.overflowingSub(rhs)
-    val (b, c2) = a.overflowingSub(borrow.toUInt())
+    val (b, c2) = a.overflowingSub((if (borrow) 1u else 0u))
     return Pair(b, disjointBitor(c1, c2))
 }
 
@@ -25479,11 +25479,11 @@ public fun UInt.overflowingMul(rhs: UInt): Pair<UInt, Boolean> {
  *     }
  * }
  * var v = mutableListOf(10, 20)
- * scalarMulEq(v, 3u)
+ * scalarMulEq(v, 3u.toUShort())
  * check(v == listOf(30, 60))
  * check(0x87654321uL * 0xFEEDuL == 0x86D3D159E38DuL)
  * var v1 = mutableListOf(0x4321, 0x8765)
- * scalarMulEq(v1, 0xFEEDu)
+ * scalarMulEq(v1, 0xFEEDu.toUShort())
  * check(v1 == listOf(0xE38D, 0xD159, 0x86D3))
  * ```
  *
@@ -25561,7 +25561,7 @@ public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.car
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u, 0u, 0u))
+ *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u.toUByte(), 0u.toUByte(), 0u.toUByte()))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -26418,7 +26418,7 @@ public fun ULong.bit(index: UInt): Boolean = (this and (1uL shl index.toInt())) 
  */
 public fun ULong.setBit(index: UInt, value: Boolean): ULong {
     (this and (1uL shl index.toInt()).inv()).let {}
-    (this or ((value.toULong()) shl index.toInt())).let {}
+    (this or (((if (value) 1uL else 0uL)) shl index.toInt())).let {}
     return this
 }
 
@@ -28510,7 +28510,7 @@ public fun ULong.overflowingAdd(rhs: ULong): Pair<ULong, Boolean> {
  */
 public fun ULong.carryingAdd(rhs: ULong, carry: Boolean): Pair<ULong, Boolean> {
     val (a, c1) = this.overflowingAdd(rhs)
-    val (b, c2) = a.overflowingAdd(carry.toULong())
+    val (b, c2) = a.overflowingAdd((if (carry) 1uL else 0uL))
     return Pair(b, disjointBitor(c1, c2))
 }
 
@@ -28571,7 +28571,7 @@ public fun ULong.overflowingSub(rhs: ULong): Pair<ULong, Boolean> {
  */
 public fun ULong.borrowingSub(rhs: ULong, borrow: Boolean): Pair<ULong, Boolean> {
     val (a, c1) = this.overflowingSub(rhs)
-    val (b, c2) = a.overflowingSub(borrow.toULong())
+    val (b, c2) = a.overflowingSub((if (borrow) 1uL else 0uL))
     return Pair(b, disjointBitor(c1, c2))
 }
 
@@ -28673,11 +28673,11 @@ public fun ULong.overflowingMul(rhs: ULong): Pair<ULong, Boolean> {
  *     }
  * }
  * var v = mutableListOf(10, 20)
- * scalarMulEq(v, 3u)
+ * scalarMulEq(v, 3u.toUShort())
  * check(v == listOf(30, 60))
  * check(0x87654321uL * 0xFEEDuL == 0x86D3D159E38DuL)
  * var v1 = mutableListOf(0x4321, 0x8765)
- * scalarMulEq(v1, 0xFEEDu)
+ * scalarMulEq(v1, 0xFEEDu.toUShort())
  * check(v1 == listOf(0xE38D, 0xD159, 0x86D3))
  * ```
  *
@@ -28755,7 +28755,7 @@ public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULo
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u, 0u, 0u))
+ *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u.toUByte(), 0u.toUByte(), 0u.toUByte()))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }
@@ -29612,7 +29612,7 @@ public fun U128.bit(index: UInt): Boolean = (this and (U128(0x0uL, 0x1uL) shl in
  */
 public fun U128.setBit(index: UInt, value: Boolean): U128 {
     (this and (U128(0x0uL, 0x1uL) shl index.toInt()).inv()).let {}
-    (this or ((U128.fromLong(value.toLong())) shl index.toInt())).let {}
+    (this or (((if (value) U128.ONE else U128.ZERO)) shl index.toInt())).let {}
     return this
 }
 
@@ -31704,7 +31704,7 @@ public fun U128.overflowingAdd(rhs: U128): Pair<U128, Boolean> {
  */
 public fun U128.carryingAdd(rhs: U128, carry: Boolean): Pair<U128, Boolean> {
     val (a, c1) = this.overflowingAdd(rhs)
-    val (b, c2) = a.overflowingAdd(U128.fromLong(carry.toLong()))
+    val (b, c2) = a.overflowingAdd((if (carry) U128.ONE else U128.ZERO))
     return Pair(b, disjointBitor(c1, c2))
 }
 
@@ -31765,7 +31765,7 @@ public fun U128.overflowingSub(rhs: U128): Pair<U128, Boolean> {
  */
 public fun U128.borrowingSub(rhs: U128, borrow: Boolean): Pair<U128, Boolean> {
     val (a, c1) = this.overflowingSub(rhs)
-    val (b, c2) = a.overflowingSub(U128.fromLong(borrow.toLong()))
+    val (b, c2) = a.overflowingSub((if (borrow) U128.ONE else U128.ZERO))
     return Pair(b, disjointBitor(c1, c2))
 }
 
@@ -31867,11 +31867,11 @@ public fun U128.overflowingMul(rhs: U128): Pair<U128, Boolean> {
  *     }
  * }
  * var v = mutableListOf(10, 20)
- * scalarMulEq(v, 3u)
+ * scalarMulEq(v, 3u.toUShort())
  * check(v == listOf(30, 60))
  * check(0x87654321uL * 0xFEEDuL == 0x86D3D159E38DuL)
  * var v1 = mutableListOf(0x4321, 0x8765)
- * scalarMulEq(v1, 0xFEEDu)
+ * scalarMulEq(v1, 0xFEEDu.toUShort())
  * check(v1 == listOf(0xE38D, 0xD159, 0x86D3))
  * ```
  *
@@ -31949,7 +31949,7 @@ public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.car
  *         return out
  *     }
  *     // -1 * -1 == 1
- *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u, 0u, 0u))
+ *     check(quadraticMul(UByteArray(3) { 0xFFu.toUByte() }, UByteArray(3) { 0xFFu.toUByte() }) == ubyteArrayOf(1u.toUByte(), 0u.toUByte(), 0u.toUByte()))
  *     check(UInt.wrappingMul(0x9e3779b9, 0x7f4a7c15) == 0xcffc982d)
  *     check(quadraticMul(UInt.toLeBytes(0x9e3779b9), UInt.toLeBytes(0x7f4a7c15)) == UInt.toLeBytes(0xcffc982d))
  * }

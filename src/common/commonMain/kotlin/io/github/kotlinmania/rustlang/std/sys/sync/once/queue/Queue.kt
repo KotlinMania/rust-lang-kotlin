@@ -23,9 +23,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteAdd
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.AcqRel
@@ -43,7 +40,7 @@ import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.thread.current.currentOrUnnamed
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -70,12 +67,9 @@ public class DebugStruct(
 
 public typealias StateAndQueue = MutPtr
 
-public open class Once internal constructor(
-    stateAndQueueCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
+public open class Once(
+    public var stateAndQueue: AtomicPtr,
 ) {
-    public var stateAndQueue: Atomic<MutPtr, Align8<MutPtr>> = stateAndQueueCtorArg
-        internal set
-
     public open fun isCompleted(): Boolean {
         // An `Acquire` load is enough because that makes all the initialization
         // operations visible to us, and, this being a fast path, weaker
@@ -171,12 +165,6 @@ public open class Once internal constructor(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "Once").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
-        public operator fun invoke(
-            stateAndQueue: Atomic<MutPtr, Align8<MutPtr>>,
-        ): Once = Once(
-            stateAndQueueCtorArg = stateAndQueue,
-        )
-
         public fun new(): Once = Once(stateAndQueue = AtomicPtr.new(withoutProvenanceMut(INCOMPLETE)))
 
         public fun newComplete(): Once = Once(stateAndQueue = AtomicPtr.new(withoutProvenanceMut(COMPLETE)))
@@ -233,23 +221,20 @@ public val QUEUE_MASK: Int = STATE_MASK.inv()
 // Ensure the two lower bits are free to use as state bits.
 public open class Waiter internal constructor(
     public var thread: Thread,
-    signaledCtorArg: Atomic<Boolean, Align1<UByte>>,
+    public var signaled: AtomicBool,
     nextCtorArg: Cell<ConstPtr>,
 ) {
-    public var signaled: Atomic<Boolean, Align1<UByte>> = signaledCtorArg
-        internal set
-
     public var next: Cell<ConstPtr> = nextCtorArg
         internal set
 
     public companion object {
         public operator fun invoke(
             thread: Thread,
-            signaled: Atomic<Boolean, Align1<UByte>>,
+            signaled: AtomicBool,
             next: Cell<ConstPtr>,
         ): Waiter = Waiter(
             thread = thread,
-            signaledCtorArg = signaled,
+            signaled = signaled,
             nextCtorArg = next,
         )
     }
@@ -259,12 +244,9 @@ public open class Waiter internal constructor(
 // Every node is a struct on the stack of a waiting thread.
 // Will wake up the waiters when it gets dropped, i.e. also on panic.
 public open class WaiterQueue internal constructor(
-    stateAndQueueCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
+    public var stateAndQueue: AtomicPtr,
     setStateOnDropToCtorArg: StateAndQueue,
 ) {
-    public var stateAndQueue: Atomic<MutPtr, Align8<MutPtr>> = stateAndQueueCtorArg
-        internal set
-
     public var setStateOnDropTo: StateAndQueue = setStateOnDropToCtorArg
         internal set
 
@@ -293,10 +275,10 @@ public open class WaiterQueue internal constructor(
 
     public companion object {
         public operator fun invoke(
-            stateAndQueue: Atomic<MutPtr, Align8<MutPtr>>,
+            stateAndQueue: AtomicPtr,
             setStateOnDropTo: StateAndQueue,
         ): WaiterQueue = WaiterQueue(
-            stateAndQueueCtorArg = stateAndQueue,
+            stateAndQueue = stateAndQueue,
             setStateOnDropToCtorArg = setStateOnDropTo,
         )
     }
@@ -343,7 +325,7 @@ public open class PanicGuard {
     }
 }
 
-public fun wait(stateAndQueue: Atomic<MutPtr, Align8<MutPtr>>, current: StateAndQueue, returnOnPoisoned: Boolean): StateAndQueue {
+public fun wait(stateAndQueue: AtomicPtr, current: StateAndQueue, returnOnPoisoned: Boolean): StateAndQueue {
     var current1 = current
     val node = Waiter(thread = currentOrUnnamed(), signaled = AtomicBool.new(false), next = Cell.new(ConstPtr(0L)))
     while (true) {

@@ -172,7 +172,7 @@ public fun <T : Write<T>> JsonFormatter<T>.writeRunFinish(state: ConsoleTestStat
         }
     val newline = "\n"
     when (val tryResult = this.writelnMessage("{ \"type\": \"suite\", \"event\": \"$event\", \"passed\": $passed, \"failed\": $failed, \"ignored\": $ignored, \"measured\": $measured, \"filtered_out\": $filteredOut$execTimeJson }$newline")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-    return RustResult.Ok(state.failed == 0)
+    return RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(state.failed == 0)
 }
 
 public fun <T : Write<T>> JsonFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> {

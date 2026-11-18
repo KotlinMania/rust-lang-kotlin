@@ -42,7 +42,7 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.OffT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.TimeT
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.b64.aarch64.NCCS
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

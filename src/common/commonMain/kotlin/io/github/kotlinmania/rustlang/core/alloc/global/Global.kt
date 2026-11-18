@@ -272,7 +272,7 @@ public interface GlobalAlloc {
         if (!ptr.isNull()) {
             // SAFETY: as allocation succeeded, the region from `ptr`
             // of size `size` is guaranteed to be valid for writes.
-            writeBytes(ptr, 0u, size)
+            writeBytes(ptr, 0u.toUByte(), size)
         }
         return ptr
     }

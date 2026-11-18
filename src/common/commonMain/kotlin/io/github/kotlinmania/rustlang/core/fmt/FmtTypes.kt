@@ -1,5 +1,7 @@
 package io.github.kotlinmania.rustlang.core.fmt
 
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
+
 /**
  * Possible alignments returned by `Formatter.align`
  */
@@ -132,7 +134,7 @@ public interface Write<T> {
      * check(buf == "ab")
      * ```
      */
-    public fun writeChar(c: Char): Result = this.append(c.encodeUtf8(List((Char.MAX_LEN_UTF8).toInt()) { 0 }))
+    public fun writeChar(c: Char): Result = run { this.append(c.encodeUtf8(List((Char.MAX_LEN_UTF8).toInt()) { 0 })); RustResult.Ok<Unit, Error>(Unit) }
 
     /**
      * Glue for usage of the [write] macro with implementors of this trait.

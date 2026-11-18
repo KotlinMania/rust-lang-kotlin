@@ -10,16 +10,16 @@ import io.github.kotlinmania.rustlang.libm.math.support.modular.linearMulReducti
 
 public fun <Int, SignedInt, D, OtherSign, Unsigned, H, F : Float<F, Int, SignedInt>> fmod(x: F, y: F, fromBitsFFn: (Int) -> F): F {
     val v1 = F.Int.ONE
-    val sx = x.toBits() and F.SIGN_MASK
-    val ux = x.toBits() and F.SIGN_MASK.inv()
-    val uy = y.toBits() and F.SIGN_MASK.inv()
+    val sx = x.toBits() and x.SIGN_MASK
+    val ux = x.toBits() and x.SIGN_MASK.inv()
+    val uy = y.toBits() and x.SIGN_MASK.inv()
     // Cases that return NaN:
     // NaN % _
     // Inf % _
     // _ % NaN
     // _ % 0
-    val xNanOrInf = ux and F.EXP_MASK == F.EXP_MASK
-    val yNanOrZero = (uy - (v1.toULong())) and F.EXP_MASK == F.EXP_MASK
+    val xNanOrInf = ux and x.EXP_MASK == x.EXP_MASK
+    val yNanOrZero = (uy - (v1.toULong())) and x.EXP_MASK == x.EXP_MASK
     if (xNanOrInf or yNanOrZero) {
         return (x * y) / (x * y)
     }
@@ -38,9 +38,9 @@ public fun <Int, SignedInt, D, OtherSign, Unsigned, H, F : Float<F, Int, SignedI
         return fromBitsFFn(sx)
     }
     // We would shift `rem` up by `ey`, but have to stop at `F.SIG_BITS`
-    val shift = ey.min(F.SIG_BITS - rem.ilog2())
+    val shift = ey.min(x.SIG_BITS - rem.ilog2())
     // Anything past that is added to the exponent field
-    val bits = (rem shl shift.toInt()) + (F.Int.castFrom(ey - shift) shl F.SIG_BITS.toInt())
+    val bits = (rem shl shift.toInt()) + (F.Int.castFrom(ey - shift) shl x.SIG_BITS.toInt())
     return fromBitsFFn(sx + bits.toULong())
 }
 

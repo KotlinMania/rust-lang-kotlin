@@ -50,7 +50,7 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.UT_LINESIZ
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Be16
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.gnu.Msghdr
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

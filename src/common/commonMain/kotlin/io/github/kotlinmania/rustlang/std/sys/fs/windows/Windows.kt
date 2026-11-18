@@ -54,7 +54,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.orElse
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.iter
@@ -242,7 +241,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -474,12 +473,12 @@ public open class File internal constructor(
                     IO_REPARSE_TAG_SYMLINK -> {
                         val info: MutPtr = MutPtr(((addrOfMut((UnresolvedTypeLayout<ReparseDataBuffer>()).readNative((buf).rawAddress).rest))).rawAddress)
                         check(info.isAligned())
-                        listOf(MutPtr(((addrOfMut((UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).pathBuffer))).rawAddress), (UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).substituteNameOffset / 2u, (UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).substituteNameLength / 2u, (UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).flags and SYMLINK_FLAG_RELATIVE != 0uL)
+                        listOf(MutPtr(((addrOfMut((UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).pathBuffer))).rawAddress), (UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).substituteNameOffset / 2u.toUShort(), (UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).substituteNameLength / 2u.toUShort(), (UnresolvedTypeLayout<SymbolicLinkReparseBuffer>()).readNative((info).rawAddress).flags and SYMLINK_FLAG_RELATIVE != 0uL)
                     }
                     IO_REPARSE_TAG_MOUNT_POINT -> {
                         val info1: MutPtr = MutPtr(((addrOfMut((UnresolvedTypeLayout<ReparseDataBuffer>()).readNative((buf).rawAddress).rest))).rawAddress)
                         check(info1.isAligned())
-                        listOf(MutPtr(((addrOfMut((UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).pathBuffer))).rawAddress), (UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameOffset / 2u, (UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameLength / 2u, false)
+                        listOf(MutPtr(((addrOfMut((UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).pathBuffer))).rawAddress), (UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameOffset / 2u.toUShort(), (UnresolvedTypeLayout<MountPointReparseBuffer>()).readNative((info1).rawAddress).substituteNameLength / 2u.toUShort(), false)
                     }
                     else -> {
                         return Result.Err<PathBuf, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.Uncategorized, message = "Unsupported reparse point type")))
@@ -672,7 +671,7 @@ public open class File internal constructor(
 
         public fun openNative(path: WCStr, opts: OpenOptions): Result<File, Error> {
             val creation = when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<File, Error>(tryResult.errValue()) }
-            val sa = SecurityAttributes(nLength = sizeOf<SecurityAttributes>(typeLayoutT = UnresolvedTypeLayout<SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = opts.inheritHandle.toInt())
+            val sa = SecurityAttributes(nLength = sizeOf<SecurityAttributes>(typeLayoutT = UnresolvedTypeLayout<SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = (if (opts.inheritHandle) 1 else 0))
             val handle =
                 createFileW(path.asPtr(), when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<File, Error>(tryResult.errValue()) }, opts.shareMode, if (opts.inheritHandle) {
                     sa
@@ -868,7 +867,7 @@ return null
                     null -> {}
                     else -> {
                         val e = matchVal1
-                        return Result.Ok(e)
+                        return Result.Ok<DirEntry, Error, Error>(e)
                     }
                 }
             }
@@ -882,7 +881,7 @@ return null
                         WinError.noMoreFiles -> { return null }
                         else -> {
                             val code = matchVal2.code
-                            return Result.Err(Error.fromRawOsError(code.toInt()))
+                            return Result.Err<DirEntry, Error, Error>(Error.fromRawOsError(code.toInt()))
                         }
                     }
                 }
@@ -890,7 +889,7 @@ return null
                     null -> {}
                     else -> {
                         val e1 = matchVal3
-                        return Result.Ok(e1)
+                        return Result.Ok<DirEntry, Error, Error>(e1)
                     }
                 }
             }
@@ -1489,13 +1488,13 @@ public fun symlinkInner(original: Path, link: Path, dir: Boolean): Result<Unit, 
     // Creators Update, Microsoft loosened this to allow unprivileged symlink creation if the
     // computer is in Developer Mode, but SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE must be
     // added to dwFlags to opt into this behavior.
-    val result = cvt(createSymbolicLinkW(link1.asPtr(), original1.asPtr(), flags or SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE).toInt())
+    val result = cvt((if (createSymbolicLinkW(link1.asPtr(), original1.asPtr(), flags or SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE)) 1 else 0))
     if (result is Result.Err<*, *>) {
         val err = result.errValue()
         if (err.rawOsError() == ERROR_INVALID_PARAMETER.toInt()) {
             // Older Windows objects to SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE,
             // so if we encounter ERROR_INVALID_PARAMETER, retry without that flag.
-            when (val tryResult = cvt(createSymbolicLinkW(link1.asPtr(), original1.asPtr(), flags).toInt())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
+            when (val tryResult = cvt((if (createSymbolicLinkW(link1.asPtr(), original1.asPtr(), flags)) 1 else 0))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Error>(tryResult.errValue()) }
         } else {
             return Result.Err<Unit, Error>(err)
         }
@@ -1705,7 +1704,7 @@ public fun getPathFallback(handle: Handle): PathBuf? {
     return fillUtf16Buf({ buf, sz -> getFinalPathNameByHandleW(handle, buf, sz, VOLUME_NAME_NT) }, closure@{ ntPath ->
         var buf = UShortArray(MAX_PATH.toInt()) { 0u.toUShort() }
         for (letter in getLogicalDrives()) {
-            val deviceName = ushortArrayOf(letter.toUShort(), (58u.toUByte()).toUShort(), 0u)
+            val deviceName = ushortArrayOf(letter.toUShort(), (58u.toUByte()).toUShort(), 0u.toUShort())
             // SAFETY: `deviceName` is a null terminated u16 string
             when (val matchVal = queryDosDevice(deviceName, buf)) {
                 null -> {}
@@ -1804,7 +1803,7 @@ public fun junctionPoint(original: Path, link: Path): Result<Unit, Error> {
                 return Result.Err<Unit, Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.InvalidInput, message = "path is not valid")))
             }
         }
-    val localStorageL1778C4 = AddressableLocal(MountPointBuffer(reparseTag = IO_REPARSE_TAG_MOUNT_POINT, reparseDataLength = 0u, reserved = 0u, substituteNameOffset = 0u, substituteNameLength = (absPath1.size * 2).toUShort(), printNameOffset = ((absPath1.size + 1) * 2).toUShort(), printNameLength = 0u, pathBuffer = List(MAXIMUM_REPARSE_DATA_BUFFER_SIZE.toInt() / 2) { MaybeUninit.uninit(PrimitiveLayouts.U16) }), UnresolvedTypeLayout<MountPointBuffer>())
+    val localStorageL1778C4 = AddressableLocal(MountPointBuffer(reparseTag = IO_REPARSE_TAG_MOUNT_POINT, reparseDataLength = 0u.toUShort(), reserved = 0u.toUShort(), substituteNameOffset = 0u.toUShort(), substituteNameLength = (absPath1.size * 2).toUShort(), printNameOffset = ((absPath1.size + 1) * 2).toUShort(), printNameLength = 0u.toUShort(), pathBuffer = List(MAXIMUM_REPARSE_DATA_BUFFER_SIZE.toInt() / 2) { MaybeUninit.uninit(PrimitiveLayouts.U16) }), UnresolvedTypeLayout<MountPointBuffer>())
     val header by localStorageL1778C4
     // A mount point reparse point requires both the substitute name and the
     // (empty) print name to be null terminated, even though their lengths are

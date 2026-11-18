@@ -990,11 +990,11 @@ public fun <T> copy(x: T): T = x
  *         var fooStruct: Foo = mem.transmuteCopy(fooArray)
  *         check(fooStruct.bar == 10u.toUByte())
  *         // Modify the copied data
- *         fooStruct.bar = 20u
+ *         fooStruct.bar = 20u.toUByte()
  *         check(fooStruct.bar == 20u.toUByte())
  *     }
  *     // The contents of `fooArray` should not have changed
- *     check(fooArray == ubyteArrayOf(10u))
+ *     check(fooArray == ubyteArrayOf(10u.toUByte()))
  *     val bytes: List<UByte> = listOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte())
  *     check(mem.transmuteCopy<List<UByte>, UInt>(bytes) == run { val bytesTmp0 = bytes.firstChunk().unwrap(); ((bytesTmp0[3].toUInt() shl 24) or (bytesTmp0[2].toUInt() shl 16) or (bytesTmp0[1].toUInt() shl 8) or bytesTmp0[0].toUInt()) })
  * }

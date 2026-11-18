@@ -551,7 +551,7 @@ public fun unreachable(arg: String = ""): String =
  * ```kotlin
  * open class MyStruct : Foo {
  *     public open fun bar(): UByte {
- *         return (1u + 1u).toUByte()
+ *         return 1u.toUByte() + 1u.toUByte()
  *     }
  *
  *     public open fun baz() {
@@ -622,7 +622,7 @@ public fun unsupportedBranch(arg: String = ""): String =
  * ```kotlin
  * open class MyStruct : Foo {
  *     public open fun bar(): UByte {
- *         return (1u + 1u).toUByte()
+ *         return 1u.toUByte() + 1u.toUByte()
  *     }
  *
  *     public open fun baz() {

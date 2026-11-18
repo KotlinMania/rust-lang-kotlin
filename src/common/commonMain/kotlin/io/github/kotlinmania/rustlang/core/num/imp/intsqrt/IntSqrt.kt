@@ -92,7 +92,7 @@ public fun u16Stages(n: UShort): UShort {
     return run {
         val HALF_BITS: UInt = 16u shr 1
         val QUARTER_BITS: UInt = 16u shr 2
-        val LOWER_HALF_1_BITS: UShort = (((1u.toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u).toUShort()
+        val LOWER_HALF_1_BITS: UShort = (((1u.toUShort()).toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u.toUShort()
         if (false) {
             check(s1 != 0) { "`\$s` is  zero in `last_stage!`." }
         }
@@ -103,7 +103,7 @@ public fun u16Stages(n: UShort): UShort {
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
         val (sSquared, overflow) = s2.overflowingMul(s2)
         if (overflow || sSquared > n) {
-            s2 -= 1u
+            s2 -= 1u.toUShort()
         }
         s2
     }
@@ -132,8 +132,8 @@ public fun u32Stages(n: UInt): UInt {
         val N_SHIFT: UInt = 32u - 16u
         val HALF_BITS: UInt = 16u shr 1
         val QUARTER_BITS: UInt = 16u shr 2
-        val LOWER_HALF_1_BITS: UShort = (((1u.toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u).toUShort()
-        val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u).toUShort()
+        val LOWER_HALF_1_BITS: UShort = (((1u.toUShort()).toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u.toUShort()
+        val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUShort()).toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u.toUShort()
         if (false) {
             check(s1 != 0) { "`\$s` is  zero in `middle_stage!`." }
         }
@@ -146,8 +146,8 @@ public fun u32Stages(n: UInt): UInt {
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
         var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
         if (overflow) {
-            r2 = (r2 + ((2u * s2 - 1u).toUShort())).toUShort()
-            s2 -= 1u
+            r2 = (r2 + (2u.toUShort() * s2 - 1u.toUShort())).toUShort()
+            s2 -= 1u.toUShort()
         }
         assertUnchecked(s2 != 0u.toUShort())
         Pair(s2, r2)
@@ -195,8 +195,8 @@ public fun u64Stages(n: ULong): ULong {
         val N_SHIFT: UInt = 64u - 16u
         val HALF_BITS: UInt = 16u shr 1
         val QUARTER_BITS: UInt = 16u shr 2
-        val LOWER_HALF_1_BITS: UShort = (((1u.toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u).toUShort()
-        val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u).toUShort()
+        val LOWER_HALF_1_BITS: UShort = (((1u.toUShort()).toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u.toUShort()
+        val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUShort()).toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u.toUShort()
         if (false) {
             check(s1 != 0) { "`\$s` is  zero in `middle_stage!`." }
         }
@@ -209,8 +209,8 @@ public fun u64Stages(n: ULong): ULong {
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
         var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
         if (overflow) {
-            r2 = (r2 + ((2u * s2 - 1u).toUShort())).toUShort()
-            s2 -= 1u
+            r2 = (r2 + (2u.toUShort() * s2 - 1u.toUShort())).toUShort()
+            s2 -= 1u.toUShort()
         }
         assertUnchecked(s2 != 0u.toUShort())
         Pair(s2, r2)
@@ -282,8 +282,8 @@ public fun u128Stages(n: U128): U128 {
         val N_SHIFT: UInt = 128u - 16u
         val HALF_BITS: UInt = 16u shr 1
         val QUARTER_BITS: UInt = 16u shr 2
-        val LOWER_HALF_1_BITS: UShort = (((1u.toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u).toUShort()
-        val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u).toUShort()
+        val LOWER_HALF_1_BITS: UShort = (((1u.toUShort()).toUInt() shl (HALF_BITS.toInt())).toUShort()) - 1u.toUShort()
+        val LOWEST_QUARTER_1_BITS: UShort = (((1u.toUShort()).toUInt() shl (QUARTER_BITS.toInt())).toUShort()) - 1u.toUShort()
         if (false) {
             check(s1 != 0) { "`\$s` is  zero in `middle_stage!`." }
         }
@@ -296,8 +296,8 @@ public fun u128Stages(n: U128): U128 {
         var s2 = (s1 shl QUARTER_BITS.toInt()).toUShort() + q
         var (r2, overflow) = (((u.toUInt() shl (QUARTER_BITS.toInt())).toUShort()) or (lo and LOWEST_QUARTER_1_BITS)).overflowingSub(q * q)
         if (overflow) {
-            r2 = (r2 + ((2u * s2 - 1u).toUShort())).toUShort()
-            s2 -= 1u
+            r2 = (r2 + (2u.toUShort() * s2 - 1u.toUShort())).toUShort()
+            s2 -= 1u.toUShort()
         }
         assertUnchecked(s2 != 0u.toUShort())
         Pair(s2, r2)

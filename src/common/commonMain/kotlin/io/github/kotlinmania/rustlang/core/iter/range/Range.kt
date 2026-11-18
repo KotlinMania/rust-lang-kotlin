@@ -974,14 +974,14 @@ public fun stepBackwardUncheckedNonZeroUByte(start: NonZero<UByte, NonZeroU8Inne
 
 public fun stepForwardNonZeroUByte(start: NonZero<UByte, NonZeroU8Inner>, n: Int): NonZero<UByte, NonZeroU8Inner> {
     if (NonZero.forwardChecked(start, n) == null) {
-        UByte.MAX_VALUE + 1u
+        UByte.MAX_VALUE + 1u.toUByte()
     }
     return start.saturatingAdd(n.toUByte())
 }
 
 public fun stepBackwardNonZeroUByte(start: NonZero<UByte, NonZeroU8Inner>, n: Int): NonZero<UByte, NonZeroU8Inner> {
     if (NonZero.backwardChecked(start, n) == null) {
-        UByte.MIN_VALUE - 1u
+        UByte.MIN_VALUE - 1u.toUByte()
     }
     return (NonZero.new<NonZeroU8Inner, UByte>(start.get().saturatingSub(n.toUByte())) ?: NonZero.MIN)
 }
@@ -1051,14 +1051,14 @@ public fun stepBackwardUncheckedNonZeroUShort(start: NonZero<UShort, NonZeroU16I
 
 public fun stepForwardNonZeroUShort(start: NonZero<UShort, NonZeroU16Inner>, n: Int): NonZero<UShort, NonZeroU16Inner> {
     if (NonZero.forwardChecked(start, n) == null) {
-        UShort.MAX_VALUE + 1u
+        UShort.MAX_VALUE + 1u.toUShort()
     }
     return start.saturatingAdd(n.toUShort())
 }
 
 public fun stepBackwardNonZeroUShort(start: NonZero<UShort, NonZeroU16Inner>, n: Int): NonZero<UShort, NonZeroU16Inner> {
     if (NonZero.backwardChecked(start, n) == null) {
-        UShort.MIN_VALUE - 1u
+        UShort.MIN_VALUE - 1u.toUShort()
     }
     return (NonZero.new<NonZeroU16Inner, UShort>(start.get().saturatingSub(n.toUShort())) ?: NonZero.MIN)
 }
@@ -1413,8 +1413,8 @@ public fun stepForwardCheckedNonZeroU128(start: NonZero<U128, NonZeroU128Inner>,
 public fun stepBackwardCheckedNonZeroU128(start: NonZero<U128, NonZeroU128Inner>, n: Int): NonZero<U128, NonZeroU128Inner>? = start.get().checkedSub(U128.fromInt(n))?.let(NonZero::new)
 
 public fun Char.Companion.stepsBetween(start: Char, end: Char): Pair<Int, Int?> {
-    val start1 = start.toUInt()
-    val end1 = end.toUInt()
+    val start1 = start.code.toUInt()
+    val end1 = end.code.toUInt()
     return if (start1 <= end1) {
         val count = end1 - start1
         if (start1 < 0xD800u && 0xE000u <= end1) {
@@ -1444,7 +1444,7 @@ public fun Char.Companion.stepsBetween(start: Char, end: Char): Pair<Int, Int?> 
 }
 
 public fun Char.Companion.forwardChecked(start: Char, count: Int): Char? {
-    val start1 = start.toUInt()
+    val start1 = start.code.toUInt()
     var res = (Step.forwardChecked(start1, count) ?: return null)
     if (start1 < 0xD800u && 0xD800 <= res) {
         res = (Step.forwardChecked(res, 0x800) ?: return null)
@@ -1459,7 +1459,7 @@ public fun Char.Companion.forwardChecked(start: Char, count: Int): Char? {
 }
 
 public fun Char.Companion.backwardChecked(start: Char, count: Int): Char? {
-    val start1 = start.toUInt()
+    val start1 = start.code.toUInt()
     var res = (Step.backwardChecked(start1, count) ?: return null)
     if (start1 >= 0xE000u && 0xE000 > res) {
         res = (Step.backwardChecked(res, 0x800) ?: return null)
@@ -1496,7 +1496,7 @@ public fun Char.Companion.backwardOverflowing(start: Char, count: Int): Pair<Cha
     }
 
 public fun Char.Companion.forwardUnchecked(start: Char, count: Int): Char {
-    val start1 = start.toUInt()
+    val start1 = start.code.toUInt()
     // SAFETY: the caller must guarantee that this doesn't overflow
     // the range of values for a char.
     var res = Step.forwardUnchecked(start1, count)
@@ -1511,7 +1511,7 @@ public fun Char.Companion.forwardUnchecked(start: Char, count: Int): Char {
 }
 
 public fun Char.Companion.backwardUnchecked(start: Char, count: Int): Char {
-    val start1 = start.toUInt()
+    val start1 = start.code.toUInt()
     // SAFETY: the caller must guarantee that this doesn't overflow
     // the range of values for a char.
     var res = Step.backwardUnchecked(start1, count)

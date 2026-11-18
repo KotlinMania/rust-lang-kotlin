@@ -249,7 +249,7 @@ public open class Dir internal constructor(
 
         public fun openWithNative(path: WCStr, opts: OpenOptions): Result<Dir, Error> {
             val creation = when (val tryResult = opts.getCreationMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) }
-            val localStorageL119C8 = AddressableLocal(SecurityAttributes(nLength = sizeOf<SecurityAttributes>(typeLayoutT = UnresolvedTypeLayout<SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = opts.inheritHandle.toInt()), UnresolvedTypeLayout<SecurityAttributes>())
+            val localStorageL119C8 = AddressableLocal(SecurityAttributes(nLength = sizeOf<SecurityAttributes>(typeLayoutT = UnresolvedTypeLayout<SecurityAttributes>()).toUInt(), lpSecurityDescriptor = MutPtr(0L), bInheritHandle = (if (opts.inheritHandle) 1 else 0)), UnresolvedTypeLayout<SecurityAttributes>())
             val handle = createFileW(path.asPtr(), when (val tryResult = opts.getAccessMode()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Dir, Error>(tryResult.errValue()) }, opts.shareMode, localStorageL119C8.asConstPtr(), creation, opts.getFlagsAndAttributes() or FILE_FLAG_BACKUP_SEMANTICS, MutPtr(0L))
             return run {
                 val matchVal = OwnedHandle.tryFrom(HandleOrInvalid.fromRawHandle(handle))

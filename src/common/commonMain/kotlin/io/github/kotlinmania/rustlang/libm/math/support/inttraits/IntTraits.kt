@@ -225,9 +225,9 @@ public val BITS2: UInt = UByte.ZERO.countZeros()
 
 public val SIGNED2: Boolean = UByte.MIN_VALUE != UByte.ZERO
 
-public val ZERO2: UByte = 0u
+public val ZERO2: UByte = 0u.toUByte()
 
-public val ONE2: UByte = 1u
+public val ONE2: UByte = 1u.toUByte()
 
 public val MIN2: UByte = UByte.MIN
 
@@ -249,7 +249,7 @@ public fun intFromUnsignedUByte(me: UByte): UByte = me
 
 public fun UByte.absDiffInt(other: UByte): UByte = this.absDiff(other)
 
-public fun intFromBoolUByte(b: Boolean): UByte = b.toUByte()
+public fun intFromBoolUByte(b: Boolean): UByte = (if (b) 1u else 0u).toUByte()
 
 public fun UByte.logicalShr(other: UInt): UByte = UByte.fromUnsigned(this.unsigned().wrappingShr(other))
 
@@ -321,7 +321,7 @@ public fun intFromUnsignedByte(me: UByte): Byte = me.toByte()
 
 public fun Byte.absDiffInt(other: Byte): UByte = this.absDiff(other)
 
-public fun intFromBoolByte(b: Boolean): Byte = b.toByte()
+public fun intFromBoolByte(b: Boolean): Byte = (if (b) 1 else 0).toByte()
 
 public fun Byte.logicalShr(other: UInt): Byte = Byte.fromUnsigned(this.unsigned().wrappingShr(other))
 
@@ -373,9 +373,9 @@ public val BITS4: UInt = UShort.ZERO.countZeros()
 
 public val SIGNED4: Boolean = UShort.MIN_VALUE != UShort.ZERO
 
-public val ZERO4: UShort = 0u
+public val ZERO4: UShort = 0u.toUShort()
 
-public val ONE4: UShort = 1u
+public val ONE4: UShort = 1u.toUShort()
 
 public val MIN4: UShort = UShort.MIN
 
@@ -397,7 +397,7 @@ public fun intFromUnsignedUShort(me: UShort): UShort = me
 
 public fun UShort.absDiffInt(other: UShort): UShort = this.absDiff(other)
 
-public fun intFromBoolUShort(b: Boolean): UShort = b.toUShort()
+public fun intFromBoolUShort(b: Boolean): UShort = (if (b) 1u else 0u).toUShort()
 
 public fun UShort.logicalShr(other: UInt): UShort = UShort.fromUnsigned(this.unsigned().wrappingShr(other))
 
@@ -469,7 +469,7 @@ public fun intFromUnsignedShort(me: UShort): Short = me.toShort()
 
 public fun Short.absDiffInt(other: Short): UShort = this.absDiff(other)
 
-public fun intFromBoolShort(b: Boolean): Short = b.toShort()
+public fun intFromBoolShort(b: Boolean): Short = (if (b) 1 else 0).toShort()
 
 public fun Short.logicalShr(other: UInt): Short = Short.fromUnsigned(this.unsigned().wrappingShr(other))
 
@@ -545,7 +545,7 @@ public fun intFromUnsignedUInt(me: UInt): UInt = me
 
 public fun UInt.absDiffInt(other: UInt): UInt = this.absDiff(other)
 
-public fun intFromBoolUInt(b: Boolean): UInt = b.toUInt()
+public fun intFromBoolUInt(b: Boolean): UInt = (if (b) 1u else 0u)
 
 public fun UInt.logicalShr(other: UInt): UInt = UInt.fromUnsigned(this.unsigned().wrappingShr(other))
 
@@ -635,7 +635,7 @@ public fun intFromUnsignedULong(me: ULong): ULong = me
 
 public fun ULong.absDiffInt(other: ULong): ULong = this.absDiff(other)
 
-public fun intFromBoolULong(b: Boolean): ULong = b.toULong()
+public fun intFromBoolULong(b: Boolean): ULong = (if (b) 1uL else 0uL)
 
 public fun ULong.logicalShr(other: UInt): ULong = ULong.fromUnsigned(this.unsigned().wrappingShr(other))
 
@@ -707,7 +707,7 @@ public fun intFromUnsignedLong(me: ULong): Long = me.toLong()
 
 public fun Long.absDiffInt(other: Long): ULong = this.absDiff(other)
 
-public fun intFromBoolLong(b: Boolean): Long = b.toLong()
+public fun intFromBoolLong(b: Boolean): Long = (if (b) 1L else 0L)
 
 public fun Long.logicalShr(other: UInt): Long = Long.fromUnsigned(this.unsigned().wrappingShr(other))
 
@@ -783,7 +783,7 @@ public fun intFromUnsignedU128(me: U128): U128 = me
 
 public fun U128.absDiffInt(other: U128): U128 = this.absDiff(other)
 
-public fun intFromBoolU128(b: Boolean): U128 = U128.fromLong(b.toLong())
+public fun intFromBoolU128(b: Boolean): U128 = (if (b) U128.ONE else U128.ZERO)
 
 public fun U128.logicalShr(other: UInt): U128 = U128.fromUnsigned(this.unsigned().wrappingShr(other))
 
@@ -855,7 +855,7 @@ public fun intFromUnsignedI128(me: U128): I128 = me.toI128()
 
 public fun I128.absDiffInt(other: I128): U128 = this.absDiff(other)
 
-public fun intFromBoolI128(b: Boolean): I128 = I128.fromLong(b.toLong())
+public fun intFromBoolI128(b: Boolean): I128 = (if (b) I128.ONE else I128.ZERO)
 
 public fun I128.logicalShr(other: UInt): I128 = I128.fromUnsigned(this.unsigned().wrappingShr(other))
 

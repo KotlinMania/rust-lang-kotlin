@@ -395,7 +395,7 @@ public fun takeAllocErrorHook(): SetAllocErrorHookHookCallback {
     return if (hook.isNull()) {
         ::defaultAllocErrorHook
     } else {
-        transmuteWithLayouts<Any?, SetAllocErrorHookHookCallback>(hook, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<SetAllocErrorHookHookCallback>())
+        transmuteWithLayouts<MutPtr, SetAllocErrorHookHookCallback>(hook, UnresolvedTypeLayout<MutPtr>(), UnresolvedTypeLayout<SetAllocErrorHookHookCallback>())
     }
 }
 
@@ -459,7 +459,7 @@ public fun rustOom(layout: Layout): Nothing =
             if (hook.isNull()) {
                 ::defaultAllocErrorHook
             } else {
-                transmuteWithLayouts<Any?, SetAllocErrorHookHookCallback>(hook, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<SetAllocErrorHookHookCallback>())
+                transmuteWithLayouts<MutPtr, SetAllocErrorHookHookCallback>(hook, UnresolvedTypeLayout<MutPtr>(), UnresolvedTypeLayout<SetAllocErrorHookHookCallback>())
             }
         hook1(layout)
         abort()

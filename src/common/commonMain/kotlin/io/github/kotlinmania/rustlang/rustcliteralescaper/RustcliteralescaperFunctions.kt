@@ -54,7 +54,7 @@ public fun checkRawCStr(src: String, callback: (IntRange, Result<NonZero<Char, N
 public fun char2byte(c: Char): Result<UByte, EscapeError> {
     // do NOT do: c.tryInto().okOr(EscapeError.NonAsciiCharInByte)
     return if (c.isAscii()) {
-        Result.Ok<UByte, EscapeError>(c.toUByte())
+        Result.Ok<UByte, EscapeError>(c.code.toUByte())
     } else {
         Result.Err<UByte, EscapeError>(EscapeError.NonAsciiCharInByte)
     }

@@ -1,10 +1,10 @@
 // port-lint: source float/complex/mul.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.complex.mul
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.complex.Complex
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
 /**
  * Returns the product of `a + ib` and `c + id`.
@@ -28,7 +28,7 @@ public fun <F : Float> complexMul(a: F, b: F, c: F, d: F): Complex<F> {
     }
     val zeroIfNan =
         { x: F -> if (x.isNan()) {
-            F.ZERO.copysign(x)
+            a.ZERO.copysign(x)
         } else {
             x
         } }
@@ -36,9 +36,9 @@ public fun <F : Float> complexMul(a: F, b: F, c: F, d: F): Complex<F> {
         { x: F ->
             val mag =
                 if (x.isInfinite()) {
-                    F.ONE
+                    a.ONE
                 } else {
-                    F.ZERO
+                    a.ZERO
                 }
             mag.copysign(x)
         }
@@ -67,7 +67,7 @@ public fun <F : Float> complexMul(a: F, b: F, c: F, d: F): Complex<F> {
     if (!recalc) {
         return z
     }
-    return Complex.new(F.INFINITY * (a1 * c1 - b1 * d1), F.INFINITY * (a1 * d1 + b1 * c1))
+    return Complex.new(a.INFINITY * (a1 * c1 - b1 * d1), a.INFINITY * (a1 * d1 + b1 * c1))
 }
 
 public fun rustMulhc3(a: F16, b: F16, c: F16, d: F16): Complex<F16> = complexMul(a, b, c, d)

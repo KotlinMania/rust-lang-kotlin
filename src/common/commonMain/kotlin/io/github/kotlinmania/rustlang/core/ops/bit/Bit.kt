@@ -186,6 +186,8 @@ public interface BitAnd<Rhs, out Output> {
      * ```
      */
     public fun bitand(rhs: Rhs): Output
+
+    public infix fun and(rhs: Rhs): Output = bitand(rhs)
 }
 
 public fun Boolean.bitand(rhs: Boolean): Boolean = this and rhs
@@ -287,6 +289,8 @@ public interface BitOr<Rhs, out Output> {
      * ```
      */
     public fun bitor(rhs: Rhs): Output
+
+    public infix fun or(rhs: Rhs): Output = bitor(rhs)
 }
 
 public fun Boolean.bitor(rhs: Boolean): Boolean = this or rhs
@@ -388,6 +392,8 @@ public interface BitXor<Rhs, out Output> {
      * ```
      */
     public fun bitxor(rhs: Rhs): Output
+
+    public infix fun xor(rhs: Rhs): Output = bitxor(rhs)
 }
 
 public fun Boolean.bitxor(other: Boolean): Boolean = this xor other
@@ -1109,10 +1115,10 @@ public interface BitAndAssign<Rhs> {
      * var x1 = true
      * x1 = x1 and true
      * check(x1 == true)
-     * var x2: UByte = 5u
+     * var x2: UByte = 5u.toUByte()
      * x2 = x2 and 1u.toUByte()
      * check(x2 == 1u.toUByte())
-     * var x3: UByte = 5u
+     * var x3: UByte = 5u.toUByte()
      * x3 = x3 and 2u.toUByte()
      * check(x3 == 0u.toUByte())
      * ```
@@ -1196,10 +1202,10 @@ public interface BitOrAssign<Rhs> {
      * var x1 = false
      * x1 = x1 or false
      * check(x1 == false)
-     * var x2: UByte = 5u
+     * var x2: UByte = 5u.toUByte()
      * x2 = x2 or 1u.toUByte()
      * check(x2 == 5u.toUByte())
-     * var x3: UByte = 5u
+     * var x3: UByte = 5u.toUByte()
      * x3 = x3 or 2u.toUByte()
      * check(x3 == 7u.toUByte())
      * ```
@@ -1283,10 +1289,10 @@ public interface BitXorAssign<Rhs> {
      * var x1 = true
      * x1 = x1 xor true
      * check(x1 == false)
-     * var x2: UByte = 5u
+     * var x2: UByte = 5u.toUByte()
      * x2 = x2 xor 1u.toUByte()
      * check(x2 == 4u.toUByte())
-     * var x3: UByte = 5u
+     * var x3: UByte = 5u.toUByte()
      * x3 = x3 xor 2u.toUByte()
      * check(x3 == 7u.toUByte())
      * ```
@@ -1371,10 +1377,10 @@ public interface ShlAssign<Rhs> {
      * # Examples
      *
      * ```kotlin
-     * var x: UByte = 5u
+     * var x: UByte = 5u.toUByte()
      * x = ((x).toUInt() shl 1).toUByte()
      * check(x == 10u.toUByte())
-     * var x1: UByte = 1u
+     * var x1: UByte = 1u.toUByte()
      * x1 = ((x1).toUInt() shl 1).toUByte()
      * check(x1 == 2u.toUByte())
      * ```
@@ -1891,10 +1897,10 @@ public interface ShrAssign<Rhs> {
      * # Examples
      *
      * ```kotlin
-     * var x: UByte = 5u
+     * var x: UByte = 5u.toUByte()
      * x = ((x).toUInt() shr 1).toUByte()
      * check(x == 2u.toUByte())
-     * var x1: UByte = 2u
+     * var x1: UByte = 2u.toUByte()
      * x1 = ((x1).toUInt() shr 1).toUByte()
      * check(x1 == 1u.toUByte())
      * ```

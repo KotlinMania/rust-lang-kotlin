@@ -6,9 +6,8 @@ import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.andThen
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -141,8 +140,8 @@ public fun <Item, I, B> IntersperseWith<I, G, Item>.fold(init: B, f: (B, Item) -
 
 public fun <Item, I> intersperseSizeHint(iter: I, started: Boolean, nextIsSome: Boolean): Pair<Int, Int?> where I : Iterator<Item> {
     val (lo, hi) = iter.sizeHint()
-    return Pair(lo.saturatingSub((if (!started) 1 else 0)).saturatingAdd(nextIsSome.toInt()).saturatingAdd(lo), hi.andThen({ hi1 ->
-        hi1.saturatingSub((if (!started) 1 else 0)).saturatingAdd(nextIsSome.toInt()).checkedAdd(hi1)
+    return Pair(lo.saturatingSub((if (!started) 1 else 0)).saturatingAdd((if (nextIsSome) 1 else 0)).saturatingAdd(lo), hi.andThen({ hi1 ->
+        hi1.saturatingSub((if (!started) 1 else 0)).saturatingAdd((if (nextIsSome) 1 else 0)).checkedAdd(hi1)
     }))
 }
 

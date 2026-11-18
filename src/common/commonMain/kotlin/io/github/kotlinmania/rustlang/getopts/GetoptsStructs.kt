@@ -274,7 +274,7 @@ public open class Options(
                         val opt = Short(ch)
                         val optId =
                             when (val matchVal2 = findOpt(opts, opt)) {
-                                null -> { return RustResult.Err(UnrecognizedOption(opt.toString())) }
+                                null -> { return RustResult.Err<Matches, Fail>(UnrecognizedOption(opt.toString())) }
                                 else -> {
                                     val id = matchVal2
                                     id
@@ -306,7 +306,7 @@ public open class Options(
                     val nm = name
                     val optId1 =
                         when (val matchVal3 = findOpt(opts, nm)) {
-                            null -> { return RustResult.Err(UnrecognizedOption(nm.toString())) }
+                            null -> { return RustResult.Err<Matches, Fail>(UnrecognizedOption(nm.toString())) }
                             else -> {
                                 val id1 = matchVal3
                                 id1
@@ -315,7 +315,7 @@ public open class Options(
                     when (opts[optId1].hasarg) {
                         No -> {
                             if (iArg != null) {
-                                return RustResult.Err(UnexpectedArgument(nm.toString()))
+                                return RustResult.Err<Matches, Fail>(UnexpectedArgument(nm.toString()))
                             }
                             vals[optId1].push(Pair(argPos, Given))
                         }
@@ -345,7 +345,7 @@ public open class Options(
                                 null -> {
                                     when (val matchVal5 = args2.next()) {
                                         null -> {
-                                            return RustResult.Err(ArgumentMissing(nm.toString()))
+                                            return RustResult.Err<Matches, Fail>(ArgumentMissing(nm.toString()))
                                         }
                                         else -> {
                                             val n = matchVal5
@@ -367,16 +367,16 @@ public open class Options(
         check(vals.size == opts.size)
         for ((vals1, opt1) in (ArrayDeque(vals).zip(opts))) {
             if (opt1.occur == Req && vals1.isEmpty()) {
-                return RustResult.Err(OptionMissing(opt1.name.toString()))
+                return RustResult.Err<Matches, Fail>(OptionMissing(opt1.name.toString()))
             }
             if (opt1.occur != Multi && vals1.len() > 1) {
-                return RustResult.Err(OptionDuplicated(opt1.name.toString()))
+                return RustResult.Err<Matches, Fail>(OptionDuplicated(opt1.name.toString()))
             }
         }
         // Note that if "--" is last argument on command line, then index stored
         // in option does not exist in `free` and must be replaced with `None`
         argsEnd = argsEnd.filter({ pos -> pos != free.size })
-        return RustResult.Ok(Matches(opts = opts, vals = vals, free = free, argsEnd = argsEnd))
+        return RustResult.Ok<Matches, Fail>(Matches(opts = opts, vals = vals, free = free, argsEnd = argsEnd))
     }
 
     /**

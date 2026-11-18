@@ -35,7 +35,7 @@ import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
 public fun <Int, F : Float<F, Int>> parseLongMantissa(s: List<UByte>): BiasedFp {
     val MAX_SHIFT: kotlin.Int = 60
     val NUM_POWERS: kotlin.Int = 19
-    val POWERS: UByteArray = ubyteArrayOf(0u, 3u, 6u, 9u, 13u, 16u, 19u, 23u, 26u, 29u, 33u, 36u, 39u, 43u, 46u, 49u, 53u, 56u, 59u)
+    val POWERS: UByteArray = ubyteArrayOf(0u.toUByte(), 3u.toUByte(), 6u.toUByte(), 9u.toUByte(), 13u.toUByte(), 16u.toUByte(), 19u.toUByte(), 23u.toUByte(), 26u.toUByte(), 29u.toUByte(), 33u.toUByte(), 36u.toUByte(), 39u.toUByte(), 43u.toUByte(), 46u.toUByte(), 49u.toUByte(), 53u.toUByte(), 56u.toUByte(), 59u.toUByte())
     val getShift =
         { n ->
             if (n < NUM_POWERS) {

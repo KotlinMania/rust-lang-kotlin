@@ -17,7 +17,7 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -730,7 +730,7 @@ public open class Request internal constructor(
      *     open class Child(public var parent: Parent) {
      *         // Pretend that this takes a lot of resources to evaluate.
      *         public open fun anExpensiveComputation(): UByte? {
-     *             return 99u
+     *             return 99u.toUByte()
      *         }
      *
      *         public open fun fmt(f: StringBuilder) {

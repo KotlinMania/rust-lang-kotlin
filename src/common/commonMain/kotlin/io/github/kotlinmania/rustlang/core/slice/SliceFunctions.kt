@@ -70,7 +70,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.cmp.sliceContains
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 import io.github.kotlinmania.rustlang.core.slice.index.range
@@ -3690,7 +3689,7 @@ public fun <T> List<T>.rotateRight(k: Int) {
  *     check(a1.shiftLeft(" peace".encodeToByteArray()) == "Hello ".encodeToByteArray())
  *     check(a1 == "world peace".encodeToByteArray())
  *     // The name comes from this operation's similarity to bitshifts
- *     var a2: UByte = 0x96u
+ *     var a2: UByte = 0x96u.toUByte()
  *     a2 = ((a2).toUInt() shl 3).toUByte()
  *     check(a2 == 0xB0u.toUByte())
  *     var a3: List<Any> = listOf(1, 0, 0, 1, 0, 1, 1, 0)
@@ -3796,7 +3795,7 @@ public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int = 0): List<T> {
  *     check(returned == listOf(9))
  *     check(a == listOf(0, 5, 6, 7, 8))
  *     // The name comes from this operation's similarity to bitshifts
- *     var a1: UByte = 0x96u
+ *     var a1: UByte = 0x96u.toUByte()
  *     a1 = ((a1).toUInt() shr 3).toUByte()
  *     check(a1 == 0x12u.toUByte())
  *     var a2: List<Any> = listOf(1, 0, 0, 1, 0, 1, 1, 0)
@@ -4188,7 +4187,7 @@ public fun <T, U> List<T>.alignToOffsets(typeLayoutT: TypeLayout<T> = Unresolved
  *
  * public fun doctestEntry() {
  *     run {
- *         val bytes: UByteArray = ubyteArrayOf(1u, 2u, 3u, 4u, 5u, 6u, 7u)
+ *         val bytes: UByteArray = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte())
  *         val (prefix, shorts, suffix) = bytes.alignTo<UShort>()
  *         // lessEfficientAlgorithmForBytes(prefix);
  *         // moreEfficientAlgorithmForAlignedShorts(shorts);
@@ -4244,7 +4243,7 @@ public fun <T, U> List<T>.alignTo(typeLayoutU: TypeLayout<U> = UnresolvedTypeLay
  *
  * public fun doctestEntry() {
  *     run {
- *         var bytes: UByteArray = ubyteArrayOf(1u, 2u, 3u, 4u, 5u, 6u, 7u)
+ *         var bytes: UByteArray = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte())
  *         val (prefix, shorts, suffix) = bytes.alignToMut<UShort>()
  *         // lessEfficientAlgorithmForBytes(prefix);
  *         // moreEfficientAlgorithmForAlignedShorts(shorts);
@@ -4970,7 +4969,7 @@ public fun <T> List<T>.elementOffset(element: T, typeLayoutT: TypeLayout<T> = Un
  * import ops.Range
  *
  * public fun doctestEntry() {
- *     val arr: List<UByteArray> = listOf(ubyteArrayOf(0u, 1u, 2u, 3u), ubyteArrayOf(4u, 5u, 6u, 7u))
+ *     val arr: List<UByteArray> = listOf(ubyteArrayOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte()), ubyteArrayOf(4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
  *     val flattened: List<UByte> = arr.asFlattened()
  *     // This sub-slice is aligned with the first element of `arr`:
  *     // &[[0, 1, 2, 3], [4, 5, 6, 7]]

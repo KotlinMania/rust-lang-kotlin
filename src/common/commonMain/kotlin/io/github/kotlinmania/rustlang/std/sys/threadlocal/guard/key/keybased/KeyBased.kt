@@ -2,7 +2,6 @@
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.keybased
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.std.rt.threadCleanup
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
@@ -51,6 +50,6 @@ public fun run(state: MutPtr) {
 /**
  * Whether [rt.threadCleanup] has yet to run on this thread.
  */
-public fun cleanupPending(): Boolean = (!get(CLEANUP.force()).isNull()).toUByte()
+public fun cleanupPending(): Boolean = (!((get(CLEANUP.force())).rawAddress == 0L)).toUByte()
 
 public val RUN: MutPtr = withoutProvenanceMut(2)

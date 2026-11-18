@@ -2503,10 +2503,10 @@ public fun vsldoi(a: VectorUnsignedChar, b: VectorUnsignedChar, uimm4: Int): Vec
     }
     val d = uimm4.toUByte()
     return if (true) {
-        val perm = Simd<UByte>(listOf((16u - d).toUByte(), (17u - d).toUByte(), (18u - d).toUByte(), (19u - d).toUByte(), (20u - d).toUByte(), (21u - d).toUByte(), (22u - d).toUByte(), (23u - d).toUByte(), (24u - d).toUByte(), (25u - d).toUByte(), (26u - d).toUByte(), (27u - d).toUByte(), (28u - d).toUByte(), (29u - d).toUByte(), (30u - d).toUByte(), (31u - d).toUByte()))
+        val perm = Simd<UByte>(listOf((16u.toUByte() - d).toUByte(), (17u.toUByte() - d).toUByte(), (18u.toUByte() - d).toUByte(), (19u.toUByte() - d).toUByte(), (20u.toUByte() - d).toUByte(), (21u.toUByte() - d).toUByte(), (22u.toUByte() - d).toUByte(), (23u.toUByte() - d).toUByte(), (24u.toUByte() - d).toUByte(), (25u.toUByte() - d).toUByte(), (26u.toUByte() - d).toUByte(), (27u.toUByte() - d).toUByte(), (28u.toUByte() - d).toUByte(), (29u.toUByte() - d).toUByte(), (30u.toUByte() - d).toUByte(), (31u.toUByte() - d).toUByte()))
         vecPerm(b, a, transmute(perm))
     } else {
-        val perm1 = Simd<UByte>(listOf(d, (d + 1u).toUByte(), (d + 2u).toUByte(), (d + 3u).toUByte(), (d + 4u).toUByte(), (d + 5u).toUByte(), (d + 6u).toUByte(), (d + 7u).toUByte(), (d + 8u).toUByte(), (d + 9u).toUByte(), (d + 10u).toUByte(), (d + 11u).toUByte(), (d + 12u).toUByte(), (d + 13u).toUByte(), (d + 14u).toUByte(), (d + 15u).toUByte()))
+        val perm1 = Simd<UByte>(listOf(d, d + 1u.toUByte(), d + 2u.toUByte(), d + 3u.toUByte(), d + 4u.toUByte(), d + 5u.toUByte(), d + 6u.toUByte(), d + 7u.toUByte(), d + 8u.toUByte(), d + 9u.toUByte(), d + 10u.toUByte(), d + 11u.toUByte(), d + 12u.toUByte(), d + 13u.toUByte(), d + 14u.toUByte(), d + 15u.toUByte()))
         vecPerm(a, b, transmute(perm1))
     }
 }
@@ -2518,10 +2518,10 @@ public fun xxsldwi(a: VectorUnsignedChar, b: VectorUnsignedChar, uimm2: Int): Ve
     }
     val d = (uimm2 shl 2).toUByte()
     return if (true) {
-        val perm = Simd<UByte>(listOf((16u - d).toUByte(), (17u - d).toUByte(), (18u - d).toUByte(), (19u - d).toUByte(), (20u - d).toUByte(), (21u - d).toUByte(), (22u - d).toUByte(), (23u - d).toUByte(), (24u - d).toUByte(), (25u - d).toUByte(), (26u - d).toUByte(), (27u - d).toUByte(), (28u - d).toUByte(), (29u - d).toUByte(), (30u - d).toUByte(), (31u - d).toUByte()))
+        val perm = Simd<UByte>(listOf((16u.toUByte() - d).toUByte(), (17u.toUByte() - d).toUByte(), (18u.toUByte() - d).toUByte(), (19u.toUByte() - d).toUByte(), (20u.toUByte() - d).toUByte(), (21u.toUByte() - d).toUByte(), (22u.toUByte() - d).toUByte(), (23u.toUByte() - d).toUByte(), (24u.toUByte() - d).toUByte(), (25u.toUByte() - d).toUByte(), (26u.toUByte() - d).toUByte(), (27u.toUByte() - d).toUByte(), (28u.toUByte() - d).toUByte(), (29u.toUByte() - d).toUByte(), (30u.toUByte() - d).toUByte(), (31u.toUByte() - d).toUByte()))
         vecPerm(b, a, transmute(perm))
     } else {
-        val perm1 = Simd<UByte>(listOf(d, (d + 1u).toUByte(), (d + 2u).toUByte(), (d + 3u).toUByte(), (d + 4u).toUByte(), (d + 5u).toUByte(), (d + 6u).toUByte(), (d + 7u).toUByte(), (d + 8u).toUByte(), (d + 9u).toUByte(), (d + 10u).toUByte(), (d + 11u).toUByte(), (d + 12u).toUByte(), (d + 13u).toUByte(), (d + 14u).toUByte(), (d + 15u).toUByte()))
+        val perm1 = Simd<UByte>(listOf(d, d + 1u.toUByte(), d + 2u.toUByte(), d + 3u.toUByte(), d + 4u.toUByte(), d + 5u.toUByte(), d + 6u.toUByte(), d + 7u.toUByte(), d + 8u.toUByte(), d + 9u.toUByte(), d + 10u.toUByte(), d + 11u.toUByte(), d + 12u.toUByte(), d + 13u.toUByte(), d + 14u.toUByte(), d + 15u.toUByte()))
         vecPerm(a, b, transmute(perm1))
     }
 }
