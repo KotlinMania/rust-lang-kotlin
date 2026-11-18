@@ -2,16 +2,18 @@
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.elf
 
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Context
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Dwarf
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.DwarfPackage
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Either
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Endian
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.EndianSlice
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.File
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Mapping
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.canonicalize
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.extractZipPathAndroid
-import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.gimli
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmap
-import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmapfake.Mmap
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmap.Mmap
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
-import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.fs
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.Path
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.PathBuf
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
@@ -20,6 +22,7 @@ import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.get
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
@@ -86,7 +89,7 @@ public fun Mapping.Companion.newAndroid(path: Path, zipOffset: ULong?): Mapping?
     fun mapEmbeddedLibrary(path1: Path, zipOffset1: ULong): Mapping? {
         // get path of ZIP archive (delimited by `! /`)
         val zipPath = Path.new((extractZipPathAndroid(path1.asOsStr()) ?: return null))
-        val file = (fs.File.open(zipPath).ok() ?: return null)
+        val file = (File.open(zipPath).ok() ?: return null)
         val len = (file.metadata().ok() ?: return null).len()
         // NOTE: we map the remainder of the entire archive instead of just the library so we don't have to determine its length
         // NOTE: mmap will fail if `zipOffset` is not page-aligned
@@ -503,7 +506,7 @@ public fun locateBuildId(buildId: List<UByte>): PathBuf? {
  * gdb also supports debuginfod, but we don't yet.
  */
 public fun locateDebuglink(path: Path, filename: OsStr): PathBuf? {
-    val path1 = (fs.canonicalize(path).ok() ?: return null)
+    val path1 = (canonicalize(path).ok() ?: return null)
     val parent = (path1.parent() ?: return null)
     val f = PathBuf.withCapacity(DEBUG_PATH.length + parent.asOsStr().len() + filename.len() + 2)
     val filename1 = Path.new(filename)
@@ -555,7 +558,7 @@ public fun locateDebugaltlink(path: Path, filename: OsStr, buildId: List<UByte>)
             return filename1.into()
         }
     } else {
-        val path1 = (fs.canonicalize(path).ok() ?: return null)
+        val path1 = (canonicalize(path).ok() ?: return null)
         val parent = (path1.parent() ?: return null)
         val f = PathBuf.from(parent)
         f.push(filename1)
@@ -566,7 +569,7 @@ public fun locateDebugaltlink(path: Path, filename: OsStr, buildId: List<UByte>)
     return locateBuildId(buildId)
 }
 
-public fun handleSplitDwarf(pkg: gimli.DwarfPackage<EndianSlice<Endian>>?, stash: Stash, load: SplitDwarfLoad<EndianSlice<Endian>>): gimli.Dwarf<EndianSlice<Endian>>? {
+public fun handleSplitDwarf(pkg: DwarfPackage<EndianSlice<Endian>>?, stash: Stash, load: SplitDwarfLoad<EndianSlice<Endian>>): Dwarf<EndianSlice<Endian>>? {
     when (val matchVal = pkg) {
         null -> {}
         else -> {
@@ -599,7 +602,7 @@ public fun handleSplitDwarf(pkg: gimli.DwarfPackage<EndianSlice<Endian>>?, stash
                 null -> {}
                 else -> {
                     val dwo = matchVal4
-                    return gimli.Dwarf.load({ id ->
+                    return Dwarf.load({ id ->
                         val data = id.dwoName().andThen({ name -> dwo.section(stash, name) }).unwrapOr(listOf())
                         Result.Ok(EndianSlice.new(data, Endian))
                     }).ok()?.let({ dwoDwarf ->

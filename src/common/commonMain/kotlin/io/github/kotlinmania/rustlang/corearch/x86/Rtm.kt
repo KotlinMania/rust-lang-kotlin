@@ -1,6 +1,9 @@
 // port-lint: source x86/rtm.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
+import kotlin.experimental.and
+import kotlin.experimental.inv
+
 // Intel's Restricted Transactional Memory (RTM).
 //
 // This CPU feature is available on Intel Broadwell or later CPUs (and some Haswell).

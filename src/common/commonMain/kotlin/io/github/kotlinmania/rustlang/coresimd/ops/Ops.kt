@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.coresimd.ops
 
 import io.github.kotlinmania.rustlang.coresimd.Simd
+import kotlin.experimental.and
 
 // SAFETY: This macro should not be used for anything except Shl or Shr, and passed the appropriate shift intrinsic.
 // It handles performing a bitand in addition to calling the shift operator, so that the result
@@ -20,39 +21,39 @@ import io.github.kotlinmania.rustlang.coresimd.Simd
 // | <$int>::MIN / -1 | UB   | <$int>::MIN
 // | <$int>::MIN % -1 | UB   | 0
 
-public fun <Mask, Output, I, T> Simd<T>.index(index: I, n: Int): Output where I : SliceIndex<List<T>, Output> = this.asArray()[index]
+public fun <Mask, Output, I, T> Simd<T>.index(index: I, n: Int = 0): Output where I : SliceIndex<List<T>, Output> = this.asArray()[index]
 
-public fun <Mask, Output, I, T> Simd<T>.indexMut(index: I, n: Int): Output where I : SliceIndex<List<T>, Output> = this.asMutArray()[index]
+public fun <Mask, Output, I, T> Simd<T>.indexMut(index: I, n: Int = 0): Output where I : SliceIndex<List<T>, Output> = this.asMutArray()[index]
 
 // Integers can always accept add, mul, sub, bitand, bitor, and bitxor.
 // For all of these operations, simd_* intrinsics apply wrapping logic.
 // We don't need any special precautions here:
 // Floats always accept arithmetic ops, but may become NaN.
-public fun <Mask> Simd<Byte>.add(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Byte>.add(rhs: Simd<Byte>, n: Int = 0): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Short>.addSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Short>.addSelf(rhs: Simd<Short>, n: Int = 0): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Byte>.mul(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Byte>.mul(rhs: Simd<Byte>, n: Int = 0): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Short>.mulSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Short>.mulSelf(rhs: Simd<Short>, n: Int = 0): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Byte>.sub(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Byte>.sub(rhs: Simd<Byte>, n: Int = 0): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Short>.subSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Short>.subSelf(rhs: Simd<Short>, n: Int = 0): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Byte>.bitand(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Byte>.bitand(rhs: Simd<Byte>, n: Int = 0): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Short>.bitandSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Short>.bitandSelf(rhs: Simd<Short>, n: Int = 0): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Byte>.bitor(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Byte>.bitor(rhs: Simd<Byte>, n: Int = 0): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Short>.bitorSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Short>.bitorSelf(rhs: Simd<Short>, n: Int = 0): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Byte>.bitxor(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Byte>.bitxor(rhs: Simd<Byte>, n: Int = 0): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Short>.bitxorSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
+public fun <Mask> Simd<Short>.bitxorSelf(rhs: Simd<Short>, n: Int = 0): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs; simdArg0 }
 
-public fun <Mask> Simd<Byte>.div(rhs: Simd<Byte>, n: Int): Simd<Byte> =
+public fun <Mask> Simd<Byte>.div(rhs: Simd<Byte>, n: Int = 0): Simd<Byte> =
     if (rhs.simdEq(Simd.splat(0, n)).any()) {
         error("attempt to divide by zero")
     } else {
@@ -71,7 +72,7 @@ public fun <Mask> Simd<Byte>.div(rhs: Simd<Byte>, n: Int): Simd<Byte> =
         }
     }
 
-public fun <Mask> Simd<Short>.divSelf(rhs: Simd<Short>, n: Int): Simd<Short> =
+public fun <Mask> Simd<Short>.divSelf(rhs: Simd<Short>, n: Int = 0): Simd<Short> =
     if (rhs.simdEq(Simd.splat(0, n)).any()) {
         error("attempt to divide by zero")
     } else {
@@ -90,7 +91,7 @@ public fun <Mask> Simd<Short>.divSelf(rhs: Simd<Short>, n: Int): Simd<Short> =
         }
     }
 
-public fun <Mask> Simd<Byte>.rem(rhs: Simd<Byte>, n: Int): Simd<Byte> =
+public fun <Mask> Simd<Byte>.rem(rhs: Simd<Byte>, n: Int = 0): Simd<Byte> =
     if (rhs.simdEq(Simd.splat(0, n)).any()) {
         error("attempt to calculate the remainder with a divisor of zero")
     } else {
@@ -109,7 +110,7 @@ public fun <Mask> Simd<Byte>.rem(rhs: Simd<Byte>, n: Int): Simd<Byte> =
         }
     }
 
-public fun <Mask> Simd<Short>.remSelf(rhs: Simd<Short>, n: Int): Simd<Short> =
+public fun <Mask> Simd<Short>.remSelf(rhs: Simd<Short>, n: Int = 0): Simd<Short> =
     if (rhs.simdEq(Simd.splat(0, n)).any()) {
         error("attempt to calculate the remainder with a divisor of zero")
     } else {
@@ -128,10 +129,10 @@ public fun <Mask> Simd<Short>.remSelf(rhs: Simd<Short>, n: Int): Simd<Short> =
         }
     }
 
-public fun <Mask> Simd<Byte>.shl(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs.bitand(Simd.splat(8u.toByte() - 1, n), n); simdArg0 }
+public fun <Mask> Simd<Byte>.shl(rhs: Simd<Byte>, n: Int = 0): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs.bitand(Simd.splat(8u.toByte() - 1, n), n); simdArg0 }
 
-public fun <Mask> Simd<Short>.shlSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs.bitand(Simd.splat(16u.toShort() - 1, n), n); simdArg0 }
+public fun <Mask> Simd<Short>.shlSelf(rhs: Simd<Short>, n: Int = 0): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs.bitand(Simd.splat(16u.toShort() - 1, n), n); simdArg0 }
 
-public fun <Mask> Simd<Byte>.shr(rhs: Simd<Byte>, n: Int): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs.bitand(Simd.splat(8u.toByte() - 1, n), n); simdArg0 }
+public fun <Mask> Simd<Byte>.shr(rhs: Simd<Byte>, n: Int = 0): Simd<Byte> = run { val simdArg0 = this; val simdArg1 = rhs.bitand(Simd.splat(8u.toByte() - 1, n), n); simdArg0 }
 
-public fun <Mask> Simd<Short>.shrSelf(rhs: Simd<Short>, n: Int): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs.bitand(Simd.splat(16u.toShort() - 1, n), n); simdArg0 }
+public fun <Mask> Simd<Short>.shrSelf(rhs: Simd<Short>, n: Int = 0): Simd<Short> = run { val simdArg0 = this; val simdArg1 = rhs.bitand(Simd.splat(16u.toShort() - 1, n), n); simdArg0 }

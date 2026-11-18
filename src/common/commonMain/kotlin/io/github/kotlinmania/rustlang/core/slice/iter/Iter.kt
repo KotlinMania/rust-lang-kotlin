@@ -22,9 +22,11 @@ import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
+import io.github.kotlinmania.rustlang.core.num.uncheckedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.fromMut
@@ -1806,7 +1808,7 @@ public open class ChunksExactMut<T> internal constructor(
  *
  * ```kotlin
  * val slice = listOf(0, 1, 2, 3)
- * var iter = slice.arrayWindows()
+ * var iter = slice.arrayWindows(2)
  * check(iter.next() == listOf(0, 1))
  * check(iter.next() == listOf(1, 2))
  * check(iter.next() == listOf(2, 3))
@@ -1819,6 +1821,8 @@ public open class ChunksExactMut<T> internal constructor(
 public open class ArrayWindows<T>(
     public var v: List<T>,
 ) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+    public val n: Int = 0
+
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@ArrayWindows.next()) {

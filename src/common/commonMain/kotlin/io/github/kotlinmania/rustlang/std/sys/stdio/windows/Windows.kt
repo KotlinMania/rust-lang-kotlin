@@ -4,7 +4,6 @@
 package io.github.kotlinmania.rustlang.std.sys.stdio.windows
 
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
-import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.write.Write
@@ -29,6 +28,7 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.splitFirst
 import io.github.kotlinmania.rustlang.core.str.validations.utf8CharWidth
 import io.github.kotlinmania.rustlang.std.alloc.System
+import io.github.kotlinmania.rustlang.std.min
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.CP_UTF8

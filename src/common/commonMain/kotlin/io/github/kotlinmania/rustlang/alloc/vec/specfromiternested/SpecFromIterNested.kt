@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.vec.specfromiternested
 
 import io.github.kotlinmania.rustlang.alloc.rawvec.RawVec
 import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 

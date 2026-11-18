@@ -3,8 +3,8 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.key.keybased
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.rt.threadCleanup
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.get
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
@@ -18,7 +18,7 @@ import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
  */
 public val LOCAL_POINTER_NEEDS_DTOR: Boolean = true
 
-public val DEFER: MutPtr = ptr.withoutProvenanceMut(1)
+public val DEFER: MutPtr = withoutProvenanceMut(1)
 
 public var CLEANUP: LazyKey = LazyKey.new(::run)
 
@@ -53,4 +53,4 @@ public fun run(state: MutPtr) {
  */
 public fun cleanupPending(): Boolean = (!get(CLEANUP.force()).isNull()).toUByte()
 
-public val RUN: MutPtr = ptr.withoutProvenanceMut(2)
+public val RUN: MutPtr = withoutProvenanceMut(2)

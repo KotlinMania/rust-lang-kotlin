@@ -28,8 +28,8 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.hashbrown.Entry.Occupied
 import io.github.kotlinmania.rustlang.hashbrown.Entry.Vacant
 import io.github.kotlinmania.rustlang.hashbrown.TryReserveError.CapacityOverflow
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
 import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
 import io.github.kotlinmania.rustlang.hashbrown.raw.prevPow2
 import io.github.kotlinmania.rustlang.libc.mmap
@@ -984,7 +984,7 @@ public class MapTestMapInlineTests {
 
     @kotlin.test.Test
     public fun testExtendRefKvTuple() {
-        fun <T : AddAssign<T>> createArr(start: T, step: T, n: Int): List<Pair<T, T>> {
+        fun <T : AddAssign<T>> createArr(start: T, step: T, n: Int = 0): List<Pair<T, T>> {
             val outs: List<Pair<T, T>>  = List(n) { Pair(start, start) }
             var element = step
             outs.iterMut().skip(1).forEach({ (k, v) ->
@@ -1602,14 +1602,14 @@ public open class MmapAllocator(
             0 -> Result.Ok<Int, AllocError>(n1)
             else -> {
                 val rem = matchVal
-                (n1.checkedAdd(this.pageSize - rem)?.let { Result.Ok<Int, AllocError>(it) } ?: Result.Err<Int, AllocError>(AllocError()))
+                (n1.checkedAdd(this.pageSize - rem)?.let { Result.Ok<Int, io.github.kotlinmania.rustlang.core.alloc.AllocError>(it) } ?: Result.Err<Int, io.github.kotlinmania.rustlang.core.alloc.AllocError>(io.github.kotlinmania.rustlang.core.alloc.AllocError()))
             }
         }
     }
 
     public override fun allocate(layout: Layout): Result<NonNull, AllocError> {
         if (layout.align() > this.pageSize) {
-            return Result.Err<NonNull, AllocError>(AllocError())
+            return Result.Err<NonNull, AllocError>(io.github.kotlinmania.rustlang.core.alloc.AllocError())
         }
         val nullVal = MutPtr(0L)
         val len = (when (val tryResult = this.fitToPageSize(layout.size())) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }).toULong()
@@ -1618,7 +1618,7 @@ public open class MmapAllocator(
         val addr = mmap(nullVal, len, prot, flags, -1, 0)
         // mmap returns MAP_FAILED on failure, not Null.
         if (addr == MAP_FAILED) {
-            return Result.Err<NonNull, AllocError>(AllocError())
+            return Result.Err<NonNull, AllocError>(io.github.kotlinmania.rustlang.core.alloc.AllocError())
         }
         return when (val matchVal = NonNull.new(addr.cast())) {
             null -> {
@@ -1626,7 +1626,7 @@ public open class MmapAllocator(
                 // cannot return null as a valid pointer in our type system,
                 // we attempt to handle it.
                 munmap(addr, len)
-                Result.Err<NonNull, AllocError>(AllocError())
+                Result.Err<NonNull, AllocError>(io.github.kotlinmania.rustlang.core.alloc.AllocError())
             }
             else -> {
                 val data = matchVal
@@ -1669,13 +1669,13 @@ public open class MmapAllocator(
         public fun new(): Result<MmapAllocator, AllocError> {
             val result = sysconf(SC_PAGESIZE)
             if (result < 1) {
-                return Result.Err<MmapAllocator, AllocError>(AllocError())
+                return Result.Err<MmapAllocator, AllocError>(io.github.kotlinmania.rustlang.core.alloc.AllocError())
             }
             val pageSize = result.toInt()
             return if (pageSize.isPowerOfTwo()) {
                 Result.Ok<MmapAllocator, AllocError>(MmapAllocator(pageSize = pageSize))
             } else {
-                Result.Err<MmapAllocator, AllocError>(AllocError())
+                Result.Err<MmapAllocator, AllocError>(io.github.kotlinmania.rustlang.core.alloc.AllocError())
             }
         }
     }

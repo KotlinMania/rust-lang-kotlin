@@ -392,6 +392,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U64x1
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x8
+import kotlin.experimental.inv
 
 public typealias V = Simd<Double>
 
@@ -7053,7 +7054,7 @@ public fun vld3qF64(a: ConstPtr): Float64x2x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmuteWithLayouts<Any?, Float64x2x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float64x2x3T>())
+        transmuteWithLayouts<Triple<V, V, V>, Float64x2x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Triple<V, V, V>>(), UnresolvedTypeLayout<Float64x2x3T>())
     }
 
 /**
@@ -7069,7 +7070,7 @@ public fun vld3qS64(a: ConstPtr): Int64x2x3T =
         val v0: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 0)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 3, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmuteWithLayouts<Any?, Int64x2x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int64x2x3T>())
+        transmuteWithLayouts<Triple<V, V, V>, Int64x2x3T>(Triple(v0, v1, v2), UnresolvedTypeLayout<Triple<V, V, V>>(), UnresolvedTypeLayout<Int64x2x3T>())
     }
 
 /**
@@ -7306,7 +7307,7 @@ public fun vld4qF64(a: ConstPtr): Float64x2x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmuteWithLayouts<Any?, Float64x2x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Float64x2x4T>())
+        transmuteWithLayouts<List<Any?>, Float64x2x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<List<Any?>>(), UnresolvedTypeLayout<Float64x2x4T>())
     }
 
 /**
@@ -7322,7 +7323,7 @@ public fun vld4qS64(a: ConstPtr): Int64x2x4T =
         val v1: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 1)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v2: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 2)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
         val v3: V = run { val simdArg0 = w; val simdArg1 = w; val simdArg2 = SimdShuffleIdx(deinterleaveMask(2, 4, 3)); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); val res = (UnresolvedTypeLayout<V>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<V>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<V>()).alignBytes)); res } }
-        transmuteWithLayouts<Any?, Int64x2x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<Int64x2x4T>())
+        transmuteWithLayouts<List<Any?>, Int64x2x4T>(listOf(v0, v1, v2, v3), UnresolvedTypeLayout<List<Any?>>(), UnresolvedTypeLayout<Int64x2x4T>())
     }
 
 /**

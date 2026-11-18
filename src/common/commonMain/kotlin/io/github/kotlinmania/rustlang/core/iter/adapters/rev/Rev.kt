@@ -68,35 +68,35 @@ public open class Rev<T>(
     }
 }
 
-public fun <I> Rev<I>.next(): Item? = this.iter.nextBack()
+public fun <Item, I> Rev<I>.next(): Item? where I : Iterator<Item> = this.iter.nextBack()
 
-public fun <I> Rev<I>.sizeHint(): Pair<Int, Int?> = this.iter.sizeHint()
+public fun <Item, I> Rev<I>.sizeHint(): Pair<Int, Int?> where I : Iterator<Item> = this.iter.sizeHint()
 
-public fun <I> Rev<I>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.iter.advanceBackBy(n)
+public fun <Item, I> Rev<I>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> where I : Iterator<Item> = this.iter.advanceBackBy(n)
 
-public fun <I> Rev<I>.nth(n: Int): Item? = this.iter.nthBack(n)
+public fun <Item, I> Rev<I>.nth(n: Int): Item? where I : Iterator<Item> = this.iter.nthBack(n)
 
-public fun <Residual, I, B, R> Rev<I>.tryFold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual> = this.iter.tryRfold(init, f)
+public fun <Item, Residual, I, B, R> Rev<I>.tryFold(init: B, f: (B, Item) -> R): R where I : Iterator<Item>, R : Try<R, B, Residual> = this.iter.tryRfold(init, f)
 
-public fun <I, Acc> Rev<I>.fold(init: Acc, f: (Acc, Item) -> Acc): Acc = this.iter.rfold(init, f)
+public fun <Item, I, Acc> Rev<I>.fold(init: Acc, f: (Acc, Item) -> Acc): Acc where I : Iterator<Item> = this.iter.rfold(init, f)
 
-public fun <I> Rev<I>.find(predicate: (Item) -> Boolean): Item? = this.iter.rfind(predicate)
+public fun <Item, I> Rev<I>.find(predicate: (Item) -> Boolean): Item? where I : Iterator<Item> = this.iter.rfind(predicate)
 
-public fun <I> Rev<I>.nextBack(): Item? = this.iter.next()
+public fun <Item, I> Rev<I>.nextBack(): Item? where I : Iterator<Item> = this.iter.next()
 
-public fun <I> Rev<I>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.iter.advanceBy(n)
+public fun <Item, I> Rev<I>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> where I : Iterator<Item> = this.iter.advanceBy(n)
 
-public fun <I> Rev<I>.nthBack(n: Int): Item? = this.iter.nth(n)
+public fun <Item, I> Rev<I>.nthBack(n: Int): Item? where I : Iterator<Item> = this.iter.nth(n)
 
-public fun <Residual, I, B, R> Rev<I>.tryRfold(init: B, f: (B, Item) -> R): R where R : Try<R, B, Residual> = this.iter.tryFold(init, f)
+public fun <Item, Residual, I, B, R> Rev<I>.tryRfold(init: B, f: (B, Item) -> R): R where I : Iterator<Item>, R : Try<R, B, Residual> = this.iter.tryFold(init, f)
 
-public fun <I, Acc> Rev<I>.rfold(init: Acc, f: (Acc, Item) -> Acc): Acc = this.iter.fold(init, f)
+public fun <Item, I, Acc> Rev<I>.rfold(init: Acc, f: (Acc, Item) -> Acc): Acc where I : Iterator<Item> = this.iter.fold(init, f)
 
-public fun <I> Rev<I>.rfind(predicate: (Item) -> Boolean): Item? = this.iter.indexOf(predicate).takeIf { it >= 0 }
+public fun <Item, I> Rev<I>.rfind(predicate: (Item) -> Boolean): Item? where I : Iterator<Item> = this.iter.indexOf(predicate).takeIf { it >= 0 }
 
-public fun <I> Rev<I>.len(): Int = this.iter.len()
+public fun <Item, I> Rev<I>.len(): Int where I : Iterator<Item> = this.iter.len()
 
-public fun <I> Rev<I>.isEmpty(): Boolean = this.iter.isEmpty()
+public fun <Item, I> Rev<I>.isEmpty(): Boolean where I : Iterator<Item> = this.iter.isEmpty()
 
 /**
  * Creates a `Rev` iterator from the default value of `I`

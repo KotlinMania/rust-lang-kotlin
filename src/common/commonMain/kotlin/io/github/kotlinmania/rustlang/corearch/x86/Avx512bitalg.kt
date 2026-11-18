@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I8x16
 import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.simd.I8x64
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import kotlin.experimental.and
 
 // Bit-oriented Algorithms (BITALG)
 //

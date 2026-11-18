@@ -3,7 +3,6 @@
 
 package io.github.kotlinmania.rustlang.std.sys.io.error.windows
 
-import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -153,7 +152,7 @@ public fun decodeErrorKind(errno: Int): ErrorKind {
 /**
  * Gets a detailed string description for the given error number.
  */
-public fun formatError(errnum: Int, f: StringBuilder): Result<Unit, Error> {
+public fun formatError(errnum: Int, f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> {
     var errnum1 = errnum
     val localStorageL99C4 = AddressableArrayLocal.fromUShortArray(UShortArray(2048) { 0.toUShort() })
     val buf by localStorageL99C4
@@ -176,7 +175,7 @@ public fun formatError(errnum: Int, f: StringBuilder): Result<Unit, Error> {
         if (res == 0) {
             // Sometimes FormatMessageW can fail e.g., system doesn't like 0 as langId,
             val fmErr = errno()
-            return run { f.append("OS Error $errnum (FormatMessageW() returned error $fmErr)"); Result.Ok<Unit, Error>(Unit) }
+            return run { f.append("OS Error $errnum (FormatMessageW() returned error $fmErr)"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
         }
         run {
             val matchVal = String.fromUtf16(((buf).sliceArray(0 until res)))

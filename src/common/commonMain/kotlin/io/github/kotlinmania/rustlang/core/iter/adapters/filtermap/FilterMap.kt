@@ -120,9 +120,9 @@ public fun <Residual, T, B, Acc, R : Try<R, Acc, Residual>> filterMapTryFold(f: 
         }
     } }
 
-public fun <B, I> FilterMap<I, F>.next(): B? = this.iter.findMap(this.f)
+public fun <Item, B, I : Iterator<Item>> FilterMap<I, F>.next(): B? = this.iter.findMap(this.f)
 
-public fun <B, I> FilterMap<I, F>.nextChunk(n: Int): Result<List<B>, IntoIter<B>> {
+public fun <Item, B, I : Iterator<Item>> FilterMap<I, F>.nextChunk(n: Int = 0): Result<List<B>, IntoIter<B>> {
     open class Guard<T>(
         public var array: MutableList<MaybeUninit<T>>,
         public var initialized: Int,
@@ -172,17 +172,17 @@ public fun <B, I> FilterMap<I, F>.nextChunk(n: Int): Result<List<B>, IntoIter<B>
     }
 }
 
-public fun <I> FilterMap<I, F>.sizeHint(): Pair<Int, Int?> {
+public fun <Item, I : Iterator<Item>> FilterMap<I, F>.sizeHint(): Pair<Int, Int?> {
     val (_, upper) = this.iter.sizeHint()
     return Pair(0, upper)
     // can't know a lower bound, due to the predicate
 }
 
-public fun <Residual, B, I, Acc, R> FilterMap<I, F>.tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, filterMapTryFold(this.f, fold))
+public fun <Item, Residual, B, I : Iterator<Item>, Acc, R> FilterMap<I, F>.tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryFold(init, filterMapTryFold(this.f, fold))
 
-public fun <B, I, Acc> FilterMap<I, F>.fold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.fold(init, filterMapFold(this.f, fold))
+public fun <Item, B, I : Iterator<Item>, Acc> FilterMap<I, F>.fold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.fold(init, filterMapFold(this.f, fold))
 
-public fun <B, I> FilterMap<I, F>.nextBack(): B? {
+public fun <Item, B, I : Iterator<Item>> FilterMap<I, F>.nextBack(): B? {
     fun <T, B> find(f: (T) -> B?): (Unit, T) -> ControlFlow<B, Unit> =
         { x -> when (val matchVal = f(x)) {
             null -> ControlFlow.Continue(Unit)
@@ -194,9 +194,9 @@ public fun <B, I> FilterMap<I, F>.nextBack(): B? {
     return this.iter.tryRfold(Unit, find(this.f)).breakValue()
 }
 
-public fun <Residual, B, I, Acc, R> FilterMap<I, F>.tryRfold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, filterMapTryFold(this.f, fold))
+public fun <Item, Residual, B, I : Iterator<Item>, Acc, R> FilterMap<I, F>.tryRfold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> = this.iter.tryRfold(init, filterMapTryFold(this.f, fold))
 
-public fun <B, I, Acc> FilterMap<I, F>.rfold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.rfold(init, filterMapFold(this.f, fold))
+public fun <Item, B, I : Iterator<Item>, Acc> FilterMap<I, F>.rfold(init: Acc, fold: (Acc, B) -> Acc): Acc = this.iter.rfold(init, filterMapFold(this.f, fold))
 
 public fun <Source, I, F> FilterMap<I, F>.asInner(): Source where I : SourceIter<Source> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements

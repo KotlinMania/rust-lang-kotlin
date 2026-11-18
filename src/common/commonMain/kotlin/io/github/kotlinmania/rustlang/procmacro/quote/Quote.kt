@@ -112,7 +112,7 @@ public interface RepAsIteratorExt<out Iter> {
 
 public fun <T> List<T>.quoteIntoIter(): Pair<ArrayDeque<T>, HasIterator> = Pair(this.iter(), HasIterator())
 
-public fun <T> List<T>.quoteIntoIterFromTArrayn(n: Int): Pair<ArrayDeque<T>, HasIterator> = Pair(this.iter(), HasIterator())
+public fun <T> List<T>.quoteIntoIterFromTArrayn(n: Int = 0): Pair<ArrayDeque<T>, HasIterator> = Pair(this.iter(), HasIterator())
 
 public fun <T> MutableSet<T>.quoteIntoIter(): Pair<Iter<T>, HasIterator> = Pair(this.iter(), HasIterator())
 
@@ -932,7 +932,7 @@ public fun collectMetaVars(contentStream: TokenStream): List<Ident> {
                 tree is TokenTree.Punct<*, *, *> && tree.value.asChar() == '$' -> {
                     val (tt) = tree
                     when (val matchVal1 = iter.peek()) {
-                        is Some -> {
+                        is Some<*> -> {
                             val (id) = matchVal1 as TokenTree.Ident<*, *, *>
                             out.push(id.clone())
                             iter.removeFirstOrNull()

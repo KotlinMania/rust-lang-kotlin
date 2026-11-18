@@ -25,7 +25,7 @@ public open class Args(
 
     public open fun next(): OsString? = this.iter.removeFirstOrNull()
 
-    public open fun nextChunk(n: Int): Result<List<OsString>, IntoIter<OsString>> = this.iter.nextChunk()
+    public open fun nextChunk(n: Int = 0): Result<List<OsString>, io.github.kotlinmania.rustlang.std.sync.mpmc.IntoIter<OsString>> = this.iter.nextChunk()
 
     public open fun sizeHint(): Pair<Int, Int?> = run { val n = this.iter.size; Pair(n, n) }
 

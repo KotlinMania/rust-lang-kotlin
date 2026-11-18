@@ -122,7 +122,7 @@ public interface DoubleEndedIterator {
      *     // N is inferred as 2
      *     check(iter.nextChunkBack().unwrap() == listOf('l', 'o', 'r'))
      *     // N is inferred as 3
-     *     check(iter.nextChunkBack().unwrapErr().asSlice() == listOf())
+     *     check(iter.nextChunkBack(4).unwrapErr().asSlice() == listOf())
      *     // N is explicitly 4
      * }
      * ```

@@ -6,6 +6,8 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.num.borrowingSub
+import io.github.kotlinmania.rustlang.core.num.carryingAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.overflowingMul
 import io.github.kotlinmania.rustlang.core.num.overflowingSub

@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.asPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import kotlin.experimental.or
 
 public fun testMm512AbsEpi16() {
     val a = mm512Set1Epi16((-1).toShort())
@@ -2848,7 +2849,7 @@ public fun testMmMaskCmpneqEpi8Mask() {
 public fun testMm512CmpEpu16Mask() {
     val a = mm512Set1Epi16(0)
     val b = mm512Set1Epi16(1)
-    val m = mm512CmpEpu16Mask<MmCmpintLt>(a, b)
+    val m = mm512CmpEpu16Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFFFFFFFu)
 }
 
@@ -2856,14 +2857,14 @@ public fun testMm512MaskCmpEpu16Mask() {
     val a = mm512Set1Epi16(0)
     val b = mm512Set1Epi16(1)
     val mask = 0x55555555
-    val r = mm512MaskCmpEpu16Mask<MmCmpintLt>(mask, a, b)
+    val r = mm512MaskCmpEpu16Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x55555555u)
 }
 
 public fun testMm256CmpEpu16Mask() {
     val a = mm256Set1Epi16(0)
     val b = mm256Set1Epi16(1)
-    val m = mm256CmpEpu16Mask<MmCmpintLt>(a, b)
+    val m = mm256CmpEpu16Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFFFu.toUShort())
 }
 
@@ -2871,14 +2872,14 @@ public fun testMm256MaskCmpEpu16Mask() {
     val a = mm256Set1Epi16(0)
     val b = mm256Set1Epi16(1)
     val mask = 0x5555
-    val r = mm256MaskCmpEpu16Mask<MmCmpintLt>(mask, a, b)
+    val r = mm256MaskCmpEpu16Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x5555u.toUShort())
 }
 
 public fun testMmCmpEpu16Mask() {
     val a = mmSet1Epi16(0)
     val b = mmSet1Epi16(1)
-    val m = mmCmpEpu16Mask<MmCmpintLt>(a, b)
+    val m = mmCmpEpu16Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFu.toUByte())
 }
 
@@ -2886,14 +2887,14 @@ public fun testMmMaskCmpEpu16Mask() {
     val a = mmSet1Epi16(0)
     val b = mmSet1Epi16(1)
     val mask = 0x55
-    val r = mmMaskCmpEpu16Mask<MmCmpintLt>(mask, a, b)
+    val r = mmMaskCmpEpu16Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x55u.toUByte())
 }
 
 public fun testMm512CmpEpu8Mask() {
     val a = mm512Set1Epi8(0)
     val b = mm512Set1Epi8(1)
-    val m = mm512CmpEpu8Mask<MmCmpintLt>(a, b)
+    val m = mm512CmpEpu8Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFFFFFFFFFFFFFFFuL)
 }
 
@@ -2901,14 +2902,14 @@ public fun testMm512MaskCmpEpu8Mask() {
     val a = mm512Set1Epi8(0)
     val b = mm512Set1Epi8(1)
     val mask = 0x5555555555555555
-    val r = mm512MaskCmpEpu8Mask<MmCmpintLt>(mask, a, b)
+    val r = mm512MaskCmpEpu8Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x5555555555555555uL)
 }
 
 public fun testMm256CmpEpu8Mask() {
     val a = mm256Set1Epi8(0)
     val b = mm256Set1Epi8(1)
-    val m = mm256CmpEpu8Mask<MmCmpintLt>(a, b)
+    val m = mm256CmpEpu8Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFFFFFFFu)
 }
 
@@ -2916,14 +2917,14 @@ public fun testMm256MaskCmpEpu8Mask() {
     val a = mm256Set1Epi8(0)
     val b = mm256Set1Epi8(1)
     val mask = 0x55555555
-    val r = mm256MaskCmpEpu8Mask<MmCmpintLt>(mask, a, b)
+    val r = mm256MaskCmpEpu8Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x55555555u)
 }
 
 public fun testMmCmpEpu8Mask() {
     val a = mmSet1Epi8(0)
     val b = mmSet1Epi8(1)
-    val m = mmCmpEpu8Mask<MmCmpintLt>(a, b)
+    val m = mmCmpEpu8Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFFFu.toUShort())
 }
 
@@ -2931,14 +2932,14 @@ public fun testMmMaskCmpEpu8Mask() {
     val a = mmSet1Epi8(0)
     val b = mmSet1Epi8(1)
     val mask = 0x5555
-    val r = mmMaskCmpEpu8Mask<MmCmpintLt>(mask, a, b)
+    val r = mmMaskCmpEpu8Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x5555u.toUShort())
 }
 
 public fun testMm512CmpEpi16Mask() {
     val a = mm512Set1Epi16(0)
     val b = mm512Set1Epi16(1)
-    val m = mm512CmpEpi16Mask<MmCmpintLt>(a, b)
+    val m = mm512CmpEpi16Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFFFFFFFu)
 }
 
@@ -2946,14 +2947,14 @@ public fun testMm512MaskCmpEpi16Mask() {
     val a = mm512Set1Epi16(0)
     val b = mm512Set1Epi16(1)
     val mask = 0x55555555
-    val r = mm512MaskCmpEpi16Mask<MmCmpintLt>(mask, a, b)
+    val r = mm512MaskCmpEpi16Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x55555555u)
 }
 
 public fun testMm256CmpEpi16Mask() {
     val a = mm256Set1Epi16(0)
     val b = mm256Set1Epi16(1)
-    val m = mm256CmpEpi16Mask<MmCmpintLt>(a, b)
+    val m = mm256CmpEpi16Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFFFu.toUShort())
 }
 
@@ -2961,14 +2962,14 @@ public fun testMm256MaskCmpEpi16Mask() {
     val a = mm256Set1Epi16(0)
     val b = mm256Set1Epi16(1)
     val mask = 0x5555
-    val r = mm256MaskCmpEpi16Mask<MmCmpintLt>(mask, a, b)
+    val r = mm256MaskCmpEpi16Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x5555u.toUShort())
 }
 
 public fun testMmCmpEpi16Mask() {
     val a = mmSet1Epi16(0)
     val b = mmSet1Epi16(1)
-    val m = mmCmpEpi16Mask<MmCmpintLt>(a, b)
+    val m = mmCmpEpi16Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFu.toUByte())
 }
 
@@ -2976,14 +2977,14 @@ public fun testMmMaskCmpEpi16Mask() {
     val a = mmSet1Epi16(0)
     val b = mmSet1Epi16(1)
     val mask = 0x55
-    val r = mmMaskCmpEpi16Mask<MmCmpintLt>(mask, a, b)
+    val r = mmMaskCmpEpi16Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x55u.toUByte())
 }
 
 public fun testMm512CmpEpi8Mask() {
     val a = mm512Set1Epi8(0)
     val b = mm512Set1Epi8(1)
-    val m = mm512CmpEpi8Mask<MmCmpintLt>(a, b)
+    val m = mm512CmpEpi8Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFFFFFFFFFFFFFFFuL)
 }
 
@@ -2991,14 +2992,14 @@ public fun testMm512MaskCmpEpi8Mask() {
     val a = mm512Set1Epi8(0)
     val b = mm512Set1Epi8(1)
     val mask = 0x5555555555555555
-    val r = mm512MaskCmpEpi8Mask<MmCmpintLt>(mask, a, b)
+    val r = mm512MaskCmpEpi8Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x5555555555555555uL)
 }
 
 public fun testMm256CmpEpi8Mask() {
     val a = mm256Set1Epi8(0)
     val b = mm256Set1Epi8(1)
-    val m = mm256CmpEpi8Mask<MmCmpintLt>(a, b)
+    val m = mm256CmpEpi8Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFFFFFFFu)
 }
 
@@ -3006,14 +3007,14 @@ public fun testMm256MaskCmpEpi8Mask() {
     val a = mm256Set1Epi8(0)
     val b = mm256Set1Epi8(1)
     val mask = 0x55555555
-    val r = mm256MaskCmpEpi8Mask<MmCmpintLt>(mask, a, b)
+    val r = mm256MaskCmpEpi8Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x55555555u)
 }
 
 public fun testMmCmpEpi8Mask() {
     val a = mmSet1Epi8(0)
     val b = mmSet1Epi8(1)
-    val m = mmCmpEpi8Mask<MmCmpintLt>(a, b)
+    val m = mmCmpEpi8Mask(a, b, MM_CMPINT_LT)
     check(m == 0xFFFFu.toUShort())
 }
 
@@ -3021,7 +3022,7 @@ public fun testMmMaskCmpEpi8Mask() {
     val a = mmSet1Epi8(0)
     val b = mmSet1Epi8(1)
     val mask = 0x5555
-    val r = mmMaskCmpEpi8Mask<MmCmpintLt>(mask, a, b)
+    val r = mmMaskCmpEpi8Mask(mask, a, b, MM_CMPINT_LT)
     check(r == 0x5555u.toUShort())
 }
 

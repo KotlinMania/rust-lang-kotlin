@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.process.unix.common.cstringarray
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut

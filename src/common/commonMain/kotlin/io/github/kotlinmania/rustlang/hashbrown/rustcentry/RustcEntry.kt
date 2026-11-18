@@ -1,7 +1,6 @@
 // port-lint: source rustc_entry.rs
 package io.github.kotlinmania.rustlang.hashbrown.rustcentry
 
-import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.hash.BuildHasher
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -9,7 +8,7 @@ import io.github.kotlinmania.rustlang.hashbrown.Drain
 import io.github.kotlinmania.rustlang.hashbrown.IntoIter
 import io.github.kotlinmania.rustlang.hashbrown.Iter
 import io.github.kotlinmania.rustlang.hashbrown.IterMut
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.makeHash
 import io.github.kotlinmania.rustlang.hashbrown.makeHasher
 import io.github.kotlinmania.rustlang.hashbrown.raw.Bucket
@@ -252,15 +251,15 @@ public sealed class RustcEntry<K, V, A> {
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (this) {
             is Vacant<*, *, *> -> {
                 val (v) = this as Vacant<K, V, A>
-                run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
+                run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
             is Occupied<*, *, *> -> {
                 val (o) = this as Occupied<K, V, A>
-                run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
+                run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
         }
 
@@ -443,7 +442,7 @@ public open class RustcOccupiedEntry<K, V, A> internal constructor(
     public var table: RawTable<Pair<K, V>, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Gets a reference to the key in the entry.
@@ -636,7 +635,7 @@ public open class RustcVacantEntry<K, V, A> internal constructor(
     public var table: RawTable<Pair<K, V>, A> = tableCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "VacantEntry").field(this.key()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugTuple(f, "VacantEntry").field(this.key()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Gets a reference to the key that would be used when inserting a value

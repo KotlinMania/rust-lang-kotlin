@@ -12,7 +12,6 @@ import io.github.kotlinmania.rustlang.core.mem.asMutPtr
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -20,6 +19,7 @@ import io.github.kotlinmania.rustlang.std.ffi.osstr.OsStr
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.AF_UNIX
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.copyNonoverlapping
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.SockaddrUn
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvtNz
 
@@ -36,7 +36,7 @@ public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, Int>, Error> {
     // both point to valid memory.
     // NOTE: We zeroed the memory above, so the path is already null
     // terminated.
-    ptr.copyNonoverlapping(bytes.asPtr(), addr.sunPath.asMutPtr(), bytes.size)
+    copyNonoverlapping(bytes.asPtr(), addr.sunPath.asMutPtr(), bytes.size)
     val len = SUN_PATH_OFFSET + bytes.size + 1
     return Result.Ok<Pair<SockaddrUn, Int>, Error>(Pair(addr, len))
 }
@@ -131,7 +131,7 @@ public open class SocketAddr(
             return run {
                 val localStorageL60C12 = AddressableLocal(SockaddrUn(), UnresolvedTypeLayout<SockaddrUn>())
                 val addr by localStorageL60C12
-                val localStorageL61C12 = AddressableLocal(sizeOf<SockaddrUn>(typeLayoutT = UnresolvedTypeLayout<SockaddrUn>()).toInt(), PrimitiveLayouts.I32)
+                val localStorageL61C12 = AddressableLocal(sizeOf(SOCKADDR_UN, typeLayoutT = UnresolvedTypeLayout<SockaddrUn>()).toInt(), PrimitiveLayouts.I32)
                 val len by localStorageL61C12
                 when (val tryResult = cvtNz(f(localStorageL60C12.asMutPtr(), RustMutableReference(localStorageL61C12.asMutPtr(), localStorageL61C12.layout)))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<SocketAddr, Error>(tryResult.errValue()) }
                 SocketAddr.fromParts(addr, len)
@@ -141,7 +141,7 @@ public open class SocketAddr(
         public fun fromParts(addr: SockaddrUn, len: Int): Result<SocketAddr, Error> =
             if (addr.sunFamily != AF_UNIX) {
                 Result.Err<SocketAddr, Error>(constError(ErrorKind.InvalidInput, "invalid address family"))
-            } else if (len < SUN_PATH_OFFSET || len > sizeOf<SockaddrUn>(typeLayoutT = UnresolvedTypeLayout<SockaddrUn>()).toInt()) {
+            } else if (len < SUN_PATH_OFFSET || len > sizeOf(SOCKADDR_UN, typeLayoutT = UnresolvedTypeLayout<SockaddrUn>()).toInt()) {
                 Result.Err<SocketAddr, Error>(constError(ErrorKind.InvalidInput, "invalid address length"))
             } else {
                 Result.Ok<SocketAddr, Error>(SocketAddr(addr = addr, len = len.toUInt()))

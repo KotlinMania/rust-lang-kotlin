@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.std.alloc.System
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.enable
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.apple.enable
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: MutPtr)

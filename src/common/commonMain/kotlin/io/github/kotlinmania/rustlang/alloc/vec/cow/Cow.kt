@@ -15,6 +15,6 @@ public fun <T> fromCowTSlice(s: List<T>): List<T> = s
  *
  * This conversion does not allocate or clone the data.
  */
-public fun <T> fromCowTSlice(s: List<T>, n: Int): List<T> = ((s as Any?) as List<Any?>)
+public fun <T> fromCowTSlice(s: List<T>, n: Int = 0): List<T> = ((s as Any?) as List<Any?>)
 
 public fun <T, I : Iterable<T>> fromIteratorFromIterCowTSlice(it: I): List<T> = FromIterator.fromIter(it)

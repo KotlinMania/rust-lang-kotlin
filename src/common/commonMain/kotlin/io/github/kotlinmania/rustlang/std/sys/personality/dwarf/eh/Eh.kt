@@ -11,6 +11,8 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.withExposedProvenance
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sys.personality.dwarf.DwarfReader
+import kotlin.experimental.and
+import kotlin.experimental.inv
 
 // Parsing of GCC-style Language-Specific Data Area (LSDA)
 // For details see:

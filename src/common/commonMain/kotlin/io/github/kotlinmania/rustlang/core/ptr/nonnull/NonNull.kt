@@ -192,7 +192,7 @@ public open class NonNull(
     /**
      * Casts from a pointer-to-`T` to a pointer-to-`[T; N]`.
      */
-    public open fun castArray(n: Int): NonNull = this.cast()
+    public open fun castArray(n: Int = 0): NonNull = this.cast()
 
     /**
      * Decompose a (possibly wide) pointer into its data pointer and metadata components.

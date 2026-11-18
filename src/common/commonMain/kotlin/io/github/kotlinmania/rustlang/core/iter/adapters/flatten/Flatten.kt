@@ -7,8 +7,12 @@ import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.Fuse
 import io.github.kotlinmania.rustlang.core.iter.adapters.map.Map
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedFused
 import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
@@ -66,31 +70,31 @@ public open class FlatMap<I, U, F, Item, IntoIter> internal constructor(
             innerCtorArg = inner,
         )
 
-        public fun <I, U> new(iter: I, f: (Item) -> U): FlatMap<I, U, (Item) -> U, Item, IntoIter> = FlatMap(inner = FlattenCompat.new(iter.map(f)))
+        public fun <Item, I, U> new(iter: I, f: (Item) -> U): FlatMap<I, U, (Item) -> U, Item, IntoIter> = FlatMap(inner = FlattenCompat.new(iter.map(f)))
     }
 }
 
-public fun <I, U> FlatMap<I, U, F, Item, IntoIter>.next(): Item? = this.inner.next()
+public fun <Item, I : Iterator<Item>, U> FlatMap<I, U, F, Item, IntoIter>.next(): Item? = this.inner.next()
 
-public fun <I, U> FlatMap<I, U, F, Item, IntoIter>.sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
+public fun <Item, I : Iterator<Item>, U> FlatMap<I, U, F, Item, IntoIter>.sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
 
-public fun <Residual, I, U, Acc, R> FlatMap<I, U, F, Item, IntoIter>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
+public fun <Item, Residual, I : Iterator<Item>, U, Acc, R> FlatMap<I, U, F, Item, IntoIter>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
-public fun <I, U, Acc> FlatMap<I, U, F, Item, IntoIter>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.inner.fold(init, fold)
+public fun <Item, I : Iterator<Item>, U, Acc> FlatMap<I, U, F, Item, IntoIter>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.inner.fold(init, fold)
 
-public fun <I, U> FlatMap<I, U, F, Item, IntoIter>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBy(n)
+public fun <Item, I : Iterator<Item>, U> FlatMap<I, U, F, Item, IntoIter>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBy(n)
 
-public fun <I, U> FlatMap<I, U, F, Item, IntoIter>.count(): Int = this.inner.count()
+public fun <Item, I : Iterator<Item>, U> FlatMap<I, U, F, Item, IntoIter>.count(): Int = this.inner.count()
 
-public fun <I, U> FlatMap<I, U, F, Item, IntoIter>.last(): Item? = this.inner.last()
+public fun <Item, I : Iterator<Item>, U> FlatMap<I, U, F, Item, IntoIter>.last(): Item? = this.inner.last()
 
-public fun <I, U> FlatMap<I, U, F, Item, IntoIter>.nextBack(): Item? = this.inner.nextBack()
+public fun <Item, I : Iterator<Item>, U> FlatMap<I, U, F, Item, IntoIter>.nextBack(): Item? = this.inner.nextBack()
 
-public fun <Residual, I, U, Acc, R> FlatMap<I, U, F, Item, IntoIter>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryRfold(init, fold)
+public fun <Item, Residual, I : Iterator<Item>, U, Acc, R> FlatMap<I, U, F, Item, IntoIter>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryRfold(init, fold)
 
-public fun <I, U, Acc> FlatMap<I, U, F, Item, IntoIter>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.inner.rfold(init, fold)
+public fun <Item, I : Iterator<Item>, U, Acc> FlatMap<I, U, F, Item, IntoIter>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.inner.rfold(init, fold)
 
-public fun <I, U> FlatMap<I, U, F, Item, IntoIter>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBackBy(n)
+public fun <Item, I : Iterator<Item>, U> FlatMap<I, U, F, Item, IntoIter>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBackBy(n)
 
 public fun <Source, I, U, F> FlatMap<I, U, F, Item, IntoIter>.asInner(): Source where I : SourceIter<Source>, I : TrustedFused {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements
@@ -119,7 +123,7 @@ public open class Flatten<I, Item> internal constructor(
             innerCtorArg = inner,
         )
 
-        public fun <I> new(iter: I): Flatten<I, Item> = Flatten(inner = FlattenCompat.new(iter))
+        public fun <Item, I : Iterator<Item>> new(iter: I): Flatten<I, Item> = Flatten(inner = FlattenCompat.new(iter))
 
         /**
          * Creates a `Flatten` iterator from the default value of `I`.
@@ -133,37 +137,37 @@ public open class Flatten<I, Item> internal constructor(
          * }
          * ```
          */
-        public fun <I> default(defaultIFn: () -> I): Flatten<I, Item> = Flatten.new(defaultIFn())
+        public fun <Item, I : Iterator<Item>> default(defaultIFn: () -> I): Flatten<I, Item> where I : Iterator<Item> = Flatten.new(defaultIFn())
     }
 }
 
-public fun <I, U> Flatten<I, Item>.fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Flatten").field("inner", this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
+public fun <Item, I, U> Flatten<I, Item>.fmt(f: StringBuilder): Result<Unit, Unit> where I : Iterator<Item>, U : Iterator<Item> = run { DebugStruct(f, "Flatten").field("inner", this.inner).finish(); Result.Ok<Unit, Unit>(Unit) }
 
-public fun <I, U> Flatten<I, Item>.clone(): Flatten<I, Item> = Flatten(inner = this.inner.clone())
+public fun <Item, I, U> Flatten<I, Item>.clone(): Flatten<I, Item> where I : Iterator<Item>, U : Iterator<Item> = Flatten(inner = this.inner.clone())
 
-public fun <I, U> Flatten<I, Item>.next(): Item? = this.inner.next()
+public fun <Item, I, U> Flatten<I, Item>.next(): Item? where I : Iterator<Item>, U : Iterator<Item> = this.inner.next()
 
-public fun <I, U> Flatten<I, Item>.sizeHint(): Pair<Int, Int?> = this.inner.sizeHint()
+public fun <Item, I, U> Flatten<I, Item>.sizeHint(): Pair<Int, Int?> where I : Iterator<Item>, U : Iterator<Item> = this.inner.sizeHint()
 
-public fun <Residual, I, U, Acc, R> Flatten<I, Item>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
+public fun <Item, Residual, I, U, Acc, R> Flatten<I, Item>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where I : Iterator<Item>, U : Iterator<Item>, R : Try<R, Acc, Residual> = this.inner.tryFold(init, fold)
 
-public fun <I, U, Acc> Flatten<I, Item>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.inner.fold(init, fold)
+public fun <Item, I, U, Acc> Flatten<I, Item>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc where I : Iterator<Item>, U : Iterator<Item> = this.inner.fold(init, fold)
 
-public fun <I, U> Flatten<I, Item>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBy(n)
+public fun <Item, I, U> Flatten<I, Item>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> where I : Iterator<Item>, U : Iterator<Item> = this.inner.advanceBy(n)
 
-public fun <I, U> Flatten<I, Item>.count(): Int = this.inner.count()
+public fun <Item, I, U> Flatten<I, Item>.count(): Int where I : Iterator<Item>, U : Iterator<Item> = this.inner.count()
 
-public fun <I, U> Flatten<I, Item>.last(): Item? = this.inner.last()
+public fun <Item, I, U> Flatten<I, Item>.last(): Item? where I : Iterator<Item>, U : Iterator<Item> = this.inner.last()
 
-public fun <I, U> Flatten<I, Item>.nextBack(): Item? = this.inner.nextBack()
+public fun <Item, I, U> Flatten<I, Item>.nextBack(): Item? where I : Iterator<Item>, U : Iterator<Item> = this.inner.nextBack()
 
-public fun <Residual, I, U, Acc, R> Flatten<I, Item>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> = this.inner.tryRfold(init, fold)
+public fun <Item, Residual, I, U, Acc, R> Flatten<I, Item>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where I : Iterator<Item>, U : Iterator<Item>, R : Try<R, Acc, Residual> = this.inner.tryRfold(init, fold)
 
-public fun <I, U, Acc> Flatten<I, Item>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc = this.inner.rfold(init, fold)
+public fun <Item, I, U, Acc> Flatten<I, Item>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc where I : Iterator<Item>, U : Iterator<Item> = this.inner.rfold(init, fold)
 
-public fun <I, U> Flatten<I, Item>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> = this.inner.advanceBackBy(n)
+public fun <Item, I, U> Flatten<I, Item>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> where I : Iterator<Item>, U : Iterator<Item> = this.inner.advanceBackBy(n)
 
-public fun <Source, I> Flatten<I, Item>.asInner(): Source where I : SourceIter<Source>, I : TrustedFused {
+public fun <Source, Item, I> Flatten<I, Item>.asInner(): Source where I : SourceIter<Source>, I : TrustedFused, I : Iterator<Item> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements
     return this.inner.iter.asInner()
 }
@@ -349,17 +353,17 @@ public open class FlattenCompat<I, U>(
     }
 
     public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
-        fun <Residual, U, Acc, R : Try<R, Acc, Residual>> flatten(fold1: (Acc, Item) -> R): (Acc, U) -> R = { acc, iter -> iter.tryFold(acc, fold1) }
+        fun <Item, Residual, U : Iterator<Item>, Acc, R : Try<R, Acc, Residual>> flatten(fold1: (Acc, Item) -> R): (Acc, U) -> R = { acc, iter -> iter.tryFold(acc, fold1) }
         return this.iterTryFold(init, flatten(fold))
     }
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
-        fun <U, Acc> flatten(fold1: (Acc, Item) -> Acc): (Acc, U) -> Acc = { acc, iter -> iter.fold(acc, fold1) }
+        fun <Item, U : Iterator<Item>, Acc> flatten(fold1: (Acc, Item) -> Acc): (Acc, U) -> Acc = { acc, iter -> iter.fold(acc, fold1) }
         return this.iterFold(init, flatten(fold))
     }
 
     public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
-        fun <U> advance(n1: Int, iter: U): ControlFlow<Unit, Int> =
+        fun <Item, U : Iterator<Item>> advance(n1: Int, iter: U): ControlFlow<Unit, Int> =
             run {
                 val matchVal = iter.advanceBy(n1)
                 when (matchVal) { is Result.Ok<*, *> -> {
@@ -379,12 +383,12 @@ public open class FlattenCompat<I, U>(
     }
 
     public open fun count(): Int {
-        fun <U> count(acc: Int, iter: U): Int = acc + iter.count()
+        fun <Item, U : Iterator<Item>> count(acc: Int, iter: U): Int = acc + iter.count()
         return this.iterFold(0, ::count)
     }
 
     public open fun last(): Item? {
-        fun <U> last(last: Item?, iter: U): Item? = (iter.last() ?: last)
+        fun <Item, U : Iterator<Item>> last(last: Item?, iter: U): Item? = (iter.last() ?: last)
         return this.iterFold(null, ::last)
     }
 
@@ -406,17 +410,17 @@ public open class FlattenCompat<I, U>(
     }
 
     public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> {
-        fun <Residual, U, Acc, R : Try<R, Acc, Residual>> flatten(fold1: (Acc, Item) -> R): (Acc, U) -> R = { acc, iter -> iter.tryRfold(acc, fold1) }
+        fun <Item, Residual, U : Iterator<Item>, Acc, R : Try<R, Acc, Residual>> flatten(fold1: (Acc, Item) -> R): (Acc, U) -> R = { acc, iter -> iter.tryRfold(acc, fold1) }
         return this.iterTryRfold(init, flatten(fold))
     }
 
     public open fun <Acc> rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc {
-        fun <U, Acc> flatten(fold1: (Acc, Item) -> Acc): (Acc, U) -> Acc = { acc, iter -> iter.rfold(acc, fold1) }
+        fun <Item, U : Iterator<Item>, Acc> flatten(fold1: (Acc, Item) -> Acc): (Acc, U) -> Acc = { acc, iter -> iter.rfold(acc, fold1) }
         return this.iterRfold(init, flatten(fold))
     }
 
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> {
-        fun <U> advance(n1: Int, iter: U): ControlFlow<Unit, Int> =
+        fun <Item, U : Iterator<Item>> advance(n1: Int, iter: U): ControlFlow<Unit, Int> =
             run {
                 val matchVal = iter.advanceBackBy(n1)
                 when (matchVal) { is Result.Ok<*, *> -> {
@@ -439,7 +443,7 @@ public open class FlattenCompat<I, U>(
         /**
          * Adapts an iterator by flattening it, for use in `flatten()` and `flatMap()`.
          */
-        public fun <I, U> new(iter: I): FlattenCompat<I, U> = FlattenCompat(iter = iter.fuse(), frontiter = null, backiter = null)
+        public fun <Item, I, U> new(iter: I): FlattenCompat<I, U> where I : Iterator<Item> = FlattenCompat(iter = iter.fuse(), frontiter = null, backiter = null)
     }
 }
 
@@ -449,7 +453,7 @@ public interface ConstSizeIntoIterator {
 
 public fun <T> constSizeIntoIteratorSizeT(): Int? = null
 
-public fun <T> constSizeIntoIteratorSizeTArrayn(n: Int): Int? = n
+public fun <T> constSizeIntoIteratorSizeTArrayn(n: Int = 0): Int? = n
 
 public fun <T, U> andThenOrClear(opt: T?, f: (T) -> U?): U? {
     var opt1 = opt
@@ -513,7 +517,7 @@ public fun <I> advanceByOne(n: NonZero<Int, NonZeroUsizeInner>, inner: I): NonZe
 //
 // An exception to that is `advanceBy(0)` and `advanceBackBy(0)`, where the generic impls may set
 // `frontiter` or `backiter` without consuming the item, so we **must** override those.
-public fun <I, U> FlattenCompat<I, U>.next(): Item? where U : OneShot {
+public fun <Item, I, U> FlattenCompat<I, U>.next(): Item? where I : Iterator<Item>, U : Iterator<Item>, U : OneShot {
     while (true) {
         val matchVal = this.iter.next()
         if (matchVal == null) break
@@ -526,7 +530,7 @@ public fun <I, U> FlattenCompat<I, U>.next(): Item? where U : OneShot {
     return null
 }
 
-public fun <I, U> FlattenCompat<I, U>.sizeHint(): Pair<Int, Int?> where U : OneShot {
+public fun <Item, I, U> FlattenCompat<I, U>.sizeHint(): Pair<Int, Int?> where I : Iterator<Item>, U : Iterator<Item>, U : OneShot {
     val (lower, upper) = this.iter.sizeHint()
     return when (val matchVal = Item.size()) {
         0 -> Pair(0, 0)
@@ -535,11 +539,11 @@ public fun <I, U> FlattenCompat<I, U>.sizeHint(): Pair<Int, Int?> where U : OneS
     }
 }
 
-public fun <Residual, I, U, Acc, R> FlattenCompat<I, U>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where U : OneShot, R : Try<R, Acc, Residual> = this.iter.tryFold(init, tryFlattenOne(fold))
+public fun <Item, Residual, I, U, Acc, R> FlattenCompat<I, U>.tryFold(init: Acc, fold: (Acc, Item) -> R): R where I : Iterator<Item>, U : Iterator<Item>, U : OneShot, R : Try<R, Acc, Residual> = this.iter.tryFold(init, tryFlattenOne(fold))
 
-public fun <I, U, Acc> FlattenCompat<I, U>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc where U : OneShot = this.iter.fold(init, flattenOne(fold))
+public fun <Item, I, U, Acc> FlattenCompat<I, U>.fold(init: Acc, fold: (Acc, Item) -> Acc): Acc where I : Iterator<Item>, U : Iterator<Item>, U : OneShot = this.iter.fold(init, flattenOne(fold))
 
-public fun <I, U> FlattenCompat<I, U>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> where U : OneShot =
+public fun <Item, I, U> FlattenCompat<I, U>.advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> where I : Iterator<Item>, U : Iterator<Item>, U : OneShot =
     when (val matchVal = NonZero.new<NonZeroUsizeInner, Int>(n)) {
         null -> {
             // Just advance the outer iterator
@@ -551,13 +555,13 @@ public fun <I, U> FlattenCompat<I, U>.advanceBy(n: Int): Result<Unit, NonZero<In
         }
     }
 
-public fun <I, U> FlattenCompat<I, U>.count(): Int where U : OneShot = this.iter.mapNotNull(::intoItem).count()
+public fun <Item, I, U> FlattenCompat<I, U>.count(): Int where I : Iterator<Item>, U : Iterator<Item>, U : OneShot = this.iter.mapNotNull(::intoItem).count()
 
-public fun <I, U> FlattenCompat<I, U>.last(): Item? where U : OneShot = this.iter.mapNotNull(::intoItem).last()
+public fun <Item, I, U> FlattenCompat<I, U>.last(): Item? where I : Iterator<Item>, U : Iterator<Item>, U : OneShot = this.iter.mapNotNull(::intoItem).last()
 
 // Note: We don't actually care about `U: DoubleEndedIterator`, since forward and backward are the
 // same for a one-shot iterator, but we have to keep that to match the default specialization.
-public fun <I, U> FlattenCompat<I, U>.nextBack(): Item? where U : OneShot {
+public fun <Item, I, U> FlattenCompat<I, U>.nextBack(): Item? where I : Iterator<Item>, U : Iterator<Item>, U : OneShot {
     while (true) {
         val matchVal = this.iter.nextBack()
         if (matchVal == null) break
@@ -570,11 +574,11 @@ public fun <I, U> FlattenCompat<I, U>.nextBack(): Item? where U : OneShot {
     return null
 }
 
-public fun <Residual, I, U, Acc, R> FlattenCompat<I, U>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where U : OneShot, R : Try<R, Acc, Residual> = this.iter.tryRfold(init, tryFlattenOne(fold))
+public fun <Item, Residual, I, U, Acc, R> FlattenCompat<I, U>.tryRfold(init: Acc, fold: (Acc, Item) -> R): R where I : Iterator<Item>, U : Iterator<Item>, U : OneShot, R : Try<R, Acc, Residual> = this.iter.tryRfold(init, tryFlattenOne(fold))
 
-public fun <I, U, Acc> FlattenCompat<I, U>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc where U : OneShot = this.iter.rfold(init, flattenOne(fold))
+public fun <Item, I, U, Acc> FlattenCompat<I, U>.rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc where I : Iterator<Item>, U : Iterator<Item>, U : OneShot = this.iter.rfold(init, flattenOne(fold))
 
-public fun <I, U> FlattenCompat<I, U>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> where U : OneShot =
+public fun <Item, I, U> FlattenCompat<I, U>.advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> where I : Iterator<Item>, U : Iterator<Item>, U : OneShot =
     when (val matchVal = NonZero.new<NonZeroUsizeInner, Int>(n)) {
         null -> {
             // Just advance the outer iterator

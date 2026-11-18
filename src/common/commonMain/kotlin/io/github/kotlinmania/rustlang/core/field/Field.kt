@@ -20,6 +20,10 @@ public open class FieldRepresentingType<T>(
     // have an immediately obvious meaning and we want to prevent people from relying on it.
     public var phantom: Unit,
 ) {
+    public val variant: UInt = 0u
+
+    public val field: UInt = 0u
+
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         sealed class Member {
             public data class Name(public var value: String) : Member()

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.libm.math.generic.fma
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.num.overflowingSub
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.libm.math.generic.scalbn.scalbn
 import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
@@ -13,6 +14,10 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastFrom
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 /**
  * Fused multiply-add that works when there is not a larger float size available. Computes

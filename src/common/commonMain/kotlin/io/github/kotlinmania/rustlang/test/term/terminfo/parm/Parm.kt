@@ -7,11 +7,16 @@ import io.github.kotlinmania.rustlang.core.char.methods.toDigit
 import io.github.kotlinmania.rustlang.core.iter.sources.repeatn.repeatN
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.Param.*
 import io.github.kotlinmania.rustlang.test.term.terminfo.parm.States.*
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 // Parameterized string expansion
 

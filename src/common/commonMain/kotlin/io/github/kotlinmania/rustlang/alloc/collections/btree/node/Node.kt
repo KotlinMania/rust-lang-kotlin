@@ -848,6 +848,8 @@ public open class Handle<Node, Type>(
      * Returns the position of this handle in the node.
      */
     public open fun idx(): Int = this.idx
+
+    public companion object
 }
 
 /**

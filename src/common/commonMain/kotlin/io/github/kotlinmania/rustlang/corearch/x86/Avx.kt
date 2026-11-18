@@ -24,6 +24,8 @@ import io.github.kotlinmania.rustlang.corearch.simd.I8x32
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U32x8
 import io.github.kotlinmania.rustlang.corearch.simd.U64x4
+import kotlin.experimental.and
+import kotlin.experimental.inv
 
 // Advanced Vector Extensions (AVX)
 //
@@ -148,7 +150,7 @@ public fun mm256AndnotPd(a: M256d, b: M256d): M256d =
     run {
         val a1: U64x4 = transmuteWithLayouts<M256d, U64x4>(a, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
         val b1: U64x4 = transmuteWithLayouts<M256d, U64x4>(b, UnresolvedTypeLayout<M256d>(), UnresolvedTypeLayout<U64x4>())
-        transmuteWithLayouts<Any?, M256d>(run { val simdArg0 = run { val simdArg0 = Simd<ULong>(List(4) { (0uL).inv() }); val simdArg1 = a1; simdArg0 }; val simdArg1 = b1; simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256d>())
+        transmuteWithLayouts<U64x4, M256d>(run { val simdArg0 = run { val simdArg0 = Simd<ULong>(List(4) { (0uL).inv() }); val simdArg1 = a1; simdArg0 }; val simdArg1 = b1; simdArg0 }, UnresolvedTypeLayout<U64x4>(), UnresolvedTypeLayout<M256d>())
     }
 
 /**
@@ -162,7 +164,7 @@ public fun mm256AndnotPs(a: M256, b: M256): M256 =
     run {
         val a1: U32x8 = transmuteWithLayouts<M256, U32x8>(a, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
         val b1: U32x8 = transmuteWithLayouts<M256, U32x8>(b, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<U32x8>())
-        transmuteWithLayouts<Any?, M256>(run { val simdArg0 = run { val simdArg0 = Simd<UInt>(List(8) { (0u).inv() }); val simdArg1 = a1; simdArg0 }; val simdArg1 = b1; simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256>())
+        transmuteWithLayouts<U32x8, M256>(run { val simdArg0 = run { val simdArg0 = Simd<UInt>(List(8) { (0u).inv() }); val simdArg1 = a1; simdArg0 }; val simdArg1 = b1; simdArg0 }, UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256>())
     }
 
 /**

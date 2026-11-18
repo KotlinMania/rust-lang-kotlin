@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.sync.nonpoison.condvar
 
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.sync.WaitTimeoutResult

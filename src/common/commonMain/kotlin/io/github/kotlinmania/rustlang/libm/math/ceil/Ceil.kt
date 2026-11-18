@@ -26,7 +26,7 @@ public fun ceilf(x: kotlin.Float): kotlin.Float = ceilStatus(x).value
  */
 public fun ceil(x: Double): Double {
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.ceil(x)
+        return io.github.kotlinmania.rustlang.libm.math.arch.i586.rounding.ceil(x)
     }
     return ceilStatus(x).value
 }

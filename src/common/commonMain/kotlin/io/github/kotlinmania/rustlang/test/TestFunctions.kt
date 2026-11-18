@@ -1,6 +1,5 @@
 package io.github.kotlinmania.rustlang.test
 
-import io.github.kotlinmania.rustlang.alloc.alloc.Global
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
@@ -282,7 +281,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
         public var desc: TestDesc,
         public var timeout: Instant,
     )
-    fun getTimedOutTests(runningTests: TestMap, timeoutQueue: VecDeque<TimeoutEntry, Global>): List<TestDesc> {
+    fun getTimedOutTests(runningTests: TestMap, timeoutQueue: VecDeque<TimeoutEntry, io.github.kotlinmania.rustlang.alloc.alloc.Global>): List<TestDesc> {
         val now = Instant.now()
         val timedOut = mutableListOf<TestDesc>()
         while (true) {
@@ -299,7 +298,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
         }
         return timedOut
     }
-    fun calcTimeout(timeoutQueue: VecDeque<TimeoutEntry, Global>): Duration? =
+    fun calcTimeout(timeoutQueue: VecDeque<TimeoutEntry, io.github.kotlinmania.rustlang.alloc.alloc.Global>): Duration? =
         timeoutQueue.front().map({ param0 ->
             val now = Instant.now()
             if (nextTimeout >= now) {
@@ -352,7 +351,7 @@ public fun runTests(opts: TestOpts, filteredTests: List<TestDescAndFn>, allTests
             RunStrategy.InProcess
         }
     val runningTests: TestMap  = HashMap.default()
-    val timeoutQueue: VecDeque<TimeoutEntry, Global>  = VecDeque.new()
+    val timeoutQueue: VecDeque<TimeoutEntry, io.github.kotlinmania.rustlang.alloc.alloc.Global>  = VecDeque.new()
     if (concurrency == 1) {
         while (!remaining1.isEmpty()) {
             val (id, test1) = remaining1.removeFirstOrNull()!!
@@ -690,8 +689,8 @@ public fun spawnTestSubprocess(id: TestId, desc: TestDesc, nocapture: Boolean, r
                 command.env(SECONDARY_TEST_BENCH_BENCHMARKS_VAR, "1")
             }
             if (nocapture) {
-                command.stdout(Stdio.inherit())
-                command.stderr(Stdio.inherit())
+                command.stdout(Stdio.Inherit())
+                command.stderr(Stdio.Inherit())
             }
             val start = reportTime.then(Instant::now)
             val output =

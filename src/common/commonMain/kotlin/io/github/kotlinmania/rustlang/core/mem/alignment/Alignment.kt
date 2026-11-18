@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.num.uncheckedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result

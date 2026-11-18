@@ -1,6 +1,9 @@
 // port-lint: source iter/adapters/intersperse.rs
 package io.github.kotlinmania.rustlang.core.iter.adapters.intersperse
 
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.andThen
 
@@ -83,7 +86,7 @@ public open class Intersperse<I, Item>(
     }
 
     public companion object {
-        public fun <I> new(iter: I, separator: Item): Intersperse<I, Item> = Intersperse(started = false, separator = separator, nextItem = null, iter = iter)
+        public fun <Item, I : Iterator<Item>> new(iter: I, separator: Item): Intersperse<I, Item> = Intersperse(started = false, separator = separator, nextItem = null, iter = iter)
     }
 }
 
@@ -104,11 +107,11 @@ public open class IntersperseWith<I, G, Item>(
     public open fun clone(): IntersperseWith<I, G, Item> = IntersperseWith(started = this.started, separator = this.separator.clone(), iter = this.iter.clone(), nextItem = this.nextItem)
 
     public companion object {
-        public fun <I> new(iter: I, separator: () -> Item): IntersperseWith<I, G, Item> = IntersperseWith(started = false, separator = separator, nextItem = null, iter = iter)
+        public fun <Item, I> new(iter: I, separator: () -> Item): IntersperseWith<I, G, Item> where I : Iterator<Item> = IntersperseWith(started = false, separator = separator, nextItem = null, iter = iter)
     }
 }
 
-public fun <I> IntersperseWith<I, G, Item>.next(): Item? =
+public fun <Item, I> IntersperseWith<I, G, Item>.next(): Item? where I : Iterator<Item> =
     if (this.started) {
         when (val matchVal = this.nextItem.also { this.nextItem = null }) {
             null -> {
@@ -131,18 +134,18 @@ public fun <I> IntersperseWith<I, G, Item>.next(): Item? =
         item
     }
 
-public fun <I> IntersperseWith<I, G, Item>.sizeHint(): Pair<Int, Int?> = intersperseSizeHint(this.iter, this.started, this.nextItem != null)
+public fun <Item, I> IntersperseWith<I, G, Item>.sizeHint(): Pair<Int, Int?> where I : Iterator<Item> = intersperseSizeHint(this.iter, this.started, this.nextItem != null)
 
-public fun <I, B> IntersperseWith<I, G, Item>.fold(init: B, f: (B, Item) -> B): B = intersperseFold(this.iter, init, f, this.separator, this.started, this.nextItem)
+public fun <Item, I, B> IntersperseWith<I, G, Item>.fold(init: B, f: (B, Item) -> B): B where I : Iterator<Item> = intersperseFold(this.iter, init, f, this.separator, this.started, this.nextItem)
 
-public fun <I> intersperseSizeHint(iter: I, started: Boolean, nextIsSome: Boolean): Pair<Int, Int?> {
+public fun <Item, I> intersperseSizeHint(iter: I, started: Boolean, nextIsSome: Boolean): Pair<Int, Int?> where I : Iterator<Item> {
     val (lo, hi) = iter.sizeHint()
     return Pair(lo.saturatingSub((if (!started) 1 else 0)).saturatingAdd(nextIsSome.toInt()).saturatingAdd(lo), hi.andThen({ hi1 ->
         hi1.saturatingSub((if (!started) 1 else 0)).saturatingAdd(nextIsSome.toInt()).checkedAdd(hi1)
     }))
 }
 
-public fun <I, B> intersperseFold(iter: I, init: B, f: (B, I.Item) -> B, separator: () -> I.Item, started: Boolean, nextItem: Item?): B {
+public fun <Item, I, B> intersperseFold(iter: I, init: B, f: (B, I.Item) -> B, separator: () -> I.Item, started: Boolean, nextItem: Item?): B where I : Iterator<Item> {
     var accum = init
     val first =
         if (started) {

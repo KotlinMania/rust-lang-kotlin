@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.num.imp.intlog10
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.num.castUnsigned
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU128Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU16Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
@@ -11,6 +12,8 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU64Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import kotlin.experimental.and
+import kotlin.experimental.xor
 
 // These functions compute the integer logarithm of their type, assuming
 // that someone has already checked that the value is strictly positive.

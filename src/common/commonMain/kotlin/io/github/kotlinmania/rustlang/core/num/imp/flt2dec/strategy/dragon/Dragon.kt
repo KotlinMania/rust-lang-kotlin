@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.MAX_SIG_DIGITS
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.decoder.Decoded
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.estimator.estimateScalingFactor
 import io.github.kotlinmania.rustlang.core.num.imp.flt2dec.roundUp
+import kotlin.experimental.and
 
 // Almost direct (but slightly optimized) Rust translation of Figure 3 of "Printing
 // Floating-Point Numbers Quickly and Accurately"[^1].

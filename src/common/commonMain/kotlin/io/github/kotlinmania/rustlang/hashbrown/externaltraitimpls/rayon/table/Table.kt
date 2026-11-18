@@ -4,7 +4,7 @@ package io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.table
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.hashbrown.HashTable
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawIntoParIter
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawParDrain
 import io.github.kotlinmania.rustlang.hashbrown.externaltraitimpls.rayon.raw.RawParIter

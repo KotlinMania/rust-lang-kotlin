@@ -84,7 +84,7 @@ import io.github.kotlinmania.rustlang.core.task.wake.Context
 //     public data class Cons<T>(public var field0: T, public var field1: List<T>) : List<T>()
 //     public class Nil<T>() : List<T>()
 // }
-// val list: List<Int> = List.Cons(1, List.Cons(2, List.Nil))
+// val list: List<Int> = List.Cons(1, List.Cons(2, List.Nil()))
 // println("$list")
 // ```
 //
@@ -1456,7 +1456,7 @@ public fun boxNewUninit(layout: Layout): MutPtr {
  *
  * This is unchecked, but has to be marked as safe or else we couldn't use it in `vec`.
  */
-public fun <T> boxAssumeInitIntoVecUnsafe(b: Box<MaybeUninit<List<T>>, Global>, n: Int): Vec<T, Global> {
+public fun <T> boxAssumeInitIntoVecUnsafe(b: Box<MaybeUninit<List<T>>, Global>, n: Int = 0): Vec<T, Global> {
     // SAFETY: Technically not, but this can't be
     // called stably except in ways we control.
     return (((b.assumeInit() as Any?) as Box<List<T>, Global>)).intoVec()
@@ -1941,7 +1941,7 @@ public fun <T, A : Allocator> Box.Companion.tryNewZeroedSliceIn(len: Int, alloc:
  * }
  * ```
  */
-public fun <T, A : Allocator> Box<List<T>, A>.intoArray(n: Int): Result<Box<List<T>, A>, Box<List<T>, A>> =
+public fun <T, A : Allocator> Box<List<T>, A>.intoArray(n: Int = 0): Result<Box<List<T>, A>, Box<List<T>, A>> =
     if (this.len() == n) {
         val (ptr, alloc) = Box.intoRawWithAllocator(this)
         val ptr1 = mutPtrFromRustCast(ptr)

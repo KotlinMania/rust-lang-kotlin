@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.array.fromFn
 import io.github.kotlinmania.rustlang.core.array.iter.IntoIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
@@ -31,6 +32,8 @@ public open class ArrayChunks<I, Item> internal constructor(
     public var remainder: IntoIter<Item>? = remainderCtorArg
         internal set
 
+    public val n: Int = 0
+
     override fun iterator(): Iterator<List<Item>> = object : AbstractIterator<List<Item>>() {
         override fun computeNext() {
             when (val v = this@ArrayChunks.next()) {
@@ -49,7 +52,7 @@ public open class ArrayChunks<I, Item> internal constructor(
      *
      * # Example
      * ```kotlin
-     * val x = listOf(1, 2, 3, 4, 5).intoIter().arrayChunks()
+     * val x = listOf(1, 2, 3, 4, 5).intoIter().arrayChunks(2)
      * var rem = x.intoRemainder()
      * check(rem.next() == 5)
      * check(rem.next() == null)
@@ -149,7 +152,7 @@ public open class ArrayChunks<I, Item> internal constructor(
             remainderCtorArg = remainder,
         )
 
-        public fun <I> new(iter: I, n: Int): ArrayChunks<I, Item> {
+        public fun <Item, I : Iterator<Item>> new(iter: I, n: Int): ArrayChunks<I, Item> where I : Iterator<Item> {
             check(n != 0) { "chunk size must be non-zero" }
             return ArrayChunks(iter = iter, remainder = null)
         }
@@ -160,7 +163,7 @@ public interface SpecFold {
     public fun <B> fold(init: B, f: (B, Item) -> B): B
 }
 
-public fun <I, B> ArrayChunks<I, Item>.fold(init: B, f: (B, List<Item>) -> B, n: Int): B where I : TrustedRandomAccessNoCoerce {
+public fun <Item, I, B> ArrayChunks<I, Item>.fold(init: B, f: (B, List<Item>) -> B, n: Int = 0): B where I : Iterator<Item>, I : TrustedRandomAccessNoCoerce {
     var accum = init
     val innerLen = this.iter.size()
     var i = 0
@@ -183,7 +186,7 @@ public fun <I, B> ArrayChunks<I, Item>.fold(init: B, f: (B, List<Item>) -> B, n:
     return accum
 }
 
-public fun <Source, I> ArrayChunks<I, Item>.asInner(n: Int): Source where I : SourceIter<Source> {
+public fun <Source, Item, I> ArrayChunks<I, Item>.asInner(n: Int = 0): Source where I : SourceIter<Source>, I : Iterator<Item> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements
     return this.iter.asInner()
 }

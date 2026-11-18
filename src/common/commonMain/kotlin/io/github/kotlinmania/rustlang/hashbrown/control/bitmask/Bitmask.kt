@@ -6,10 +6,10 @@ import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.hashbrown.control.group.BITMASK_ITER_MASK
-import io.github.kotlinmania.rustlang.hashbrown.control.group.BITMASK_STRIDE
-import io.github.kotlinmania.rustlang.hashbrown.control.group.BitMaskWord
-import io.github.kotlinmania.rustlang.hashbrown.control.group.NonZeroBitMaskWord
+import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.BITMASK_ITER_MASK
+import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.BITMASK_STRIDE
+import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.BitMaskWord
+import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.NonZeroBitMaskWord
 
 /**
  * A bit mask which contains the result of a `Match` operation on a `Group` and

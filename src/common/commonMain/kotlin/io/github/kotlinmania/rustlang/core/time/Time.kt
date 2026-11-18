@@ -10,8 +10,10 @@ import io.github.kotlinmania.rustlang.core.fmt.Alignment
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.iter.traits.accum.Sum
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedDiv
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.num.f32.MIN_EXP
 import io.github.kotlinmania.rustlang.core.num.nichetypes.Nanoseconds
 import io.github.kotlinmania.rustlang.core.ops.arith.Add
@@ -27,6 +29,8 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.str.chars
 import io.github.kotlinmania.rustlang.core.str.converts.fromUtf8Unchecked
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 // Temporal quantification.
 //

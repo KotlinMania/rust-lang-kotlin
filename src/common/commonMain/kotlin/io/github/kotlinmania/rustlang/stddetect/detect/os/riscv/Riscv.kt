@@ -32,201 +32,201 @@ public fun implyFeatures(value: Initializer): Initializer {
         // a fewer number of bit-manipulation operations.
         // Check convergence of the feature flags later.
         val prev = value
-        if (uintArrayOf((Feature::zvbb).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zvkb).toUInt())
+        if (uintArrayOf(Feature.Zvbb.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zvkb.toUInt())
         }
-        if (uintArrayOf((Feature::zvkn).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zvkned).toUInt())
-            value.set((Feature::zvknhb).toUInt())
-            value.set((Feature::zvkb).toUInt())
-            value.set((Feature::zvkt).toUInt())
+        if (uintArrayOf(Feature.Zvkn.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zvkned.toUInt())
+            value.set(Feature.Zvknhb.toUInt())
+            value.set(Feature.Zvkb.toUInt())
+            value.set(Feature.Zvkt.toUInt())
         }
-        if (uintArrayOf((Feature::zvkned).toUInt(), (Feature::zvknhb).toUInt(), (Feature::zvkb).toUInt(), (Feature::zvkt).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zvkn).toUInt())
+        if (uintArrayOf(Feature.Zvkned.toUInt(), Feature.Zvknhb.toUInt(), Feature.Zvkb.toUInt(), Feature.Zvkt.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zvkn.toUInt())
         }
-        if (uintArrayOf((Feature::zvknc).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zvkn).toUInt())
-            value.set((Feature::zvbc).toUInt())
+        if (uintArrayOf(Feature.Zvknc.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zvkn.toUInt())
+            value.set(Feature.Zvbc.toUInt())
         }
-        if (uintArrayOf((Feature::zvkn).toUInt(), (Feature::zvbc).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zvknc).toUInt())
+        if (uintArrayOf(Feature.Zvkn.toUInt(), Feature.Zvbc.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zvknc.toUInt())
         }
-        if (uintArrayOf((Feature::zvkng).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zvkn).toUInt())
-            value.set((Feature::zvkg).toUInt())
+        if (uintArrayOf(Feature.Zvkng.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zvkn.toUInt())
+            value.set(Feature.Zvkg.toUInt())
         }
-        if (uintArrayOf((Feature::zvkn).toUInt(), (Feature::zvkg).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zvkng).toUInt())
+        if (uintArrayOf(Feature.Zvkn.toUInt(), Feature.Zvkg.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zvkng.toUInt())
         }
-        if (uintArrayOf((Feature::zvks).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zvksed).toUInt())
-            value.set((Feature::zvksh).toUInt())
-            value.set((Feature::zvkb).toUInt())
-            value.set((Feature::zvkt).toUInt())
+        if (uintArrayOf(Feature.Zvks.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zvksed.toUInt())
+            value.set(Feature.Zvksh.toUInt())
+            value.set(Feature.Zvkb.toUInt())
+            value.set(Feature.Zvkt.toUInt())
         }
-        if (uintArrayOf((Feature::zvksed).toUInt(), (Feature::zvksh).toUInt(), (Feature::zvkb).toUInt(), (Feature::zvkt).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zvks).toUInt())
+        if (uintArrayOf(Feature.Zvksed.toUInt(), Feature.Zvksh.toUInt(), Feature.Zvkb.toUInt(), Feature.Zvkt.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zvks.toUInt())
         }
-        if (uintArrayOf((Feature::zvksc).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zvks).toUInt())
-            value.set((Feature::zvbc).toUInt())
+        if (uintArrayOf(Feature.Zvksc.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zvks.toUInt())
+            value.set(Feature.Zvbc.toUInt())
         }
-        if (uintArrayOf((Feature::zvks).toUInt(), (Feature::zvbc).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zvksc).toUInt())
+        if (uintArrayOf(Feature.Zvks.toUInt(), Feature.Zvbc.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zvksc.toUInt())
         }
-        if (uintArrayOf((Feature::zvksg).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zvks).toUInt())
-            value.set((Feature::zvkg).toUInt())
+        if (uintArrayOf(Feature.Zvksg.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zvks.toUInt())
+            value.set(Feature.Zvkg.toUInt())
         }
-        if (uintArrayOf((Feature::zvks).toUInt(), (Feature::zvkg).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zvksg).toUInt())
+        if (uintArrayOf(Feature.Zvks.toUInt(), Feature.Zvkg.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zvksg.toUInt())
         }
-        if (uintArrayOf((Feature::zvknhb).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zvknha).toUInt())
+        if (uintArrayOf(Feature.Zvknhb.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zvknha.toUInt())
         }
-        if (uintArrayOf((Feature::zvknhb).toUInt(), (Feature::zvbc).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zve64x).toUInt())
+        if (uintArrayOf(Feature.Zvknhb.toUInt(), Feature.Zvbc.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zve64x.toUInt())
         }
-        if (uintArrayOf((Feature::zvbb).toUInt(), (Feature::zvkb).toUInt(), (Feature::zvkg).toUInt(), (Feature::zvkned).toUInt(), (Feature::zvknha).toUInt(), (Feature::zvksed).toUInt(), (Feature::zvksh).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zve32x).toUInt())
+        if (uintArrayOf(Feature.Zvbb.toUInt(), Feature.Zvkb.toUInt(), Feature.Zvkg.toUInt(), Feature.Zvkned.toUInt(), Feature.Zvknha.toUInt(), Feature.Zvksed.toUInt(), Feature.Zvksh.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zve32x.toUInt())
         }
-        if (uintArrayOf((Feature::zbc).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zbkc).toUInt())
+        if (uintArrayOf(Feature.Zbc.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zbkc.toUInt())
         }
-        if (uintArrayOf((Feature::zkn).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zbkb).toUInt())
-            value.set((Feature::zbkc).toUInt())
-            value.set((Feature::zbkx).toUInt())
-            value.set((Feature::zkne).toUInt())
-            value.set((Feature::zknd).toUInt())
-            value.set((Feature::zknh).toUInt())
+        if (uintArrayOf(Feature.Zkn.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zbkb.toUInt())
+            value.set(Feature.Zbkc.toUInt())
+            value.set(Feature.Zbkx.toUInt())
+            value.set(Feature.Zkne.toUInt())
+            value.set(Feature.Zknd.toUInt())
+            value.set(Feature.Zknh.toUInt())
         }
-        if (uintArrayOf((Feature::zbkb).toUInt(), (Feature::zbkc).toUInt(), (Feature::zbkx).toUInt(), (Feature::zkne).toUInt(), (Feature::zknd).toUInt(), (Feature::zknh).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zkn).toUInt())
+        if (uintArrayOf(Feature.Zbkb.toUInt(), Feature.Zbkc.toUInt(), Feature.Zbkx.toUInt(), Feature.Zkne.toUInt(), Feature.Zknd.toUInt(), Feature.Zknh.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zkn.toUInt())
         }
-        if (uintArrayOf((Feature::zks).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zbkb).toUInt())
-            value.set((Feature::zbkc).toUInt())
-            value.set((Feature::zbkx).toUInt())
-            value.set((Feature::zksed).toUInt())
-            value.set((Feature::zksh).toUInt())
+        if (uintArrayOf(Feature.Zks.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zbkb.toUInt())
+            value.set(Feature.Zbkc.toUInt())
+            value.set(Feature.Zbkx.toUInt())
+            value.set(Feature.Zksed.toUInt())
+            value.set(Feature.Zksh.toUInt())
         }
-        if (uintArrayOf((Feature::zbkb).toUInt(), (Feature::zbkc).toUInt(), (Feature::zbkx).toUInt(), (Feature::zksed).toUInt(), (Feature::zksh).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zks).toUInt())
+        if (uintArrayOf(Feature.Zbkb.toUInt(), Feature.Zbkc.toUInt(), Feature.Zbkx.toUInt(), Feature.Zksed.toUInt(), Feature.Zksh.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zks.toUInt())
         }
-        if (uintArrayOf((Feature::zk).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zkn).toUInt())
-            value.set((Feature::zkr).toUInt())
-            value.set((Feature::zkt).toUInt())
+        if (uintArrayOf(Feature.Zk.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zkn.toUInt())
+            value.set(Feature.Zkr.toUInt())
+            value.set(Feature.Zkt.toUInt())
         }
-        if (uintArrayOf((Feature::zkn).toUInt(), (Feature::zkr).toUInt(), (Feature::zkt).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zk).toUInt())
+        if (uintArrayOf(Feature.Zkn.toUInt(), Feature.Zkr.toUInt(), Feature.Zkt.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zk.toUInt())
         }
-        if (uintArrayOf((Feature::zabha).toUInt(), (Feature::zacas).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zaamo).toUInt())
+        if (uintArrayOf(Feature.Zabha.toUInt(), Feature.Zacas.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zaamo.toUInt())
         }
-        if (uintArrayOf((Feature::a).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zalrsc).toUInt())
-            value.set((Feature::zaamo).toUInt())
+        if (uintArrayOf(Feature.A.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zalrsc.toUInt())
+            value.set(Feature.Zaamo.toUInt())
         }
-        if (uintArrayOf((Feature::zalrsc).toUInt(), (Feature::zaamo).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::a).toUInt())
+        if (uintArrayOf(Feature.Zalrsc.toUInt(), Feature.Zaamo.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.A.toUInt())
         }
-        if (uintArrayOf((Feature::b).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zba).toUInt())
-            value.set((Feature::zbb).toUInt())
-            value.set((Feature::zbs).toUInt())
+        if (uintArrayOf(Feature.B.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zba.toUInt())
+            value.set(Feature.Zbb.toUInt())
+            value.set(Feature.Zbs.toUInt())
         }
-        if (uintArrayOf((Feature::zba).toUInt(), (Feature::zbb).toUInt(), (Feature::zbs).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::b).toUInt())
+        if (uintArrayOf(Feature.Zba.toUInt(), Feature.Zbb.toUInt(), Feature.Zbs.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.B.toUInt())
         }
-        if (uintArrayOf((Feature::zcf).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zca).toUInt())
-            value.set((Feature::f).toUInt())
+        if (uintArrayOf(Feature.Zcf.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zca.toUInt())
+            value.set(Feature.F.toUInt())
         }
-        if (uintArrayOf((Feature::zcd).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zca).toUInt())
-            value.set((Feature::d).toUInt())
+        if (uintArrayOf(Feature.Zcd.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zca.toUInt())
+            value.set(Feature.D.toUInt())
         }
-        if (uintArrayOf((Feature::zcmop).toUInt(), (Feature::zcb).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zca).toUInt())
+        if (uintArrayOf(Feature.Zcmop.toUInt(), Feature.Zcb.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zca.toUInt())
         }
-        if (uintArrayOf((Feature::zhinx).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zhinxmin).toUInt())
+        if (uintArrayOf(Feature.Zhinx.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zhinxmin.toUInt())
         }
-        if (uintArrayOf((Feature::zdinx).toUInt(), (Feature::zhinxmin).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zfinx).toUInt())
+        if (uintArrayOf(Feature.Zdinx.toUInt(), Feature.Zhinxmin.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zfinx.toUInt())
         }
-        if (uintArrayOf((Feature::zvfh).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zvfhmin).toUInt())
+        if (uintArrayOf(Feature.Zvfh.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zvfhmin.toUInt())
         }
-        if (uintArrayOf((Feature::zvfh).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zve32f).toUInt())
-            value.set((Feature::zfhmin).toUInt())
+        if (uintArrayOf(Feature.Zvfh.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zve32f.toUInt())
+            value.set(Feature.Zfhmin.toUInt())
         }
-        if (uintArrayOf((Feature::zvfhmin).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zve32f).toUInt())
+        if (uintArrayOf(Feature.Zvfhmin.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zve32f.toUInt())
         }
-        if (uintArrayOf((Feature::zvfbfwma).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zvfbfmin).toUInt())
-            value.set((Feature::zfbfmin).toUInt())
+        if (uintArrayOf(Feature.Zvfbfwma.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zvfbfmin.toUInt())
+            value.set(Feature.Zfbfmin.toUInt())
         }
-        if (uintArrayOf((Feature::zvfbfmin).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zve32f).toUInt())
+        if (uintArrayOf(Feature.Zvfbfmin.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zve32f.toUInt())
         }
-        if (uintArrayOf((Feature::v).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zve64d).toUInt())
+        if (uintArrayOf(Feature.V.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zve64d.toUInt())
         }
-        if (uintArrayOf((Feature::zve64d).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zve64f).toUInt())
-            value.set((Feature::d).toUInt())
+        if (uintArrayOf(Feature.Zve64d.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zve64f.toUInt())
+            value.set(Feature.D.toUInt())
         }
-        if (uintArrayOf((Feature::zve64f).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zve64x).toUInt())
-            value.set((Feature::zve32f).toUInt())
+        if (uintArrayOf(Feature.Zve64f.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zve64x.toUInt())
+            value.set(Feature.Zve32f.toUInt())
         }
-        if (uintArrayOf((Feature::zve64x).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zve32x).toUInt())
+        if (uintArrayOf(Feature.Zve64x.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zve32x.toUInt())
         }
-        if (uintArrayOf((Feature::zve32f).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zve32x).toUInt())
-            value.set((Feature::f).toUInt())
+        if (uintArrayOf(Feature.Zve32f.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zve32x.toUInt())
+            value.set(Feature.F.toUInt())
         }
-        if (uintArrayOf((Feature::zfh).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zfhmin).toUInt())
+        if (uintArrayOf(Feature.Zfh.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zfhmin.toUInt())
         }
-        if (uintArrayOf((Feature::q).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::d).toUInt())
+        if (uintArrayOf(Feature.Q.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.D.toUInt())
         }
-        if (uintArrayOf((Feature::d).toUInt(), (Feature::zfhmin).toUInt(), (Feature::zfa).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::f).toUInt())
+        if (uintArrayOf(Feature.D.toUInt(), Feature.Zfhmin.toUInt(), Feature.Zfa.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.F.toUInt())
         }
-        if (uintArrayOf((Feature::zfbfmin).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::f).toUInt())
+        if (uintArrayOf(Feature.Zfbfmin.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.F.toUInt())
         }
-        if (uintArrayOf((Feature::c).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zca).toUInt())
+        if (uintArrayOf(Feature.C.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zca.toUInt())
         }
-        if (uintArrayOf((Feature::c).toUInt(), (Feature::d).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zcd).toUInt())
+        if (uintArrayOf(Feature.C.toUInt(), Feature.D.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zcd.toUInt())
         }
-        if (uintArrayOf((Feature::c).toUInt(), (Feature::f).toUInt()).all({ x -> value.test(x) })) {
-            value.set((Feature::zcf).toUInt())
+        if (uintArrayOf(Feature.C.toUInt(), Feature.F.toUInt()).all({ x -> value.test(x) })) {
+            value.set(Feature.Zcf.toUInt())
         }
-        if (value.test((Feature::d).toUInt())) {
-            if (uintArrayOf((Feature::zcd).toUInt()).any({ x -> value.test(x) })) {
-                value.set((Feature::c).toUInt())
+        if (value.test(Feature.D.toUInt())) {
+            if (uintArrayOf(Feature.Zcd.toUInt()).any({ x -> value.test(x) })) {
+                value.set(Feature.C.toUInt())
             }
         } else {
-            if (uintArrayOf((Feature::zca).toUInt()).any({ x -> value.test(x) })) {
-                value.set((Feature::c).toUInt())
+            if (uintArrayOf(Feature.Zca.toUInt()).any({ x -> value.test(x) })) {
+                value.set(Feature.C.toUInt())
             }
         }
-        if (uintArrayOf((Feature::zicntr).toUInt(), (Feature::zihpm).toUInt(), (Feature::f).toUInt(), (Feature::zfinx).toUInt(), (Feature::zve32x).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zicsr).toUInt())
+        if (uintArrayOf(Feature.Zicntr.toUInt(), Feature.Zihpm.toUInt(), Feature.F.toUInt(), Feature.Zfinx.toUInt(), Feature.Zve32x.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zicsr.toUInt())
         }
-        if (uintArrayOf((Feature::m).toUInt()).any({ x -> value.test(x) })) {
-            value.set((Feature::zmmul).toUInt())
+        if (uintArrayOf(Feature.M.toUInt()).any({ x -> value.test(x) })) {
+            value.set(Feature.Zmmul.toUInt())
         }
         // Loop until the feature flags converge.
         if (prev == value) {

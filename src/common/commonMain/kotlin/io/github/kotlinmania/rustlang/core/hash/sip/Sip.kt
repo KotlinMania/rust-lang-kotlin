@@ -353,7 +353,7 @@ public fun u8to64Le(buf: List<UByte>, start: Int, len: Int): ULong {
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
                     val kind = AssertKind.Eq
-                    assertFailed(kind, leftVal, rightVal, Option.None)
+                    assertFailed(kind, leftVal, rightVal, Option.None())
                 }
             }
         }

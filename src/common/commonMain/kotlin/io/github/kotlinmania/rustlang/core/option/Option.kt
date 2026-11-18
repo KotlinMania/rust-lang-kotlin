@@ -744,7 +744,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 Some(x)
             }
-            null -> None
+            null -> None()
         }
 
     /**
@@ -770,7 +770,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 Some(x)
             }
-            null -> None
+            null -> None()
         }
 
     /**
@@ -787,7 +787,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = matchVal
                 Some(Pin.newUnchecked(x))
             }
-            null -> None
+            null -> None()
         }
     }
 
@@ -804,7 +804,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = matchVal
                 Some(Pin.newUnchecked(x))
             }
-            null -> None
+            null -> None()
         }
     }
 
@@ -1132,7 +1132,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 Some(f(x))
             }
-            null -> None
+            null -> None()
         }
 
     /**
@@ -1411,7 +1411,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
     public open fun <U> and(optb: Option<U>): Option<U> =
         when (this) {
             is Some<*> -> optb
-            null -> None
+            null -> None()
         }
 
     /**
@@ -1448,7 +1448,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 f(x)
             }
-            null -> None
+            null -> None()
         }
 
     /**
@@ -1483,7 +1483,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 return Some(x)
             }
         }
-        return None
+        return None()
     }
 
     /**
@@ -1580,7 +1580,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                     val b = matchVal.second
                     b
                 }
-                else -> None
+                else -> None()
             }
         }
 
@@ -1759,7 +1759,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      */
     public open fun take(): Option<T> {
         // Note(const-Note) replace `mem.replace` by `mem.take` when the latter is const ready
-        return replace(this, None)
+        return replace(this, None())
     }
 
     /**
@@ -1790,7 +1790,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
         if (this.asMut().isSomeAnd(predicate)) {
             this.also { this = null }
         } else {
-            None
+            None()
         }
 
     /**
@@ -1838,7 +1838,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                     val (b) = matchVal.second as Some<T>
                     Some(Pair(a, b))
                 }
-                else -> None
+                else -> None()
             }
         }
 
@@ -1874,7 +1874,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                     val (b) = matchVal.second as Some<T>
                     Some(f(a, b))
                 }
-                else -> None
+                else -> None()
             }
         }
 
@@ -1918,7 +1918,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                     val (b1) = matchVal.second as Some<T>
                     Some(b1.into())
                 }
-                else -> None
+                else -> None()
             }
         }
 
@@ -1951,7 +1951,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 Some(cloneTFn(x))
             }
-            null -> None
+            null -> None()
         }
 
     public open fun cloneFrom(source: Option<T>, cloneTFn: (T) -> T = { it }) {
@@ -2054,7 +2054,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (v) = this as Some<T>
                 ControlFlow.Continue(v)
             }
-            null -> ControlFlow.Break(None)
+            null -> ControlFlow.Break(None())
         }
 
     public companion object {
@@ -2068,7 +2068,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
          * check(opt == null)
          * ```
          */
-        public fun <T> default(): Option<T> = None
+        public fun <T> default(): Option<T> = None()
 
         /**
          * Moves `val` into a new [Some].
@@ -2086,10 +2086,10 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
 
         public fun <T> fromResidual(residual: Option<Nothing>): Option<T> =
             when (residual) {
-                null -> None
+                null -> None()
             }
 
-        public fun <T> fromResidual(destructuredArg0: Yeet<Unit>): Option<T> = None
+        public fun <T> fromResidual(destructuredArg0: Yeet<Unit>): Option<T> = None()
     }
 }
 
@@ -2115,7 +2115,7 @@ public fun <T, U> Option<Pair<T, U>>.unzip(): Pair<Option<T>, Option<U>> =
             val b = (this as Some<T>).value.second
             Pair(Some(a), Some(b))
         }
-        null -> Pair(None, None)
+        null -> Pair(None(), None())
     }
 
 /**
@@ -2140,7 +2140,7 @@ public fun <T> Option<T>.copied(): Option<T> {
             val (v) = this as Some<T>
             Some(v)
         }
-        null -> None
+        null -> None()
     }
 }
 
@@ -2207,7 +2207,7 @@ public fun <T, E> Option<Result<T, E>>.transpose(): Result<Option<T>, E> =
             val e = ((this as Some<T>).value as Result.Err<*, *>).errValue()
             Result.Err<Option<T>, E>(e)
         }
-        else -> Result.Ok<Option<T>, E>(None)
+        else -> Result.Ok<Option<T>, E>(None())
     }
 
 public fun unwrapFailed(): Nothing = panic("called `Option::unwrap()` on a `None` value")
@@ -2371,7 +2371,7 @@ public open class OptionFlatten<A>(
                 val (iter) = matchVal
                 iter.next()
             }
-            null -> None
+            null -> None()
         }
 
     public open fun sizeHint(): Pair<Int, Option<Int>> =
@@ -2398,7 +2398,7 @@ public open class OptionFlatten<A>(
                 val (iter) = matchVal
                 iter.nth(n)
             }
-            null -> None
+            null -> None()
         }
 
     public open fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc =
@@ -2434,7 +2434,7 @@ public open class OptionFlatten<A>(
                 val (iter) = matchVal
                 iter.last()
             }
-            null -> None
+            null -> None()
         }
 
     public open fun nextBack(): Option<Item> =
@@ -2443,7 +2443,7 @@ public open class OptionFlatten<A>(
                 val (iter) = matchVal
                 iter.nextBack()
             }
-            null -> None
+            null -> None()
         }
 
     public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
@@ -2461,7 +2461,7 @@ public open class OptionFlatten<A>(
                 val (iter) = matchVal
                 iter.nthBack(n)
             }
-            null -> None
+            null -> None()
         }
 
     public open fun <Acc> rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc =
@@ -2569,7 +2569,7 @@ public fun <T> Option<Option<T>>.flatten(): Option<T> {
             val (inner) = this as Some<T>
             inner
         }
-        null -> None
+        null -> None()
     }
 }
 
@@ -2598,7 +2598,7 @@ public fun <T> Option<Option<T>>.flattenRef(): Option<T> =
             val (inner) = this as Some<T>
             inner.asRef()
         }
-        null -> None
+        null -> None()
     }
 
 /**
@@ -2632,7 +2632,7 @@ public fun <T> Option<Option<T>>.flattenMut(): Option<T> =
             val (inner) = this as Some<T>
             inner.asMut()
         }
-        null -> None
+        null -> None()
     }
 
 /**
@@ -2654,4 +2654,4 @@ public fun <T> Option<Option<T>>.flattenMut(): Option<T> =
  * }
  * ```
  */
-public fun <T> List<Option<T>>.transpose(n: Int): Option<List<T>> = this.tryMap(identity)
+public fun <T> List<Option<T>>.transpose(n: Int = 0): Option<List<T>> = this.tryMap(identity)

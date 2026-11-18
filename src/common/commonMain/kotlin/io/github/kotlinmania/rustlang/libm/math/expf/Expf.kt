@@ -1,7 +1,7 @@
 // port-lint: source math/expf.rs
 package io.github.kotlinmania.rustlang.libm.math.expf
 
-import io.github.kotlinmania.rustlang.libm.math.arch.x87Expf
+import io.github.kotlinmania.rustlang.libm.math.arch.i586.expall.x87Expf
 import io.github.kotlinmania.rustlang.libm.math.scalbn.scalbnf
 
 public val HALF: FloatArray = floatArrayOf(0.5f, -0.5f)

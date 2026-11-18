@@ -789,7 +789,7 @@ public sealed class Bound<T> {
                 val (x1) = this as Excluded<T>
                 Excluded(x1)
             }
-            Unbounded -> Unbounded
+            is Unbounded<*> -> Unbounded()
         }
 
     /**
@@ -805,7 +805,7 @@ public sealed class Bound<T> {
                 val (x1) = this as Excluded<T>
                 Excluded(x1)
             }
-            Unbounded -> Unbounded
+            is Unbounded<*> -> Unbounded()
         }
 
     /**
@@ -831,7 +831,7 @@ public sealed class Bound<T> {
      */
     public open fun <U> map(f: (T) -> U): Bound<U> =
         when (this) {
-            Unbounded -> Unbounded
+            is Unbounded<*> -> Unbounded()
             is Included<*> -> {
                 val (x) = this as Included<T>
                 Included(f(x))
@@ -861,7 +861,7 @@ public sealed class Bound<T> {
  */
 public fun <T> Bound<T>.copied(): Bound<T> =
     when (this) {
-        Bound.Unbounded -> Bound.Unbounded
+        is Bound.Unbounded<*> -> Bound.Unbounded()
         is Bound.Included<*> -> {
             val (x) = this as Bound.Included<T>
             Bound.Included(x)
@@ -889,7 +889,7 @@ public fun <T> Bound<T>.copied(): Bound<T> =
  */
 public fun <T> Bound<T>.cloned(cloneTFn: (T) -> T = { it }): Bound<T> =
     when (this) {
-        Bound.Unbounded -> Bound.Unbounded
+        is Bound.Unbounded<*> -> Bound.Unbounded()
         is Bound.Included<*> -> {
             val (x) = this as Bound.Included<T>
             Bound.Included(cloneTFn(x))
@@ -955,26 +955,26 @@ public interface RangeBounds<T> {
      */
     public fun <U> contains(item: U): Boolean =
         (when (val matchVal = this.startBound()) {
-            is Included<*> -> {
+            is RangeBounds.Included<*> -> {
                 val (start) = matchVal
                 (kmCompareValues(start, item) <= 0)
             }
-            is Excluded<*> -> {
+            is RangeBounds.Excluded<*> -> {
                 val (start1) = matchVal
                 (kmCompareValues(start1, item) < 0)
             }
-            Unbounded -> true
+            is RangeBounds.Unbounded<*> -> true
         }) &&
             (when (val matchVal1 = this.endBound()) {
-                is Included<*> -> {
+                is RangeBounds.Included<*> -> {
                     val (end) = matchVal1
                     (kmCompareValues(item, end) <= 0)
                 }
-                is Excluded<*> -> {
+                is RangeBounds.Excluded<*> -> {
                     val (end1) = matchVal1
                     (kmCompareValues(item, end1) < 0)
                 }
-                Unbounded -> true
+                is RangeBounds.Unbounded<*> -> true
             })
 
     /**
@@ -1042,26 +1042,26 @@ public interface RangeBounds<T> {
         !run {
             val matchVal = Pair(this.startBound(), this.endBound())
             when {
-                matchVal.first == Unbounded -> true
-                matchVal.second == Unbounded -> true
-                matchVal.first is Included<*> && matchVal.second is Excluded<*> -> {
-                    val (start) = matchVal.first as Included<T>
-                    val (end) = matchVal.second as Excluded<T>
+                matchVal.first is RangeBounds.Unbounded<*> -> true
+                matchVal.second is RangeBounds.Unbounded<*> -> true
+                matchVal.first is RangeBounds.Included<*> && matchVal.second is RangeBounds.Excluded<*> -> {
+                    val (start) = matchVal.first as RangeBounds.Included<T>
+                    val (end) = matchVal.second as RangeBounds.Excluded<T>
                     (kmCompareValues(start, end) < 0)
                 }
-                matchVal.first is Excluded<*> && matchVal.second is Included<*> -> {
-                    val (start1) = matchVal.first as Excluded<T>
-                    val (end1) = matchVal.second as Included<T>
+                matchVal.first is RangeBounds.Excluded<*> && matchVal.second is RangeBounds.Included<*> -> {
+                    val (start1) = matchVal.first as RangeBounds.Excluded<T>
+                    val (end1) = matchVal.second as RangeBounds.Included<T>
                     (kmCompareValues(start1, end1) < 0)
                 }
-                matchVal.first is Excluded<*> && matchVal.second is Excluded<*> -> {
-                    val (start2) = matchVal.first as Excluded<T>
-                    val (end2) = matchVal.second as Excluded<T>
+                matchVal.first is RangeBounds.Excluded<*> && matchVal.second is RangeBounds.Excluded<*> -> {
+                    val (start2) = matchVal.first as RangeBounds.Excluded<T>
+                    val (end2) = matchVal.second as RangeBounds.Excluded<T>
                     (kmCompareValues(start2, end2) < 0)
                 }
                 else -> {
-                    val (start3) = matchVal.first as Included<T>
-                    val (end3) = matchVal.second as Included<T>
+                    val (start3) = matchVal.first as RangeBounds.Included<T>
+                    val (end3) = matchVal.second as RangeBounds.Included<T>
                     (kmCompareValues(start3, end3) <= 0)
                 }
             }
@@ -1136,28 +1136,28 @@ public interface IntoBounds<T> : RangeBounds<T> {
             run {
                 val matchVal = Pair(selfStart, otherStart)
                 when {
-                    matchVal.first is Included<*> && matchVal.second is Included<*> -> {
-                        val (a) = matchVal.first as Included<T>
-                        val (b) = matchVal.second as Included<T>
+                    matchVal.first is IntoBounds.Included<*> && matchVal.second is IntoBounds.Included<*> -> {
+                        val (a) = matchVal.first as IntoBounds.Included<T>
+                        val (b) = matchVal.second as IntoBounds.Included<T>
                         Included(a.max(b))
                     }
-                    matchVal.first is Excluded<*> && matchVal.second is Excluded<*> -> {
-                        val (a1) = matchVal.first as Excluded<T>
-                        val (b1) = matchVal.second as Excluded<T>
+                    matchVal.first is IntoBounds.Excluded<*> && matchVal.second is IntoBounds.Excluded<*> -> {
+                        val (a1) = matchVal.first as IntoBounds.Excluded<T>
+                        val (b1) = matchVal.second as IntoBounds.Excluded<T>
                         Excluded(a1.max(b1))
                     }
-                    matchVal.first == Unbounded && matchVal.second == Unbounded -> Unbounded
-                    matchVal.second == Unbounded -> {
+                    matchVal.first is IntoBounds.Unbounded<*> && matchVal.second is IntoBounds.Unbounded<*> -> Unbounded()
+                    matchVal.second is IntoBounds.Unbounded<*> -> {
                         val x = matchVal.first
                         x
                     }
-                    matchVal.first == Unbounded -> {
+                    matchVal.first is IntoBounds.Unbounded<*> -> {
                         val x1 = matchVal.second
                         x1
                     }
-                    matchVal.first is Included<*> && matchVal.second is Excluded<*> -> {
-                        val (i) = matchVal.first as Included<T>
-                        val (e) = matchVal.second as Excluded<T>
+                    matchVal.first is IntoBounds.Included<*> && matchVal.second is IntoBounds.Excluded<*> -> {
+                        val (i) = matchVal.first as IntoBounds.Included<T>
+                        val (e) = matchVal.second as IntoBounds.Excluded<T>
                         if (i > e) {
                             Included(i)
                         } else {
@@ -1165,8 +1165,8 @@ public interface IntoBounds<T> : RangeBounds<T> {
                         }
                     }
                     else -> {
-                        val (e1) = matchVal.first as Excluded<T>
-                        val (i1) = matchVal.second as Included<T>
+                        val (e1) = matchVal.first as IntoBounds.Excluded<T>
+                        val (i1) = matchVal.second as IntoBounds.Included<T>
                         if (i1 > e1) {
                             Included(i1)
                         } else {
@@ -1179,28 +1179,28 @@ public interface IntoBounds<T> : RangeBounds<T> {
             run {
                 val matchVal1 = Pair(selfEnd, otherEnd)
                 when {
-                    matchVal1.first is Included<*> && matchVal1.second is Included<*> -> {
-                        val (a2) = matchVal1.first as Included<T>
-                        val (b2) = matchVal1.second as Included<T>
+                    matchVal1.first is IntoBounds.Included<*> && matchVal1.second is IntoBounds.Included<*> -> {
+                        val (a2) = matchVal1.first as IntoBounds.Included<T>
+                        val (b2) = matchVal1.second as IntoBounds.Included<T>
                         Included(a2.min(b2))
                     }
-                    matchVal1.first is Excluded<*> && matchVal1.second is Excluded<*> -> {
-                        val (a3) = matchVal1.first as Excluded<T>
-                        val (b3) = matchVal1.second as Excluded<T>
+                    matchVal1.first is IntoBounds.Excluded<*> && matchVal1.second is IntoBounds.Excluded<*> -> {
+                        val (a3) = matchVal1.first as IntoBounds.Excluded<T>
+                        val (b3) = matchVal1.second as IntoBounds.Excluded<T>
                         Excluded(a3.min(b3))
                     }
-                    matchVal1.first == Unbounded && matchVal1.second == Unbounded -> Unbounded
-                    matchVal1.second == Unbounded -> {
+                    matchVal1.first is IntoBounds.Unbounded<*> && matchVal1.second is IntoBounds.Unbounded<*> -> Unbounded()
+                    matchVal1.second is IntoBounds.Unbounded<*> -> {
                         val x2 = matchVal1.first
                         x2
                     }
-                    matchVal1.first == Unbounded -> {
+                    matchVal1.first is IntoBounds.Unbounded<*> -> {
                         val x3 = matchVal1.second
                         x3
                     }
-                    matchVal1.first is Included<*> && matchVal1.second is Excluded<*> -> {
-                        val (i2) = matchVal1.first as Included<T>
-                        val (e2) = matchVal1.second as Excluded<T>
+                    matchVal1.first is IntoBounds.Included<*> && matchVal1.second is IntoBounds.Excluded<*> -> {
+                        val (i2) = matchVal1.first as IntoBounds.Included<T>
+                        val (e2) = matchVal1.second as IntoBounds.Excluded<T>
                         if (i2 < e2) {
                             Included(i2)
                         } else {
@@ -1208,8 +1208,8 @@ public interface IntoBounds<T> : RangeBounds<T> {
                         }
                     }
                     else -> {
-                        val (e3) = matchVal1.first as Excluded<T>
-                        val (i3) = matchVal1.second as Included<T>
+                        val (e3) = matchVal1.first as IntoBounds.Excluded<T>
+                        val (i3) = matchVal1.second as IntoBounds.Included<T>
                         if (i3 < e3) {
                             Included(i3)
                         } else {
@@ -1222,23 +1222,23 @@ public interface IntoBounds<T> : RangeBounds<T> {
     }
 }
 
-public fun <T> RangeFull.startBound(): Bound<T> = Unbounded
+public fun <T> RangeFull.startBound(): Bound<T> = Unbounded()
 
-public fun <T> RangeFull.endBound(): Bound<T> = Unbounded
+public fun <T> RangeFull.endBound(): Bound<T> = Unbounded()
 
-public fun <T> RangeFull.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Unbounded, Unbounded)
+public fun <T> RangeFull.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Unbounded(), Unbounded())
 
 public fun <T> RangeFrom<T>.startBound(): Bound<T> = Included(this.start)
 
-public fun <T> RangeFrom<T>.endBound(): Bound<T> = Unbounded
+public fun <T> RangeFrom<T>.endBound(): Bound<T> = Unbounded()
 
-public fun <T> RangeFrom<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Included(this.start), Unbounded)
+public fun <T> RangeFrom<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Included(this.start), Unbounded())
 
-public fun <T> RangeTo<T>.startBound(): Bound<T> = Unbounded
+public fun <T> RangeTo<T>.startBound(): Bound<T> = Unbounded()
 
 public fun <T> RangeTo<T>.endBound(): Bound<T> = Excluded(this.end)
 
-public fun <T> RangeTo<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Unbounded, Excluded(this.end))
+public fun <T> RangeTo<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Unbounded(), Excluded(this.end))
 
 public fun <T> Range<T>.startBound(): Bound<T> = Included(this.start)
 
@@ -1265,11 +1265,11 @@ public fun <T> RangeInclusive<T>.intoBounds(): Pair<Bound<T>, Bound<T>> {
     return Pair(Included(this.start), Included(this.end))
 }
 
-public fun <T> RangeToInclusive<T>.startBound(): Bound<T> = Unbounded
+public fun <T> RangeToInclusive<T>.startBound(): Bound<T> = Unbounded()
 
 public fun <T> RangeToInclusive<T>.endBound(): Bound<T> = Included(this.end)
 
-public fun <T> RangeToInclusive<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Unbounded, Included(this.end))
+public fun <T> RangeToInclusive<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Unbounded(), Included(this.end))
 
 public fun <T> Pair<Bound<T>, Bound<T>>.startBound(): Bound<T> =
     when {
@@ -1281,7 +1281,7 @@ public fun <T> Pair<Bound<T>, Bound<T>>.startBound(): Bound<T> =
             val (start1) = this.first as Excluded<T>
             Excluded(start1)
         }
-        else -> Unbounded
+        else -> Unbounded()
     }
 
 public fun <T> Pair<Bound<T>, Bound<T>>.endBound(): Bound<T> =
@@ -1294,7 +1294,7 @@ public fun <T> Pair<Bound<T>, Bound<T>>.endBound(): Bound<T> =
             val (end1) = this.second as Excluded<T>
             Excluded(end1)
         }
-        else -> Unbounded
+        else -> Unbounded()
     }
 
 public fun <T> Pair<Bound<T>, Bound<T>>.intoBounds(): Pair<Bound<T>, Bound<T>> = this
@@ -1314,7 +1314,7 @@ public fun <T> Pair<Bound<T>, Bound<T>>.endBoundT(): Bound<T> = this.second
  */
 public fun <T> RangeFrom<T>.startBoundT(): Bound<T> = Included(this.start)
 
-public fun <T> RangeFrom<T>.endBoundT(): Bound<T> = Unbounded
+public fun <T> RangeFrom<T>.endBoundT(): Bound<T> = Unbounded()
 
 // This impl intentionally does not have `T: ? Sized`;
 // see https://github.com/rust-lang/rust/pull/61584 for discussion of why.
@@ -1325,7 +1325,7 @@ public fun <T> RangeFrom<T>.endBoundT(): Bound<T> = Unbounded
  * consider using the `RangeBounds` impl for a 2-tuple of [`Bound.T`][Bound],
  * i.e. replace `.. end` with `(Bound.Unbounded, Bound.Excluded(end))`.
  */
-public fun <T> RangeTo<T>.startBoundT(): Bound<T> = Unbounded
+public fun <T> RangeTo<T>.startBoundT(): Bound<T> = Unbounded()
 
 public fun <T> RangeTo<T>.endBoundT(): Bound<T> = Excluded(this.end)
 
@@ -1364,7 +1364,7 @@ public fun <T> RangeInclusive<T>.endBoundT(): Bound<T> = Included(this.end)
  * consider using the `RangeBounds` impl for a 2-tuple of [`Bound.T`][Bound],
  * i.e. replace `..= end` with `(Bound.Unbounded, Bound.Included(end))`.
  */
-public fun <T> RangeToInclusive<T>.startBoundT(): Bound<T> = Unbounded
+public fun <T> RangeToInclusive<T>.startBoundT(): Bound<T> = Unbounded()
 
 public fun <T> RangeToInclusive<T>.endBoundT(): Bound<T> = Included(this.end)
 

@@ -4,16 +4,18 @@
 package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.macho
 
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Context
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Dwarf
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.DwarfPackage
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Endian
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.EndianSlice
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.Mapping
-import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.gimli
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmap
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.path.Path
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.stash.Stash
 import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.mem.get
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.result.Result
 
 public typealias Mach = macho.MachHeader64<NativeEndian>
@@ -302,7 +304,7 @@ public fun objectMapping(file: ObjectMapFile): Mapping? {
                 else -> {
                     val memberName1 = memberName
                     val archive = when (val tryResult = Object.ArchiveFile.parse(data).ok()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.errValue()) }
-                    val member = when (val tryResult = archive.members().mapNotNull(Result::ok).indexOf({ m -> m.name() == memberName1 }).takeIf { it >= 0 }) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.errValue()) }
+                    val member = when (val tryResult = archive.members().mapNotNull(Result.Ok).indexOf({ m -> m.name() == memberName1 }).takeIf { it >= 0 }) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.errValue()) }
                     when (val tryResult = member.data(data).ok()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return@closure3 Result.Err(tryResult.errValue()) }
                 }
             }
@@ -313,4 +315,4 @@ public fun objectMapping(file: ObjectMapFile): Mapping? {
     })
 }
 
-public fun handleSplitDwarf(pkg: gimli.DwarfPackage<EndianSlice<Endian>>?, stash: Stash, load: SplitDwarfLoad<EndianSlice<Endian>>): gimli.Dwarf<EndianSlice<Endian>>? = null
+public fun handleSplitDwarf(pkg: DwarfPackage<EndianSlice<Endian>>?, stash: Stash, load: SplitDwarfLoad<EndianSlice<Endian>>): Dwarf<EndianSlice<Endian>>? = null

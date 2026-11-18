@@ -12,15 +12,9 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.test.term.color.BLACK
-import io.github.kotlinmania.rustlang.test.term.color.BLUE
-import io.github.kotlinmania.rustlang.test.term.color.CYAN
-import io.github.kotlinmania.rustlang.test.term.color.Color
-import io.github.kotlinmania.rustlang.test.term.color.GREEN
-import io.github.kotlinmania.rustlang.test.term.color.MAGENTA
-import io.github.kotlinmania.rustlang.test.term.color.RED
-import io.github.kotlinmania.rustlang.test.term.color.WHITE
-import io.github.kotlinmania.rustlang.test.term.color.YELLOW
+import io.github.kotlinmania.rustlang.test.term.Color
+import kotlin.experimental.and
+import kotlin.experimental.or
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // Windows console handling
@@ -103,8 +97,8 @@ public open class WinConsole<T>(
                     fg = bitsToColor(bufferInfo1.wAttributes)
                     bg = bitsToColor((bufferInfo1.wAttributes.toUInt() shr 4).toUShort())
                 } else {
-                    fg = WHITE
-                    bg = BLACK
+                    fg = Color.WHITE
+                    bg = Color.BLACK
                 }
             }
             return WinConsole(buf = out, defForeground = fg, defBackground = bg, foreground = fg, background = bg)
@@ -253,14 +247,14 @@ public fun colorToBits(color: Color): UShort {
     // magic numbers from mingw-w64's wincon.h
     val bits =
         when (color % 8u) {
-            BLACK -> 0
-            BLUE -> 0x1
-            GREEN -> 0x2
-            RED -> 0x4
-            YELLOW -> 0x2 or 0x4
-            MAGENTA -> 0x1 or 0x4
-            CYAN -> 0x1 or 0x2
-            WHITE -> 0x1 or 0x2 or 0x4
+            Color.black -> 0
+            Color.blue -> 0x1
+            Color.green -> 0x2
+            Color.red -> 0x4
+            Color.yellow -> 0x2 or 0x4
+            Color.magenta -> 0x1 or 0x4
+            Color.cyan -> 0x1 or 0x2
+            Color.white -> 0x1 or 0x2 or 0x4
             else -> error("unreachable")
         }
     return if (color >= 8u) {
@@ -273,14 +267,14 @@ public fun colorToBits(color: Color): UShort {
 public fun bitsToColor(bits: UShort): Color {
     val color =
         when (bits and 0x7u.toUShort()) {
-            0u.toUShort() -> BLACK
-            0x1u.toUShort() -> BLUE
-            0x2u.toUShort() -> GREEN
-            0x4u.toUShort() -> RED
-            0x6u.toUShort() -> YELLOW
-            0x5u.toUShort() -> MAGENTA
-            0x3u.toUShort() -> CYAN
-            0x7u.toUShort() -> WHITE
+            0u.toUShort() -> Color.BLACK
+            0x1u.toUShort() -> Color.BLUE
+            0x2u.toUShort() -> Color.GREEN
+            0x4u.toUShort() -> Color.RED
+            0x6u.toUShort() -> Color.YELLOW
+            0x5u.toUShort() -> Color.MAGENTA
+            0x3u.toUShort() -> Color.CYAN
+            0x7u.toUShort() -> Color.WHITE
             else -> error("unreachable")
         }
     return color or (UInt.from(bits) and 0x8u)

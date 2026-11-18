@@ -3,11 +3,13 @@
 
 package io.github.kotlinmania.rustlang.backtrace.symbolize.dbghelp
 
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.Init
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymAddrIncludeInlineTrace
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymFromInlineContextW
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymGetLineFromInlineContextW
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.SymQueryInlineTrace
 import io.github.kotlinmania.rustlang.backtrace.dbghelp.dbghelp
+import io.github.kotlinmania.rustlang.backtrace.dbghelp.init
 import io.github.kotlinmania.rustlang.backtrace.symbolize.ResolveWhat
 import io.github.kotlinmania.rustlang.backtrace.symbolize.SymbolName
 import io.github.kotlinmania.rustlang.backtrace.symbolize.adjustIp
@@ -130,7 +132,7 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
     // Ensure this process's symbols are initialized
     val dbghelp1 =
         run {
-            val matchVal = dbghelp.init()
+            val matchVal = init()
             when (matchVal) { is Result.Ok<*, *> -> {
                 val dbghelp = matchVal.okValue()
                 dbghelp
@@ -157,7 +159,7 @@ public fun resolve(what: ResolveWhat, cb: (io.github.kotlinmania.rustlang.backtr
  * Note that calling this function requires having dbghelp 6.2+ loaded - and
  * will panic otherwise.
  */
-public fun resolveWithInline(dbghelp: dbghelp.Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit): Unit? {
+public fun resolveWithInline(dbghelp: Init, addr: MutPtr, inlineContext: UInt?, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit): Unit? {
     val inlineContext1 = inlineContext
     run {
         val currentProcess = GetCurrentProcess()
@@ -197,7 +199,7 @@ public fun resolveWithInline(dbghelp: dbghelp.Init, addr: MutPtr, inlineContext:
  */
 public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutableReference<ImagehlpLinew64>) -> Bool, cb: (io.github.kotlinmania.rustlang.backtrace.symbolize.Symbol) -> Unit) {
     val data = MaybeUninit.zeroed(UnresolvedTypeLayout<Aligned8<UByteArray>>())
-    val info = data.asMutPtr().cast()
+    val info = data.asMutPtr().cast(SYMBOL_INFOW)
     info.maxNameLen = MAX_SYM_NAME
     // the struct size in C.  the value is different to
     // `sizeOf<SYMBOL_INFOW>() - MAX_SYM_NAME + 1` (== 81)
@@ -228,7 +230,7 @@ public fun doResolve(symFromAddr: (MutPtr) -> Bool, getLineFromAddr: (RustMutabl
     }
     val name = addrOf(((nameBuffer).sliceArray(0 until nameLen1)))
     var line = ImagehlpLinew64(sizeOfStruct = 0u, key = MutPtr(0L), lineNumber = 0u, fileName = MutPtr(0L), address = 0uL)
-    line.sizeOfStruct = sizeOf<ImagehlpLinew64>(typeLayoutT = UnresolvedTypeLayout<ImagehlpLinew64>()).toUInt()
+    line.sizeOfStruct = sizeOf(IMAGEHLP_LINEW64, typeLayoutT = UnresolvedTypeLayout<ImagehlpLinew64>()).toUInt()
     var filename = null
     var lineno = null
     if (getLineFromAddr(line) == TRUE) {

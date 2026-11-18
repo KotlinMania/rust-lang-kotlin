@@ -49,9 +49,9 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.hashbrown.Guard
 import io.github.kotlinmania.rustlang.hashbrown.TryReserveError
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
-import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.doAlloc
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Allocator
+import io.github.kotlinmania.rustlang.hashbrown.alloc.Global
+import io.github.kotlinmania.rustlang.hashbrown.alloc.doAlloc
 import io.github.kotlinmania.rustlang.hashbrown.control.bitmask.BitMaskIter
 import io.github.kotlinmania.rustlang.hashbrown.control.group.generic.Group
 import io.github.kotlinmania.rustlang.hashbrown.control.tag.Tag
@@ -59,6 +59,8 @@ import io.github.kotlinmania.rustlang.hashbrown.scopeguard.ScopeGuard
 import io.github.kotlinmania.rustlang.hashbrown.util.invalidMut
 import io.github.kotlinmania.rustlang.hashbrown.util.likely
 import io.github.kotlinmania.rustlang.hashbrown.util.unlikely
+import kotlin.experimental.and
+import kotlin.experimental.inv
 
 public fun interface FnCallback {
     public operator fun invoke(arg0: MutPtr)
@@ -1227,7 +1229,7 @@ public open class RawTable<T, A : Allocator>(
      * The `eq` argument should be a closure such that `eq(i, k)` returns true if `k` is equal to
      * the `i`th key to be looked up.
      */
-    public open fun getDisjointMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int): List<T> {
+    public open fun getDisjointMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int = 0): List<T> {
         return run {
             val ptrs = this.getDisjointMutPointers(hashes, eq, n)
             for ((i, cur) in ptrs.iter().mapIndexed { index, item -> Pair(index, item) }) {
@@ -1241,15 +1243,15 @@ public open class RawTable<T, A : Allocator>(
         }
     }
 
-    public open fun getDisjointUncheckedMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int): List<T> {
+    public open fun getDisjointUncheckedMut(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int = 0): List<T> {
         val ptrs = this.getDisjointMutPointers(hashes, eq, n)
         return ptrs.map({ ptr -> ptr.map({ ptr1 -> ptr1.asMut() }) })
     }
 
-    public open fun getDisjointMutPointers(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int): List<NonNull> =
+    public open fun getDisjointMutPointers(hashes: ULongArray, eq: (Int, T) -> Boolean, n: Int = 0): List<NonNull> =
         fromFn({ i ->
             this.find(hashes[i], { k -> eq(i, k) })?.let({ cur -> cur.asNonNull() })
-        }, n)
+        })
 
     /**
      * Returns the number of elements the map can hold without reallocating.
@@ -3441,7 +3443,7 @@ public open class RawIterRange<T> internal constructor(
 
     public open fun clone(): RawIterRange<T> = RawIterRange(data = this.data.clone(), nextCtrl = this.nextCtrl, currentGroup = this.currentGroup.clone(), end = this.end)
 
-    public open fun next(): Bucket<T>? = this.nextImpl()
+    public open fun next(): Bucket<T>? = this.nextImpl(true)
 
     public open fun sizeHint(): Pair<Int, Int?> {
         // We don't have an item count, so just guess based on the range size.
@@ -3551,7 +3553,7 @@ public open class RawIter<T>(
         if (this.items == 0) {
             return null
         }
-        val nxt = this.iter.nextImpl()
+        val nxt = this.iter.nextImpl(false)
         check(nxt != null)
         this.items -= 1
         return nxt

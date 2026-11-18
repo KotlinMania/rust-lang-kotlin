@@ -35,7 +35,7 @@ import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.SocketAncillary
 import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.recvVectoredWithAncillaryFrom
 import io.github.kotlinmania.rustlang.std.os.unix.net.ancillary.sendVectoredWithAncillaryTo
 import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.UCred
-import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.impllinux.peerCred
+import io.github.kotlinmania.rustlang.std.os.unix.net.ucred.peerCred
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.AsInner
 import io.github.kotlinmania.rustlang.std.sys.FromInner

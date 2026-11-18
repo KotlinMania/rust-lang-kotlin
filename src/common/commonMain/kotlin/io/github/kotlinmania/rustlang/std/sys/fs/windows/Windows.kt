@@ -28,6 +28,7 @@ import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
+import io.github.kotlinmania.rustlang.core.mem.zeroed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
@@ -196,6 +197,9 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.truncateUtf16AtNul
 import io.github.kotlinmania.rustlang.std.sys.path.windows.WCStr
 import io.github.kotlinmania.rustlang.std.sys.path.windows.maybeVerbatim
 import io.github.kotlinmania.rustlang.std.sys.time.windows.SystemTime
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 public class DebugStruct(
     private val out: StringBuilder,

@@ -22,7 +22,6 @@ import io.github.kotlinmania.rustlang.core.char.decode.decodeUtf16
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
-import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
@@ -2483,7 +2482,7 @@ public fun lenUtf16(code: UInt): Int =
 public fun encodeUtf8Raw(code: UInt, dst: MutableList<UByte>): MutableList<UByte> {
     val len = lenUtf8(code)
     if (dst.size < len) {
-        constPanic("encode_utf8: buffer does not have enough bytes to encode code point", "encode_utf8: need {len} bytes to encode U+{code:04X} but buffer has just {dst_len}", code, code, len, len, dstLen, dst, len)
+        error("encode_utf8: buffer does not have enough bytes to encode code point")
     }
     // SAFETY: `dst` is checked to be at least the length needed to encode the codepoint.
     encodeUtf8RawUnchecked(code, dst.asMutPtr())
@@ -2570,7 +2569,7 @@ public fun encodeUtf16Raw(code: UInt, dst: MutableList<UShort>): MutableList<USh
                 b = (code1 and 0x3FFu).toUShort() or 0xDC00u.toUShort()
             }
             else -> {
-                constPanic("encode_utf16: buffer does not have enough bytes to encode code point", "encode_utf16: need {len} bytes to encode U+{code:04X} but buffer has just {dst_len}", code1, code1, len, len, dstLen, dst, len)
+                error("encode_utf16: buffer does not have enough bytes to encode code point")
             }
         }
     }

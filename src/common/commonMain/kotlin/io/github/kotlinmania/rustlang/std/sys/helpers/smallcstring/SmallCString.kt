@@ -12,13 +12,13 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.std.io.constError
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.copyNonoverlapping
 
 // Make sure to stay under 4096 so the compiler doesn't insert a probe frame:
 // https://docs.rs/compilerBuiltins/latest/compilerBuiltins/probestack/index.html
@@ -47,7 +47,7 @@ public fun <T> runWithCstrStack(bytes: List<UByte>, f: (CStr) -> Result<T, Error
     val buf = MaybeUninit.uninit(UnresolvedTypeLayout<UByteArray>())
     val bufPtr = mutPtrFromRustCast(buf.asMutPtr())
     run {
-        ptr.copyNonoverlapping(bytes.asPtr(), bufPtr, bytes.size, typeLayoutT = PrimitiveLayouts.U8)
+        copyNonoverlapping(bytes.asPtr(), bufPtr, bytes.size, typeLayoutT = PrimitiveLayouts.U8)
         (PrimitiveLayouts.U8).writeNative((MutPtr((bufPtr).rawAddress + ((bytes.size).toLong() * (PrimitiveLayouts.U8).strideBytes))).rawAddress, 0)
     }
     return run {

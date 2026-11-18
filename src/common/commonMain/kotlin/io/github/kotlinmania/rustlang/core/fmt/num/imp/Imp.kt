@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOr
+import kotlin.experimental.and
 
 public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: UByte): Result<Unit, Error> {
     val MAX_DEC_N: Int = ULong.MAX_VALUE.ilog10().toInt() + 1
@@ -72,7 +73,7 @@ public fun expU64(f: StringBuilder, n: ULong, isNonnegative: Boolean, letterE: U
                                     val rightVal = matchVal1.second
                                     if (!(leftVal == rightVal)) {
                                         val kind = AssertKind.Eq
-                                        assertFailed(kind, leftVal, rightVal, Option.None)
+                                        assertFailed(kind, leftVal, rightVal, Option.None())
                                     }
                                 }
                             }

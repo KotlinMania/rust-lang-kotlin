@@ -154,7 +154,7 @@ public open class LazyCell<T, F> internal constructor(
                     val (f) = matchVal
                     Result.Err<T, () -> T>(f)
                 }
-                State.Poisoned -> panicPoisoned()
+                is State.Poisoned<*, *> -> panicPoisoned()
             }
 
         /**
@@ -196,7 +196,7 @@ public open class LazyCell<T, F> internal constructor(
                 }
                 // SAFETY: The state is uninitialized.
                 is State.Uninit<*, *> -> LazyCell.reallyInit(thisRef)
-                State.Poisoned -> panicPoisoned()
+                is State.Poisoned<*, *> -> panicPoisoned()
             }
         }
 
@@ -244,7 +244,7 @@ public open class LazyCell<T, F> internal constructor(
                     public open fun drop() {
                         // SAFETY: Invariant states it is valid, and we don't drop the old value.
                         run {
-                            (UnresolvedTypeLayout<State<T, () -> T>>()).writeNative((this.value).rawAddress, State.Poisoned)
+                            (UnresolvedTypeLayout<State<T, () -> T>>()).writeNative((this.value).rawAddress, State.Poisoned())
                         }
                     }
                 }
@@ -274,7 +274,7 @@ unreachableUnchecked()
                 }
                 // SAFETY: `state` is `Uninit`.
                 is State.Uninit<*, *> -> reallyInitMut(state)
-                State.Poisoned -> panicPoisoned()
+                is State.Poisoned<*, *> -> panicPoisoned()
             }
         }
 
@@ -290,7 +290,7 @@ unreachableUnchecked()
             val state = thisRef.state.get()
             // Temporarily mark the state as poisoned. This prevents reentrant
             // accesses and correctly poisons the cell if the closure panicked.
-            val f = replace(state, State.Poisoned) ?: error("unreachable")
+            val f = replace(state, State.Poisoned()) ?: error("unreachable")
             val data = f()
             // SAFETY:
             // If the closure accessed the cell through something like a reentrant

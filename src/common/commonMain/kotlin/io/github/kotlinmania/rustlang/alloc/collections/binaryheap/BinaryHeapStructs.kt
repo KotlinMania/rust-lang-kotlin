@@ -1165,7 +1165,7 @@ public fun <T> BinaryHeap.Companion.withCapacity(capacity: Int): BinaryHeap<T, G
  * }
  * ```
  */
-public fun <T> fromBinaryHeapT(arr: List<T>, n: Int): BinaryHeap<T, Global> = BinaryHeap.fromIter(arr)
+public fun <T> fromBinaryHeapT(arr: List<T>, n: Int = 0): BinaryHeap<T, Global> = BinaryHeap.fromIter(arr)
 
 public fun <T, I : Iterable<T>> fromIteratorFromIterBinaryHeapT(iter: I): BinaryHeap<T, Global> = BinaryHeap.from(iter.iterator().collect<Vec>())
 

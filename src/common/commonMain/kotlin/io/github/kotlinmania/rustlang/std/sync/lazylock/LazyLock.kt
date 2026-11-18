@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.mem.manuallydrop.ManuallyDrop
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.read
 
 public class DebugTuple(
     private val out: StringBuilder,
@@ -177,7 +178,7 @@ public open class LazyLock<T, F> internal constructor(
                 else -> {
                     val state1 = state
                     val thisRef1 = thisRef
-                    val data = ptr.read(thisRef1.data).intoInner()
+                    val data = read(thisRef1.data).intoInner()
                     when (state1) {
                         OnceExclusiveState.Incomplete -> {
                             Result.Err<T, () -> T>(ManuallyDrop.intoInner(data.f))

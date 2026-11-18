@@ -6,6 +6,7 @@ import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.num.overflowingAdd
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 
 public interface Mul<T> : DInt, Int {

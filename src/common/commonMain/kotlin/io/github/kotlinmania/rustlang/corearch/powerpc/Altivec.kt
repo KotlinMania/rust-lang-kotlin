@@ -871,7 +871,7 @@ public expect fun vrfin(a: VectorFloat): VectorFloat
  * For example, if c is out of range, the compiler uses c modulo the number of
  * elements in the vector to determine the element position.
  */
-public fun <Scalar, T> vecInsert(a: T, b: Scalar, idx: UInt): T where T : VectorInsert<T, Scalar> = a.vecInsert(b)
+public fun <Scalar, T> vecInsert(a: T, b: Scalar, idx: UInt): T where T : VectorInsert<T, Scalar> = a.vecInsert(b, idx)
 
 /**
  * Vector Extract
@@ -883,7 +883,7 @@ public fun <Scalar, T> vecInsert(a: T, b: Scalar, idx: UInt): T where T : Vector
  * The value of each element of r is the element of a at position b modulo the number of
  * elements of a.
  */
-public fun <Scalar, T> vecExtract(a: T, idx: UInt): Scalar where T : VectorExtract<T, Scalar> = a.vecExtract()
+public fun <Scalar, T> vecExtract(a: T, idx: UInt): Scalar where T : VectorExtract<T, Scalar> = a.vecExtract(idx)
 
 /**
  * Vector Merge Low
@@ -950,7 +950,7 @@ public fun <Result, T, U> vecSra(a: T, b: U): Result where T : VectorSra<U, Resu
  * So the concatenation of a and b is done in big-endian fashion (left to right), and the shift is
  * always to the left. This will generally produce surprising results for little-endian targets.
  */
-public fun <T> vecSld(a: T, b: T, uimm4: Int): T where T : VectorSld<T> = a.vecSld(b)
+public fun <T> vecSld(a: T, b: T, uimm4: Int): T where T : VectorSld<T> = a.vecSld(b, uimm4)
 
 /**
  * Vector Shift Left Double by Words
@@ -963,7 +963,7 @@ public fun <T> vecSld(a: T, b: T, uimm4: Int): T where T : VectorSld<T> = a.vecS
  * The concatenation of a and b is done in big-endian fashion (left to right), and the shift is
  * always to the left. This will generally produce surprising results for little- endian targets.
  */
-public fun <T> vecSldw(a: T, b: T, uimm2: Int): T where T : VectorSld<T> = a.vecSldw(b)
+public fun <T> vecSldw(a: T, b: T, uimm2: Int): T where T : VectorSld<T> = a.vecSldw(b, uimm2)
 
 /**
  * Vector Shift Left Long
@@ -1279,7 +1279,7 @@ public fun <T> vecRound(a: T): T where T : VectorRound<T> = a.vecRound()
 /**
  * Vector Splat
  */
-public fun <T> vecSplat(a: T, imm: UInt): T where T : VectorSplat<T> = a.vecSplat()
+public fun <T> vecSplat(a: T, imm: UInt): T where T : VectorSplat<T> = a.vecSplat(imm)
 
 /**
  * Vector Splat to Unsigned Byte
@@ -1408,7 +1408,7 @@ public fun <T> vecAdde(a: T, b: T, c: T): T where T : VectorAdde<T> = a.vecAdde(
 /**
  * Vector Convert to Floating-Point
  */
-public fun <T> vecCtf(a: T, imm5: Int): VectorFloat where T : VectorCtf = a.vecCtf()
+public fun <T> vecCtf(a: T, imm5: Int): VectorFloat where T : VectorCtf = a.vecCtf(imm5)
 
 /**
  * Vector Convert to Signed Integer

@@ -148,7 +148,7 @@ public open class SystemRng : Rng {
     public open fun clone(): SystemRng = SystemRng()
 
     public open fun fillBytes(bytes: MutableList<UByte>) {
-        sys.fillBytes(bytes)
+        fillBytes(bytes)
     }
 
     public companion object {

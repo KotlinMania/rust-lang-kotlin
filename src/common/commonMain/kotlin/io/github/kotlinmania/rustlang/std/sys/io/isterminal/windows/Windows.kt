@@ -67,7 +67,7 @@ public fun msysTtyOn(handle: BorrowedHandle): Boolean {
     val localStorageL73C4 = AddressableLocal(FileNameInfo(fileNameLength = 0u, fileName = List(_) { MaybeUninit.uninit(PrimitiveLayouts.U16) }), UnresolvedTypeLayout<FileNameInfo>())
     val nameInfo by localStorageL73C4
     // Safety: buffer length is fixed.
-    val res = getFileInformationByHandleEx(handle.asRawHandle(), FILE_NAME_INFO, ((localStorageL73C4.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf<FileNameInfo>(typeLayoutT = UnresolvedTypeLayout<FileNameInfo>()).toUInt())
+    val res = getFileInformationByHandleEx(handle.asRawHandle(), FILE_NAME_INFO, ((localStorageL73C4.asMutPtr())).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, sizeOf(FILE_NAME_INFO, typeLayoutT = UnresolvedTypeLayout<FileNameInfo>()).toUInt())
     if (res == 0) {
         return false
     }
@@ -90,6 +90,6 @@ public fun msysTtyOn(handle: BorrowedHandle): Boolean {
     //
     // Lambdas are used to allow the compiler to short-circuit the isPty check.
     val isMsys = { name.startsWith(utf16("msys-")) || name.startsWith(utf16("cygwin-")) }
-    val isPty = { name.arrayWindows().any({ part -> part == utf16("-pty") }) }
+    val isPty = { name.arrayWindows(4).any({ part -> part == utf16("-pty") }) }
     return (isMsys() && isPty()).toUByte()
 }

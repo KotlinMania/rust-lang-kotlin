@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.asinf
 
 import io.github.kotlinmania.rustlang.libm.math.sqrt.sqrt
-import io.github.kotlinmania.rustlang.libm.math.support.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
 public val PIO2: Double = 1.570796326794896558e00
 

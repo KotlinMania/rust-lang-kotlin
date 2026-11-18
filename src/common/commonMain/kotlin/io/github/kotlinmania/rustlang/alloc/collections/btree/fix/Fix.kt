@@ -4,13 +4,12 @@ package io.github.kotlinmania.rustlang.alloc.collections.btree.fix
 import io.github.kotlinmania.rustlang.alloc.collections.btree.map.MIN_LEN
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.ForceResult.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Handle
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.LeafOrInternal
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.LeftOrRight.*
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Mut
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Root
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Internal
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.KV
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Mut
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -21,10 +20,10 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * returns that shrunk parent node. Returns an `Err` if the node is
  * an empty root.
  */
-public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNodeThroughParent(alloc: A): Result<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>> {
+public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNodeThroughParent(alloc: A): Result<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>?, NodeRef<Mut, K, V, LeafOrInternal>> {
     val len = this.len()
     return if (len >= MIN_LEN) {
-        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
+        Result.Ok<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
     } else {
         run {
             val matchVal = this.chooseParentKv()
@@ -34,10 +33,10 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
                     val (leftParentKv) = okValueVal as Left<*>
                     if (leftParentKv.canMerge()) {
                         val parent = leftParentKv.mergeTrackingParent(alloc)
-                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent)
+                        Result.Ok<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent)
                     } else {
                         leftParentKv.bulkStealLeft(MIN_LEN - len)
-                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
+                        Result.Ok<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     }
                 }
                 matchVal is Result.Ok<*, *> && matchVal.okValue() is Right<*> -> {
@@ -45,18 +44,18 @@ public fun <K, V, A : AllocatorClone> NodeRef<Mut, K, V, LeafOrInternal>.fixNode
                     val (rightParentKv) = okValueVal1 as Right<*>
                     if (rightParentKv.canMerge()) {
                         val parent1 = rightParentKv.mergeTrackingParent(alloc)
-                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent1)
+                        Result.Ok<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(parent1)
                     } else {
                         rightParentKv.bulkStealRight(MIN_LEN - len)
-                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
+                        Result.Ok<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     }
                 }
                 else -> {
                     val root = (matchVal as Result.Err<*, *>).errValue()
                     if (len > 0) {
-                        Result.Ok<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
+                        Result.Ok<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(null)
                     } else {
-                        Result.Err<NodeRef<Mut, K, V, Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(root)
+                        Result.Err<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>?, NodeRef<Mut, K, V, LeafOrInternal>>(root)
                     }
                 }
             }
@@ -136,8 +135,8 @@ public fun <K, V> Root<K, V>.fixRightBorderOfPlentiful() {
     var curNode = this.borrowMut()
     while (true) {
         val matchVal = curNode.force()
-        if (matchVal !is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal) break
-        val (internal) = matchVal as io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
+        if (matchVal !is Internal) break
+        val (internal) = matchVal as Internal
         // Check if rightmost child is underfull.
         val lastKv = internal.lastKv().considerForBalancing()
         check(lastKv.leftChildLen() >= MIN_LEN * 2)
@@ -151,23 +150,23 @@ public fun <K, V> Root<K, V>.fixRightBorderOfPlentiful() {
     }
 }
 
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.fixLeftBorderOfLeftEdge(alloc: A) {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV>.fixLeftBorderOfLeftEdge(alloc: A) {
     var selfMut = this
     while (true) {
         val matchVal = selfMut.force()
-        if (matchVal !is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal) break
-        val (internalKv) = matchVal as io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
+        if (matchVal !is Internal) break
+        val (internalKv) = matchVal as Internal
         selfMut = internalKv.fixLeftChild(alloc.clone()).firstKv()
         check(selfMut.reborrow().intoNode().len() > MIN_LEN)
     }
 }
 
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>.fixRightBorderOfRightEdge(alloc: A) {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV>.fixRightBorderOfRightEdge(alloc: A) {
     var selfMut = this
     while (true) {
         val matchVal = selfMut.force()
-        if (matchVal !is io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal) break
-        val (internalKv) = matchVal as io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal
+        if (matchVal !is Internal) break
+        val (internalKv) = matchVal as Internal
         selfMut = internalKv.fixRightChild(alloc.clone()).lastKv()
         check(selfMut.reborrow().intoNode().len() > MIN_LEN)
     }
@@ -179,7 +178,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, LeafOrInternal>,
  * without becoming underfull.
  * Returns the left child.
  */
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, KV>.fixLeftChild(alloc: A): NodeRef<Mut, K, V, LeafOrInternal> {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV>.fixLeftChild(alloc: A): NodeRef<Mut, K, V, LeafOrInternal> {
     val internalKv = this.considerForBalancing()
     val leftLen = internalKv.leftChildLen()
     check(internalKv.rightChildLen() >= MIN_LEN)
@@ -201,7 +200,7 @@ public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, KV>.f
  * without becoming underfull.
  * Returns wherever the right child ended up.
  */
-public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, Internal>, KV>.fixRightChild(alloc: A): NodeRef<Mut, K, V, LeafOrInternal> {
+public fun <K, V, A : AllocatorClone> Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Internal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV>.fixRightChild(alloc: A): NodeRef<Mut, K, V, LeafOrInternal> {
     val internalKv = this.considerForBalancing()
     val rightLen = internalKv.rightChildLen()
     check(internalKv.leftChildLen() >= MIN_LEN)

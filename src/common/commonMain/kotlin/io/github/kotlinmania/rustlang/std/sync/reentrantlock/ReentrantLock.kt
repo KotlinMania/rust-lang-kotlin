@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sync.reentrantlock
 import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.addrOf
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.add
 import io.github.kotlinmania.rustlang.core.result.Result

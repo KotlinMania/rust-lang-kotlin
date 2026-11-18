@@ -5,12 +5,18 @@ package io.github.kotlinmania.rustlang.core.random
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.num.carryingMul
+import io.github.kotlinmania.rustlang.core.num.castUnsigned
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.wrappingAddUnsigned
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.range.RangeInclusive
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 // Random value generation.
 
@@ -118,7 +124,7 @@ public fun bounded32(bound: UInt, source: Rng): UInt {
                 val rightVal = matchVal.second
                 if (leftVal == rightVal) {
                     val kind = AssertKind.Ne
-                    assertFailed(kind, leftVal, rightVal, Option.None)
+                    assertFailed(kind, leftVal, rightVal, Option.None())
                 }
             }
         }
@@ -146,7 +152,7 @@ public fun bounded64(bound: ULong, source: Rng): ULong {
                 val rightVal = matchVal.second
                 if (leftVal == rightVal) {
                     val kind = AssertKind.Ne
-                    assertFailed(kind, leftVal, rightVal, Option.None)
+                    assertFailed(kind, leftVal, rightVal, Option.None())
                 }
             }
         }
@@ -174,7 +180,7 @@ public fun bounded128(bound: U128, source: Rng): U128 {
                 val rightVal = matchVal.second
                 if (leftVal == rightVal) {
                     val kind = AssertKind.Ne
-                    assertFailed(kind, leftVal, rightVal, Option.None)
+                    assertFailed(kind, leftVal, rightVal, Option.None())
                 }
             }
         }

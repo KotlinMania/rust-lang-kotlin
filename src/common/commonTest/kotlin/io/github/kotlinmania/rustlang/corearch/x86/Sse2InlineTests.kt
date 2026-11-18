@@ -23,6 +23,7 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.corearch.simd.F64x2
 import io.github.kotlinmania.rustlang.corearch.simd.Simd
+import kotlin.experimental.inv
 
 // Streaming SIMD Extensions 2 (SSE2)
 

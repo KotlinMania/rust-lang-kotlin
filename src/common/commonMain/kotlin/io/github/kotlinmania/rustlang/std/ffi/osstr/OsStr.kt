@@ -18,6 +18,8 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
+import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
@@ -704,8 +706,8 @@ public open class OsString(
                     buf.extend(iterator)
                     buf
                 }
-                is Cow.Borrowed -> {
-                    val (buf1) = matchVal as Cow.Borrowed
+                is Cow.Borrowed<*, *> -> {
+                    val (buf1) = matchVal as Cow.Borrowed<*, *>
                     var buf2 = OsString.from(buf1)
                     buf2.extend(iterator)
                     buf2
@@ -1298,7 +1300,7 @@ public open class OsStr internal constructor(
          */
         public fun fromCowOsStr(cow: OsStr): OsStr =
             when (cow) {
-                is Cow.Borrowed -> {
+                is Cow.Borrowed<*, *> -> {
                     val (s) = cow
                     Box.from(s)
                 }

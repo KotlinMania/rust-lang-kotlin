@@ -19,6 +19,7 @@ import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
+import kotlin.experimental.and
 
 // Rust adaptation of the Grisu3 algorithm described in "Printing Floating-Point Numbers Quickly
 // and Accurately with Integers"[^1]. It uses about 1KB of precomputed table, and in turn, it's
@@ -253,7 +254,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
                 val rightVal = matchVal.second
                 if (!(leftVal == rightVal)) {
                     val kind = AssertKind.Eq
-                    assertFailed(kind, leftVal, rightVal, Option.None)
+                    assertFailed(kind, leftVal, rightVal, Option.None())
                 }
             }
         }
@@ -265,7 +266,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
                 val rightVal1 = matchVal1.second
                 if (!(leftVal1 == rightVal1)) {
                     val kind1 = AssertKind.Eq
-                    assertFailed(kind1, leftVal1, rightVal1, Option.None)
+                    assertFailed(kind1, leftVal1, rightVal1, Option.None())
                 }
             }
         }
@@ -353,7 +354,7 @@ public fun formatShortestOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>): 
                         val rightVal2 = matchVal2.second
                         if (!(leftVal2 == rightVal2)) {
                             val kind2 = AssertKind.Eq
-                            assertFailed(kind2, leftVal2, rightVal2, Option.None)
+                            assertFailed(kind2, leftVal2, rightVal2, Option.None())
                         }
                     }
                 }
@@ -638,7 +639,7 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
                         val rightVal = matchVal.second
                         if (!(leftVal == rightVal)) {
                             val kind = AssertKind.Eq
-                            assertFailed(kind, leftVal, rightVal, Option.None)
+                            assertFailed(kind, leftVal, rightVal, Option.None())
                         }
                     }
                 }
@@ -650,7 +651,7 @@ public fun formatExactOpt(d: Decoded, buf: MutableList<MaybeUninit<UByte>>, limi
                         val rightVal1 = matchVal1.second
                         if (!(leftVal1 == rightVal1)) {
                             val kind1 = AssertKind.Eq
-                            assertFailed(kind1, leftVal1, rightVal1, Option.None)
+                            assertFailed(kind1, leftVal1, rightVal1, Option.None())
                         }
                     }
                 }

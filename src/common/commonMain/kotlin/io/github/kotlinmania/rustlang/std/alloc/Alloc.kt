@@ -12,7 +12,6 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
@@ -33,6 +32,7 @@ import io.github.kotlinmania.rustlang.std.sys.alloc.unix.dealloc
 import io.github.kotlinmania.rustlang.std.sys.alloc.unix.realloc
 import io.github.kotlinmania.rustlang.std.sys.backtrace.lock
 import io.github.kotlinmania.rustlang.std.sys.backtrace.rustEndShortBacktrace
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.copyNonoverlapping
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 // Memory allocation APIs.
@@ -235,7 +235,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     val oldSize1 = matchVal
                     run {
                         val newPtr = when (val tryResult = this.allocImpl(newLayout, zeroed)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
-                        ptr.copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), oldSize1, typeLayoutT = PrimitiveLayouts.U8)
+                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asPtr(), oldSize1, typeLayoutT = PrimitiveLayouts.U8)
                         Allocator.deallocate(this, ptr, oldLayout)
                         Result.Ok<NonNull, AllocError>(newPtr)
                     }
@@ -298,7 +298,7 @@ public open class System : AllocatorClone, StaticAllocator, Allocator, GlobalAll
                     val newSize1 = matchVal
                     run {
                         val newPtr = when (val tryResult = Allocator.allocate(this, newLayout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
-                        ptr.copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), newSize1, typeLayoutT = PrimitiveLayouts.U8)
+                        copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), newSize1, typeLayoutT = PrimitiveLayouts.U8)
                         Allocator.deallocate(this, ptr, oldLayout)
                         Result.Ok<NonNull, AllocError>(newPtr)
                     }

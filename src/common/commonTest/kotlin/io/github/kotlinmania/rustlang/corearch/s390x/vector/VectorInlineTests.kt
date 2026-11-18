@@ -22,6 +22,7 @@ import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedSub
+import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.corearch.simd.F32x4
 import io.github.kotlinmania.rustlang.corearch.simd.F64x2
@@ -38,6 +39,8 @@ import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 import io.github.kotlinmania.rustlang.corearch.simd.U32x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import kotlin.experimental.inv
+import kotlin.experimental.or
 
 // s390x vector intrinsics.
 //
@@ -46,7 +49,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 // [Reference Summary]: https://www.ibm.com/support/pages/sites/default/files/2021-05/SA22-7871-10.pdf
 // [IBM docs]: https://www.ibm.com/docs/en/zos/2.4.0?topic=support-vector-built-in-functions
 
-public fun ShuffleMask.asArray(n: Int): UIntArray = transmuteWithLayouts<ShuffleMask, UIntArray>(this, UnresolvedTypeLayout<ShuffleMask>(), UnresolvedTypeLayout<UIntArray>())
+public fun ShuffleMask.asArray(n: Int = 0): UIntArray = transmuteWithLayouts<ShuffleMask, UIntArray>(this, UnresolvedTypeLayout<ShuffleMask>(), UnresolvedTypeLayout<UIntArray>())
 
 public fun vecAddI32x4I32x4() {
     val x = VectorSignedInt.from(Simd<Int>(listOf(1, 2, 3, 4)))

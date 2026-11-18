@@ -1,7 +1,7 @@
 // port-lint: source math/exp10.rs
 package io.github.kotlinmania.rustlang.libm.math.exp10
 
-import io.github.kotlinmania.rustlang.libm.math.arch.x87Exp10
+import io.github.kotlinmania.rustlang.libm.math.arch.i586.expall.x87Exp10
 import io.github.kotlinmania.rustlang.libm.math.exp2.exp2
 import io.github.kotlinmania.rustlang.libm.math.modf.modf
 import io.github.kotlinmania.rustlang.libm.math.pow.pow

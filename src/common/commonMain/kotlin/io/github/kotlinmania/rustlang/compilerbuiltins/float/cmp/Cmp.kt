@@ -4,6 +4,8 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.float.cmp
 import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 public sealed class Result {
     public data object Less : Result()

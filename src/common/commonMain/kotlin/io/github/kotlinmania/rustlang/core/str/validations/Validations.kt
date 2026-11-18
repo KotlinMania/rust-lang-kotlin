@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.core.str.validations
 
 import io.github.kotlinmania.rustlang.core.intrinsics.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.num.isMultipleOf
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.alignOffset
 import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingSub
@@ -83,7 +84,7 @@ public fun <I : Iterator<UByte>> nextCodePoint(bytes: I): UInt? {
  *
  * `bytes` must produce a valid UTF-8-like (UTF-8 or WTF-8) string
  */
-public fun <I> nextCodePointReverse(bytes: I): UInt? {
+public fun <I> nextCodePointReverse(bytes: I): UInt? where I : Iterator<UByte> {
     // Decode UTF-8
     val w =
         run {

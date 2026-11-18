@@ -10,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
@@ -22,6 +21,7 @@ import io.github.kotlinmania.rustlang.std.rt.threadCleanup
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.atexit
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenance
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FALSE
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.FLS_OUT_OF_INDEXES
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Hmodule
@@ -33,7 +33,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.flsSetVal
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getModuleHandleExW
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.getModuleHandleW
 import io.github.kotlinmania.rustlang.std.sys.stdio.windows.panicOutput
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.run
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.list.run
 
 // Support for Windows TLS destructors.
 //
@@ -252,7 +252,7 @@ public fun enable() {
             return
         }
         // Setting the key's value to non-zero will cause the dtor callback to be called when the thread exits.
-        set(key, ptr.withoutProvenance(1))
+        set(key, withoutProvenance(1))
     }
 }
 

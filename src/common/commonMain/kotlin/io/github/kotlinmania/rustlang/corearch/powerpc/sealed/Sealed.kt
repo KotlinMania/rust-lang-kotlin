@@ -149,6 +149,8 @@ import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 import io.github.kotlinmania.rustlang.corearch.simd.U32x4
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import kotlin.experimental.and
+import kotlin.experimental.inv
 
 public interface VectorNeg<T> {
     public fun vecNeg(): T

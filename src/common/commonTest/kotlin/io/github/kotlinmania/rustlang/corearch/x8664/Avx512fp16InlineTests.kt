@@ -77,6 +77,6 @@ public fun testMmCvttshU64() {
 
 public fun testMmCvttRoundshU64() {
     val a = mmSetrPh(1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
-    val r = mmCvttRoundshU64<MmFroundNoExc>(a)
+    val r = mmCvttRoundshU64(a, MM_FROUND_NO_EXC)
     check(r == 1uL)
 }

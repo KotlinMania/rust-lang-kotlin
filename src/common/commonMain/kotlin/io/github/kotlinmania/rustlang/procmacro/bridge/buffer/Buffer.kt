@@ -41,7 +41,7 @@ public open class Buffer internal constructor(
     // because in the case of small arrays, codegen can be more efficient
     // (avoiding a memmove call). With extendFromSlice, LLVM at least
     // currently is not able to make that optimization.
-    public open fun extendFromArray(xs: UByteArray, n: Int) {
+    public open fun extendFromArray(xs: UByteArray, n: Int = 0) {
         var selfMut = this
         if (xs.size > (selfMut.capacity - selfMut.len)) {
             val b = selfMut.also { selfMut = null }

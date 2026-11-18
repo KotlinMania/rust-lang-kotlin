@@ -24,6 +24,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.fence
 import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
@@ -401,7 +402,7 @@ public open class Channel<T> internal constructor(
             }
             var newHead = head + (1 shl SHIFT)
             if (newHead and MARK_BIT == 0) {
-                atomic.fence(Ordering.SeqCst)
+                fence(Ordering.SeqCst)
                 val tail = this.tail.index.load(Ordering.Relaxed)
                 // If the tail equals the head, that means the channel is empty.
                 if (head shr SHIFT == tail shr SHIFT) {
@@ -500,7 +501,7 @@ public open class Channel<T> internal constructor(
     public open fun send(msg: T, deadline: Instant?): Result<Unit, SendTimeoutError<T>> {
         val token = Token.default()
         check(this.startSend(token))
-        return this.write(token, msg).mapErr({ SendTimeoutError.Disconnected(it) })
+        return this.write(token, msg).mapErr({ SendTimeoutError.Disconnected()(it) })
     }
 
     /**

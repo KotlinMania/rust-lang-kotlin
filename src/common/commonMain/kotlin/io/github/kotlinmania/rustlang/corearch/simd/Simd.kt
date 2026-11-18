@@ -46,6 +46,8 @@ public open class Simd<T>(
             value = v
         }
 
+    public val n: Int = 0
+
     /**
      * Extract the element at position `index`. Note that `index` is not a constant so this
      * operation is not efficient on most platforms. Use for testing only.
@@ -98,7 +100,7 @@ public open class Simd<T>(
          */
         public val ZERO: Simd<T> = Simd.splat(T.ZERO, n)
 
-        public fun <T> fromArray(elements: List<T>, n: Int): Simd<T> = Simd(elements)
+        public fun <T> fromArray(elements: List<T>, n: Int = 0): Simd<T> = Simd(elements)
 
         public fun <T> splat(value: T, n: Int): Simd<T> = run { val simdArg0 = value; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
     }
@@ -116,12 +118,12 @@ public fun <T> Simd.Companion.new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: 
 
 public fun <T> Simd.Companion.new(x0: T, x1: T, x2: T, x3: T, x4: T, x5: T, x6: T, x7: T, x8: T, x9: T, x10: T, x11: T, x12: T, x13: T, x14: T, x15: T, x16: T, x17: T, x18: T, x19: T, x20: T, x21: T, x22: T, x23: T, x24: T, x25: T, x26: T, x27: T, x28: T, x29: T, x30: T, x31: T): Simd<T> = Simd(listOf(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31))
 
-public fun Simd<F16>.toBits(n: Int): Simd<UShort> {
+public fun Simd<F16>.toBits(n: Int = 0): Simd<UShort> {
     check(sizeOf<Simd<F16>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
     return transmuteCopy(this)
 }
 
-public fun Simd.Companion.fromBits(bits: Simd<UShort>, n: Int): Simd<F16> {
+public fun Simd.Companion.fromBits(bits: Simd<UShort>, n: Int = 0): Simd<F16> {
     check(sizeOf<Simd<F16>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
     return transmuteCopy(bits)
 }
@@ -134,6 +136,8 @@ public open class SimdM<T>(
         set(v) {
             value = v
         }
+
+    public val n: Int = 0
 
     public open fun asArray(): List<T> {
         val simdPtr: ConstPtr = this
@@ -189,7 +193,7 @@ public open class SimdM<T>(
             return listOf(T.ZERO, ones)[x.toInt()]
         }
 
-        public fun <T> fromArray(elements: BooleanArray, n: Int): SimdM<T> {
+        public fun <T> fromArray(elements: BooleanArray, n: Int = 0): SimdM<T> {
             val internal = MutableList(n) { T.ZERO }
             var i = 0
             while (i < n) {
@@ -342,4 +346,4 @@ public typealias I32x32 = Simd<Int>
  * Used to continue `Debug`ging SIMD types as `MySimd(1, 2, 3, 4)`, as they
  * were before moving to array-based simd.
  */
-public fun <T> debugSimdFinish(formatter: StringBuilder, typeName: String, array: List<T>, n: Int): Result<Unit, Error> = Formatter.debugStructFieldsFinish(formatter, typeName, fromFn<Any>({ i -> array[i] }, n))
+public fun <T> debugSimdFinish(formatter: StringBuilder, typeName: String, array: List<T>, n: Int = 0): Result<Unit, Error> = Formatter.debugStructFieldsFinish(formatter, typeName, fromFn<Any>({ i -> array[i] }, n))

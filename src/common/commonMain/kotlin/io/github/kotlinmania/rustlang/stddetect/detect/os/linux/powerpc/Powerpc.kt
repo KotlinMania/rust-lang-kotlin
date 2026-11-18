@@ -41,20 +41,20 @@ public fun detectFeatures(): Initializer {
             val auxv = matchVal.okValue()
             // note: the PowerPC values are the mask to do the test (instead of the
             // index of the bit to test like in ARM and Aarch64)
-            enableFeature(value, Feature::altivec, auxv.hwcap and PPC_FEATURE_HAS_ALTIVEC != 0)
-            enableFeature(value, Feature::vsx, auxv.hwcap and PPC_FEATURE_HAS_VSX != 0)
+            enableFeature(value, Feature.Altivec, auxv.hwcap and PPC_FEATURE_HAS_ALTIVEC != 0)
+            enableFeature(value, Feature.Vsx, auxv.hwcap and PPC_FEATURE_HAS_VSX != 0)
             // Note(powerpcTargetFeature): this code assumes the ISA hwcaps imply vsx/altivec, but
             // this is not a correct assumption. See rust-lang/compiler-team#1046 for
             // a possible resolution.
             val power8Features = auxv.hwcap2 and PPC_FEATURE2_ARCH_2_07 != 0
-            enableFeature(value, Feature::power8, power8Features)
-            enableFeature(value, Feature::power8Altivec, power8Features)
-            enableFeature(value, Feature::power8Crypto, power8Features)
-            enableFeature(value, Feature::power8Vector, power8Features)
+            enableFeature(value, Feature.Power8, power8Features)
+            enableFeature(value, Feature.Power8Altivec, power8Features)
+            enableFeature(value, Feature.Power8Crypto, power8Features)
+            enableFeature(value, Feature.Power8Vector, power8Features)
             val power9Features = auxv.hwcap2 and PPC_FEATURE2_ARCH_3_00 != 0
-            enableFeature(value, Feature::power9, power9Features)
-            enableFeature(value, Feature::power9Altivec, power9Features)
-            enableFeature(value, Feature::power9Vector, power9Features)
+            enableFeature(value, Feature.Power9, power9Features)
+            enableFeature(value, Feature.Power9Altivec, power9Features)
+            enableFeature(value, Feature.Power9Vector, power9Features)
             return value
         }
         else -> {}

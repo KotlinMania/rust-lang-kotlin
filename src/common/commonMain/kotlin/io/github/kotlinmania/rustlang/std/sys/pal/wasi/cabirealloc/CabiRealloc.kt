@@ -4,8 +4,8 @@ package io.github.kotlinmania.rustlang.std.sys.pal.wasi.cabirealloc
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.pal.wasi.abortInternal
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenanceMut
 
 // This module contains a canonical definition of the `cabiRealloc` function
 // for the component model.
@@ -40,7 +40,7 @@ public fun cabiRealloc(oldPtr: MutPtr, oldLen: Int, align: Int, newLen: Int): Mu
     val ptr =
         if (oldLen == 0) {
             if (newLen == 0) {
-                return ptr.withoutProvenanceMut(align)
+                return withoutProvenanceMut(align)
             }
             layout = Layout.fromSizeAlignUnchecked(newLen, align)
             alloc(layout)

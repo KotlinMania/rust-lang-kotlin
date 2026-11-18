@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -29,6 +28,7 @@ import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.std.sys.osstr.bytes.Slice
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.copyNonoverlapping
 
 public val SUN_PATH_OFFSET: Int = 0
 
@@ -47,7 +47,7 @@ public fun sockaddrUn(path: Path): Result<Pair<SockaddrUn, SocklenT>, Error> {
     // both point to valid memory.
     // NOTE: We zeroed the memory above, so the path is already null
     // terminated.
-    ptr.copyNonoverlapping(bytes.asPtr(), addr.sunPath.asMutPtr(), bytes.size)
+    copyNonoverlapping(bytes.asPtr(), addr.sunPath.asMutPtr(), bytes.size)
     var len = SUN_PATH_OFFSET + bytes.size
     when (val matchVal = bytes.get(0)) {
         0 -> {}

@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.IntoInner
-import io.github.kotlinmania.rustlang.std.sys.pipe.unix.pipe as imp
+import io.github.kotlinmania.rustlang.std.sys.pipe.unix.Pipe
 
 /**
  * Creates an anonymous pipe.
@@ -85,24 +85,24 @@ import io.github.kotlinmania.rustlang.std.sys.pipe.unix.pipe as imp
  * [changes]: io#platform-specific-behavior
  * [man page]: https://man7.org/linux/man-pages/man7/pipe.7.html
  */
-public fun pipe(): Result<Pair<PipeReader, PipeWriter>, Error> = imp.pipe().map({ (reader, writer) -> Pair(PipeReader(reader), PipeWriter(writer)) })
+public fun pipe(): Result<Pair<PipeReader, PipeWriter>, Error> = io.github.kotlinmania.rustlang.std.sys.pipe.unix.pipe().map({ (reader, writer) -> Pair(PipeReader(reader), PipeWriter(writer)) })
 
 /**
  * Read end of an anonymous pipe.
  */
 public open class PipeReader internal constructor(
-    valueCtorArg: imp.Pipe,
-) : FromInner<imp.Pipe, PipeReader>, IntoInner<imp.Pipe>, Read {
-    public var value: imp.Pipe = valueCtorArg
+    valueCtorArg: Pipe,
+) : FromInner<Pipe, PipeReader>, IntoInner<Pipe>, Read {
+    public var value: Pipe = valueCtorArg
         internal set
 
-    public var field0: imp.Pipe
+    public var field0: Pipe
         get() = value
         set(v) {
             value = v
         }
 
-    public override fun intoInner(): imp.Pipe = this.value
+    public override fun intoInner(): Pipe = this.value
 
     /**
      * Creates a new [PipeReader] instance that shares the same underlying file description.
@@ -165,12 +165,12 @@ public open class PipeReader internal constructor(
 
     public companion object {
         public operator fun invoke(
-            value: imp.Pipe,
+            value: Pipe,
         ): PipeReader = PipeReader(
             valueCtorArg = value,
         )
 
-        public fun fromInner(inner: imp.Pipe): PipeReader = PipeReader(inner)
+        public fun fromInner(inner: Pipe): PipeReader = PipeReader(inner)
     }
 }
 
@@ -178,18 +178,18 @@ public open class PipeReader internal constructor(
  * Write end of an anonymous pipe.
  */
 public open class PipeWriter internal constructor(
-    valueCtorArg: imp.Pipe,
-) : FromInner<imp.Pipe, PipeWriter>, IntoInner<imp.Pipe>, Write {
-    public var value: imp.Pipe = valueCtorArg
+    valueCtorArg: Pipe,
+) : FromInner<Pipe, PipeWriter>, IntoInner<Pipe>, Write {
+    public var value: Pipe = valueCtorArg
         internal set
 
-    public var field0: imp.Pipe
+    public var field0: Pipe
         get() = value
         set(v) {
             value = v
         }
 
-    public override fun intoInner(): imp.Pipe = this.value
+    public override fun intoInner(): Pipe = this.value
 
     /**
      * Creates a new [PipeWriter] instance that shares the same underlying file description.
@@ -229,11 +229,11 @@ public open class PipeWriter internal constructor(
 
     public companion object {
         public operator fun invoke(
-            value: imp.Pipe,
+            value: Pipe,
         ): PipeWriter = PipeWriter(
             valueCtorArg = value,
         )
 
-        public fun fromInner(inner: imp.Pipe): PipeWriter = PipeWriter(inner)
+        public fun fromInner(inner: Pipe): PipeWriter = PipeWriter(inner)
     }
 }

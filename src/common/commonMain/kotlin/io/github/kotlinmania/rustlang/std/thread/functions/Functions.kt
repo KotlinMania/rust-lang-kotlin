@@ -203,7 +203,7 @@ public fun yieldNow() {
  * }
  * ```
  */
-public fun panicking(): Boolean = panicking.panicking()
+public fun panicking(): Boolean = panicking()
 
 /**
  * Uses [sleep].

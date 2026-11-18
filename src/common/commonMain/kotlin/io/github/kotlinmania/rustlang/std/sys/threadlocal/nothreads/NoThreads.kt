@@ -14,9 +14,9 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.dropInPlace
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 // On some targets like wasm there's no threads, so no need to generate
@@ -102,7 +102,7 @@ public open class LazyStorage<T> internal constructor(
             this.state.set(State.Destroying)
             // Safety: we check for no initialization during drop below
             run {
-                ptr.dropInPlace(mutPtrFromRustCast(this.value.get()))
+                dropInPlace(mutPtrFromRustCast(this.value.get()))
             }
             this.state.set(State.Initial)
         }

@@ -55,17 +55,17 @@ public open class MergeIterInner<I, Item> internal constructor(
      * contains a value, iteration has finished and subsequent calls will
      * return the same empty pair.
      */
-    public open fun nexts(cmp: (Item, Item) -> Ordering): Pair<Item?, Item?> {
+    public open fun <Item> nexts(cmp: (Item, Item) -> Ordering): Pair<Item?, Item?> {
         var aNext: Any?
         var bNext: Any?
         when (val matchVal = this.peeked.also { this.peeked = null }) {
             is Peeked.A<*, *> -> {
-                val (next) = matchVal as Peeked.A<*, *>
+                val (next) = matchVal as Peeked.A<I, Item>
                 aNext = next
                 bNext = this.b.next()
             }
             is Peeked.B<*, *> -> {
-                val (next1) = matchVal as Peeked.B<*, *>
+                val (next1) = matchVal as Peeked.B<I, Item>
                 bNext = next1
                 aNext = this.a.next()
             }
@@ -89,7 +89,7 @@ public open class MergeIterInner<I, Item> internal constructor(
     /**
      * Returns a pair of upper bounds for the `sizeHint` of the final iterator.
      */
-    public open fun lens(): Pair<Int, Int> =
+    public open fun <Item> lens(): Pair<Int, Int> =
         when (val matchVal = this.peeked) {
             is Peeked.A<*, *> -> Pair(1 + this.a.len(), this.b.len())
             is Peeked.B<*, *> -> Pair(this.a.len(), 1 + this.b.len())
@@ -110,7 +110,7 @@ public open class MergeIterInner<I, Item> internal constructor(
         /**
          * Creates a new core for an iterator merging a pair of sources.
          */
-        public fun <I> new(a: I, b: I): MergeIterInner<I, Item> = MergeIterInner(a = a, b = b, peeked = null)
+        public fun <Item, I : Iterator<Item>> new(a: I, b: I): MergeIterInner<I, Item> = MergeIterInner(a = a, b = b, peeked = null)
     }
 }
 

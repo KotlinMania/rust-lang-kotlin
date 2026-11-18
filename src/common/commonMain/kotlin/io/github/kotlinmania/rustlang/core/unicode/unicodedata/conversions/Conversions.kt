@@ -11,12 +11,15 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.num.wrappingAddSigned
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 public open class L1Lut(
     public var l2Luts: List<L2Lut>,
@@ -212,7 +215,7 @@ public fun toCasefold(c: Char): List<Char> {
                         val rightVal = matchVal.second
                         if (!(leftVal == rightVal)) {
                             val kind = AssertKind.Eq
-                            assertFailed(kind, leftVal, rightVal, Option.None)
+                            assertFailed(kind, leftVal, rightVal, Option.None())
                         }
                     }
                 }
@@ -224,7 +227,7 @@ public fun toCasefold(c: Char): List<Char> {
                         val rightVal1 = matchVal1.second
                         if (!(leftVal1 == rightVal1)) {
                             val kind1 = AssertKind.Eq
-                            assertFailed(kind1, leftVal1, rightVal1, Option.None)
+                            assertFailed(kind1, leftVal1, rightVal1, Option.None())
                         }
                     }
                 }
@@ -239,7 +242,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val rightVal2 = matchVal2.second
                             if (!(leftVal2 == rightVal2)) {
                                 val kind2 = AssertKind.Eq
-                                assertFailed(kind2, leftVal2, rightVal2, Option.None)
+                                assertFailed(kind2, leftVal2, rightVal2, Option.None())
                             }
                         }
                     }
@@ -252,7 +255,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val rightVal3 = matchVal3.second
                             if (!(leftVal3 == rightVal3)) {
                                 val kind3 = AssertKind.Eq
-                                assertFailed(kind3, leftVal3, rightVal3, Option.None)
+                                assertFailed(kind3, leftVal3, rightVal3, Option.None())
                             }
                         }
                     }
@@ -264,7 +267,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val rightVal4 = matchVal4.second
                             if (!(leftVal4 == rightVal4)) {
                                 val kind4 = AssertKind.Eq
-                                assertFailed(kind4, leftVal4, rightVal4, Option.None)
+                                assertFailed(kind4, leftVal4, rightVal4, Option.None())
                             }
                         }
                     }
@@ -278,7 +281,7 @@ public fun toCasefold(c: Char): List<Char> {
                             val rightVal5 = matchVal5.second
                             if (!(leftVal5 == rightVal5)) {
                                 val kind5 = AssertKind.Eq
-                                assertFailed(kind5, leftVal5, rightVal5, Option.None)
+                                assertFailed(kind5, leftVal5, rightVal5, Option.None())
                             }
                         }
                     }

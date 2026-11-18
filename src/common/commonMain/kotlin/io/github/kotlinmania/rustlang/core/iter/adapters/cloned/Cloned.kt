@@ -77,15 +77,15 @@ public fun <I, T> Cloned<I>.iteratorGetUnchecked(idx: Int): T where I : Iterator
     return tryGetUnchecked(this.it, idx).clone()
 }
 
-public fun <I, T> Cloned<I>.nextBack(): T? = this.it.nextBack()
+public fun <I, T> Cloned<I>.nextBack(): T? where I : Iterator<T> = this.it.nextBack()
 
-public fun <Residual, I, T, B, R> Cloned<I>.tryRfold(init: B, f: (B, T) -> R): R where R : Try<R, B, Residual> = this.it.tryRfold(init, cloneTryFold(f))
+public fun <Residual, I, T, B, R> Cloned<I>.tryRfold(init: B, f: (B, T) -> R): R where I : Iterator<T>, R : Try<R, B, Residual> = this.it.tryRfold(init, cloneTryFold(f))
 
-public fun <I, T, Acc> Cloned<I>.rfold(init: Acc, f: (Acc, T) -> Acc, cloneTFn: (T) -> T = { it }): Acc = this.it.map(cloneTFn).rfold(init, f)
+public fun <I, T, Acc> Cloned<I>.rfold(init: Acc, f: (Acc, T) -> Acc, cloneTFn: (T) -> T = { it }): Acc where I : Iterator<T> = this.it.map(cloneTFn).rfold(init, f)
 
-public fun <I, T> Cloned<I>.len(): Int = this.it.len()
+public fun <I, T> Cloned<I>.len(): Int where I : Iterator<T> = this.it.len()
 
-public fun <I, T> Cloned<I>.isEmpty(): Boolean = this.it.isEmpty()
+public fun <I, T> Cloned<I>.isEmpty(): Boolean where I : Iterator<T> = this.it.isEmpty()
 
 public val MAY_HAVE_SIDE_EFFECT: Boolean = true
 

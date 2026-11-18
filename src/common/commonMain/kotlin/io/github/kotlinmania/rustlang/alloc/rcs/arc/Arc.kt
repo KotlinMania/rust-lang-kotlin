@@ -2643,7 +2643,7 @@ public fun <T, A : Allocator> Arc.Companion.newZeroedSliceIn(len: Int, alloc: A,
  * }
  * ```
  */
-public fun <T, A : Allocator> Arc<List<T>, A>.intoArray(n: Int): Result<Arc<List<T>, A>, Arc<List<T>, A>> =
+public fun <T, A : Allocator> Arc<List<T>, A>.intoArray(n: Int = 0): Result<Arc<List<T>, A>, Arc<List<T>, A>> =
     if (this.len() == n) {
         val (ptr, alloc) = Arc.intoRawWithAllocator(this)
         val ptr1 = constPtrFromRustCast(ptr)
@@ -3390,7 +3390,7 @@ public fun <T> fromArcT(t: T): Arc<T, Global> = Arc.new(t)
  * check(listOf(1, 2, 3) == shared)
  * ```
  */
-public fun <T> fromArcTSlice(v: List<T>, n: Int): Arc<List<T>, Global> = Arc.from(v, n)
+public fun <T> fromArcTSlice(v: List<T>, n: Int = 0): Arc<List<T>, Global> = Arc.from(v, n)
 
 /**
  * Allocates a reference-counted slice and fills it by cloning `v`s items.
@@ -3499,7 +3499,7 @@ public fun fromArcUByteSlice(rc: Arc<String, Global>): Arc<List<UByte>, Global> 
     return Arc.fromRaw(constPtrFromRustCast(Arc.intoRaw(rc)))
 }
 
-public fun <T, A : Allocator> tryFromArcTArraynA(boxedSlice: Arc<List<T>, A>, n: Int): Result<Arc<List<T>, A>, Arc<List<T>, A>> =
+public fun <T, A : Allocator> tryFromArcTArraynA(boxedSlice: Arc<List<T>, A>, n: Int = 0): Result<Arc<List<T>, A>, Arc<List<T>, A>> =
     if (boxedSlice.len() == n) {
         val (ptr, alloc) = Arc.intoInnerWithAllocator(boxedSlice)
         // ignore-tidy-undocumented-unchecked

@@ -3,9 +3,9 @@ package io.github.kotlinmania.rustlang.libm.math.exp2m1
 
 import io.github.kotlinmania.rustlang.libm.math.kcos.C2
 import io.github.kotlinmania.rustlang.libm.math.ldexp.ldexp
-import io.github.kotlinmania.rustlang.libm.math.support.Int
 import io.github.kotlinmania.rustlang.libm.math.support.coldPath
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.hf64
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 public val LN2H: Double =
     run {

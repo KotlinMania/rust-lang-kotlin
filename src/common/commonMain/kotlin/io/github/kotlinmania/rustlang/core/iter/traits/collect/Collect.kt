@@ -205,7 +205,7 @@ public interface IntoIterator<Item, out IntoIter> {
     public fun intoIter(): IntoIter
 }
 
-public fun <I> I.intoIter(): I = this
+public fun <Item, I : Iterator<Item>> I.intoIter(): I = this
 
 /**
  * Extend a collection with the contents of an iterator.

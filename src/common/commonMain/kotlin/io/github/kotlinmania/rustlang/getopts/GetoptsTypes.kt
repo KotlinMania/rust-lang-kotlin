@@ -211,27 +211,27 @@ public sealed class Fail {
 
     public fun rustEquals(other: Fail): Boolean = this == other
 
-    public open fun fmt(f: StringBuilder): io.github.kotlinmania.rustlang.core.result.Result<Unit, Error> =
+    public open fun fmt(f: StringBuilder): io.github.kotlinmania.rustlang.core.result.Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (this) {
             is ArgumentMissing -> {
                 val (nm) = this as ArgumentMissing
-                run { f.append("Argument to option '$nm' missing"); RustResult.Ok<Unit, Error>(Unit) }
+                run { f.append("Argument to option '$nm' missing"); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
             is UnrecognizedOption -> {
                 val (nm1) = this as UnrecognizedOption
-                run { f.append("Unrecognized option: '$nm1'"); RustResult.Ok<Unit, Error>(Unit) }
+                run { f.append("Unrecognized option: '$nm1'"); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
             is OptionMissing -> {
                 val (nm2) = this as OptionMissing
-                run { f.append("Required option '$nm2' missing"); RustResult.Ok<Unit, Error>(Unit) }
+                run { f.append("Required option '$nm2' missing"); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
             is OptionDuplicated -> {
                 val (nm3) = this as OptionDuplicated
-                run { f.append("Option '$nm3' given more than once"); RustResult.Ok<Unit, Error>(Unit) }
+                run { f.append("Option '$nm3' given more than once"); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
             is UnexpectedArgument -> {
                 val (nm4) = this as UnexpectedArgument
-                run { f.append("Option '$nm4' does not take an argument"); RustResult.Ok<Unit, Error>(Unit) }
+                run { f.append("Option '$nm4' does not take an argument"); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
         }
 }

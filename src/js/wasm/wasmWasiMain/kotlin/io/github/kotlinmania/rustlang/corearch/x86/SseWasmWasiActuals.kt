@@ -5,6 +5,7 @@ package io.github.kotlinmania.rustlang.corearch.x86
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
+import kotlin.experimental.or
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun rcpss(a: M128): M128 =

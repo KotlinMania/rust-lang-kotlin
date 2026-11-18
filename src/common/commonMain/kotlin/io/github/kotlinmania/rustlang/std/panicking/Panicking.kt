@@ -7,12 +7,15 @@ import io.github.kotlinmania.rustlang.alloc.panicking.PanicPayload
 import io.github.kotlinmania.rustlang.core.RustAny
 import io.github.kotlinmania.rustlang.core.any.Any
 import io.github.kotlinmania.rustlang.core.fmt.Error
+import io.github.kotlinmania.rustlang.core.fmt.Formatter
+import io.github.kotlinmania.rustlang.core.fmt.FormattingOptions
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAbort
 import io.github.kotlinmania.rustlang.core.io.write.Write
+import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result

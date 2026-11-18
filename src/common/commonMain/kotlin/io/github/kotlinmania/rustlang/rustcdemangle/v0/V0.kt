@@ -16,6 +16,8 @@ import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.chunksExact
 import io.github.kotlinmania.rustlang.core.str.chars
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 // Mark the parser as errored (with `ParseError.Invalid`), print the
 // appropriate message (see `ParseError.message`) and return early.
@@ -134,7 +136,7 @@ public fun demangle(s: String): Result<Pair<Demangle, String>, ParseError> {
     parser = when (val tryResult = tryParsePath(parser)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, ParseError>(tryResult.errValue()) }
     // Instantiating crate (paths always start with uppercase characters).
     when (val matchVal = parser.sym.encodeToByteArray().map { it.toUByte() }.get(parser.next)) {
-        is Some -> {
+        is Some<*> -> {
             parser = when (val tryResult = tryParsePath(parser)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Demangle, String>, ParseError>(tryResult.errValue()) }
         }
         else -> {}
@@ -228,7 +230,7 @@ public open class Ident(
                         else -> { return Result.Err<Unit, Unit>(Unit) }
                     }
                 val d3 = d2.toInt()
-                delta = when (val tryResult = (delta.checkedAdd((when (val tryResult = (d3.checkedMul(w.toInt())?.let { Result.Ok<Int, Unit>(it) } ?: Result.Err<Int, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }).toInt())?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+                delta = when (val tryResult = (delta.checkedAdd((when (val tryResult = (d3.checkedMul(w.toInt())?.let { Result.Ok<Int, Unit>(it) } ?: Result.Err<Int, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }).toInt())?.let { Result.Ok<Int, Unit>(it) } ?: Result.Err<Int, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
                 if (d3 < t) {
                     break
                 }
@@ -236,8 +238,8 @@ public open class Ident(
             }
             // Compute the new insert position and character.
             len += 1
-            i = when (val tryResult = (i.checkedAdd(delta)?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
-            n = when (val tryResult = (n.checkedAdd(i / len)?.let { Result.Ok(it) } ?: Result.Err(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+            i = when (val tryResult = (i.checkedAdd(delta)?.let { Result.Ok<Int, Unit>(it) } ?: Result.Err<Int, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+            n = when (val tryResult = (n.checkedAdd(i / len)?.let { Result.Ok<Int, Unit>(it) } ?: Result.Err<Int, Unit>(Unit))) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
             i %= len
             val nU32 = n.toUInt()
             val c1 =

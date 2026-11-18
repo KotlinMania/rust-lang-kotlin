@@ -103,42 +103,42 @@ public fun detectFeatures(): Initializer {
                 }
                 present
             }
-        enable(procInfoEcx, 0, Feature::sse3)
-        enable(procInfoEcx, 1, Feature::pclmulqdq)
-        enable(procInfoEcx, 9, Feature::ssse3)
-        enable(procInfoEcx, 13, Feature::cmpxchg16b)
-        enable(procInfoEcx, 19, Feature::sse41)
-        enable(procInfoEcx, 20, Feature::sse42)
-        enable(procInfoEcx, 22, Feature::movbe)
-        enable(procInfoEcx, 23, Feature::popcnt)
-        enable(procInfoEcx, 25, Feature::aes)
-        val f16c = enable(procInfoEcx, 29, Feature::f16c)
-        enable(procInfoEcx, 30, Feature::rdrand)
-        enable(extendedFeaturesEbx, 18, Feature::rdseed)
-        enable(extendedFeaturesEbx, 19, Feature::adx)
-        enable(extendedFeaturesEbx, 11, Feature::rtm)
-        enable(procInfoEdx, 4, Feature::tsc)
-        enable(procInfoEdx, 23, Feature::mmx)
-        enable(procInfoEdx, 24, Feature::fxsr)
-        enable(procInfoEdx, 25, Feature::sse)
-        enable(procInfoEdx, 26, Feature::sse2)
-        enable(extendedFeaturesEbx, 29, Feature::sha)
-        enable(extendedFeaturesEcx, 8, Feature::gfni)
-        enable(extendedFeaturesEcx, 9, Feature::vaes)
-        enable(extendedFeaturesEcx, 10, Feature::vpclmulqdq)
-        enable(extendedFeaturesEcx, 27, Feature::movdiri)
-        enable(extendedFeaturesEcx, 28, Feature::movdir64b)
-        enable(extendedFeaturesEbx, 3, Feature::bmi1)
-        enable(extendedFeaturesEbx, 8, Feature::bmi2)
-        enable(extendedFeaturesEbx, 9, Feature::ermsb)
-        enable(extendedFeaturesEbx, 23, Feature::clflushopt)
-        enable(extendedFeaturesEaxLeaf1, 31, Feature::movrs)
+        enable(procInfoEcx, 0, Feature.Sse3)
+        enable(procInfoEcx, 1, Feature.Pclmulqdq)
+        enable(procInfoEcx, 9, Feature.Ssse3)
+        enable(procInfoEcx, 13, Feature.Cmpxchg16b)
+        enable(procInfoEcx, 19, Feature.Sse41)
+        enable(procInfoEcx, 20, Feature.Sse42)
+        enable(procInfoEcx, 22, Feature.Movbe)
+        enable(procInfoEcx, 23, Feature.Popcnt)
+        enable(procInfoEcx, 25, Feature.Aes)
+        val f16c = enable(procInfoEcx, 29, Feature.F16c)
+        enable(procInfoEcx, 30, Feature.Rdrand)
+        enable(extendedFeaturesEbx, 18, Feature.Rdseed)
+        enable(extendedFeaturesEbx, 19, Feature.Adx)
+        enable(extendedFeaturesEbx, 11, Feature.Rtm)
+        enable(procInfoEdx, 4, Feature.Tsc)
+        enable(procInfoEdx, 23, Feature.Mmx)
+        enable(procInfoEdx, 24, Feature.Fxsr)
+        enable(procInfoEdx, 25, Feature.Sse)
+        enable(procInfoEdx, 26, Feature.Sse2)
+        enable(extendedFeaturesEbx, 29, Feature.Sha)
+        enable(extendedFeaturesEcx, 8, Feature.Gfni)
+        enable(extendedFeaturesEcx, 9, Feature.Vaes)
+        enable(extendedFeaturesEcx, 10, Feature.Vpclmulqdq)
+        enable(extendedFeaturesEcx, 27, Feature.Movdiri)
+        enable(extendedFeaturesEcx, 28, Feature.Movdir64b)
+        enable(extendedFeaturesEbx, 3, Feature.Bmi1)
+        enable(extendedFeaturesEbx, 8, Feature.Bmi2)
+        enable(extendedFeaturesEbx, 9, Feature.Ermsb)
+        enable(extendedFeaturesEbx, 23, Feature.Clflushopt)
+        enable(extendedFeaturesEaxLeaf1, 31, Feature.Movrs)
         // Detect if CPUID.19h available
         if (test(extendedFeaturesEcx.toInt(), 23u)) {
             val structVal6 = cpuid(0x19)
             val ebx2 = structVal6.ebx
-            enable(ebx2, 0, Feature::kl)
-            enable(ebx2, 2, Feature::widekl)
+            enable(ebx2, 0, Feature.Kl)
+            enable(ebx2, 2, Feature.Widekl)
         }
         // This detects ABM on AMD CPUs and LZCNT on Intel CPUs.
         // On intel CPUs with popcnt, lzcnt implements the
@@ -147,7 +147,7 @@ public fun detectFeatures(): Initializer {
         //
         // The `isX86FeatureDetected("lzcnt")` macro then
         // internally maps to Feature.abm.
-        enable(extendedProcInfoEcx, 5, Feature::lzcnt)
+        enable(extendedProcInfoEcx, 5, Feature.Lzcnt)
         // As Hygon Dhyana originates from AMD technology and shares most of the architecture with
         // AMD's family 17h, but with different CPU Vendor ID("HygonGenuine")/Family series
         // number(Family 18h).
@@ -160,9 +160,9 @@ public fun detectFeatures(): Initializer {
         // http://lkml.kernel.org/r/5ce86123a7b9dad925ac583d88d2f921040e859b.1538583282.git.puwen@hygon.cn
         if (vendorId2 == "AuthenticAMD".encodeToByteArray() || vendorId2 == "HygonGenuine".encodeToByteArray()) {
             // These features are available on AMD arch CPUs:
-            enable(extendedProcInfoEcx, 6, Feature::sse4a)
-            enable(extendedProcInfoEcx, 21, Feature::tbm)
-            enable(extendedProcInfoEcx, 11, Feature::xop)
+            enable(extendedProcInfoEcx, 6, Feature.Sse4a)
+            enable(extendedProcInfoEcx, 21, Feature.Tbm)
+            enable(extendedProcInfoEcx, 11, Feature.Xop)
         }
         // `XSAVE` and `AVX` support:
         val cpuXsave = test(procInfoEcx.toInt(), 26u)
@@ -202,21 +202,21 @@ public fun detectFeatures(): Initializer {
                 // Test `XCR0.APX[19]` with the mask `0b10000000000000000000 == 0x80000`
                 val osApxSupport = xcr0 and 0x80000 == 0x80000
                 if (osAmxSupport) {
-                    enable(extendedFeaturesEdx, 24, Feature::amxTile)
-                    enable(extendedFeaturesEdx, 25, Feature::amxInt8)
-                    enable(extendedFeaturesEdx, 22, Feature::amxBf16)
-                    enable(extendedFeaturesEaxLeaf1, 21, Feature::amxFp16)
-                    enable(extendedFeaturesEdxLeaf1, 8, Feature::amxComplex)
+                    enable(extendedFeaturesEdx, 24, Feature.AmxTile)
+                    enable(extendedFeaturesEdx, 25, Feature.AmxInt8)
+                    enable(extendedFeaturesEdx, 22, Feature.AmxBf16)
+                    enable(extendedFeaturesEaxLeaf1, 21, Feature.AmxFp16)
+                    enable(extendedFeaturesEdxLeaf1, 8, Feature.AmxComplex)
                     if (maxBasicLeaf1 >= 0x1e) {
                         val structVal7 = cpuidCount(0x1eu, 1)
                         val amxFeatureFlagsEax = structVal7.eax
-                        enable(amxFeatureFlagsEax, 4, Feature::amxFp8)
-                        enable(amxFeatureFlagsEax, 7, Feature::amxAvx512)
-                        enable(amxFeatureFlagsEax, 8, Feature::amxMovrs)
+                        enable(amxFeatureFlagsEax, 4, Feature.AmxFp8)
+                        enable(amxFeatureFlagsEax, 7, Feature.AmxAvx512)
+                        enable(amxFeatureFlagsEax, 8, Feature.AmxMovrs)
                     }
                 }
                 if (osApxSupport) {
-                    enable(extendedFeaturesEdxLeaf1, 21, Feature::apxf)
+                    enable(extendedFeaturesEdxLeaf1, 21, Feature.Apxf)
                 }
                 // Only if the OS and the CPU support saving/restoring the AVX
                 // registers we enable `xsave` support:
@@ -231,31 +231,31 @@ public fun detectFeatures(): Initializer {
                     // XRSTOR, XRSTORS, XSAVE, XSAVEC, XSAVEOPT, XSAVES, and XSETBV
                     // causes an invalid-opcode exception (#UD)"
                     //
-                    enable(procInfoEcx, 26, Feature::xsave)
+                    enable(procInfoEcx, 26, Feature.Xsave)
                     // For `xsaveopt`, `xsavec`, and `xsaves` we need to query:
                     // Processor Extended State Enumeration Sub-leaf (EAX = 0DH,
                     // ECX = 1):
                     if (maxBasicLeaf1 >= 0xd) {
                         val structVal8 = cpuidCount(0xdu, 1)
                         val procExtendedState1Eax = structVal8.eax
-                        enable(procExtendedState1Eax, 0, Feature::xsaveopt)
-                        enable(procExtendedState1Eax, 1, Feature::xsavec)
-                        enable(procExtendedState1Eax, 3, Feature::xsaves)
+                        enable(procExtendedState1Eax, 0, Feature.Xsaveopt)
+                        enable(procExtendedState1Eax, 1, Feature.Xsavec)
+                        enable(procExtendedState1Eax, 3, Feature.Xsaves)
                     }
                     // FMA (uses 256-bit wide registers):
-                    val fma = enable(procInfoEcx, 12, Feature::fma)
+                    val fma = enable(procInfoEcx, 12, Feature.Fma)
                     // And AVX/AVX2:
-                    enable(procInfoEcx, 28, Feature::avx)
-                    enable(extendedFeaturesEbx, 5, Feature::avx2)
+                    enable(procInfoEcx, 28, Feature.Avx)
+                    enable(extendedFeaturesEbx, 5, Feature.Avx2)
                     // "Short" versions of AVX512 instructions
-                    val avxvnni = enable(extendedFeaturesEaxLeaf1, 4, Feature::avxvnni)
-                    val avxvnniint8 = enable(extendedFeaturesEaxLeaf1, 23, Feature::avxifma)
-                    val avxvnniint16 = enable(extendedFeaturesEdxLeaf1, 4, Feature::avxvnniint8)
-                    enable(extendedFeaturesEdxLeaf1, 5, Feature::avxneconvert)
-                    enable(extendedFeaturesEdxLeaf1, 10, Feature::avxvnniint16)
-                    enable(extendedFeaturesEaxLeaf1, 0, Feature::sha512)
-                    enable(extendedFeaturesEaxLeaf1, 1, Feature::sm3)
-                    enable(extendedFeaturesEaxLeaf1, 2, Feature::sm4)
+                    val avxvnni = enable(extendedFeaturesEaxLeaf1, 4, Feature.Avxvnni)
+                    val avxvnniint8 = enable(extendedFeaturesEaxLeaf1, 23, Feature.Avxifma)
+                    val avxvnniint16 = enable(extendedFeaturesEdxLeaf1, 4, Feature.Avxvnniint8)
+                    enable(extendedFeaturesEdxLeaf1, 5, Feature.Avxneconvert)
+                    enable(extendedFeaturesEdxLeaf1, 10, Feature.Avxvnniint16)
+                    enable(extendedFeaturesEaxLeaf1, 0, Feature.Sha512)
+                    enable(extendedFeaturesEaxLeaf1, 1, Feature.Sm3)
+                    enable(extendedFeaturesEaxLeaf1, 2, Feature.Sm4)
                     // For AVX-512 the OS also needs to support saving/restoring
                     // the extended state, only then we enable AVX-512 support:
                     // Also, Rust makes `avx512f` imply `fma` and `f16c`, because
@@ -263,23 +263,23 @@ public fun detectFeatures(): Initializer {
                     // that `fma` and `f16c` are available with `avx512f`, so we
                     // need to check for them separately.
                     if (osAvx512Support && f16c && fma) {
-                        enable(extendedFeaturesEbx, 16, Feature::avx512f)
-                        enable(extendedFeaturesEbx, 17, Feature::avx512dq)
-                        enable(extendedFeaturesEbx, 21, Feature::avx512ifma)
-                        enable(extendedFeaturesEbx, 26, Feature::avx512pf)
-                        enable(extendedFeaturesEbx, 27, Feature::avx512er)
-                        enable(extendedFeaturesEbx, 28, Feature::avx512cd)
-                        enable(extendedFeaturesEbx, 30, Feature::avx512bw)
-                        enable(extendedFeaturesEbx, 31, Feature::avx512vl)
-                        enable(extendedFeaturesEcx, 1, Feature::avx512vbmi)
-                        enable(extendedFeaturesEcx, 6, Feature::avx512vbmi2)
-                        enable(extendedFeaturesEcx, 11, Feature::avx512vnni)
-                        enable(extendedFeaturesEcx, 12, Feature::avx512bitalg)
-                        enable(extendedFeaturesEcx, 14, Feature::avx512vpopcntdq)
-                        enable(extendedFeaturesEdx, 8, Feature::avx512vp2intersect)
-                        enable(extendedFeaturesEdx, 23, Feature::avx512fp16)
-                        enable(extendedFeaturesEaxLeaf1, 5, Feature::avx512bf16)
-                        val avx101 = enable(extendedFeaturesEdxLeaf1, 19, Feature::avx101)
+                        enable(extendedFeaturesEbx, 16, Feature.Avx512f)
+                        enable(extendedFeaturesEbx, 17, Feature.Avx512dq)
+                        enable(extendedFeaturesEbx, 21, Feature.Avx512ifma)
+                        enable(extendedFeaturesEbx, 26, Feature.Avx512pf)
+                        enable(extendedFeaturesEbx, 27, Feature.Avx512er)
+                        enable(extendedFeaturesEbx, 28, Feature.Avx512cd)
+                        enable(extendedFeaturesEbx, 30, Feature.Avx512bw)
+                        enable(extendedFeaturesEbx, 31, Feature.Avx512vl)
+                        enable(extendedFeaturesEcx, 1, Feature.Avx512vbmi)
+                        enable(extendedFeaturesEcx, 6, Feature.Avx512vbmi2)
+                        enable(extendedFeaturesEcx, 11, Feature.Avx512vnni)
+                        enable(extendedFeaturesEcx, 12, Feature.Avx512bitalg)
+                        enable(extendedFeaturesEcx, 14, Feature.Avx512vpopcntdq)
+                        enable(extendedFeaturesEdx, 8, Feature.Avx512vp2intersect)
+                        enable(extendedFeaturesEdx, 23, Feature.Avx512fp16)
+                        enable(extendedFeaturesEaxLeaf1, 5, Feature.Avx512bf16)
+                        val avx101 = enable(extendedFeaturesEdxLeaf1, 19, Feature.Avx101)
                         if (avx101) {
                             val structVal9 = cpuid(0x24)
                             val ebx3 = structVal9.ebx
@@ -287,7 +287,7 @@ public fun detectFeatures(): Initializer {
                             // AVX10.2 supports masked versions of dot-product instructions available in avxvnni etc,
                             // so it doesn't make sense to have it without the unmasked versions
                             if (avx10Version >= 2 && avxvnni && avxvnniint8 && avxvnniint16) {
-                                value.set((Feature::avx102).toUInt())
+                                value.set(Feature.Avx102.toUInt())
                             }
                         }
                     }
@@ -310,9 +310,9 @@ public fun detectFeatures(): Initializer {
     //
     // This bug is documented as `SKL052` in the errata section of this document:
     // http://www.intel.com/content/dam/www/public/us/en/documents/specification-updates/desktop-6th-gen-core-family-spec-update.pdf
-    if (vendorId2 == "GenuineIntel".encodeToByteArray() && !value.test((Feature::avx).toUInt())) {
-        value.unset((Feature::bmi1).toUInt())
-        value.unset((Feature::bmi2).toUInt())
+    if (vendorId2 == "GenuineIntel".encodeToByteArray() && !value.test(Feature.Avx.toUInt())) {
+        value.unset(Feature.Bmi1.toUInt())
+        value.unset(Feature.Bmi2.toUInt())
     }
     return value
 }

@@ -30,7 +30,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class PhantomCovariantLifetime internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<PhantomCovariant<Unit>> = UnresolvedTypeLayout(),
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomCovariantLifetime>, Variance<PhantomCovariantLifetime> {
+) : PrivateItems<PhantomCovariantLifetime>, Variance<PhantomCovariantLifetime> {
     public var field0: PhantomCovariant<Unit>
         get() = value
         set(v) {
@@ -82,7 +82,7 @@ public open class PhantomCovariantLifetime internal constructor(
 public open class PhantomContravariantLifetime internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<PhantomContravariant<Unit>> = UnresolvedTypeLayout(),
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomContravariantLifetime>, Variance<PhantomContravariantLifetime> {
+) : PrivateItems<PhantomContravariantLifetime>, Variance<PhantomContravariantLifetime> {
     public var field0: PhantomContravariant<Unit>
         get() = value
         set(v) {
@@ -132,7 +132,7 @@ public open class PhantomContravariantLifetime internal constructor(
 public open class PhantomInvariantLifetime internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<PhantomInvariant<Unit>> = UnresolvedTypeLayout(),
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomInvariantLifetime>, Variance<PhantomInvariantLifetime> {
+) : PrivateItems<PhantomInvariantLifetime>, Variance<PhantomInvariantLifetime> {
     public var field0: PhantomInvariant<Unit>
         get() = value
         set(v) {
@@ -185,7 +185,7 @@ public open class PhantomInvariantLifetime internal constructor(
 public open class PhantomCovariant<T> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout(),
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomCovariant<T>>, Variance<PhantomCovariant<T>>, TrivialClone<PhantomCovariant<T>> {
+) : PrivateItems<PhantomCovariant<T>>, Variance<PhantomCovariant<T>>, TrivialClone<PhantomCovariant<T>> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -248,7 +248,7 @@ public open class PhantomCovariant<T> internal constructor(
 public open class PhantomContravariant<T> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout(),
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomContravariant<T>>, Variance<PhantomContravariant<T>>, TrivialClone<PhantomContravariant<T>> {
+) : PrivateItems<PhantomContravariant<T>>, Variance<PhantomContravariant<T>>, TrivialClone<PhantomContravariant<T>> {
     public var field0: Unit
         get() = value
         set(v) {
@@ -308,7 +308,7 @@ public open class PhantomContravariant<T> internal constructor(
 public open class PhantomInvariant<T> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<Unit> = UnresolvedTypeLayout(),
-) : io.github.kotlinmania.rustlang.core.marker.variance.privateitems.PrivateItems<PhantomInvariant<T>>, Variance<PhantomInvariant<T>>, TrivialClone<PhantomInvariant<T>> {
+) : PrivateItems<PhantomInvariant<T>>, Variance<PhantomInvariant<T>>, TrivialClone<PhantomInvariant<T>> {
     public var field0: Unit
         get() = value
         set(v) {

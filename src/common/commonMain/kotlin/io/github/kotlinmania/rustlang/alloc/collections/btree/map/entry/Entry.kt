@@ -4,14 +4,10 @@ package io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry
 import io.github.kotlinmania.rustlang.alloc.collections.btree.borrow.DormantMutRef
 import io.github.kotlinmania.rustlang.alloc.collections.btree.map.entry.Entry.*
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Handle
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.LeafOrInternal
+import io.github.kotlinmania.rustlang.alloc.collections.btree.node.Mut
 import io.github.kotlinmania.rustlang.alloc.collections.btree.node.NodeRef
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Edge
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.KV
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Leaf
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.LeafOrInternal
-import io.github.kotlinmania.rustlang.alloc.collections.btree.node.marker.Mut
 import io.github.kotlinmania.rustlang.core.alloc.AllocatorClone
-import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.result.Result
 
@@ -127,15 +123,15 @@ public sealed class Entry<K, V, A : AllocatorClone> {
         }
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (this) {
             is Vacant<*, *, *> -> {
                 val (v) = this as Vacant<K, V, A>
-                run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, Error>(Unit) }
+                run { DebugTuple(f, "Entry").field(v).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
             is Occupied<*, *, *> -> {
                 val (o) = this as Occupied<K, V, A>
-                run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, Error>(Unit) }
+                run { DebugTuple(f, "Entry").field(o).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
         }
 
@@ -377,7 +373,7 @@ public sealed class Entry<K, V, A : AllocatorClone> {
  */
 public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
     public var key: K,
-    handleCtorArg: Handle<NodeRef<Mut, K, V, Leaf>, Edge>?,
+    handleCtorArg: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>?,
     dormantMapCtorArg: DormantMutRef<MutableMap<K, V>>,
     /**
      * The BTreeMap will outlive this IntoIter so we don't care about drop order for `alloc`.
@@ -389,13 +385,13 @@ public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
     /**
      * `None` for a (empty) map without root
      */
-    public var handle: Handle<NodeRef<Mut, K, V, Leaf>, Edge>? = handleCtorArg
+    public var handle: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>? = handleCtorArg
         internal set
 
     public var dormantMap: DormantMutRef<MutableMap<K, V>> = dormantMapCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "VacantEntry").field(this.key()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugTuple(f, "VacantEntry").field(this.key()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Gets a reference to the key that would be used when inserting a value
@@ -508,7 +504,7 @@ public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
     public companion object {
         public operator fun <K, V, A : AllocatorClone> invoke(
             key: K,
-            handle: Handle<NodeRef<Mut, K, V, Leaf>, Edge>?,
+            handle: Handle<NodeRef<Mut, K, V, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Leaf>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.Edge>?,
             dormantMap: DormantMutRef<MutableMap<K, V>>,
             alloc: A,
             marker: Unit,
@@ -527,7 +523,7 @@ public open class VacantEntry<K, V, A : AllocatorClone> internal constructor(
  * It is part of the [Entry] enum.
  */
 public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
-    handleCtorArg: Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>,
+    handleCtorArg: Handle<NodeRef<Mut, K, V, LeafOrInternal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV>,
     dormantMapCtorArg: DormantMutRef<MutableMap<K, V>>,
     /**
      * The BTreeMap will outlive this IntoIter so we don't care about drop order for `alloc`.
@@ -536,13 +532,13 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
     // Be invariant in `K` and `V`
     public var marker: Unit,
 ) {
-    public var handle: Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV> = handleCtorArg
+    public var handle: Handle<NodeRef<Mut, K, V, LeafOrInternal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV> = handleCtorArg
         internal set
 
     public var dormantMap: DormantMutRef<MutableMap<K, V>> = dormantMapCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "OccupiedEntry").field("key", this.key()).field("value", this.get()).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     /**
      * Gets a reference to the key in the entry.
@@ -727,7 +723,7 @@ public open class OccupiedEntry<K, V, A : AllocatorClone> internal constructor(
 
     public companion object {
         public operator fun <K, V, A : AllocatorClone> invoke(
-            handle: Handle<NodeRef<Mut, K, V, LeafOrInternal>, KV>,
+            handle: Handle<NodeRef<Mut, K, V, LeafOrInternal>, io.github.kotlinmania.rustlang.alloc.collections.btree.node.KV>,
             dormantMap: DormantMutRef<MutableMap<K, V>>,
             alloc: A,
             marker: Unit,
@@ -762,7 +758,7 @@ public open class OccupiedError<K, V, A : AllocatorClone> internal constructor(
     public var entry: OccupiedEntry<K, V, A> = entryCtorArg
         internal set
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("uninserted_key", this.key).field("old_value", this.entry.get()).field("new_value", this.value).finish(); Result.Ok<Unit, Error>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "OccupiedError").field("key", this.entry.key()).field("uninserted_key", this.key).field("old_value", this.entry.get()).field("new_value", this.value).finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public operator fun <K, V, A : AllocatorClone> invoke(

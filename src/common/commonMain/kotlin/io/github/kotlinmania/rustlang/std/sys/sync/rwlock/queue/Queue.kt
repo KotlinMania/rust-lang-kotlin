@@ -5,7 +5,9 @@ import io.github.kotlinmania.rustlang.core.cell.once.OnceCell
 import io.github.kotlinmania.rustlang.core.hint.spinLoop
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
@@ -732,7 +734,7 @@ public open class RwLock internal constructor(
                 }
             } else {
                 // Grab the entire queue by swapping the `state` with a single reader.
-                val next1 = ptr.withoutProvenanceMut(SINGLE or LOCKED)
+                val next1 = withoutProvenanceMut(SINGLE or LOCKED)
                 when (val matchVal1 = this.state.compareExchangeWeak(state1, next1, AcqRel, Relaxed)) {
                     is Result.Err<*, *> -> {
                         val new1 = matchVal1.errValue()
@@ -825,7 +827,7 @@ public open class RwLock internal constructor(
                 // Clear the queue.
                 val next1 =
                     if (downgrade) {
-                        ptr.withoutProvenanceMut(SINGLE or LOCKED)
+                        withoutProvenanceMut(SINGLE or LOCKED)
                     } else {
                         UNLOCKED
                     }

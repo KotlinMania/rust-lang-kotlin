@@ -18,6 +18,8 @@ public open class Lru<T>(
     public var len: Int,
     public var arr: List<MaybeUninit<T>>,
 ) {
+    public val n: Int = 0
+
     public open fun clear() {
         val len = this.len
         this.len = 0

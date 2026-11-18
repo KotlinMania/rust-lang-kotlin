@@ -39,6 +39,9 @@ import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.num.checkedMul
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.num.uncheckedMul
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
@@ -787,12 +790,12 @@ public open class Vec<T, A : Allocator> internal constructor(
      * public fun doctestEntry() {
      *     val vec: Vec<Int, Global> = mutableListOf(1, 2, 3)
      *     val boxArray: IntArray = vec.toMutableList().intoArray().unwrap()
-     *     val notEnoughElements: Result<IntArray> = vec.intoArray()
+     *     val notEnoughElements: Result<IntArray> = vec.intoArray(4)
      *     check(notEnoughElements == Result.failure(mutableListOf(1, 2, 3)))
      * }
      * ```
      */
-    public open fun intoArray(n: Int): Result<List<T>, Vec<T, A>> {
+    public open fun intoArray(n: Int = 0): Result<List<T>, Vec<T, A>> {
         return if (this.len() == n) {
             // SAFETY: `Holder.intoArray` is guaranteed to return `Ok` if the
             // length of the slice is equal to `N`.
@@ -2422,7 +2425,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * @feature(vecIntoChunks)
      * public fun doctestEntry() {
      *     val vec = mutableListOf(0, 1, 2, 3, 4, 5, 6, 7)
-     *     check(vec.intoChunks() == listOf(listOf(0, 1, 2), listOf(3, 4, 5)))
+     *     check(vec.intoChunks(3) == listOf(listOf(0, 1, 2), listOf(3, 4, 5)))
      *     val vec1 = mutableListOf(0, 1, 2, 3)
      *     val chunks: Vec<UByteArray, Global> = vec1.intoChunks()
      *     check(chunks.isEmpty())
@@ -2432,7 +2435,7 @@ public open class Vec<T, A : Allocator> internal constructor(
      * }
      * ```
      */
-    public open fun intoChunks(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Vec<List<T>, A> {
+    public open fun intoChunks(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Vec<List<T>, A> {
         run {
             check(n != 0) { "chunk size must be greater than zero" }
         }
@@ -3706,7 +3709,7 @@ public fun <A : Allocator> Vec<UByte, A>.tryExtendFromSliceOfBytes(other: List<U
  * check(flattened.pop() == 6)
  * ```
  */
-public fun <T, A : Allocator> Vec<List<T>, A>.intoFlattened(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Vec<T, A> {
+public fun <T, A : Allocator> Vec<List<T>, A>.intoFlattened(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Vec<T, A> {
     val (ptr, len, cap, alloc) = this.intoRawPartsWithAllocator()
     val (newLen, newCap) =
         if (((typeLayoutT).sizeBytes == 0L)) {
@@ -3846,7 +3849,7 @@ public fun <T> fromVecT(s: MutableList<T>): Vec<T, Global> = s.toMutableList()
  * check(Vec.from(listOf(1, 2, 3)) == mutableListOf(1, 2, 3))
  * ```
  */
-public fun <T> fromVecT(s: List<T>, n: Int): Vec<T, Global> = Vec.from(s.asSlice(), n)
+public fun <T> fromVecT(s: List<T>, n: Int = 0): Vec<T, Global> = Vec.from(s.asSlice(), n)
 
 /**
  * Allocates a `List<UByte>` and fills it with a UTF-8 string.

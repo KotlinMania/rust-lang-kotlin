@@ -15,6 +15,7 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.num.nichetypes.UsizeNoHighBitMinusOne
+import io.github.kotlinmania.rustlang.core.num.uncheckedSub
 import io.github.kotlinmania.rustlang.core.ops.index.index
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr

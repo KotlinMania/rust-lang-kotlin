@@ -49,7 +49,7 @@ public fun <T> List<MaybeUninit<T>>.partialDrop(alive: IndexRange) {
     this.getUncheckedMut(alive).assumeInitDrop()
 }
 
-public fun <T> List<MaybeUninit<T>>.partialDropFromMaybeUninitTArrayn(alive: IndexRange, n: Int) {
+public fun <T> List<MaybeUninit<T>>.partialDropFromMaybeUninitTArrayn(alive: IndexRange, n: Int = 0) {
     val slice: MutableList<MaybeUninit<T>> = this
     // SAFETY: Initialized elements in the array are also initialized in the slice.
     slice.partialDrop(alive)
@@ -94,23 +94,25 @@ public open class PolymorphicIter<Data>(
         // items, and this is drop so nothing can use the items afterwards.
         this.data.partialDrop(this.alive.clone())
     }
+
+    public companion object
 }
 
-public fun <T> PolymorphicIter.Companion.empty(n: Int): PolymorphicIter<List<MaybeUninit<T>>> = PolymorphicIter(alive = IndexRange.zeroTo(0), data = List(n) { MaybeUninit.uninit(PrimitiveLayouts.U8) })
+public fun <T> PolymorphicIter.Companion.empty(n: Int = 0): PolymorphicIter<List<MaybeUninit<T>>> = PolymorphicIter(alive = IndexRange.zeroTo(0), data = List(n) { MaybeUninit.uninit(PrimitiveLayouts.U8) })
 
 /**
  * # Safety
  * `data[alive]` are all initialized.
  */
-public fun <T> PolymorphicIter.Companion.newUnchecked(alive: IndexRange, data: List<MaybeUninit<T>>, n: Int): PolymorphicIter<List<MaybeUninit<T>>> = PolymorphicIter(alive = alive, data = data)
+public fun <T> PolymorphicIter.Companion.newUnchecked(alive: IndexRange, data: List<MaybeUninit<T>>, n: Int = 0): PolymorphicIter<List<MaybeUninit<T>>> = PolymorphicIter(alive = alive, data = data)
 
-public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.clone(n: Int): PolymorphicIter<List<MaybeUninit<T>>> = SpecPolymorphicIterClone.specClone(this)
+public fun <T> PolymorphicIter<List<MaybeUninit<T>>>.clone(n: Int = 0): PolymorphicIter<List<MaybeUninit<T>>> = SpecPolymorphicIterClone.specClone(this)
 
 public interface SpecPolymorphicIterClone<T> {
     public fun specClone(thisRef: PolymorphicIter<List<MaybeUninit<T>>>): PolymorphicIter<List<MaybeUninit<T>>>
 }
 
-public fun <T> specPolymorphicIterCloneSpecCloneT(thisRef: PolymorphicIter<List<MaybeUninit<T>>>, n: Int): PolymorphicIter<List<MaybeUninit<T>>> {
+public fun <T> specPolymorphicIterCloneSpecCloneT(thisRef: PolymorphicIter<List<MaybeUninit<T>>>, n: Int = 0): PolymorphicIter<List<MaybeUninit<T>>> {
     fun <U> cloneIntoNew(source: PolymorphicIter<List<MaybeUninit<U>>>, target: PolymorphicIter<List<MaybeUninit<U>>>) {
         // Clone all alive elements.
         for ((src, dst) in zip(source.asSlice(), target.data)) {

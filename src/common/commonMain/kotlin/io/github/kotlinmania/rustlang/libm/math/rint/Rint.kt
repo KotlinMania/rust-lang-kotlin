@@ -10,7 +10,7 @@ import io.github.kotlinmania.rustlang.libm.math.generic.rint.rintStatus
  */
 public fun rintf16(x: F16): F16 {
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.rintf16(x)
+        return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.rounding.rintf16(x)
     }
     return rintStatus(x).value
 }
@@ -20,7 +20,7 @@ public fun rintf16(x: F16): F16 {
  */
 public fun rintf(x: kotlin.Float): kotlin.Float {
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.rintf(x)
+        return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.rounding.rintf(x)
     }
     return rintStatus(x).value
 }
@@ -30,10 +30,10 @@ public fun rintf(x: kotlin.Float): kotlin.Float {
  */
 public fun rint(x: Double): Double {
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.rint(x)
+        return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.rounding.rint(x)
     }
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.rint(x)
+        return io.github.kotlinmania.rustlang.libm.math.arch.aarch64.rounding.rint(x)
     }
     return rintStatus(x).value
 }

@@ -9,6 +9,7 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.corearch.x8664.mm256InsertEpi64
 import io.github.kotlinmania.rustlang.corearch.x8664.mmInsertEpi64
+import kotlin.experimental.inv
 
 // Advanced Vector Extensions 2 (AVX)
 //

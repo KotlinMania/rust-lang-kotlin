@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.float.pow
 import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
+import io.github.kotlinmania.rustlang.core.num.absDiff
 
 /**
  * Returns `a` raised to the power `b`

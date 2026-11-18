@@ -29,6 +29,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x8
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
+import kotlin.experimental.or
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun vsqrtps(a: F32x16, rounding: Int): F32x16 =

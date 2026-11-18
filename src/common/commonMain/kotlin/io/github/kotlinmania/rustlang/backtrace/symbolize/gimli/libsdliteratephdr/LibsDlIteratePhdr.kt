@@ -7,6 +7,8 @@ import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.extractZipPathAn
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.Env
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsStr
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.ffi.OsString
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.parserunningmmaps.MapsEntry
+import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.parserunningmmaps.parseMaps
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
@@ -24,18 +26,18 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.DlPhdrInfo
 
 public open class CallbackData(
     public var libs: List<Library>,
-    public var maps: List<parserunningmmaps.MapsEntry>?,
+    public var maps: List<MapsEntry>?,
 )
 
 public fun nativeLibraries(): List<Library> {
-    val cbData = CallbackData(libs = mutableListOf(), maps = parserunningmmaps.parseMaps().ok())
+    val cbData = CallbackData(libs = mutableListOf(), maps = parseMaps().ok())
     run {
         dlIteratePhdr(::callback, addrOfMut(cbData).cast())
     }
     return cbData.libs
 }
 
-public fun inferCurrentExe(maps: List<parserunningmmaps.MapsEntry>?, baseAddr: Int): OsString {
+public fun inferCurrentExe(maps: List<MapsEntry>?, baseAddr: Int): OsString {
     if (maps != null) {
         val entries = maps
         val optPath = (entries.indexOf({ e -> e.ipMatches(baseAddr) && e.pathname().len() > 0 }).takeIf { it >= 0 })?.let({ e -> e.pathname() })

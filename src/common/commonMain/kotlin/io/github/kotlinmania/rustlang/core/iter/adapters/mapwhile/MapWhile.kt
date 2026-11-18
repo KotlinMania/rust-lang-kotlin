@@ -88,18 +88,18 @@ public open class MapWhile<I, P>(
     }
 }
 
-public fun <B, I> MapWhile<I, P>.next(): B? {
+public fun <Item, B, I : Iterator<Item>> MapWhile<I, P>.next(): B? {
     val x = (this.iter.next() ?: return null)
     return (this.predicate)(x)
 }
 
-public fun <B, I> MapWhile<I, P>.sizeHint(): Pair<Int, Int?> {
+public fun <Item, B, I : Iterator<Item>> MapWhile<I, P>.sizeHint(): Pair<Int, Int?> {
     val (_, upper) = this.iter.sizeHint()
     return Pair(0, upper)
     // can't know a lower bound, due to the predicate
 }
 
-public fun <Residual, B, I, Acc, R> MapWhile<I, P>.tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> {
+public fun <Item, Residual, B, I : Iterator<Item>, Acc, R> MapWhile<I, P>.tryFold(init: Acc, fold: (Acc, B) -> R): R where R : Try<R, Acc, Residual> {
     val iter = this.iter
     val predicate = this.predicate
     return iter.tryFold(init, { acc, x -> when (val matchVal = predicate(x)) {
@@ -111,7 +111,7 @@ public fun <Residual, B, I, Acc, R> MapWhile<I, P>.tryFold(init: Acc, fold: (Acc
     } }).intoTry()
 }
 
-public fun <B, I, Aaa> MapWhile<I, P>.fold(init: Aaa, fold: (Aaa, B) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
+public fun <Item, B, I : Iterator<Item>, Aaa> MapWhile<I, P>.fold(init: Aaa, fold: (Aaa, B) -> Aaa): Aaa = this.tryFold(init, NeverShortCircuit.wrapMut2(fold)).first
 
 public fun <Source, I, P> MapWhile<I, P>.asInner(): Source where I : SourceIter<Source> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements

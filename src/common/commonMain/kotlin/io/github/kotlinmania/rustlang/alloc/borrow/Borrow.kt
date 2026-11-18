@@ -4,7 +4,6 @@ package io.github.kotlinmania.rustlang.alloc.borrow
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow.*
 import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // A module for working with borrowed data.
@@ -279,27 +278,27 @@ public sealed class Cow<B, Owned> : Borrow<B> {
 
     public open fun partialCmp(other: Cow<B, B>): Ordering? = PartialOrd.partialCmp(this, other)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> =
+    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (this) {
             is Borrowed<*, *> -> {
                 val (b) = this as Borrowed<B, Owned>
-                run { f.append((b).toString()); Result.Ok<Unit, Error>(Unit) }
+                run { f.append((b).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
             is Cow.Owned<*, *> -> {
                 val (o) = this as Cow.Owned<B, Owned>
-                run { f.append((o).toString()); Result.Ok<Unit, Error>(Unit) }
+                run { f.append((o).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
         }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         when (this) {
             is Borrowed<*, *> -> {
                 val (b) = this as Borrowed<B, Owned>
-                run { f.append((b).toString()); Result.Ok<Unit, Error>(Unit) }
+                run { f.append((b).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
             is Cow.Owned<*, *> -> {
                 val (o) = this as Cow.Owned<B, Owned>
-                run { f.append((o).toString()); Result.Ok<Unit, Error>(Unit) }
+                run { f.append((o).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
             }
         }
 

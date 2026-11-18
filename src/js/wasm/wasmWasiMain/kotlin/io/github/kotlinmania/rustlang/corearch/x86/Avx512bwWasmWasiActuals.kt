@@ -17,6 +17,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U64x8
 import io.github.kotlinmania.rustlang.corearch.simd.U8x16
 import io.github.kotlinmania.rustlang.corearch.simd.U8x32
 import io.github.kotlinmania.rustlang.corearch.simd.U8x64
+import kotlin.experimental.or
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun vpmulhrsw(a: I16x32, b: I16x32): I16x32 =

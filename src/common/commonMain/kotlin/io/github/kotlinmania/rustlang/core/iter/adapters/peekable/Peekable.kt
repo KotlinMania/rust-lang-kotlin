@@ -2,6 +2,8 @@
 package io.github.kotlinmania.rustlang.core.iter.adapters.peekable
 
 import io.github.kotlinmania.rustlang.core.iter.adapters.SourceIter
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
@@ -479,11 +481,11 @@ public open class Peekable<I, Item>(
     }
 
     public companion object {
-        public fun <I> new(iter: I): Peekable<I, Item> = Peekable(iter = iter, peeked = null)
+        public fun <Item, I : Iterator<Item>> new(iter: I): Peekable<I, Item> = Peekable(iter = iter, peeked = null)
     }
 }
 
-public fun <Source, I> Peekable<I, Item>.asInner(): Source where I : SourceIter<Source> {
+public fun <Item, Source, I : Iterator<Item>> Peekable<I, Item>.asInner(): Source where I : SourceIter<Source> {
     // SAFETY: unchecked function forwarding to unchecked function with the same requirements
     return this.iter.asInner()
 }

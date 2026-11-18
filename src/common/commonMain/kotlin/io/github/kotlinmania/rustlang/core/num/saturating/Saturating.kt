@@ -8,10 +8,16 @@ import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
+import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingMul
+import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
 import io.github.kotlinmania.rustlang.core.result.Result
+import kotlin.experimental.and
+import kotlin.experimental.or
+import kotlin.experimental.xor
 
 // Definitions of `Saturating<T>`.
 
@@ -76,6 +82,8 @@ public open class Saturating<T>(
     public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
 
     public open fun fmtUpperHex(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+
+    public companion object
 }
 
 public fun Saturating<Int>.add(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.saturatingAdd(other.value), fieldLayout = PrimitiveLayouts.USIZE64)

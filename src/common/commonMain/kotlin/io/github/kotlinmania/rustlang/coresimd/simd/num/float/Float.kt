@@ -236,61 +236,61 @@ public interface SimdFloat<SelfType, out Mask, Scalar, Bits, out Cast> {
     public fun reduceMin(): Scalar
 }
 
-public fun <Mask, T : SimdCast<Mask>> Simd<F16>.cast(n: Int): Simd<T> = run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
+public fun <Mask, T : SimdCast<Mask>> Simd<F16>.cast(n: Int = 0): Simd<T> = run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
 
-public fun <Mask, I : SimdCast<Mask>> Simd<F16>.toIntUnchecked(n: Int): Simd<T> = run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
+public fun <Mask, I : SimdCast<Mask>> Simd<F16>.toIntUnchecked(n: Int = 0): Simd<T> = run { val simdArg0 = this; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); val res = (UnresolvedTypeLayout<Simd<T>>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Simd<T>>()).alignBytes)); res } }
 
-public fun Simd<F16>.toBits(n: Int): Simd<UShort> {
+public fun Simd<F16>.toBits(n: Int = 0): Simd<UShort> {
     check(sizeOf<Simd<F16>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
     return transmuteCopy(this)
 }
 
-public fun simdFloatFromBitsSimdF16N(bits: Simd<UShort>, n: Int): Simd<F16> {
+public fun simdFloatFromBitsSimdF16N(bits: Simd<UShort>, n: Int = 0): Simd<F16> {
     check(sizeOf<Simd<F16>>(typeLayoutT = UnresolvedTypeLayout<Simd<F16>>()) == sizeOf<Simd<UShort>>(typeLayoutT = UnresolvedTypeLayout<Simd<UShort>>()))
     return transmuteCopy(bits)
 }
 
-public fun Simd<F16>.abs(n: Int): Simd<F16> = run { val simdArg0 = this; simdArg0 }
+public fun Simd<F16>.abs(n: Int = 0): Simd<F16> = run { val simdArg0 = this; simdArg0 }
 
-public fun Simd<F16>.recip(n: Int): Simd<F16> = Simd.splat(1.0, n) / this
+public fun Simd<F16>.recip(n: Int = 0): Simd<F16> = Simd.splat(1.0, n) / this
 
-public fun Simd<F16>.toDegrees(n: Int): Simd<F16> = this * Simd.splat(Simd.Scalar.toDegrees(1.0), n)
+public fun Simd<F16>.toDegrees(n: Int = 0): Simd<F16> = this * Simd.splat(Simd.Scalar.toDegrees(1.0), n)
 
-public fun Simd<F16>.toRadians(n: Int): Simd<F16> = this * Simd.splat(Simd.Scalar.toRadians(1.0), n)
+public fun Simd<F16>.toRadians(n: Int = 0): Simd<F16> = this * Simd.splat(Simd.Scalar.toRadians(1.0), n)
 
-public fun Simd<F16>.isSignPositive(n: Int): Mask<Mask> = !this.isSignNegative(n)
+public fun Simd<F16>.isSignPositive(n: Int = 0): Mask<Mask> = !this.isSignNegative(n)
 
-public fun Simd<F16>.isSignNegative(n: Int): Mask<Mask> {
+public fun Simd<F16>.isSignNegative(n: Int = 0): Mask<Mask> {
     val signBits = this.toBits(n) and Simd.splat((0.inv() shr 1) + 1, n)
     return signBits.simdGt(Simd.splat(0, n))
 }
 
-public fun Simd<F16>.isNan(n: Int): Mask<Mask> = this.simdNe(this)
+public fun Simd<F16>.isNan(n: Int = 0): Mask<Mask> = this.simdNe(this)
 
-public fun Simd<F16>.isInfinite(n: Int): Mask<Mask> = this.abs(n).simdEq(Simd.splat(Simd.Scalar.INFINITY, n))
+public fun Simd<F16>.isInfinite(n: Int = 0): Mask<Mask> = this.abs(n).simdEq(Simd.splat(Simd.Scalar.INFINITY, n))
 
-public fun Simd<F16>.isFinite(n: Int): Mask<Mask> = this.abs(n).simdLt(Simd.splat(Simd.Scalar.INFINITY, n))
+public fun Simd<F16>.isFinite(n: Int = 0): Mask<Mask> = this.abs(n).simdLt(Simd.splat(Simd.Scalar.INFINITY, n))
 
-public fun Simd<F16>.isSubnormal(n: Int): Mask<Mask> {
+public fun Simd<F16>.isSubnormal(n: Int = 0): Mask<Mask> {
     val notZero = this.abs(n).toBits(n).simdNe(Simd.splat(0.0, n).toBits())
     return notZero and (this.toBits(n) and Simd.splat(Simd.Scalar.INFINITY, n).toBits()).simdEq(Simd.splat(0, n))
 }
 
-public fun Simd<F16>.isNormal(n: Int): Mask<Mask> = (this.abs(n).simdEq(Simd.splat(0.0, n)) or this.isNan(n) or this.isSubnormal(n) or this.isInfinite(n)).inv()
+public fun Simd<F16>.isNormal(n: Int = 0): Mask<Mask> = (this.abs(n).simdEq(Simd.splat(0.0, n)) or this.isNan(n) or this.isSubnormal(n) or this.isInfinite(n)).inv()
 
-public fun Simd<F16>.signum(n: Int): Simd<F16> = this.isNan(n).select(Simd.splat(Simd.Scalar.NAN, n), Simd.splat(1.0, n).copysign(this))
+public fun Simd<F16>.signum(n: Int = 0): Simd<F16> = this.isNan(n).select(Simd.splat(Simd.Scalar.NAN, n), Simd.splat(1.0, n).copysign(this))
 
-public fun Simd<F16>.copysign(sign: Simd<F16>, n: Int): Simd<F16> {
+public fun Simd<F16>.copysign(sign: Simd<F16>, n: Int = 0): Simd<F16> {
     val signBit = sign.toBits(n) and Simd.splat(-0.0, n).toBits()
     val magnitude = this.toBits(n) and Simd.splat(-0.0, n).toBits().inv()
     return Simd.fromBits(signBit or magnitude, n)
 }
 
-public fun Simd<F16>.simdMin(other: Simd<F16>, n: Int): Simd<F16> = run { val simdArg0 = this; val simdArg1 = other; simdArg0 }
+public fun Simd<F16>.simdMin(other: Simd<F16>, n: Int = 0): Simd<F16> = run { val simdArg0 = this; val simdArg1 = other; simdArg0 }
 
-public fun Simd<F16>.simdMax(other: Simd<F16>, n: Int): Simd<F16> = run { val simdArg0 = this; val simdArg1 = other; simdArg0 }
+public fun Simd<F16>.simdMax(other: Simd<F16>, n: Int = 0): Simd<F16> = run { val simdArg0 = this; val simdArg1 = other; simdArg0 }
 
-public fun Simd<F16>.simdClamp(min: Simd<F16>, max: Simd<F16>, n: Int): Simd<F16> {
+public fun Simd<F16>.simdClamp(min: Simd<F16>, max: Simd<F16>, n: Int = 0): Simd<F16> {
     check(min.simdLe(max).all()) { "each element in `min` must be less than or equal to the corresponding element in `max`" }
     var x = this
     x = x.simdLt(min).select(min, x)
@@ -298,30 +298,30 @@ public fun Simd<F16>.simdClamp(min: Simd<F16>, max: Simd<F16>, n: Int): Simd<F16
     return x
 }
 
-public fun Simd<F16>.reduceSum(n: Int): F16 =
+public fun Simd<F16>.reduceSum(n: Int = 0): F16 =
     if (false) {
         this.asArray().iter().sum()
     } else {
         run { val simdArg0 = this; val simdArg1 = -F16.fromFloat(0.0f); simdArg1 }
     }
 
-public fun Simd<F16>.reduceProduct(n: Int): F16 =
+public fun Simd<F16>.reduceProduct(n: Int = 0): F16 =
     if (false) {
         this.asArray().iter().product()
     } else {
         run { val simdArg0 = this; val simdArg1 = F16.fromFloat(1.0f); simdArg1 }
     }
 
-public fun Simd<F16>.reduceMax(n: Int): F16 = this.asArray().iter().copied().fold(Simd.Scalar.NAN, Simd.Scalar::max)
+public fun Simd<F16>.reduceMax(n: Int = 0): F16 = this.asArray().iter().copied().fold(Simd.Scalar.NAN, Simd.Scalar::max)
 
-public fun Simd<F16>.reduceMin(n: Int): F16 = this.asArray().iter().copied().fold(Simd.Scalar.NAN, Simd.Scalar::min)
+public fun Simd<F16>.reduceMin(n: Int = 0): F16 = this.asArray().iter().copied().fold(Simd.Scalar.NAN, Simd.Scalar::min)
 
-public fun simdFloatFromBitsSimdFloatN(bits: Simd<UInt>, n: Int): Simd<Float> {
+public fun simdFloatFromBitsSimdFloatN(bits: Simd<UInt>, n: Int = 0): Simd<Float> {
     check(sizeOf<Simd<Float>>(typeLayoutT = UnresolvedTypeLayout<Simd<Float>>()) == sizeOf<Simd<UInt>>(typeLayoutT = UnresolvedTypeLayout<Simd<UInt>>()))
     return transmuteCopy(bits)
 }
 
-public fun simdFloatFromBitsSimdDoubleN(bits: Simd<ULong>, n: Int): Simd<Double> {
+public fun simdFloatFromBitsSimdDoubleN(bits: Simd<ULong>, n: Int = 0): Simd<Double> {
     check(sizeOf<Simd<Double>>(typeLayoutT = UnresolvedTypeLayout<Simd<Double>>()) == sizeOf<Simd<ULong>>(typeLayoutT = UnresolvedTypeLayout<Simd<ULong>>()))
     return transmuteCopy(bits)
 }

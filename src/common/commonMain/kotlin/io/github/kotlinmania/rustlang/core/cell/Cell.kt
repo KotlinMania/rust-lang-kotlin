@@ -12,8 +12,8 @@ import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
+import io.github.kotlinmania.rustlang.core.num.absDiff
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
-import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -588,9 +588,9 @@ public open class Cell<T> internal constructor(
 // `self: Cell<Self>` won't work
 // `self: CellWrapper<Self>` becomes possible
 
-public fun <T> Cell<List<T>>.asRef(n: Int): List<Cell<T>> = this.asArrayOfCells(n)
+public fun <T> Cell<List<T>>.asRef(n: Int = 0): List<Cell<T>> = this.asArrayOfCells(n)
 
-public fun <T> Cell<List<T>>.asRefCellTSlice(n: Int): List<Cell<T>> = this.asArrayOfCells(n)
+public fun <T> Cell<List<T>>.asRefCellTSlice(n: Int = 0): List<Cell<T>> = this.asArrayOfCells(n)
 
 public fun <T> Cell<List<T>>.asRef(): List<Cell<T>> = this.asSliceOfCells()
 
@@ -626,7 +626,7 @@ public fun <T> Cell<List<T>>.asSliceOfCells(typeLayoutT: TypeLayout<T> = Unresol
  * val arrayCell: List<Cell<Int>> = cellArray.asArrayOfCells()
  * ```
  */
-public fun <T> Cell<List<T>>.asArrayOfCells(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<Cell<T>> {
+public fun <T> Cell<List<T>>.asArrayOfCells(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<Cell<T>> {
     // SAFETY: `Cell<T>` has the same memory layout as `T`.
     return (fixedListTypeLayout(TransparentTypeLayout(this.fieldLayout, { ptr, layout -> Cell<T>(ptr, layout) }, { it.value }), (n).toInt())).readNative((((ConstPtr(this.fieldStorage.rawAddress)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
 }
@@ -1219,10 +1219,14 @@ public open class BorrowMutError(
 }
 
 // This ensures the panicking code is outlined from `borrowMut` for `RefCell`.
-public fun panicAlreadyBorrowed(err: BorrowMutError): Nothing = constPanic("RefCell already borrowed", "{err}", err, BorrowMutError, err)
+public fun panicAlreadyBorrowed(err: BorrowMutError): Nothing {
+    error("RefCell already borrowed")
+}
 
 // This ensures the panicking code is outlined from `borrow` for `RefCell`.
-public fun panicAlreadyMutablyBorrowed(err: BorrowError): Nothing = constPanic("RefCell already mutably borrowed", "{err}", err, BorrowError, err)
+public fun panicAlreadyMutablyBorrowed(err: BorrowError): Nothing {
+    error("RefCell already mutably borrowed")
+}
 
 // Positive values represent the number of `Ref` active. Negative values
 // represent the number of `RefMut` active. Multiple `RefMut`s can only be

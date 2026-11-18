@@ -76,7 +76,7 @@ public fun doCountChars(s: String): Int {
         // We accumulate intermediate sums in `counts`, where each byte contains
         // a subset of the sum of this chunk, like a `[UByte; sizeOf<Int>()]`.
         var counts = 0
-        val (unrolledChunks, remainder) = chunk.asChunks()
+        val (unrolledChunks, remainder) = chunk.asChunks(UNROLL_INNER)
         for (unrolled in unrolledChunks) {
             for (word in unrolled) {
                 // Because `CHUNK_SIZE` is < 256, this addition can't cause the

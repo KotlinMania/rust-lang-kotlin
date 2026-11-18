@@ -16,6 +16,7 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
+import io.github.kotlinmania.rustlang.core.sync.atomic.fence
 import io.github.kotlinmania.rustlang.std.sync.mpmc.SendTimeoutError
 import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
@@ -224,7 +225,7 @@ public open class Channel<T> internal constructor(
                     } }
                 }
             } else if (stamp.wrappingAdd(this.oneLap) == tail + 1) {
-                atomic.fence(Ordering.SeqCst)
+                fence(Ordering.SeqCst)
                 val head = this.head.load(Ordering.Relaxed)
                 // If the head lags one lap behind the tail as well...
                 if (head.wrappingAdd(this.oneLap) == tail) {
@@ -300,7 +301,7 @@ public open class Channel<T> internal constructor(
                     } }
                 }
             } else if (stamp == head) {
-                atomic.fence(Ordering.SeqCst)
+                fence(Ordering.SeqCst)
                 val tail = this.tail.load(Ordering.Relaxed)
                 // If the tail equals the head, that means the channel is empty.
                 if ((tail and this.markBit.inv()) == head) {
@@ -352,7 +353,7 @@ public open class Channel<T> internal constructor(
     public open fun trySend(msg: T): Result<Unit, TrySendError<T>> {
         val token = Token.default()
         return if (this.startSend(token)) {
-            this.write(token, msg).mapErr({ TrySendError.Disconnected(it) })
+            this.write(token, msg).mapErr({ TrySendError.Disconnected()(it) })
         } else {
             Result.Err<Unit, TrySendError<T>>(TrySendError.Full(msg))
         }
@@ -367,7 +368,7 @@ public open class Channel<T> internal constructor(
             // Try sending a message.
             if (this.startSend(token)) {
                 val res = this.write(token, msg)
-                return res.mapErr({ SendTimeoutError.Disconnected(it) })
+                return res.mapErr({ SendTimeoutError.Disconnected()(it) })
             }
             if (deadline != null) {
                 val d = deadline

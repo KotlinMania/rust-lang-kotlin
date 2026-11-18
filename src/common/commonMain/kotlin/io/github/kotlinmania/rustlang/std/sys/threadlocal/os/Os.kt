@@ -19,7 +19,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -27,13 +26,14 @@ import io.github.kotlinmania.rustlang.std.alloc.System
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.panic.resumeUnwind
 import io.github.kotlinmania.rustlang.std.process.abort
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 import io.github.kotlinmania.rustlang.std.sys.threadlocal.abortOnDtorUnwind
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.enable
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.Key
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.LazyKey
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.get
-import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.set
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.guard.apple.enable
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy.LazyKey
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.Key
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.get
+import io.github.kotlinmania.rustlang.std.sys.threadlocal.key.unix.set
 
 public fun interface NewDtorCallback {
     public operator fun invoke(arg0: MutPtr)
@@ -48,6 +48,8 @@ public open class Storage<T>(
     public var key: LazyKey,
     public var marker: Unit,
 ) {
+    public val align: Int = 0
+
     /**
      * Gets a pointer to the TLS value, potentially initializing it with the
      * provided parameters. If the TLS variable has been destroyed, a null
@@ -70,7 +72,7 @@ public open class Storage<T>(
     }
 
     public companion object {
-        public fun <T> new(align: Int): Storage<T> = Storage(key = LazyKey.new(destroyValue<T>), marker = Unit)
+        public fun <T> new(align: Int = 0): Storage<T> = Storage(key = LazyKey.new(destroyValue<T>), marker = Unit)
 
         /**
          * # Safety
@@ -152,6 +154,8 @@ public open class AlignedSystemBox<T> internal constructor(
 ) {
     public var ptr: NonNull = ptrCtorArg
         internal set
+
+    public val align: Int = 0
 
     public open fun deref(): Value<T> = (this.ptr.asPtr())
 
@@ -265,7 +269,7 @@ public fun destroyValue(ptr: MutPtr, align: Int) {
         val ptr1 = AlignedSystemBox.fromRaw(MutPtr(ptr.rawAddress, ptr.rawMeta), align)
         val key = ptr1.key
         // SAFETY: `key` is the TLS key `ptr` was stored under.
-        set(key, ptr.withoutProvenanceMut(1))
+        set(key, withoutProvenanceMut(1))
         (ptr1).let { }
         // SAFETY: `key` is the TLS key `ptr` was stored under.
         set(key, MutPtr(0L))

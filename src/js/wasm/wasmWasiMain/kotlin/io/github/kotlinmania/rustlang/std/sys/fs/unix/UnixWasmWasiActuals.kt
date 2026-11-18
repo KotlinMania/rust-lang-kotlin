@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.core.ffi.primitives.CSsizeT
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.std.os.raw.CInt
+import kotlin.experimental.or
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun open(pathname: ConstPtr, flags: CInt, vararg variadicArgs: Long): CInt =

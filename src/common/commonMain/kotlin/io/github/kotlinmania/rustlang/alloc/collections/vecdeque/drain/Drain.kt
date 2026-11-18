@@ -2,7 +2,7 @@
 package io.github.kotlinmania.rustlang.alloc.collections.vecdeque.drain
 
 import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.VecDeque
-import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.index.WrappedIndex
+import io.github.kotlinmania.rustlang.alloc.collections.vecdeque.WrappedIndex
 import io.github.kotlinmania.rustlang.core.alloc.Allocator
 import io.github.kotlinmania.rustlang.core.fmt.Error
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout

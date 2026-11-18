@@ -58,7 +58,7 @@ public fun Double.isZero(): Boolean = { x: Double -> x.toBits() == 0uL(this) }
 
 // `IsZero` cannot be soundly implemented for pointers because of provenance
 // (see #135338).
-public fun <T> List<T>.isZeroFromTArrayn(n: Int): Boolean {
+public fun <T> List<T>.isZeroFromTArrayn(n: Int = 0): Boolean {
     // If the array is of length zero,
     // then it doesn't actually contain any `T`s,
     // so `T.clone` doesn't need to be called,
@@ -66,7 +66,7 @@ public fun <T> List<T>.isZeroFromTArrayn(n: Int): Boolean {
     return n == 0
 }
 
-public fun <T : IsZero> List<T>.isZeroFromTArrayn(n: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean {
+public fun <T : IsZero> List<T>.isZeroFromTArrayn(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean {
     return if (((typeLayoutT).sizeBytes == 0L)) {
         // If T is a ZST, then there is at most one possible value of `T`,
         // so we only need to check one element for zeroness.

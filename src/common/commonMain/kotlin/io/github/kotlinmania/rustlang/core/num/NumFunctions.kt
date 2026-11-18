@@ -148,8 +148,11 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU64Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU8Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.result.Result
+import kotlin.experimental.and
+import kotlin.experimental.inv
+import kotlin.experimental.or
+import kotlin.experimental.xor
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError as Pie
 
 /**
@@ -172,7 +175,9 @@ public fun <T> canNotOverflow(radix: UInt, isSignedTy: Boolean, digits: List<UBy
     return radix <= 16u && digits.size <= sizeOf<T>(typeLayoutT = typeLayoutT) * 2 - isSignedTy.toInt()
 }
 
-public fun fromAsciiBytesRadixPanic(radix: UInt): Nothing = constPanic("from_ascii_bytes_radix: radix must lie in the range `[2, 36]`", "from_ascii_bytes_radix: radix must lie in the range `[2, 36]` - found {radix}", radix, radix)
+public fun fromAsciiBytesRadixPanic(radix: UInt): Nothing {
+    error("from_ascii_bytes_radix: radix must lie in the range `[2, 36]`")
+}
 
 /**
  * The smallest value that can be represented by this integer type
@@ -18515,7 +18520,7 @@ public fun UByte.carryingMul(rhs: UByte, carry: UByte): Pair<UByte, UByte> = UBy
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     fun quadraticMul(a: UByteArray, b: UByteArray, n: Int): UByteArray {
+ *     fun quadraticMul(a: UByteArray, b: UByteArray, n: Int = 0): UByteArray {
  *         var out = MutableList(n) { 0 }
  *         for (j in 0 until n) {
  *             var carry = 0
@@ -22326,7 +22331,7 @@ public fun UShort.carryingMul(rhs: UShort, carry: UShort): Pair<UShort, UShort> 
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     fun quadraticMul(a: UByteArray, b: UByteArray, n: Int): UByteArray {
+ *     fun quadraticMul(a: UByteArray, b: UByteArray, n: Int = 0): UByteArray {
  *         var out = MutableList(n) { 0 }
  *         for (j in 0 until n) {
  *             var carry = 0
@@ -25545,7 +25550,7 @@ public fun UInt.carryingMul(rhs: UInt, carry: UInt): Pair<UInt, UInt> = UInt.car
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     fun quadraticMul(a: UByteArray, b: UByteArray, n: Int): UByteArray {
+ *     fun quadraticMul(a: UByteArray, b: UByteArray, n: Int = 0): UByteArray {
  *         var out = MutableList(n) { 0 }
  *         for (j in 0 until n) {
  *             var carry = 0
@@ -28739,7 +28744,7 @@ public fun ULong.carryingMul(rhs: ULong, carry: ULong): Pair<ULong, ULong> = ULo
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     fun quadraticMul(a: UByteArray, b: UByteArray, n: Int): UByteArray {
+ *     fun quadraticMul(a: UByteArray, b: UByteArray, n: Int = 0): UByteArray {
  *         var out = MutableList(n) { 0 }
  *         for (j in 0 until n) {
  *             var carry = 0
@@ -31933,7 +31938,7 @@ public fun U128.carryingMul(rhs: U128, carry: U128): Pair<U128, U128> = U128.car
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     fun quadraticMul(a: UByteArray, b: UByteArray, n: Int): UByteArray {
+ *     fun quadraticMul(a: UByteArray, b: UByteArray, n: Int = 0): UByteArray {
  *         var out = MutableList(n) { 0 }
  *         for (j in 0 until n) {
  *             var carry = 0

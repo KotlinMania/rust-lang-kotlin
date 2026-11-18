@@ -190,6 +190,7 @@ public fun testMm256Gf2p8mulEpi8() {
 public fun testMm256MaskzGf2p8mulEpi8() {
     val (left, right, expected) = generateByteMulTestData()
     for (i in 0 until NUM_TEST_WORDS_256) {
+        val MASK_WORDS: Int = 0x6C
         val left1 = loadM256iWord(left, i)
         val right1 = loadM256iWord(right, i)
         val resultZero = mm256MaskzGf2p8mulEpi8(0u, left1, right1)
@@ -197,7 +198,7 @@ public fun testMm256MaskzGf2p8mulEpi8() {
         val maskBytes: Mmask32 = 0x0FF0FF00u
         val expectedResult = mm256Gf2p8mulEpi8(left1, right1)
         val resultMasked = mm256MaskzGf2p8mulEpi8(maskBytes, left1, right1)
-        val expectedMasked = mm256BlendEpi32<MaskWords>(mm256SetzeroSi256(), expectedResult)
+        val expectedMasked = mm256BlendEpi32(mm256SetzeroSi256(), expectedResult, MASK_WORDS)
         assertEqM256i(resultMasked, expectedMasked)
     }
 }
@@ -205,6 +206,7 @@ public fun testMm256MaskzGf2p8mulEpi8() {
 public fun testMm256MaskGf2p8mulEpi8() {
     val (left, right, expected) = generateByteMulTestData()
     for (i in 0 until NUM_TEST_WORDS_256) {
+        val MASK_WORDS: Int = 0x6C
         val left1 = loadM256iWord(left, i)
         val right1 = loadM256iWord(right, i)
         val resultLeft = mm256MaskGf2p8mulEpi8(left1, 0u, left1, right1)
@@ -212,7 +214,7 @@ public fun testMm256MaskGf2p8mulEpi8() {
         val maskBytes: Mmask32 = 0x0FF0FF00u
         val expectedResult = mm256Gf2p8mulEpi8(left1, right1)
         val resultMasked = mm256MaskGf2p8mulEpi8(left1, maskBytes, left1, right1)
-        val expectedMasked = mm256BlendEpi32<MaskWords>(left1, expectedResult)
+        val expectedMasked = mm256BlendEpi32(left1, expectedResult, MASK_WORDS)
         assertEqM256i(resultMasked, expectedMasked)
     }
 }
@@ -231,6 +233,7 @@ public fun testMmGf2p8mulEpi8() {
 public fun testMmMaskzGf2p8mulEpi8() {
     val (left, right, expected) = generateByteMulTestData()
     for (i in 0 until NUM_TEST_WORDS_128) {
+        val MASK_WORDS: Int = 0x6
         val left1 = loadM128iWord(left, i)
         val right1 = loadM128iWord(right, i)
         val resultZero = mmMaskzGf2p8mulEpi8(0u, left1, right1)
@@ -238,7 +241,7 @@ public fun testMmMaskzGf2p8mulEpi8() {
         val maskBytes: Mmask16 = 0x0FF0u
         val expectedResult = mmGf2p8mulEpi8(left1, right1)
         val resultMasked = mmMaskzGf2p8mulEpi8(maskBytes, left1, right1)
-        val expectedMasked = mmBlendEpi32<MaskWords>(mmSetzeroSi128(), expectedResult)
+        val expectedMasked = mmBlendEpi32(mmSetzeroSi128(), expectedResult, MASK_WORDS)
         assertEqM128i(resultMasked, expectedMasked)
     }
 }
@@ -246,6 +249,7 @@ public fun testMmMaskzGf2p8mulEpi8() {
 public fun testMmMaskGf2p8mulEpi8() {
     val (left, right, expected) = generateByteMulTestData()
     for (i in 0 until NUM_TEST_WORDS_128) {
+        val MASK_WORDS: Int = 0x6
         val left1 = loadM128iWord(left, i)
         val right1 = loadM128iWord(right, i)
         val resultLeft = mmMaskGf2p8mulEpi8(left1, 0u, left1, right1)
@@ -253,7 +257,7 @@ public fun testMmMaskGf2p8mulEpi8() {
         val maskBytes: Mmask16 = 0x0FF0u
         val expectedResult = mmGf2p8mulEpi8(left1, right1)
         val resultMasked = mmMaskGf2p8mulEpi8(left1, maskBytes, left1, right1)
-        val expectedMasked = mmBlendEpi32<MaskWords>(left1, expectedResult)
+        val expectedMasked = mmBlendEpi32(left1, expectedResult, MASK_WORDS)
         assertEqM128i(resultMasked, expectedMasked)
     }
 }
@@ -270,19 +274,19 @@ public fun testMm512Gf2p8affineEpi64Epi8() {
     val (matrices, vectors, references) = generateAffineMulTestData(IDENTITY_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_512) {
         val data = loadM512iWord(bytes, i)
-        val result = mm512Gf2p8affineEpi64Epi8<IdentityByte>(data, identity1)
+        val result = mm512Gf2p8affineEpi64Epi8(data, identity1, IDENTITY_BYTE)
         assertEqM512i(result, data)
-        val result1 = mm512Gf2p8affineEpi64Epi8<ConstantByte>(data, constant1)
+        val result1 = mm512Gf2p8affineEpi64Epi8(data, constant1, CONSTANT_BYTE)
         assertEqM512i(result1, constantReference)
         val data1 = loadM512iWord(moreBytes, i)
-        val result2 = mm512Gf2p8affineEpi64Epi8<IdentityByte>(data1, identity1)
+        val result2 = mm512Gf2p8affineEpi64Epi8(data1, identity1, IDENTITY_BYTE)
         assertEqM512i(result2, data1)
-        val result3 = mm512Gf2p8affineEpi64Epi8<ConstantByte>(data1, constant1)
+        val result3 = mm512Gf2p8affineEpi64Epi8(data1, constant1, CONSTANT_BYTE)
         assertEqM512i(result3, constantReference)
         val matrix = loadM512iWord(matrices, i)
         val vector = loadM512iWord(vectors, i)
         val reference = loadM512iWord(references, i)
-        val result4 = mm512Gf2p8affineEpi64Epi8<IdentityByte>(vector, matrix)
+        val result4 = mm512Gf2p8affineEpi64Epi8(vector, matrix, IDENTITY_BYTE)
         assertEqM512i(result4, reference)
     }
 }
@@ -293,12 +297,12 @@ public fun testMm512MaskzGf2p8affineEpi64Epi8() {
     for (i in 0 until NUM_TEST_WORDS_512) {
         val matrix = loadM512iWord(matrices, i)
         val vector = loadM512iWord(vectors, i)
-        val resultZero = mm512MaskzGf2p8affineEpi64Epi8<ConstantByte>(0uL, vector, matrix)
+        val resultZero = mm512MaskzGf2p8affineEpi64Epi8(0uL, vector, matrix, CONSTANT_BYTE)
         assertEqM512i(resultZero, mm512SetzeroSi512())
         val maskBytes: Mmask64 = 0x0F0F0F0FFFFF0000uL
         val maskWords: Mmask16 = 0x55F0u
-        val expectedResult = mm512Gf2p8affineEpi64Epi8<ConstantByte>(vector, matrix)
-        val resultMasked = mm512MaskzGf2p8affineEpi64Epi8<ConstantByte>(maskBytes, vector, matrix)
+        val expectedResult = mm512Gf2p8affineEpi64Epi8(vector, matrix, CONSTANT_BYTE)
+        val resultMasked = mm512MaskzGf2p8affineEpi64Epi8(maskBytes, vector, matrix, CONSTANT_BYTE)
         val expectedMasked = mm512MaskBlendEpi32(maskWords, mm512SetzeroSi512(), expectedResult)
         assertEqM512i(resultMasked, expectedMasked)
     }
@@ -310,12 +314,12 @@ public fun testMm512MaskGf2p8affineEpi64Epi8() {
     for (i in 0 until NUM_TEST_WORDS_512) {
         val left = loadM512iWord(vectors, i)
         val right = loadM512iWord(matrices, i)
-        val resultLeft = mm512MaskGf2p8affineEpi64Epi8<ConstantByte>(left, 0uL, left, right)
+        val resultLeft = mm512MaskGf2p8affineEpi64Epi8(left, 0uL, left, right, CONSTANT_BYTE)
         assertEqM512i(resultLeft, left)
         val maskBytes: Mmask64 = 0x0F0F0F0FFFFF0000uL
         val maskWords: Mmask16 = 0x55F0u
-        val expectedResult = mm512Gf2p8affineEpi64Epi8<ConstantByte>(left, right)
-        val resultMasked = mm512MaskGf2p8affineEpi64Epi8<ConstantByte>(left, maskBytes, left, right)
+        val expectedResult = mm512Gf2p8affineEpi64Epi8(left, right, CONSTANT_BYTE)
+        val resultMasked = mm512MaskGf2p8affineEpi64Epi8(left, maskBytes, left, right, CONSTANT_BYTE)
         val expectedMasked = mm512MaskBlendEpi32(maskWords, left, expectedResult)
         assertEqM512i(resultMasked, expectedMasked)
     }
@@ -333,19 +337,19 @@ public fun testMm256Gf2p8affineEpi64Epi8() {
     val (matrices, vectors, references) = generateAffineMulTestData(IDENTITY_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_256) {
         val data = loadM256iWord(bytes, i)
-        val result = mm256Gf2p8affineEpi64Epi8<IdentityByte>(data, identity1)
+        val result = mm256Gf2p8affineEpi64Epi8(data, identity1, IDENTITY_BYTE)
         assertEqM256i(result, data)
-        val result1 = mm256Gf2p8affineEpi64Epi8<ConstantByte>(data, constant1)
+        val result1 = mm256Gf2p8affineEpi64Epi8(data, constant1, CONSTANT_BYTE)
         assertEqM256i(result1, constantReference)
         val data1 = loadM256iWord(moreBytes, i)
-        val result2 = mm256Gf2p8affineEpi64Epi8<IdentityByte>(data1, identity1)
+        val result2 = mm256Gf2p8affineEpi64Epi8(data1, identity1, IDENTITY_BYTE)
         assertEqM256i(result2, data1)
-        val result3 = mm256Gf2p8affineEpi64Epi8<ConstantByte>(data1, constant1)
+        val result3 = mm256Gf2p8affineEpi64Epi8(data1, constant1, CONSTANT_BYTE)
         assertEqM256i(result3, constantReference)
         val matrix = loadM256iWord(matrices, i)
         val vector = loadM256iWord(vectors, i)
         val reference = loadM256iWord(references, i)
-        val result4 = mm256Gf2p8affineEpi64Epi8<IdentityByte>(vector, matrix)
+        val result4 = mm256Gf2p8affineEpi64Epi8(vector, matrix, IDENTITY_BYTE)
         assertEqM256i(result4, reference)
     }
 }
@@ -354,14 +358,15 @@ public fun testMm256MaskzGf2p8affineEpi64Epi8() {
     val CONSTANT_BYTE: Int = 0x63
     val (matrices, vectors, expected) = generateAffineMulTestData(CONSTANT_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_256) {
+        val MASK_WORDS: Int = 0xD8
         val matrix = loadM256iWord(matrices, i)
         val vector = loadM256iWord(vectors, i)
-        val resultZero = mm256MaskzGf2p8affineEpi64Epi8<ConstantByte>(0u, vector, matrix)
+        val resultZero = mm256MaskzGf2p8affineEpi64Epi8(0u, vector, matrix, CONSTANT_BYTE)
         assertEqM256i(resultZero, mm256SetzeroSi256())
         val maskBytes: Mmask32 = 0xFF0FF000u
-        val expectedResult = mm256Gf2p8affineEpi64Epi8<ConstantByte>(vector, matrix)
-        val resultMasked = mm256MaskzGf2p8affineEpi64Epi8<ConstantByte>(maskBytes, vector, matrix)
-        val expectedMasked = mm256BlendEpi32<MaskWords>(mm256SetzeroSi256(), expectedResult)
+        val expectedResult = mm256Gf2p8affineEpi64Epi8(vector, matrix, CONSTANT_BYTE)
+        val resultMasked = mm256MaskzGf2p8affineEpi64Epi8(maskBytes, vector, matrix, CONSTANT_BYTE)
+        val expectedMasked = mm256BlendEpi32(mm256SetzeroSi256(), expectedResult, MASK_WORDS)
         assertEqM256i(resultMasked, expectedMasked)
     }
 }
@@ -370,14 +375,15 @@ public fun testMm256MaskGf2p8affineEpi64Epi8() {
     val CONSTANT_BYTE: Int = 0x63
     val (matrices, vectors, expected) = generateAffineMulTestData(CONSTANT_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_256) {
+        val MASK_WORDS: Int = 0xD8
         val left = loadM256iWord(vectors, i)
         val right = loadM256iWord(matrices, i)
-        val resultLeft = mm256MaskGf2p8affineEpi64Epi8<ConstantByte>(left, 0u, left, right)
+        val resultLeft = mm256MaskGf2p8affineEpi64Epi8(left, 0u, left, right, CONSTANT_BYTE)
         assertEqM256i(resultLeft, left)
         val maskBytes: Mmask32 = 0xFF0FF000u
-        val expectedResult = mm256Gf2p8affineEpi64Epi8<ConstantByte>(left, right)
-        val resultMasked = mm256MaskGf2p8affineEpi64Epi8<ConstantByte>(left, maskBytes, left, right)
-        val expectedMasked = mm256BlendEpi32<MaskWords>(left, expectedResult)
+        val expectedResult = mm256Gf2p8affineEpi64Epi8(left, right, CONSTANT_BYTE)
+        val resultMasked = mm256MaskGf2p8affineEpi64Epi8(left, maskBytes, left, right, CONSTANT_BYTE)
+        val expectedMasked = mm256BlendEpi32(left, expectedResult, MASK_WORDS)
         assertEqM256i(resultMasked, expectedMasked)
     }
 }
@@ -394,19 +400,19 @@ public fun testMmGf2p8affineEpi64Epi8() {
     val (matrices, vectors, references) = generateAffineMulTestData(IDENTITY_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_128) {
         val data = loadM128iWord(bytes, i)
-        val result = mmGf2p8affineEpi64Epi8<IdentityByte>(data, identity1)
+        val result = mmGf2p8affineEpi64Epi8(data, identity1, IDENTITY_BYTE)
         assertEqM128i(result, data)
-        val result1 = mmGf2p8affineEpi64Epi8<ConstantByte>(data, constant1)
+        val result1 = mmGf2p8affineEpi64Epi8(data, constant1, CONSTANT_BYTE)
         assertEqM128i(result1, constantReference)
         val data1 = loadM128iWord(moreBytes, i)
-        val result2 = mmGf2p8affineEpi64Epi8<IdentityByte>(data1, identity1)
+        val result2 = mmGf2p8affineEpi64Epi8(data1, identity1, IDENTITY_BYTE)
         assertEqM128i(result2, data1)
-        val result3 = mmGf2p8affineEpi64Epi8<ConstantByte>(data1, constant1)
+        val result3 = mmGf2p8affineEpi64Epi8(data1, constant1, CONSTANT_BYTE)
         assertEqM128i(result3, constantReference)
         val matrix = loadM128iWord(matrices, i)
         val vector = loadM128iWord(vectors, i)
         val reference = loadM128iWord(references, i)
-        val result4 = mmGf2p8affineEpi64Epi8<IdentityByte>(vector, matrix)
+        val result4 = mmGf2p8affineEpi64Epi8(vector, matrix, IDENTITY_BYTE)
         assertEqM128i(result4, reference)
     }
 }
@@ -415,14 +421,15 @@ public fun testMmMaskzGf2p8affineEpi64Epi8() {
     val CONSTANT_BYTE: Int = 0x63
     val (matrices, vectors, expected) = generateAffineMulTestData(CONSTANT_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_128) {
+        val MASK_WORDS: Int = 0x6
         val matrix = loadM128iWord(matrices, i)
         val vector = loadM128iWord(vectors, i)
-        val resultZero = mmMaskzGf2p8affineEpi64Epi8<ConstantByte>(0u, vector, matrix)
+        val resultZero = mmMaskzGf2p8affineEpi64Epi8(0u, vector, matrix, CONSTANT_BYTE)
         assertEqM128i(resultZero, mmSetzeroSi128())
         val maskBytes: Mmask16 = 0x0FF0u
-        val expectedResult = mmGf2p8affineEpi64Epi8<ConstantByte>(vector, matrix)
-        val resultMasked = mmMaskzGf2p8affineEpi64Epi8<ConstantByte>(maskBytes, vector, matrix)
-        val expectedMasked = mmBlendEpi32<MaskWords>(mmSetzeroSi128(), expectedResult)
+        val expectedResult = mmGf2p8affineEpi64Epi8(vector, matrix, CONSTANT_BYTE)
+        val resultMasked = mmMaskzGf2p8affineEpi64Epi8(maskBytes, vector, matrix, CONSTANT_BYTE)
+        val expectedMasked = mmBlendEpi32(mmSetzeroSi128(), expectedResult, MASK_WORDS)
         assertEqM128i(resultMasked, expectedMasked)
     }
 }
@@ -431,19 +438,21 @@ public fun testMmMaskGf2p8affineEpi64Epi8() {
     val CONSTANT_BYTE: Int = 0x63
     val (matrices, vectors, expected) = generateAffineMulTestData(CONSTANT_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_128) {
+        val MASK_WORDS: Int = 0x6
         val left = loadM128iWord(vectors, i)
         val right = loadM128iWord(matrices, i)
-        val resultLeft = mmMaskGf2p8affineEpi64Epi8<ConstantByte>(left, 0u, left, right)
+        val resultLeft = mmMaskGf2p8affineEpi64Epi8(left, 0u, left, right, CONSTANT_BYTE)
         assertEqM128i(resultLeft, left)
         val maskBytes: Mmask16 = 0x0FF0u
-        val expectedResult = mmGf2p8affineEpi64Epi8<ConstantByte>(left, right)
-        val resultMasked = mmMaskGf2p8affineEpi64Epi8<ConstantByte>(left, maskBytes, left, right)
-        val expectedMasked = mmBlendEpi32<MaskWords>(left, expectedResult)
+        val expectedResult = mmGf2p8affineEpi64Epi8(left, right, CONSTANT_BYTE)
+        val resultMasked = mmMaskGf2p8affineEpi64Epi8(left, maskBytes, left, right, CONSTANT_BYTE)
+        val expectedMasked = mmBlendEpi32(left, expectedResult, MASK_WORDS)
         assertEqM128i(resultMasked, expectedMasked)
     }
 }
 
 public fun testMm512Gf2p8affineinvEpi64Epi8() {
+    val IDENTITY_BYTE: Int = 0
     val CONSTANT_BYTE: Int = 0x63
     // validate everything by virtue of checking against the AES SBox
     val AES_S_BOX_MATRIX: Long = 0xF1E3C78F1F3E7CF8uL.toLong()
@@ -454,7 +463,7 @@ public fun testMm512Gf2p8affineinvEpi64Epi8() {
     for (i in 0 until NUM_BYTES_WORDS_512) {
         val input = loadM512iWord(inputs, i)
         val reference = loadM512iWord(results, i)
-        val result = mm512Gf2p8affineinvEpi64Epi8<IdentityByte>(input, identity1)
+        val result = mm512Gf2p8affineinvEpi64Epi8(input, identity1, IDENTITY_BYTE)
         val remultiplied = mm512Gf2p8mulEpi8(result, input)
         assertEqM512i(remultiplied, reference)
     }
@@ -463,16 +472,16 @@ public fun testMm512Gf2p8affineinvEpi64Epi8() {
     for (i1 in 0 until NUM_TEST_WORDS_512) {
         val vector = loadM512iWord(vectors, i1)
         val matrix = loadM512iWord(matrices, i1)
-        val invVec = mm512Gf2p8affineinvEpi64Epi8<IdentityByte>(vector, identity1)
-        val reference1 = mm512Gf2p8affineEpi64Epi8<ConstantByte>(invVec, matrix)
-        val result1 = mm512Gf2p8affineinvEpi64Epi8<ConstantByte>(vector, matrix)
+        val invVec = mm512Gf2p8affineinvEpi64Epi8(vector, identity1, IDENTITY_BYTE)
+        val reference1 = mm512Gf2p8affineEpi64Epi8(invVec, matrix, CONSTANT_BYTE)
+        val result1 = mm512Gf2p8affineinvEpi64Epi8(vector, matrix, CONSTANT_BYTE)
         assertEqM512i(result1, reference1)
     }
     val sboxMatrix = mm512Set1Epi64(AES_S_BOX_MATRIX)
     for (i2 in 0 until NUM_BYTES_WORDS_512) {
         val reference2 = loadM512iWord(AES_S_BOX, i2)
         val input1 = loadM512iWord(inputs, i2)
-        val result2 = mm512Gf2p8affineinvEpi64Epi8<ConstantByte>(input1, sboxMatrix)
+        val result2 = mm512Gf2p8affineinvEpi64Epi8(input1, sboxMatrix, CONSTANT_BYTE)
         assertEqM512i(result2, reference2)
     }
 }
@@ -483,12 +492,12 @@ public fun testMm512MaskzGf2p8affineinvEpi64Epi8() {
     for (i in 0 until NUM_TEST_WORDS_512) {
         val matrix = loadM512iWord(matrices, i)
         val vector = loadM512iWord(vectors, i)
-        val resultZero = mm512MaskzGf2p8affineinvEpi64Epi8<ConstantByte>(0uL, vector, matrix)
+        val resultZero = mm512MaskzGf2p8affineinvEpi64Epi8(0uL, vector, matrix, CONSTANT_BYTE)
         assertEqM512i(resultZero, mm512SetzeroSi512())
         val maskBytes: Mmask64 = 0x0F0F0F0FFFFF0000uL
         val maskWords: Mmask16 = 0x55F0u
-        val expectedResult = mm512Gf2p8affineinvEpi64Epi8<ConstantByte>(vector, matrix)
-        val resultMasked = mm512MaskzGf2p8affineinvEpi64Epi8<ConstantByte>(maskBytes, vector, matrix)
+        val expectedResult = mm512Gf2p8affineinvEpi64Epi8(vector, matrix, CONSTANT_BYTE)
+        val resultMasked = mm512MaskzGf2p8affineinvEpi64Epi8(maskBytes, vector, matrix, CONSTANT_BYTE)
         val expectedMasked = mm512MaskBlendEpi32(maskWords, mm512SetzeroSi512(), expectedResult)
         assertEqM512i(resultMasked, expectedMasked)
     }
@@ -500,18 +509,19 @@ public fun testMm512MaskGf2p8affineinvEpi64Epi8() {
     for (i in 0 until NUM_TEST_WORDS_512) {
         val left = loadM512iWord(vectors, i)
         val right = loadM512iWord(matrices, i)
-        val resultLeft = mm512MaskGf2p8affineinvEpi64Epi8<ConstantByte>(left, 0uL, left, right)
+        val resultLeft = mm512MaskGf2p8affineinvEpi64Epi8(left, 0uL, left, right, CONSTANT_BYTE)
         assertEqM512i(resultLeft, left)
         val maskBytes: Mmask64 = 0x0F0F0F0FFFFF0000uL
         val maskWords: Mmask16 = 0x55F0u
-        val expectedResult = mm512Gf2p8affineinvEpi64Epi8<ConstantByte>(left, right)
-        val resultMasked = mm512MaskGf2p8affineinvEpi64Epi8<ConstantByte>(left, maskBytes, left, right)
+        val expectedResult = mm512Gf2p8affineinvEpi64Epi8(left, right, CONSTANT_BYTE)
+        val resultMasked = mm512MaskGf2p8affineinvEpi64Epi8(left, maskBytes, left, right, CONSTANT_BYTE)
         val expectedMasked = mm512MaskBlendEpi32(maskWords, left, expectedResult)
         assertEqM512i(resultMasked, expectedMasked)
     }
 }
 
 public fun testMm256Gf2p8affineinvEpi64Epi8() {
+    val IDENTITY_BYTE: Int = 0
     val CONSTANT_BYTE: Int = 0x63
     // validate everything by virtue of checking against the AES SBox
     val AES_S_BOX_MATRIX: Long = 0xF1E3C78F1F3E7CF8uL.toLong()
@@ -522,7 +532,7 @@ public fun testMm256Gf2p8affineinvEpi64Epi8() {
     for (i in 0 until NUM_BYTES_WORDS_256) {
         val input = loadM256iWord(inputs, i)
         val reference = loadM256iWord(results, i)
-        val result = mm256Gf2p8affineinvEpi64Epi8<IdentityByte>(input, identity1)
+        val result = mm256Gf2p8affineinvEpi64Epi8(input, identity1, IDENTITY_BYTE)
         val remultiplied = mm256Gf2p8mulEpi8(result, input)
         assertEqM256i(remultiplied, reference)
     }
@@ -531,16 +541,16 @@ public fun testMm256Gf2p8affineinvEpi64Epi8() {
     for (i1 in 0 until NUM_TEST_WORDS_256) {
         val vector = loadM256iWord(vectors, i1)
         val matrix = loadM256iWord(matrices, i1)
-        val invVec = mm256Gf2p8affineinvEpi64Epi8<IdentityByte>(vector, identity1)
-        val reference1 = mm256Gf2p8affineEpi64Epi8<ConstantByte>(invVec, matrix)
-        val result1 = mm256Gf2p8affineinvEpi64Epi8<ConstantByte>(vector, matrix)
+        val invVec = mm256Gf2p8affineinvEpi64Epi8(vector, identity1, IDENTITY_BYTE)
+        val reference1 = mm256Gf2p8affineEpi64Epi8(invVec, matrix, CONSTANT_BYTE)
+        val result1 = mm256Gf2p8affineinvEpi64Epi8(vector, matrix, CONSTANT_BYTE)
         assertEqM256i(result1, reference1)
     }
     val sboxMatrix = mm256Set1Epi64x(AES_S_BOX_MATRIX)
     for (i2 in 0 until NUM_BYTES_WORDS_256) {
         val reference2 = loadM256iWord(AES_S_BOX, i2)
         val input1 = loadM256iWord(inputs, i2)
-        val result2 = mm256Gf2p8affineinvEpi64Epi8<ConstantByte>(input1, sboxMatrix)
+        val result2 = mm256Gf2p8affineinvEpi64Epi8(input1, sboxMatrix, CONSTANT_BYTE)
         assertEqM256i(result2, reference2)
     }
 }
@@ -549,14 +559,15 @@ public fun testMm256MaskzGf2p8affineinvEpi64Epi8() {
     val CONSTANT_BYTE: Int = 0x63
     val (matrices, vectors, expected) = generateAffineMulTestData(CONSTANT_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_256) {
+        val MASK_WORDS: Int = 0xD8
         val matrix = loadM256iWord(matrices, i)
         val vector = loadM256iWord(vectors, i)
-        val resultZero = mm256MaskzGf2p8affineinvEpi64Epi8<ConstantByte>(0u, vector, matrix)
+        val resultZero = mm256MaskzGf2p8affineinvEpi64Epi8(0u, vector, matrix, CONSTANT_BYTE)
         assertEqM256i(resultZero, mm256SetzeroSi256())
         val maskBytes: Mmask32 = 0xFF0FF000u
-        val expectedResult = mm256Gf2p8affineinvEpi64Epi8<ConstantByte>(vector, matrix)
-        val resultMasked = mm256MaskzGf2p8affineinvEpi64Epi8<ConstantByte>(maskBytes, vector, matrix)
-        val expectedMasked = mm256BlendEpi32<MaskWords>(mm256SetzeroSi256(), expectedResult)
+        val expectedResult = mm256Gf2p8affineinvEpi64Epi8(vector, matrix, CONSTANT_BYTE)
+        val resultMasked = mm256MaskzGf2p8affineinvEpi64Epi8(maskBytes, vector, matrix, CONSTANT_BYTE)
+        val expectedMasked = mm256BlendEpi32(mm256SetzeroSi256(), expectedResult, MASK_WORDS)
         assertEqM256i(resultMasked, expectedMasked)
     }
 }
@@ -565,19 +576,21 @@ public fun testMm256MaskGf2p8affineinvEpi64Epi8() {
     val CONSTANT_BYTE: Int = 0x63
     val (matrices, vectors, expected) = generateAffineMulTestData(CONSTANT_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_256) {
+        val MASK_WORDS: Int = 0xD8
         val left = loadM256iWord(vectors, i)
         val right = loadM256iWord(matrices, i)
-        val resultLeft = mm256MaskGf2p8affineinvEpi64Epi8<ConstantByte>(left, 0u, left, right)
+        val resultLeft = mm256MaskGf2p8affineinvEpi64Epi8(left, 0u, left, right, CONSTANT_BYTE)
         assertEqM256i(resultLeft, left)
         val maskBytes: Mmask32 = 0xFF0FF000u
-        val expectedResult = mm256Gf2p8affineinvEpi64Epi8<ConstantByte>(left, right)
-        val resultMasked = mm256MaskGf2p8affineinvEpi64Epi8<ConstantByte>(left, maskBytes, left, right)
-        val expectedMasked = mm256BlendEpi32<MaskWords>(left, expectedResult)
+        val expectedResult = mm256Gf2p8affineinvEpi64Epi8(left, right, CONSTANT_BYTE)
+        val resultMasked = mm256MaskGf2p8affineinvEpi64Epi8(left, maskBytes, left, right, CONSTANT_BYTE)
+        val expectedMasked = mm256BlendEpi32(left, expectedResult, MASK_WORDS)
         assertEqM256i(resultMasked, expectedMasked)
     }
 }
 
 public fun testMmGf2p8affineinvEpi64Epi8() {
+    val IDENTITY_BYTE: Int = 0
     val CONSTANT_BYTE: Int = 0x63
     // validate everything by virtue of checking against the AES SBox
     val AES_S_BOX_MATRIX: Long = 0xF1E3C78F1F3E7CF8uL.toLong()
@@ -588,7 +601,7 @@ public fun testMmGf2p8affineinvEpi64Epi8() {
     for (i in 0 until NUM_BYTES_WORDS_128) {
         val input = loadM128iWord(inputs, i)
         val reference = loadM128iWord(results, i)
-        val result = mmGf2p8affineinvEpi64Epi8<IdentityByte>(input, identity1)
+        val result = mmGf2p8affineinvEpi64Epi8(input, identity1, IDENTITY_BYTE)
         val remultiplied = mmGf2p8mulEpi8(result, input)
         assertEqM128i(remultiplied, reference)
     }
@@ -597,16 +610,16 @@ public fun testMmGf2p8affineinvEpi64Epi8() {
     for (i1 in 0 until NUM_TEST_WORDS_128) {
         val vector = loadM128iWord(vectors, i1)
         val matrix = loadM128iWord(matrices, i1)
-        val invVec = mmGf2p8affineinvEpi64Epi8<IdentityByte>(vector, identity1)
-        val reference1 = mmGf2p8affineEpi64Epi8<ConstantByte>(invVec, matrix)
-        val result1 = mmGf2p8affineinvEpi64Epi8<ConstantByte>(vector, matrix)
+        val invVec = mmGf2p8affineinvEpi64Epi8(vector, identity1, IDENTITY_BYTE)
+        val reference1 = mmGf2p8affineEpi64Epi8(invVec, matrix, CONSTANT_BYTE)
+        val result1 = mmGf2p8affineinvEpi64Epi8(vector, matrix, CONSTANT_BYTE)
         assertEqM128i(result1, reference1)
     }
     val sboxMatrix = mmSet1Epi64x(AES_S_BOX_MATRIX)
     for (i2 in 0 until NUM_BYTES_WORDS_128) {
         val reference2 = loadM128iWord(AES_S_BOX, i2)
         val input1 = loadM128iWord(inputs, i2)
-        val result2 = mmGf2p8affineinvEpi64Epi8<ConstantByte>(input1, sboxMatrix)
+        val result2 = mmGf2p8affineinvEpi64Epi8(input1, sboxMatrix, CONSTANT_BYTE)
         assertEqM128i(result2, reference2)
     }
 }
@@ -615,14 +628,15 @@ public fun testMmMaskzGf2p8affineinvEpi64Epi8() {
     val CONSTANT_BYTE: Int = 0x63
     val (matrices, vectors, expected) = generateAffineMulTestData(CONSTANT_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_128) {
+        val MASK_WORDS: Int = 0x6
         val matrix = loadM128iWord(matrices, i)
         val vector = loadM128iWord(vectors, i)
-        val resultZero = mmMaskzGf2p8affineinvEpi64Epi8<ConstantByte>(0u, vector, matrix)
+        val resultZero = mmMaskzGf2p8affineinvEpi64Epi8(0u, vector, matrix, CONSTANT_BYTE)
         assertEqM128i(resultZero, mmSetzeroSi128())
         val maskBytes: Mmask16 = 0x0FF0u
-        val expectedResult = mmGf2p8affineinvEpi64Epi8<ConstantByte>(vector, matrix)
-        val resultMasked = mmMaskzGf2p8affineinvEpi64Epi8<ConstantByte>(maskBytes, vector, matrix)
-        val expectedMasked = mmBlendEpi32<MaskWords>(mmSetzeroSi128(), expectedResult)
+        val expectedResult = mmGf2p8affineinvEpi64Epi8(vector, matrix, CONSTANT_BYTE)
+        val resultMasked = mmMaskzGf2p8affineinvEpi64Epi8(maskBytes, vector, matrix, CONSTANT_BYTE)
+        val expectedMasked = mmBlendEpi32(mmSetzeroSi128(), expectedResult, MASK_WORDS)
         assertEqM128i(resultMasked, expectedMasked)
     }
 }
@@ -631,14 +645,15 @@ public fun testMmMaskGf2p8affineinvEpi64Epi8() {
     val CONSTANT_BYTE: Int = 0x63
     val (matrices, vectors, expected) = generateAffineMulTestData(CONSTANT_BYTE.toUByte())
     for (i in 0 until NUM_TEST_WORDS_128) {
+        val MASK_WORDS: Int = 0x6
         val left = loadM128iWord(vectors, i)
         val right = loadM128iWord(matrices, i)
-        val resultLeft = mmMaskGf2p8affineinvEpi64Epi8<ConstantByte>(left, 0u, left, right)
+        val resultLeft = mmMaskGf2p8affineinvEpi64Epi8(left, 0u, left, right, CONSTANT_BYTE)
         assertEqM128i(resultLeft, left)
         val maskBytes: Mmask16 = 0x0FF0u
-        val expectedResult = mmGf2p8affineinvEpi64Epi8<ConstantByte>(left, right)
-        val resultMasked = mmMaskGf2p8affineinvEpi64Epi8<ConstantByte>(left, maskBytes, left, right)
-        val expectedMasked = mmBlendEpi32<MaskWords>(left, expectedResult)
+        val expectedResult = mmGf2p8affineinvEpi64Epi8(left, right, CONSTANT_BYTE)
+        val resultMasked = mmMaskGf2p8affineinvEpi64Epi8(left, maskBytes, left, right, CONSTANT_BYTE)
+        val expectedMasked = mmBlendEpi32(left, expectedResult, MASK_WORDS)
         assertEqM128i(resultMasked, expectedMasked)
     }
 }

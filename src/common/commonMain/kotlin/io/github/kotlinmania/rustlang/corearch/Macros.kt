@@ -20,6 +20,8 @@ public open class SimdShuffleIdx(
             value = v
         }
 
+    public val len: Int = 0
+
     public companion object {
         public fun typeLayout(len: Int = 0): TypeLayout<SimdShuffleIdx> =
             object : TypeLayout<SimdShuffleIdx> {
@@ -46,7 +48,7 @@ public open class SimdShuffleIdx(
 /**
  * The first N indices `[0, 1, 2, ...]`.
  */
-public fun identity(n: Int): UIntArray {
+public fun identity(n: Int = 0): UIntArray {
     val out = UIntArray(n) { 0u }
     var i = 0
     while (i < n) {
@@ -59,7 +61,7 @@ public fun identity(n: Int): UIntArray {
 /**
  * The first N even indices `[0, 2, 4, ...]`.
  */
-public fun even(n: Int): UIntArray {
+public fun even(n: Int = 0): UIntArray {
     val out = UIntArray(n) { 0u }
     var i = 0
     while (i < n) {
@@ -72,7 +74,7 @@ public fun even(n: Int): UIntArray {
 /**
  * The first N odd indices `[1, 3, 5, ...]`.
  */
-public fun odd(n: Int): UIntArray {
+public fun odd(n: Int = 0): UIntArray {
     val out = UIntArray(n) { 0u }
     var i = 0
     while (i < n) {
@@ -85,7 +87,7 @@ public fun odd(n: Int): UIntArray {
 /**
  * Multiples of N offset by K `[K, K + N, K + 2N, ...]`.
  */
-public fun deinterleaveMask(lanes: Int, n: Int, k: Int): UIntArray {
+public fun deinterleaveMask(lanes: Int = 0, n: Int, k: Int): UIntArray {
     val out = UIntArray(lanes) { 0u }
     var i = 0
     while (i < lanes) {
@@ -95,7 +97,7 @@ public fun deinterleaveMask(lanes: Int, n: Int, k: Int): UIntArray {
     return out
 }
 
-public fun interleaveMask(lanes: Int, n: Int, k: Int): UIntArray {
+public fun interleaveMask(lanes: Int = 0, n: Int, k: Int): UIntArray {
     val out = UIntArray(lanes) { 0u }
     var j = 0
     while (j < lanes) {

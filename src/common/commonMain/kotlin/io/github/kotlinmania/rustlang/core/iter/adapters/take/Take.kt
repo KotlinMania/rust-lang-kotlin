@@ -10,6 +10,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignUpBytes
+import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
@@ -279,7 +280,7 @@ public interface SpecTake {
     public fun specForEach(f: (Item) -> Unit)
 }
 
-public fun <I : TrustedRandomAccess, B> Take<I>.specFold(init: B, f: (B, Item) -> B): B {
+public fun <Item, I, B> Take<I>.specFold(init: B, f: (B, Item) -> B): B where I : Iterator<Item>, I : TrustedRandomAccess {
     var acc = init
     val end = this.n.min(this.iter.size())
     for (i in 0 until end) {
@@ -290,7 +291,7 @@ public fun <I : TrustedRandomAccess, B> Take<I>.specFold(init: B, f: (B, Item) -
     return acc
 }
 
-public fun <I : TrustedRandomAccess> Take<I>.specForEach(f: (Item) -> Unit) {
+public fun <Item, I> Take<I>.specForEach(f: (Item) -> Unit) where I : Iterator<Item>, I : TrustedRandomAccess {
     val end = this.n.min(this.iter.size())
     for (i in 0 until end) {
         // SAFETY: i < end <= self.iter.size() and we discard the iterator at the end

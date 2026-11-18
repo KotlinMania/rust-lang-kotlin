@@ -16,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.ops.range.RangeFull
 import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
 import io.github.kotlinmania.rustlang.core.ops.range.RangeTo
 import io.github.kotlinmania.rustlang.core.ops.range.RangeToInclusive
-import io.github.kotlinmania.rustlang.core.panic.constPanic
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -29,17 +28,17 @@ public fun <Output, T, I> List<T>.indexMut(index: I): Output where I : SliceInde
 
 public fun sliceIndexFail(start: Int, end: Int, len: Int): Nothing {
     if (start > len) {
-        constPanic("slice start index is out of range for slice", "range start index {start} out of range for slice of length {len}", start, len)
+        error("slice start index is out of range for slice")
     }
     if (end > len) {
-        constPanic("slice end index is out of range for slice", "range end index {end} out of range for slice of length {len}", end, len)
+        error("slice end index is out of range for slice")
     }
     if (start > end) {
-        constPanic("slice index start is larger than end", "slice index starts at {start} but ends at {end}", start, end)
+        error("slice index start is larger than end")
     }
     // Only reachable if the range was a `RangeInclusive` or a
     // `RangeToInclusive`, with `end == len`.
-    return constPanic("slice end index is out of range for slice", "range end index {end} out of range for slice of length {len}", end, len)
+    error("slice end index is out of range for slice")
 }
 
 // The UbChecks are great for catching bugs in the unchecked methods, but including
@@ -283,23 +282,23 @@ public fun <T> Range<Int>.indexMut(slice: MutableList<T>): MutableList<T> {
     }
 }
 
-public fun <T> range.Range<Int>.get(slice: List<T>): List<T>? = Range.from(this).get(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.Range<Int>.get(slice: List<T>): List<T>? = Range.from(this).get(slice)
 
-public fun <T> range.Range<Int>.getMut(slice: MutableList<T>): MutableList<T>? = Range.from(this).getMut(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.Range<Int>.getMut(slice: MutableList<T>): MutableList<T>? = Range.from(this).getMut(slice)
 
-public fun range.Range<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
+public fun io.github.kotlinmania.rustlang.core.slice.index.Range<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
     return Range.from(this).getUnchecked(slice)
 }
 
-public fun range.Range<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
+public fun io.github.kotlinmania.rustlang.core.slice.index.Range<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
     return Range.from(this).getUncheckedMut(slice)
 }
 
-public fun <T> range.Range<Int>.index(slice: List<T>): List<T> = Range.from(this).index(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.Range<Int>.index(slice: List<T>): List<T> = Range.from(this).index(slice)
 
-public fun <T> range.Range<Int>.indexMut(slice: MutableList<T>): MutableList<T> = Range.from(this).indexMut(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.Range<Int>.indexMut(slice: MutableList<T>): MutableList<T> = Range.from(this).indexMut(slice)
 
 /**
  * The methods `index` and `indexMut` panic if the end of the range is out of bounds.
@@ -361,23 +360,23 @@ public fun <T> RangeFrom<Int>.indexMut(slice: MutableList<T>): MutableList<T> {
     }
 }
 
-public fun <T> range.RangeFrom<Int>.get(slice: List<T>): List<T>? = RangeFrom.from(this).get(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeFrom<Int>.get(slice: List<T>): List<T>? = RangeFrom.from(this).get(slice)
 
-public fun <T> range.RangeFrom<Int>.getMut(slice: MutableList<T>): MutableList<T>? = RangeFrom.from(this).getMut(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeFrom<Int>.getMut(slice: MutableList<T>): MutableList<T>? = RangeFrom.from(this).getMut(slice)
 
-public fun range.RangeFrom<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
+public fun io.github.kotlinmania.rustlang.core.slice.index.RangeFrom<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
     return RangeFrom.from(this).getUnchecked(slice)
 }
 
-public fun range.RangeFrom<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
+public fun io.github.kotlinmania.rustlang.core.slice.index.RangeFrom<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
     return RangeFrom.from(this).getUncheckedMut(slice)
 }
 
-public fun <T> range.RangeFrom<Int>.index(slice: List<T>): List<T> = RangeFrom.from(this).index(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeFrom<Int>.index(slice: List<T>): List<T> = RangeFrom.from(this).index(slice)
 
-public fun <T> range.RangeFrom<Int>.indexMut(slice: MutableList<T>): MutableList<T> = RangeFrom.from(this).indexMut(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeFrom<Int>.indexMut(slice: MutableList<T>): MutableList<T> = RangeFrom.from(this).indexMut(slice)
 
 public fun <T> RangeFull.get(slice: List<T>): List<T>? = slice
 
@@ -468,23 +467,23 @@ public fun <T> RangeInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<
     return sliceIndexFail(start, end, slice.size)
 }
 
-public fun <T> range.RangeInclusive<Int>.get(slice: List<T>): List<T>? = RangeInclusive.from(this).get(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeInclusive<Int>.get(slice: List<T>): List<T>? = RangeInclusive.from(this).get(slice)
 
-public fun <T> range.RangeInclusive<Int>.getMut(slice: MutableList<T>): MutableList<T>? = RangeInclusive.from(this).getMut(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeInclusive<Int>.getMut(slice: MutableList<T>): MutableList<T>? = RangeInclusive.from(this).getMut(slice)
 
-public fun range.RangeInclusive<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
+public fun io.github.kotlinmania.rustlang.core.slice.index.RangeInclusive<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
     return RangeInclusive.from(this).getUnchecked(slice)
 }
 
-public fun range.RangeInclusive<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
+public fun io.github.kotlinmania.rustlang.core.slice.index.RangeInclusive<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
     return RangeInclusive.from(this).getUncheckedMut(slice)
 }
 
-public fun <T> range.RangeInclusive<Int>.index(slice: List<T>): List<T> = RangeInclusive.from(this).index(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeInclusive<Int>.index(slice: List<T>): List<T> = RangeInclusive.from(this).index(slice)
 
-public fun <T> range.RangeInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<T> = RangeInclusive.from(this).indexMut(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<T> = RangeInclusive.from(this).indexMut(slice)
 
 /**
  * The methods `index` and `indexMut` panic if the end of the range is out of bounds.
@@ -510,23 +509,23 @@ public fun <T> RangeToInclusive<Int>.indexMut(slice: MutableList<T>): MutableLis
 /**
  * The methods `index` and `indexMut` panic if the end of the range is out of bounds.
  */
-public fun <T> range.RangeToInclusive<Int>.get(slice: List<T>): List<T>? = (0..this.last).get(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeToInclusive<Int>.get(slice: List<T>): List<T>? = (0..this.last).get(slice)
 
-public fun <T> range.RangeToInclusive<Int>.getMut(slice: MutableList<T>): MutableList<T>? = (0..this.last).getMut(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeToInclusive<Int>.getMut(slice: MutableList<T>): MutableList<T>? = (0..this.last).getMut(slice)
 
-public fun range.RangeToInclusive<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
+public fun io.github.kotlinmania.rustlang.core.slice.index.RangeToInclusive<Int>.getUnchecked(slice: ConstPtr): ConstPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUnchecked`.
     return (0..this.last).getUnchecked(slice)
 }
 
-public fun range.RangeToInclusive<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
+public fun io.github.kotlinmania.rustlang.core.slice.index.RangeToInclusive<Int>.getUncheckedMut(slice: MutPtr): MutPtr {
     // SAFETY: the caller has to uphold the safety contract for `getUncheckedMut`.
     return (0..this.last).getUncheckedMut(slice)
 }
 
-public fun <T> range.RangeToInclusive<Int>.index(slice: List<T>): List<T> = (0..this.last).index(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeToInclusive<Int>.index(slice: List<T>): List<T> = (0..this.last).index(slice)
 
-public fun <T> range.RangeToInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<T> = (0..this.last).indexMut(slice)
+public fun <T> io.github.kotlinmania.rustlang.core.slice.index.RangeToInclusive<Int>.indexMut(slice: MutableList<T>): MutableList<T> = (0..this.last).indexMut(slice)
 
 /**
  * Performs bounds checking of a range.
@@ -655,7 +654,7 @@ public fun intoRangeUnchecked(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>)
                 val (i1) = start
                 i1 + 1
             }
-            Bound.Unbounded -> 0
+            is Bound.Unbounded<*> -> 0
         }
     val end1 =
         when (end) {
@@ -667,7 +666,7 @@ public fun intoRangeUnchecked(len: Int, tupleArg1: Pair<Bound<Int>, Bound<Int>>)
                 val (i3) = end
                 i3
             }
-            Bound.Unbounded -> len
+            is Bound.Unbounded<*> -> len
         }
     return start1 until end1
 }

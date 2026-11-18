@@ -26,7 +26,7 @@ import io.github.kotlinmania.rustlang.core.mem.floatPowiWithLayout
 import io.github.kotlinmania.rustlang.core.mem.floatUnaryWithLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
-import io.github.kotlinmania.rustlang.core.panic.constAssert
+import io.github.kotlinmania.rustlang.core.num.midpoint
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Constants for the `f128` quadruple-precision floating point type.
@@ -1178,7 +1178,7 @@ public fun F128.totalCmp(other: F128): Ordering {
  */
 public fun F128.clamp(min: F128, max: F128): F128 {
     var selfMut = this
-    constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max, or either was NaN" }
     if (selfMut < min) {
         selfMut = min
     }

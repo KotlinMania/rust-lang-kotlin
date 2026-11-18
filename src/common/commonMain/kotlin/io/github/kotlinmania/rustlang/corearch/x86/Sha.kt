@@ -7,6 +7,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.I32x4
 import io.github.kotlinmania.rustlang.corearch.simd.I32x8
 import io.github.kotlinmania.rustlang.corearch.simd.I64x2
 import io.github.kotlinmania.rustlang.corearch.simd.I64x4
+import kotlin.experimental.and
 
 public expect fun sha1msg1(a: I32x4, b: I32x4): I32x4
 

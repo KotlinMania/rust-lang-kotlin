@@ -1,5 +1,7 @@
 package io.github.kotlinmania.rustlang.corearch.loongarch64
 
+import io.github.kotlinmania.rustlang.core.num.castSigned
+
 // `LoongArch64` intrinsics
 
 public class Loongarch64InlineTests {

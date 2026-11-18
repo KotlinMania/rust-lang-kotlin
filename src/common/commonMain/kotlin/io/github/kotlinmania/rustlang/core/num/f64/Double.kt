@@ -26,7 +26,7 @@ import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.imp.libm.fdim
-import io.github.kotlinmania.rustlang.core.panic.constAssert
+import io.github.kotlinmania.rustlang.core.num.midpoint
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // Constants for the `Double` double-precision floating point type.
@@ -1258,7 +1258,7 @@ public fun Double.totalCmp(other: Double): Ordering {
  */
 public fun Double.clamp(min: Double, max: Double): Double {
     var selfMut = this
-    constAssert(min <= max, "min > max, or either was NaN", "min > max, or either was NaN. min = {min:?}, max = {max:?}", min, max)
+    check(min <= max) { "min > max, or either was NaN" }
     if (selfMut < min) {
         selfMut = min
     }

@@ -35,10 +35,10 @@ public fun <T, U> MutableList<T>.eqCowUSlice(other: List<U>): Boolean = this == 
 
 public fun <T, U> MutableList<T>.neCowUSlice(other: List<U>): Boolean = this != other
 
-public fun <T, U, A : Allocator> List<T>.eq(other: List<U>, n: Int): Boolean = this == other
+public fun <T, U, A : Allocator> List<T>.eq(other: List<U>, n: Int = 0): Boolean = this == other
 
-public fun <T, U, A : Allocator> List<T>.ne(other: List<U>, n: Int): Boolean = this != other
+public fun <T, U, A : Allocator> List<T>.ne(other: List<U>, n: Int = 0): Boolean = this != other
 
-public fun <T, U, A : Allocator> List<T>.eqUArrayn(other: List<U>, n: Int): Boolean = this == other
+public fun <T, U, A : Allocator> List<T>.eqUArrayn(other: List<U>, n: Int = 0): Boolean = this == other
 
-public fun <T, U, A : Allocator> List<T>.neUArrayn(other: List<U>, n: Int): Boolean = this != other
+public fun <T, U, A : Allocator> List<T>.neUArrayn(other: List<U>, n: Int = 0): Boolean = this != other

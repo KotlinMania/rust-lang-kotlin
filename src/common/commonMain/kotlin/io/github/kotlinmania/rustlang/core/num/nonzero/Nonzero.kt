@@ -21,16 +21,20 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.num.castSigned
+import io.github.kotlinmania.rustlang.core.num.castUnsigned
 import io.github.kotlinmania.rustlang.core.num.checkedAbs
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedNeg
 import io.github.kotlinmania.rustlang.core.num.checkedPow
 import io.github.kotlinmania.rustlang.core.num.countOnes
+import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
 import io.github.kotlinmania.rustlang.core.num.imp.intlog10.u8
+import io.github.kotlinmania.rustlang.core.num.midpoint
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroCharInner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI128Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI16Inner
@@ -52,6 +56,8 @@ import io.github.kotlinmania.rustlang.core.num.rotateRight
 import io.github.kotlinmania.rustlang.core.num.saturatingAbs
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
+import io.github.kotlinmania.rustlang.core.num.uncheckedAdd
+import io.github.kotlinmania.rustlang.core.num.uncheckedMul
 import io.github.kotlinmania.rustlang.core.num.wrappingAbs
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
@@ -62,6 +68,8 @@ import io.github.kotlinmania.rustlang.core.ptr.fromMut
 import io.github.kotlinmania.rustlang.core.ptr.fromRef
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 // Definitions of integer that is known not to equal zero.
 
@@ -390,7 +398,7 @@ public fun <NonZeroInner, T> fromT(nonzero: NonZero<T, NonZeroInner>): T {
 // )
 // )
 //
-public fun <NonZeroInner, T> fromTArrayn(nonzero: List<NonZero<T, NonZeroInner>>, n: Int): List<T> = nonzero.intoZeroable()
+public fun <NonZeroInner, T> fromTArrayn(nonzero: List<NonZero<T, NonZeroInner>>, n: Int = 0): List<T> = nonzero.intoZeroable()
 
 public fun tryFromNonZeroUByte(zeroable: UByte): Result<NonZero<UByte, NonZeroU8Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
@@ -416,12 +424,12 @@ public fun tryFromNonZeroChar(zeroable: Char): Result<NonZero<Char, NonZeroCharI
 
 public fun <NonZeroInner, T> tryFromNonZeroTSlice(zeroable: List<T>): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromSlice(zeroable)?.let { Result.Ok<List<NonZero>, TryFromIntError>(it) } ?: Result.Err<List<NonZero>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun <NonZeroInner, T> tryFromNonZeroTArrayn(zeroable: List<T>, n: Int): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromArray(zeroable, n)?.let { Result.Ok<List<NonZero>, TryFromIntError>(it) } ?: Result.Err<List<NonZero>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun <NonZeroInner, T> tryFromNonZeroTArrayn(zeroable: List<T>, n: Int = 0): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromArray(zeroable, n)?.let { Result.Ok<List<NonZero>, TryFromIntError>(it) } ?: Result.Err<List<NonZero>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
 /**
  * Implementation of `From<[NonZero<T>; N]> for [T; N]`.
  */
-public fun <NonZeroInner, T> List<NonZero<T, NonZeroInner>>.intoZeroable(n: Int): List<T> = this.map({ it.get() })
+public fun <NonZeroInner, T> List<NonZero<T, NonZeroInner>>.intoZeroable(n: Int = 0): List<T> = this.map({ it.get() })
 
 /**
  * This enables some memory layout optimization.

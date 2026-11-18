@@ -1,7 +1,7 @@
 // port-lint: tests math/exp2m1f.rs
 package io.github.kotlinmania.rustlang.libm.math.exp2m1f
 
-import io.github.kotlinmania.rustlang.libm.math.support.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.biteq
 import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 

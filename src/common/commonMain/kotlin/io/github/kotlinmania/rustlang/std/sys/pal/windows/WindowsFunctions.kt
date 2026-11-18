@@ -6,6 +6,8 @@ import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.num.checkedAdd
+import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
@@ -22,8 +24,8 @@ import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.WinError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.getLastError
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.api.wideStr
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.ERROR_INSUFFICIENT_BUFFER
-import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.INFINITE
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.SetLastError
+import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.INFINITE
 import io.github.kotlinmania.rustlang.std.sys.thread.windows.setNameWide
 
 // SAFETY: must be called only once during runtime initialization.

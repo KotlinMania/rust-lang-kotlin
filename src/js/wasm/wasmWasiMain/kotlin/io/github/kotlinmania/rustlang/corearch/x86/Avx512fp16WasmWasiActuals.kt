@@ -22,6 +22,7 @@ import io.github.kotlinmania.rustlang.corearch.simd.U32x8
 import io.github.kotlinmania.rustlang.corearch.simd.U64x2
 import io.github.kotlinmania.rustlang.corearch.simd.U64x4
 import io.github.kotlinmania.rustlang.corearch.simd.U64x8
+import kotlin.experimental.or
 
 // The host must provide the C companion wrapper exports in import module kmcore.
 public actual fun vcmpph128(a: M128h, b: M128h, imm5: Int, mask: Mmask8): Mmask8 =

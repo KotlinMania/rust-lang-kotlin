@@ -19,7 +19,7 @@ public fun floorf16(x: F16): F16 = floorStatus(x).value
  */
 public fun floor(x: Double): Double {
     if (true) {
-        return io.github.kotlinmania.rustlang.libm.math.arch.floor(x)
+        return io.github.kotlinmania.rustlang.libm.math.arch.i586.rounding.floor(x)
     }
     return floorStatus(x).value
 }

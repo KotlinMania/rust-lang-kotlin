@@ -3,7 +3,7 @@
 
 package io.github.kotlinmania.rustlang.backtrace.dbghelp
 
-import io.github.kotlinmania.rustlang.backtrace.lock.LOCK
+import io.github.kotlinmania.rustlang.backtrace.LOCK
 import io.github.kotlinmania.rustlang.backtrace.windowssys.Bool
 import io.github.kotlinmania.rustlang.backtrace.windowssys.FALSE
 import io.github.kotlinmania.rustlang.backtrace.windowssys.Handle

@@ -96,7 +96,7 @@ public fun <T> Poll.Companion.asyncGenReady(t: T): Poll<T?> = Poll.Ready(t)
  * A helper constant for internal desugaring -- produces `Pending`,
  * which corresponds to the async iterator pending on an `.await`.
  */
-public val PENDING: Poll<T?> = Poll.Pending
+public val PENDING: Poll<T?> = Poll.Pending()
 
 /**
  * A helper constant for internal desugaring -- produces `Ready(None)`,

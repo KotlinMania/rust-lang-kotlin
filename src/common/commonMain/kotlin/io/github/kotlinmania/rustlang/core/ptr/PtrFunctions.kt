@@ -917,7 +917,7 @@ public fun <T> swapNonoverlappingConst(x: MutPtr, y: MutPtr, count: Int, typeLay
 }
 
 // Don't let MIR inline this, because we really want it to keep its noalias metadata
-public fun swapChunk(x: MaybeUninit<UByteArray>, y: MaybeUninit<UByteArray>, n: Int) {
+public fun swapChunk(x: MaybeUninit<UByteArray>, y: MaybeUninit<UByteArray>, n: Int = 0) {
     var x1 = x
     var y1 = y
     val a = x1
@@ -928,7 +928,7 @@ public fun swapChunk(x: MaybeUninit<UByteArray>, y: MaybeUninit<UByteArray>, n: 
 
 public fun swapNonoverlappingBytes(x: MutPtr, y: MutPtr, bytes: NonZero<Int, NonZeroUsizeInner>) {
     // Same as `swapNonoverlapping<[UByte; N]>`.
-    fun swapNonoverlappingChunks(x1: MutPtr, y1: MutPtr, chunks: NonZero<Int, NonZeroUsizeInner>, n: Int) {
+    fun swapNonoverlappingChunks(x1: MutPtr, y1: MutPtr, chunks: NonZero<Int, NonZeroUsizeInner>, n: Int = 0) {
         val chunks1 = chunks.get()
         for (i in 0 until chunks1) {
             // SAFETY: i is in [0, chunks) so the adds and dereferences are in-bounds.
@@ -962,7 +962,7 @@ public fun swapNonoverlappingBytes(x: MutPtr, y: MutPtr, bytes: NonZero<Int, Non
                     val rightVal = matchVal.second
                     if (!(leftVal == rightVal)) {
                         val kind = AssertKind.Eq
-                        assertFailed(kind, leftVal, rightVal, Option.None)
+                        assertFailed(kind, leftVal, rightVal, Option.None())
                     }
                 }
             }
@@ -978,7 +978,7 @@ public fun swapNonoverlappingBytes(x: MutPtr, y: MutPtr, bytes: NonZero<Int, Non
             val chunks1 = matchVal
             // SAFETY: this is bytes/CHUNK_SIZE*CHUNK_SIZE bytes, which is <= bytes,
             // so it's within the range of our non-overlapping bytes.
-            swapNonoverlappingChunks<ChunkSize>(x, y, chunks1)
+            swapNonoverlappingChunks(x, y, chunks1, CHUNK_SIZE)
         }
     }
     when (val matchVal1 = NonZero.new(tail)) {
