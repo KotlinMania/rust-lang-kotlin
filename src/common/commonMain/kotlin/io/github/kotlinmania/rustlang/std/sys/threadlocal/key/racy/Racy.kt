@@ -3,8 +3,6 @@ package io.github.kotlinmania.rustlang.std.sys.threadlocal.key.racy
 
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
@@ -34,19 +32,16 @@ public fun interface LazyKeyDtorCallback {
  * This is basically a `LazyLock<Key>`, but avoids blocking and circular
  * dependencies with the rest of `std`.
  */
-public open class LazyKey internal constructor(
-    keyCtorArg: Atomic<Int, Align8<Int>>,
+public open class LazyKey(
+    /**
+     * Inner static TLS key (internals).
+     */
+    public var key: AtomicUsize,
     /**
      * Destructor for the TLS value.
      */
     public var dtor: LazyKeyDtorCallback?,
 ) {
-    /**
-     * Inner static TLS key (internals).
-     */
-    public var key: Atomic<Int, Align8<Int>> = keyCtorArg
-        internal set
-
     public open fun force(): Key =
         when (val matchVal = this.key.load(Ordering.Acquire)) {
             KEY_SENTVAL -> this.lazyInit().toUInt()
@@ -107,14 +102,6 @@ public open class LazyKey internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(
-            key: Atomic<Int, Align8<Int>>,
-            dtor: LazyKeyDtorCallback?,
-        ): LazyKey = LazyKey(
-            keyCtorArg = key,
-            dtor = dtor,
-        )
-
         public fun new(dtor: LazyKeyDtorCallback?): LazyKey = LazyKey(key = AtomicUsize.new(KEY_SENTVAL), dtor = dtor)
     }
 }

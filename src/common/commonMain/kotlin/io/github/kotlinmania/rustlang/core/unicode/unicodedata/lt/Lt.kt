@@ -10,13 +10,13 @@ import io.github.kotlinmania.rustlang.core.unicode.unicodedata.skipSearch
 
 public var SHORT_OFFSET_RUNS: List<ShortOffsetRunHeader> = listOf(ShortOffsetRunHeader.new(0, 453), ShortOffsetRunHeader.new(1, 8072), ShortOffsetRunHeader.new(9, 1122301))
 
-public var OFFSETS: UByteArray = ubyteArrayOf(0u, 1u, 2u, 1u, 2u, 1u, 38u, 1u, 0u, 8u, 8u, 8u, 8u, 8u, 12u, 1u, 15u, 1u, 47u, 1u, 0u)
+public var OFFSETS: UByteArray = ubyteArrayOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 1u.toUByte(), 2u.toUByte(), 1u.toUByte(), 38u.toUByte(), 1u.toUByte(), 0u.toUByte(), 8u.toUByte(), 8u.toUByte(), 8u.toUByte(), 8u.toUByte(), 8u.toUByte(), 12u.toUByte(), 1u.toUByte(), 15u.toUByte(), 1u.toUByte(), 47u.toUByte(), 1u.toUByte(), 0u.toUByte())
 
 public fun lookup(c: Char): Boolean {
     if (false) {
         check(!c.isAscii())
     }
-    return (c.toUInt()) >= 0x1c5u && lookupSlow(c)
+    return (c.code.toUInt()) >= 0x1c5u && lookupSlow(c)
 }
 
 public fun lookupSlow(c: Char): Boolean {

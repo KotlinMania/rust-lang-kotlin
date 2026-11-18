@@ -4,11 +4,11 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.float.complex.div
 import io.github.kotlinmania.rustlang.compilerbuiltins.math.fmax
 import io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.generic.ilogb
 import io.github.kotlinmania.rustlang.compilerbuiltins.math.libmmath.generic.scalbn
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.num.complex.Complex
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 
 /**
  * Returns the quotient of `(a + ib)` and `(c + id)`.
@@ -23,7 +23,7 @@ public fun <F : Float> complexDiv(a: F, b: F, c: F, d: F): Complex<F> {
     var d1 = d
     val max = fmax(c1.abs(), d1.abs())
     var ilogbw = 0
-    if (max.isFinite() && max != F.ZERO) {
+    if (max.isFinite() && max != a.ZERO) {
         ilogbw = ilogb(max)
         c1 = scalbn(c1, -ilogbw)
         d1 = scalbn(d1, -ilogbw)
@@ -38,25 +38,25 @@ public fun <F : Float> complexDiv(a: F, b: F, c: F, d: F): Complex<F> {
         { x: F ->
             val mag =
                 if (x.isInfinite()) {
-                    F.ONE
+                    a.ONE
                 } else {
-                    F.ZERO
+                    a.ZERO
                 }
             mag.copysign(x)
         }
-    if (denom == F.ZERO && (!a1.isNan() || !b1.isNan())) {
-        z.re = F.INFINITY.copysign(c1) * a1
-        z.im = F.INFINITY.copysign(c1) * b1
+    if (denom == a.ZERO && (!a1.isNan() || !b1.isNan())) {
+        z.re = a.INFINITY.copysign(c1) * a1
+        z.im = a.INFINITY.copysign(c1) * b1
     } else if ((a1.isInfinite() || b1.isInfinite()) && c1.isFinite() && d1.isFinite()) {
         a1 = signedUnitIfInf(a1)
         b1 = signedUnitIfInf(b1)
-        z.re = F.INFINITY * (a1 * c1 + b1 * d1)
-        z.im = F.INFINITY * (b1 * c1 - a1 * d1)
+        z.re = a.INFINITY * (a1 * c1 + b1 * d1)
+        z.im = a.INFINITY * (b1 * c1 - a1 * d1)
     } else if (max.isInfinite() && a1.isFinite() && b1.isFinite()) {
         c1 = signedUnitIfInf(c1)
         d1 = signedUnitIfInf(d1)
-        z.re = F.ZERO * (a1 * c1 + b1 * d1)
-        z.im = F.ZERO * (b1 * c1 - a1 * d1)
+        z.re = a.ZERO * (a1 * c1 + b1 * d1)
+        z.im = a.ZERO * (b1 * c1 - a1 * d1)
     }
     return z
 }

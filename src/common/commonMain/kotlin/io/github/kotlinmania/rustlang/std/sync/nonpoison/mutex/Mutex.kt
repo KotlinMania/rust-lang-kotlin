@@ -15,7 +15,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.TryLockResult
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.WouldBlock
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -352,7 +352,7 @@ public open class Mutex<T>(
                 }
             }
         }
-        return d.finishNonExhaustive()
+        return run { d.finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
     }
 
     public companion object {

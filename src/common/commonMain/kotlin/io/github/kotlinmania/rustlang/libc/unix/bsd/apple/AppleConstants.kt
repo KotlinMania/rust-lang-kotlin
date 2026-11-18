@@ -361,51 +361,51 @@ public val O_EXEC: CInt = 0x40000000
 
 public val O_SEARCH: CInt = O_EXEC or O_DIRECTORY
 
-public val S_IFIFO: ModeT = 4096u
+public val S_IFIFO: ModeT = 4096u.toUShort()
 
-public val S_IFCHR: ModeT = 8192u
+public val S_IFCHR: ModeT = 8192u.toUShort()
 
-public val S_IFBLK: ModeT = 24576u
+public val S_IFBLK: ModeT = 24576u.toUShort()
 
-public val S_IFDIR: ModeT = 16384u
+public val S_IFDIR: ModeT = 16384u.toUShort()
 
-public val S_IFREG: ModeT = 32768u
+public val S_IFREG: ModeT = 32768u.toUShort()
 
-public val S_IFLNK: ModeT = 40960u
+public val S_IFLNK: ModeT = 40960u.toUShort()
 
-public val S_IFSOCK: ModeT = 49152u
+public val S_IFSOCK: ModeT = 49152u.toUShort()
 
-public val S_IFMT: ModeT = 61440u
+public val S_IFMT: ModeT = 61440u.toUShort()
 
-public val S_IEXEC: ModeT = 64u
+public val S_IEXEC: ModeT = 64u.toUShort()
 
-public val S_IWRITE: ModeT = 128u
+public val S_IWRITE: ModeT = 128u.toUShort()
 
-public val S_IREAD: ModeT = 256u
+public val S_IREAD: ModeT = 256u.toUShort()
 
-public val S_IRWXU: ModeT = 448u
+public val S_IRWXU: ModeT = 448u.toUShort()
 
-public val S_IXUSR: ModeT = 64u
+public val S_IXUSR: ModeT = 64u.toUShort()
 
-public val S_IWUSR: ModeT = 128u
+public val S_IWUSR: ModeT = 128u.toUShort()
 
-public val S_IRUSR: ModeT = 256u
+public val S_IRUSR: ModeT = 256u.toUShort()
 
-public val S_IRWXG: ModeT = 56u
+public val S_IRWXG: ModeT = 56u.toUShort()
 
-public val S_IXGRP: ModeT = 8u
+public val S_IXGRP: ModeT = 8u.toUShort()
 
-public val S_IWGRP: ModeT = 16u
+public val S_IWGRP: ModeT = 16u.toUShort()
 
-public val S_IRGRP: ModeT = 32u
+public val S_IRGRP: ModeT = 32u.toUShort()
 
-public val S_IRWXO: ModeT = 7u
+public val S_IRWXO: ModeT = 7u.toUShort()
 
-public val S_IXOTH: ModeT = 1u
+public val S_IXOTH: ModeT = 1u.toUShort()
 
-public val S_IWOTH: ModeT = 2u
+public val S_IWOTH: ModeT = 2u.toUShort()
 
-public val S_IROTH: ModeT = 4u
+public val S_IROTH: ModeT = 4u.toUShort()
 
 public val F_OK: CInt = 0
 
@@ -2502,21 +2502,21 @@ public val CS_DARWIN_USER_CACHE_DIR: CInt = 65538
 
 public val OS_UNFAIR_LOCK_INIT: OsUnfairLock = OsUnfairLock(osUnfairLockOpaque = 0u, nonExhaustive = Unit)
 
-public val OS_LOG_TYPE_DEFAULT: OsLogTypeT = 0x00u
+public val OS_LOG_TYPE_DEFAULT: OsLogTypeT = 0x00u.toUByte()
 
-public val OS_LOG_TYPE_INFO: OsLogTypeT = 0x01u
+public val OS_LOG_TYPE_INFO: OsLogTypeT = 0x01u.toUByte()
 
-public val OS_LOG_TYPE_DEBUG: OsLogTypeT = 0x02u
+public val OS_LOG_TYPE_DEBUG: OsLogTypeT = 0x02u.toUByte()
 
-public val OS_LOG_TYPE_ERROR: OsLogTypeT = 0x10u
+public val OS_LOG_TYPE_ERROR: OsLogTypeT = 0x10u.toUByte()
 
-public val OS_LOG_TYPE_FAULT: OsLogTypeT = 0x11u
+public val OS_LOG_TYPE_FAULT: OsLogTypeT = 0x11u.toUByte()
 
-public val OS_SIGNPOST_EVENT: OsSignpostTypeT = 0x00u
+public val OS_SIGNPOST_EVENT: OsSignpostTypeT = 0x00u.toUByte()
 
-public val OS_SIGNPOST_INTERVAL_BEGIN: OsSignpostTypeT = 0x01u
+public val OS_SIGNPOST_INTERVAL_BEGIN: OsSignpostTypeT = 0x01u.toUByte()
 
-public val OS_SIGNPOST_INTERVAL_END: OsSignpostTypeT = 0x02u
+public val OS_SIGNPOST_INTERVAL_END: OsSignpostTypeT = 0x02u.toUByte()
 
 public val MINSIGSTKSZ: SizeT = 32768uL
 
@@ -2550,41 +2550,41 @@ public val EVFILT_VM: Short = (-12).toShort()
 
 public val EVFILT_EXCEPT: Short = (-15).toShort()
 
-public val EV_ADD: UShort = 0x1u
+public val EV_ADD: UShort = 0x1u.toUShort()
 
-public val EV_DELETE: UShort = 0x2u
+public val EV_DELETE: UShort = 0x2u.toUShort()
 
-public val EV_ENABLE: UShort = 0x4u
+public val EV_ENABLE: UShort = 0x4u.toUShort()
 
-public val EV_DISABLE: UShort = 0x8u
+public val EV_DISABLE: UShort = 0x8u.toUShort()
 
-public val EV_ONESHOT: UShort = 0x10u
+public val EV_ONESHOT: UShort = 0x10u.toUShort()
 
-public val EV_CLEAR: UShort = 0x20u
+public val EV_CLEAR: UShort = 0x20u.toUShort()
 
-public val EV_RECEIPT: UShort = 0x40u
+public val EV_RECEIPT: UShort = 0x40u.toUShort()
 
-public val EV_DISPATCH: UShort = 0x80u
+public val EV_DISPATCH: UShort = 0x80u.toUShort()
 
-public val EV_UDATA_SPECIFIC: UShort = 0x0100u
+public val EV_UDATA_SPECIFIC: UShort = 0x0100u.toUShort()
 
 public val EV_DISPATCH2: UShort = EV_DISPATCH or EV_UDATA_SPECIFIC
 
-public val EV_VANISHED: UShort = 0x0200u
+public val EV_VANISHED: UShort = 0x0200u.toUShort()
 
-public val EV_FLAG0: UShort = 0x1000u
+public val EV_FLAG0: UShort = 0x1000u.toUShort()
 
-public val EV_POLL: UShort = 0x1000u
+public val EV_POLL: UShort = 0x1000u.toUShort()
 
-public val EV_FLAG1: UShort = 0x2000u
+public val EV_FLAG1: UShort = 0x2000u.toUShort()
 
-public val EV_OOBAND: UShort = 0x2000u
+public val EV_OOBAND: UShort = 0x2000u.toUShort()
 
-public val EV_ERROR: UShort = 0x4000u
+public val EV_ERROR: UShort = 0x4000u.toUShort()
 
-public val EV_EOF: UShort = 0x8000u
+public val EV_EOF: UShort = 0x8000u.toUShort()
 
-public val EV_SYSFLAGS: UShort = 0xf000u
+public val EV_SYSFLAGS: UShort = 0xf000u.toUShort()
 
 public val KEVENT_FLAG_NONE: CUint = 0x000000u
 

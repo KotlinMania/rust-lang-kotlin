@@ -323,7 +323,7 @@ public fun <T> List<T>.borrowMutTSliceFromTArrayn(n: Int = 0): MutableList<T> = 
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     val bytes: UByteArray = ubyteArrayOf(1u, 0u, 2u)
+ *     val bytes: UByteArray = ubyteArrayOf(1u.toUByte(), 0u.toUByte(), 2u.toUByte())
  *     val bytesHead: UByteArray = UByteArray.tryFrom(((bytes).sliceArray(0 until 2))).unwrap()
  *     check(1u.toUShort() == run { val bytesTmp0 = bytesHead; ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort() })
  *     val bytesTail: UByteArray = ((bytes).sliceArray(1 until 3))
@@ -341,7 +341,7 @@ public fun <T> tryFromTArrayn(slice: List<T>, n: Int = 0): Result<List<T>, TryFr
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     var bytes: UByteArray = ubyteArrayOf(1u, 0u, 2u)
+ *     var bytes: UByteArray = ubyteArrayOf(1u.toUByte(), 0u.toUByte(), 2u.toUByte())
  *     val bytesHead: UByteArray = run { val subSlice0 = bytes.sliceArray(0 until 2); val subCall0 = UByteArray.tryFrom(subSlice0); subSlice0.copyInto(bytes, destinationOffset = 0); subCall0 }.unwrap()
  *     check(1u.toUShort() == run { val bytesTmp0 = bytesHead; ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort() })
  *     val bytesTail: UByteArray = (((bytes).sliceArray(1 until 3)))
@@ -359,7 +359,7 @@ public fun <T> tryFromTArrayn(slice: MutableList<T>, n: Int = 0): Result<List<T>
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     val bytes: UByteArray = ubyteArrayOf(1u, 0u, 2u)
+ *     val bytes: UByteArray = ubyteArrayOf(1u.toUByte(), 0u.toUByte(), 2u.toUByte())
  *     val bytesHead: UByteArray = UByteArray.tryFrom(((bytes).sliceArray(0 until 2))).unwrap()
  *     check(1u.toUShort() == run { val bytesTmp0 = bytesHead; ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort() })
  *     val bytesTail: UByteArray = ((bytes).sliceArray(1 until 3))
@@ -376,7 +376,7 @@ public fun <T> tryFromTArrayn(slice: MutableList<T>, n: Int = 0): Result<List<T>
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     var bytes: UByteArray = ubyteArrayOf(1u, 0u, 2u)
+ *     var bytes: UByteArray = ubyteArrayOf(1u.toUByte(), 0u.toUByte(), 2u.toUByte())
  *     val bytesHead: UByteArray = run { val subSlice0 = bytes.sliceArray(0 until 2); val subCall0 = UByteArray.tryFrom(subSlice0); subSlice0.copyInto(bytes, destinationOffset = 0); subCall0 }.unwrap()
  *     check(1u.toUShort() == run { val bytesTmp0 = bytesHead; ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort() })
  *     val bytesTail: UByteArray = (((bytes).sliceArray(1 until 3)))
@@ -396,7 +396,7 @@ public fun <T> tryFromTArrayn(slice: MutableList<T>, n: Int = 0): Result<List<T>
  *
  * public fun doctestEntry() {
  *     val b = hash.RandomState.new()
- *     val a: UByteArray = ubyteArrayOf(0xa8u, 0x3cu, 0x09u)
+ *     val a: UByteArray = ubyteArrayOf(0xa8u.toUByte(), 0x3cu.toUByte(), 0x09u.toUByte())
  *     val s: List<UByte> = listOf(0xa8u.toUByte(), 0x3cu.toUByte(), 0x09u.toUByte())
  *     check(b.hashOne(a) == b.hashOne(s))
  * }

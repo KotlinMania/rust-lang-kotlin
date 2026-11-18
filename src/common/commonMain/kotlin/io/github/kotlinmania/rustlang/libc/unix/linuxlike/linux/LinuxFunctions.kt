@@ -55,7 +55,7 @@ public fun bpfRval(code: U32): U32 = code and 0x18u
 
 public fun bpfMiscop(code: U32): U32 = code and 0xf8u
 
-public fun bpfStmt(code: U16, k: U32): SockFilter = SockFilter(code = code, jt = 0u, jf = 0u, k = k)
+public fun bpfStmt(code: U16, k: U32): SockFilter = SockFilter(code = code, jt = 0u.toUByte(), jf = 0u.toUByte(), k = k)
 
 public fun bpfJump(code: U16, k: U32, jt: U8, jf: U8): SockFilter = SockFilter(code = code, jt = jt, jf = jf, k = k)
 

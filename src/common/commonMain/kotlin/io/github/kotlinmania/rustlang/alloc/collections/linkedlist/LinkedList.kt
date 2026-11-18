@@ -34,7 +34,7 @@ import io.github.kotlinmania.rustlang.core.str.len
 // array-based containers are generally faster,
 // more memory efficient, and make better use of CPU cache.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -59,7 +59,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {

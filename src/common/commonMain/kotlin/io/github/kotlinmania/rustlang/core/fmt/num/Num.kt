@@ -27,7 +27,6 @@ import io.github.kotlinmania.rustlang.core.option.Option
 import io.github.kotlinmania.rustlang.core.panicking.AssertKind
 import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 import kotlin.experimental.and
@@ -633,7 +632,7 @@ public fun divRem1e16(n: U128): Pair<U128, ULong> {
     // These constant values are computed with the CHOOSE_MULTIPLIER procedure
     // from the Granlund & Montgomery paper, using N=128, prec=128 and d=1E16.
     val M_HIGH: U128 = U128(0x39a5652fb1137856uL, 0xd30baf9a1e626a6duL)
-    val SH_POST: UByte = 51u
+    val SH_POST: UByte = 51u.toUByte()
     // The check inlines well with the caller flow.
     if (n < D) {
         return Pair(0, n.toULong())

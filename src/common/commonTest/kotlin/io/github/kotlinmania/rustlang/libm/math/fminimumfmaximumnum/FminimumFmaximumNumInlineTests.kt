@@ -18,23 +18,23 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fminimumNumSpecTest(f:
         }
     }
     // Selection between NaNs does not matter, it just must be quiet
-    check(f(F.NAN, F.NEG_NAN).isQnan())
-    check(f(F.NEG_NAN, F.NAN).isQnan())
-    check(f(F.NEG_NAN, F.NEG_NAN).isQnan())
+    check(f(actual.NAN, actual.NEG_NAN).isQnan())
+    check(f(actual.NEG_NAN, actual.NAN).isQnan())
+    check(f(actual.NEG_NAN, actual.NEG_NAN).isQnan())
     // These operations should technically return a qnan, but LLVM optimizes out our
     // `* 1.0` canonicalization.
-    check(f(F.NAN, F.NEG_SNAN).isNan())
-    check(f(F.NAN, F.SNAN).isNan())
-    check(f(F.NEG_NAN, F.NEG_SNAN).isNan())
-    check(f(F.NEG_NAN, F.SNAN).isNan())
-    check(f(F.NEG_SNAN, F.NAN).isNan())
-    check(f(F.NEG_SNAN, F.NEG_NAN).isNan())
-    check(f(F.NEG_SNAN, F.NEG_SNAN).isNan())
-    check(f(F.NEG_SNAN, F.SNAN).isNan())
-    check(f(F.SNAN, F.NAN).isNan())
-    check(f(F.SNAN, F.NEG_NAN).isNan())
-    check(f(F.SNAN, F.NEG_SNAN).isNan())
-    check(f(F.SNAN, F.SNAN).isNan())
+    check(f(actual.NAN, actual.NEG_SNAN).isNan())
+    check(f(actual.NAN, actual.SNAN).isNan())
+    check(f(actual.NEG_NAN, actual.NEG_SNAN).isNan())
+    check(f(actual.NEG_NAN, actual.SNAN).isNan())
+    check(f(actual.NEG_SNAN, actual.NAN).isNan())
+    check(f(actual.NEG_SNAN, actual.NEG_NAN).isNan())
+    check(f(actual.NEG_SNAN, actual.NEG_SNAN).isNan())
+    check(f(actual.NEG_SNAN, actual.SNAN).isNan())
+    check(f(actual.SNAN, actual.NAN).isNan())
+    check(f(actual.SNAN, actual.NEG_NAN).isNan())
+    check(f(actual.SNAN, actual.NEG_SNAN).isNan())
+    check(f(actual.SNAN, actual.SNAN).isNan())
 }
 
 public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fmaximumNumSpecTest(f: (F, F) -> F) {
@@ -48,23 +48,23 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fmaximumNumSpecTest(f:
         }
     }
     // Selection between NaNs does not matter, it just must be quiet
-    check(f(F.NAN, F.NEG_NAN).isQnan())
-    check(f(F.NEG_NAN, F.NAN).isQnan())
-    check(f(F.NEG_NAN, F.NEG_NAN).isQnan())
+    check(f(actual.NAN, actual.NEG_NAN).isQnan())
+    check(f(actual.NEG_NAN, actual.NAN).isQnan())
+    check(f(actual.NEG_NAN, actual.NEG_NAN).isQnan())
     // These operations should technically return a qnan, but LLVM optimizes out our
     // `* 1.0` canonicalization.
-    check(f(F.NAN, F.NEG_SNAN).isNan())
-    check(f(F.NAN, F.SNAN).isNan())
-    check(f(F.NEG_NAN, F.NEG_SNAN).isNan())
-    check(f(F.NEG_NAN, F.SNAN).isNan())
-    check(f(F.NEG_SNAN, F.NAN).isNan())
-    check(f(F.NEG_SNAN, F.NEG_NAN).isNan())
-    check(f(F.NEG_SNAN, F.NEG_SNAN).isNan())
-    check(f(F.NEG_SNAN, F.SNAN).isNan())
-    check(f(F.SNAN, F.NAN).isNan())
-    check(f(F.SNAN, F.NEG_NAN).isNan())
-    check(f(F.SNAN, F.NEG_SNAN).isNan())
-    check(f(F.SNAN, F.SNAN).isNan())
+    check(f(actual.NAN, actual.NEG_SNAN).isNan())
+    check(f(actual.NAN, actual.SNAN).isNan())
+    check(f(actual.NEG_NAN, actual.NEG_SNAN).isNan())
+    check(f(actual.NEG_NAN, actual.SNAN).isNan())
+    check(f(actual.NEG_SNAN, actual.NAN).isNan())
+    check(f(actual.NEG_SNAN, actual.NEG_NAN).isNan())
+    check(f(actual.NEG_SNAN, actual.NEG_SNAN).isNan())
+    check(f(actual.NEG_SNAN, actual.SNAN).isNan())
+    check(f(actual.SNAN, actual.NAN).isNan())
+    check(f(actual.SNAN, actual.NEG_NAN).isNan())
+    check(f(actual.SNAN, actual.NEG_SNAN).isNan())
+    check(f(actual.SNAN, actual.SNAN).isNan())
 }
 
 public class FminimumFmaximumNumInlineTests {

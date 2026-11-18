@@ -1,27 +1,27 @@
 // port-lint: source float/mul.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.mul
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 public fun <F : Float> mul(a: F, b: F, fromBitsFFn: (ULong) -> F, normalizeFFn: (ULong) -> Any?): F {
     val one = F.Int.ONE
     val zero = F.Int.ZERO
-    val bits = F.BITS
-    val significandBits = F.SIG_BITS
-    val maxExponent = F.EXP_SAT
-    val exponentBias = F.EXP_BIAS
-    val implicitBit = F.IMPLICIT_BIT
-    val significandMask = F.SIG_MASK
-    val signBit = F.SIGN_MASK
+    val bits = a.BITS
+    val significandBits = a.SIG_BITS
+    val maxExponent = a.EXP_SAT
+    val exponentBias = a.EXP_BIAS
+    val implicitBit = a.IMPLICIT_BIT
+    val significandMask = a.SIG_MASK
+    val signBit = a.SIGN_MASK
     val absMask = signBit - one
-    val exponentMask = F.EXP_MASK
+    val exponentMask = a.EXP_MASK
     val infRep = exponentMask
     val quietBit = implicitBit shr 1
     val qnanRep = exponentMask or quietBit
-    val exponentBits = F.EXP_BITS
+    val exponentBits = a.EXP_BITS
     val aRep = a.toBits()
     val bRep = b.toBits()
     val aExponent = (aRep shr significandBits.toInt()) and maxExponent.cast()

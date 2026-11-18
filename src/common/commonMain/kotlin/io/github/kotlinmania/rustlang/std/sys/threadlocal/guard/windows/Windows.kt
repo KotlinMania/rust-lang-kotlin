@@ -106,7 +106,7 @@ public var KEY: AtomicU32 = AtomicU32.new(FLS_OUT_OF_INDEXES)
  */
 public open class EnableGuard {
     public open fun drop() {
-        ACTIVE_ENABLE_CALLS.fetchSub(1, Ordering.Relaxed)
+        ACTIVE_ENABLE_CALLS.fetchSub(1u, Ordering.Relaxed)
     }
 
     public companion object {
@@ -129,7 +129,7 @@ public open class EnableGuard {
             if (false) {
                 return Pair(EnableGuard, false)
             }
-            ACTIVE_ENABLE_CALLS.fetchAdd(1, Ordering.Relaxed)
+            ACTIVE_ENABLE_CALLS.fetchAdd(1u, Ordering.Relaxed)
             // Both `new` and `startExit` publish state to one atomic and inspect the other.
             // `AcqRel` is insufficient because neither read is required to observe the other's publication,
             // so we could create the guard but `startExit` would not see any active enable calls.
@@ -151,7 +151,7 @@ public open class EnableGuard {
                 return false
             }
             fence(Ordering.SeqCst)
-            val anyActiveEnabledCalled = ACTIVE_ENABLE_CALLS.load(Ordering.Relaxed) != 0
+            val anyActiveEnabledCalled = ACTIVE_ENABLE_CALLS.load(Ordering.Relaxed) != 0u
             if (anyActiveEnabledCalled) {
                 // If another thread is currently in `enable`, it may already have loaded this key and may be about to call `FlsSetValue`.
                 // So we must *not* call free the FLS key.
@@ -170,7 +170,7 @@ public open class EnableGuard {
 
 public var AT_EXIT_HOOK_CALLED: AtomicBool = AtomicBool.new(false)
 
-public var ACTIVE_ENABLE_CALLS: AtomicU32 = AtomicU32.new(0)
+public var ACTIVE_ENABLE_CALLS: AtomicU32 = AtomicU32.new(0u)
 
 /**
  * Set up the current thread to invoke `cleanup` when it finishes.

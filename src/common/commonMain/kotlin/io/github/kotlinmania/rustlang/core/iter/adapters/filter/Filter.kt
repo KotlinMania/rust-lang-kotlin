@@ -18,9 +18,8 @@ import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -171,7 +170,7 @@ public fun <Item, I : Iterator<Item>> Filter<I, P>.sizeHint(): Pair<Int, Int?> {
 // Using the branchless version will also simplify the LLVM byte code, thus
 // leaving more budget for LLVM optimizations.
 public fun <Item, I : Iterator<Item>> Filter<I, P>.count(assumeCountLeUpperBoundIFn: (Any?, Any?) -> Unit): Int {
-    fun <T> toUsize(predicate: (T) -> Boolean): (T) -> Int = { x -> predicate(x).toInt() }
+    fun <T> toUsize(predicate: (T) -> Boolean): (T) -> Int = { x -> (if (predicate(x)) 1 else 0) }
     val before = this.iter.sizeHint().second.unwrapOr(Int.MAX_VALUE)
     val total = this.iter.map(toUsize(this.predicate)).sum()
     // SAFETY: `total` and `before` came from the same iterator of type `I`

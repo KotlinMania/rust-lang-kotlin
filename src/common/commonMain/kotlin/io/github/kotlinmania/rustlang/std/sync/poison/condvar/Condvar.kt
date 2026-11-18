@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.std.sync.poison.mutex.guardLock
 import io.github.kotlinmania.rustlang.std.sync.poison.mutex.guardPoison
 import io.github.kotlinmania.rustlang.std.time.Instant
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

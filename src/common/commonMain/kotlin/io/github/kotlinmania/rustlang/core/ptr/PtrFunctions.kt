@@ -251,7 +251,7 @@ public fun <T> copy(src: ConstPtr, dst: MutPtr, count: Int, typeLayoutT: TypeLay
  * import io.github.kotlinmania.rustlang.core.ptr.MutPtr
  *
  * run {
- *     val localStorageL4C4 = AddressableLocal(0u, PrimitiveLayouts.U8)
+ *     val localStorageL4C4 = AddressableLocal(0u.toUByte(), PrimitiveLayouts.U8)
  *     val ptr: MutPtr = (MutPtr(localStorageL4C4.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }
  *     val bool = (PrimitiveLayouts.BOOL).readNative((ptr).rawAddress)
  *     // This is fine, `ptr` points to a valid `Boolean`.
@@ -1218,7 +1218,7 @@ public fun <T> read(src: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLa
  * ```kotlin
  * @repr(packed, C)
  * open class Packed(public var padding: UByte, public var unaligned: UInt)
- * val packed = Packed(padding = 0x00u, unaligned = 0x01020304u)
+ * val packed = Packed(padding = 0x00u.toUByte(), unaligned = 0x01020304u)
  * // Take the address of a 32-bit integer which is not aligned.
  * // In contrast to `packed.unaligned as * const _`, this has no undefined behavior.
  * val unaligned = addrOf(packed.unaligned)
@@ -1670,7 +1670,7 @@ public fun <T> alignOffset(p: ConstPtr, a: Int, typeLayoutT: TypeLayout<T> = Unr
          * Note, that this table does not contain values where inverse does not exist (i.e., for
          * `0⁻¹ mod 16`, `2⁻¹ mod 16`, etc.)
          */
-        val INV_TABLE_MOD_16: UByteArray = ubyteArrayOf(1u, 11u, 13u, 7u, 9u, 3u, 5u, 15u)
+        val INV_TABLE_MOD_16: UByteArray = ubyteArrayOf(1u.toUByte(), 11u.toUByte(), 13u.toUByte(), 7u.toUByte(), 9u.toUByte(), 3u.toUByte(), 5u.toUByte(), 15u.toUByte())
         /**
          * Modulo for which the `INV_TABLE_MOD_16` is intended.
          */

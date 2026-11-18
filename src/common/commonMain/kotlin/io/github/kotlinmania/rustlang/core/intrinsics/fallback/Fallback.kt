@@ -86,9 +86,9 @@ public fun wideMulU128(a: U128, b: U128): Pair<U128, U128> {
 public fun U128.carryingMulAdd(b: U128, c: U128, d: U128): Pair<U128, U128> {
     var (low, high) = wideMulU128(this, b)
     val (low1, carry) = low.overflowingAdd(c)
-    high += U128.fromLong(carry.toLong())
+    high += (if (carry) U128.ONE else U128.ZERO)
     val (low2, carry1) = low1.overflowingAdd(d)
-    high += U128.fromLong(carry1.toLong())
+    high += (if (carry1) U128.ONE else U128.ZERO)
     return Pair(low2, high)
 }
 
@@ -98,9 +98,9 @@ public fun I128.carryingMulAdd(b: I128, c: I128, d: I128): Pair<U128, I128> {
     high1 = high1.wrappingAdd((this shr 127).wrappingMul(b))
     high1 = high1.wrappingAdd(this.wrappingMul(b shr 127))
     val (low1, carry) = low.overflowingAdd(c.toU128())
-    high1 = high1.wrappingAdd((I128.fromLong(carry.toLong())) + (c shr 127))
+    high1 = high1.wrappingAdd(((if (carry) I128.ONE else I128.ZERO)) + (c shr 127))
     val (low2, carry1) = low1.overflowingAdd(d.toU128())
-    high1 = high1.wrappingAdd((I128.fromLong(carry1.toLong())) + (d shr 127))
+    high1 = high1.wrappingAdd(((if (carry1) I128.ONE else I128.ZERO)) + (d shr 127))
     return Pair(low2, high1)
 }
 
@@ -289,7 +289,7 @@ public interface CarrylessMul<T> {
 }
 
 public fun UByte.carrylessMul(rhs: UByte): UByte {
-    var result = 0u
+    var result = 0u.toUByte()
     var i = 0
     while (i < 8u) {
         if (((rhs.toUInt() shr (i.toInt())).toUByte()) and 1u.toUByte() != 0u.toUByte()) {
@@ -301,7 +301,7 @@ public fun UByte.carrylessMul(rhs: UByte): UByte {
 }
 
 public fun UShort.carrylessMul(rhs: UShort): UShort {
-    var result = 0u
+    var result = 0u.toUShort()
     var i = 0
     while (i < 16u) {
         if (((rhs.toUInt() shr (i.toInt())).toUShort()) and 1u.toUShort() != 0u.toUShort()) {

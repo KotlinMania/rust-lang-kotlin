@@ -7,19 +7,26 @@ import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.fmt.Write
 import io.github.kotlinmania.rustlang.core.fmt.write
 import io.github.kotlinmania.rustlang.core.io.error.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.time.Instant
+import io.github.kotlinmania.rustlang.test.CompletedTest
+import io.github.kotlinmania.rustlang.test.NamePadding
+import io.github.kotlinmania.rustlang.test.Options
+import io.github.kotlinmania.rustlang.test.OutputFormat
+import io.github.kotlinmania.rustlang.test.TestDesc
+import io.github.kotlinmania.rustlang.test.TestDescAndFn
+import io.github.kotlinmania.rustlang.test.TestEvent
+import io.github.kotlinmania.rustlang.test.TestExecTime
 import io.github.kotlinmania.rustlang.test.TestFn.*
-import io.github.kotlinmania.rustlang.test.bench.fmtBenchSamples
-import io.github.kotlinmania.rustlang.test.cli.TestOpts
-import io.github.kotlinmania.rustlang.test.event.CompletedTest
-import io.github.kotlinmania.rustlang.test.event.TestEvent
+import io.github.kotlinmania.rustlang.test.TestList
+import io.github.kotlinmania.rustlang.test.TestOpts
+import io.github.kotlinmania.rustlang.test.TestResult
+import io.github.kotlinmania.rustlang.test.TestSuiteExecTime
 import io.github.kotlinmania.rustlang.test.filterTests
+import io.github.kotlinmania.rustlang.test.fmtBenchSamples
 import io.github.kotlinmania.rustlang.test.formatters.OutputFormatter
 import io.github.kotlinmania.rustlang.test.formatters.json.JsonFormatter
 import io.github.kotlinmania.rustlang.test.formatters.junit.JunitFormatter
@@ -27,18 +34,9 @@ import io.github.kotlinmania.rustlang.test.formatters.pretty.PrettyFormatter
 import io.github.kotlinmania.rustlang.test.formatters.terse.TerseFormatter
 import io.github.kotlinmania.rustlang.test.helpers.concurrency.getConcurrency
 import io.github.kotlinmania.rustlang.test.helpers.metrics.MetricMap
-import io.github.kotlinmania.rustlang.test.options.Options
-import io.github.kotlinmania.rustlang.test.options.OutputFormat
 import io.github.kotlinmania.rustlang.test.runTests
 import io.github.kotlinmania.rustlang.test.term.StdoutTerminal
 import io.github.kotlinmania.rustlang.test.term.stdout
-import io.github.kotlinmania.rustlang.test.testresult.TestResult
-import io.github.kotlinmania.rustlang.test.time.TestExecTime
-import io.github.kotlinmania.rustlang.test.time.TestSuiteExecTime
-import io.github.kotlinmania.rustlang.test.types.NamePadding
-import io.github.kotlinmania.rustlang.test.types.TestDesc
-import io.github.kotlinmania.rustlang.test.types.TestDescAndFn
-import io.github.kotlinmania.rustlang.test.types.TestList
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // Module providing interface for running tests in the console.
@@ -83,7 +81,7 @@ public open class ConsoleTestDiscoveryState(
 ) {
     public open fun writeLog(msg: () -> S): Result<Unit> =
         when (val matchVal = this.logOut) {
-            null -> RustResult.Ok(Unit)
+            null -> RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
             else -> {
                 val o = matchVal
                 val msg1 = msg()
@@ -102,7 +100,7 @@ public open class ConsoleTestDiscoveryState(
                         when (val tryResult = File.create(path)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ConsoleTestDiscoveryState, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                     }
                 }
-            return RustResult.Ok(ConsoleTestDiscoveryState(logOut = logOut, tests = 0, benchmarks = 0, ignored = 0))
+            return RustResult.Ok<ConsoleTestDiscoveryState, io.github.kotlinmania.rustlang.core.io.error.Error>(ConsoleTestDiscoveryState(logOut = logOut, tests = 0, benchmarks = 0, ignored = 0))
         }
     }
 }
@@ -125,7 +123,7 @@ public open class ConsoleTestState(
 ) {
     public open fun writeLog(msg: () -> S): Result<Unit> =
         when (val matchVal = this.logOut) {
-            null -> RustResult.Ok(Unit)
+            null -> RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
             else -> {
                 val o = matchVal
                 val msg1 = msg()
@@ -177,7 +175,7 @@ public open class ConsoleTestState(
                         when (val tryResult = File.create(path)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ConsoleTestState, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
                     }
                 }
-            return RustResult.Ok(ConsoleTestState(logOut = logOut, total = 0, passed = 0, failed = 0, ignored = 0, filteredOut = 0, measured = 0, execTime = null, metrics = MetricMap.new(), failures = mutableListOf(), notFailures = mutableListOf(), ignores = mutableListOf(), timeFailures = mutableListOf(), options = opts.options))
+            return RustResult.Ok<ConsoleTestState, io.github.kotlinmania.rustlang.core.io.error.Error>(ConsoleTestState(logOut = logOut, total = 0, passed = 0, failed = 0, ignored = 0, filteredOut = 0, measured = 0, execTime = null, metrics = MetricMap.new(), failures = mutableListOf(), notFailures = mutableListOf(), ignores = mutableListOf(), timeFailures = mutableListOf(), options = opts.options))
         }
     }
 }
@@ -312,7 +310,7 @@ public fun onTestEvent(event: TestEvent, st: ConsoleTestState, out: OutputFormat
             handleTestResult(st, completedTest)
         }
     }
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun getFormatter(opts: TestOpts, maxNameLen: Int): OutputFormatter {

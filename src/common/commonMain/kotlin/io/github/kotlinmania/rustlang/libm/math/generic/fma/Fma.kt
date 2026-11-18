@@ -50,7 +50,7 @@ public fun <Int, SignedInt, D, OtherSign, Unsigned, F> fmaRound(x: F, y: F, z: F
     var e: kotlin.Int = nx.e + ny.e
     // Needed shift to align `z` to the multiplication result
     var d: kotlin.Int = nz.e - e
-    val sbits = ((F.BITS as Any?) as kotlin.Int)
+    val sbits = ((x.BITS as Any?) as kotlin.Int)
     // Scale `z`. Shift `z< <= kz`, `r> >= kr`, so `kz + kr == d`, set `e = e + kr` (== ez-kz)
     if ((kmCompareValues(d, 0) > 0)) {
         // The magnitude of `z` is larger than `x * y`
@@ -111,7 +111,7 @@ public fun <Int, SignedInt, D, OtherSign, Unsigned, F> fmaRound(x: F, y: F, z: F
         val (res, borrow) = rlo.overflowingSub(zlo)
         rlo = res
         rhi = rhi.wrappingSub((zhi + IntTy.from(borrow).toInt()))
-        if ((rhi shr (F.BITS - 1).toInt()) != zero) {
+        if ((rhi shr (x.BITS - 1).toInt()) != zero) {
             rlo = rlo.signed().wrappingNeg().unsigned()
             rhi = rhi.signed().wrappingNeg().unsigned() - IntTy.from(rlo != zero)
             neg = !neg
@@ -151,7 +151,7 @@ public fun <Int, SignedInt, D, OtherSign, Unsigned, F> fmaRound(x: F, y: F, z: F
     var r: F = castFromLossyFFn(i)
     // Account for subnormal and rounding
     // Unbiased exponent for the maximum value of `r`
-    val maxPow = F.BITS - 1 + F.EXP_BIAS
+    val maxPow = x.BITS - 1 + x.EXP_BIAS
     val status = Status.OK
     if ((kmCompareValues(e, -(((maxPow as Any?) as kotlin.Int) - 2)) < 0)) {
         // Result is subnormal before rounding
@@ -163,13 +163,13 @@ public fun <Int, SignedInt, D, OtherSign, Unsigned, F> fmaRound(x: F, y: F, z: F
             if (r == c) {
                 // Min normal after rounding,
                 status.setUnderflow(true)
-                r = F.MIN_POSITIVE_NORMAL.copysign(r)
+                r = x.MIN_POSITIVE_NORMAL.copysign(r)
                 return FpResult.new(r, status)
             }
-            if ((rhi shl (F.SIG_BITS + 1).toInt()) != zero) {
+            if ((rhi shl (x.SIG_BITS + 1).toInt()) != zero) {
                 // Account for truncated bits. One bit will be lost in the `scalbn` call, add
                 // another top bit to avoid double rounding if inexact.
-                val iu: Int = (rhi shr 1) or (rhi and one) or (one shl (F.BITS - 2).toInt())
+                val iu: Int = (rhi shr 1) or (rhi and one) or (one shl (x.BITS - 2).toInt())
                 i = iu.signed()
                 if (neg) {
                     i = -i
@@ -181,8 +181,8 @@ public fun <Int, SignedInt, D, OtherSign, Unsigned, F> fmaRound(x: F, y: F, z: F
             }
         } else {
             // Only round once when scaled
-            d = ((F.EXP_BITS as Any?) as kotlin.Int) - 1
-            val sticky1 = IntTy.from(rhi shl (((F.BITS as Any?) as kotlin.Int) - d).toInt() != zero)
+            d = ((x.EXP_BITS as Any?) as kotlin.Int) - 1
+            val sticky1 = IntTy.from(rhi shl (((x.BITS as Any?) as kotlin.Int) - d).toInt() != zero)
             i = (((rhi shr d.toInt()) or sticky1) shl d.toInt()).signed()
             if (neg) {
                 i = -i
@@ -270,15 +270,15 @@ public open class Norm<F : Float<F, Int, SignedInt>, Int, SignedInt>(
             val neg = x.isSignNegative()
             if (e == 0) {
                 // Normalize subnormals by multiplication
-                val scaleI = F.BITS - 1
-                val scaleF = fromPartsFFn(false, scaleI + F.EXP_BIAS, F.Int.ZERO)
+                val scaleI = x.BITS - 1
+                val scaleF = fromPartsFFn(false, scaleI + x.EXP_BIAS, F.Int.ZERO)
                 val scaled = x * scaleF
                 ix = scaled.toBits()
                 e = ((scaled.ex() as Any?) as kotlin.Int)
                 e = if (e == 0) {
                     // If the exponent is still zero, the input was zero. Artifically set this value
                     // such that the final `e` will exceed `ZERO_INF_NAN`.
-                    1 shl F.EXP_BITS.toInt()
+                    1 shl x.EXP_BITS.toInt()
                 } else {
                     // Otherwise, account for the scaling we just did.
                     e - ((scaleI as Any?) as kotlin.Int)
@@ -286,8 +286,8 @@ public open class Norm<F : Float<F, Int, SignedInt>, Int, SignedInt>(
             }
             e -= ((Norm.EXP_UNBIAS as Any?) as kotlin.Int)
             // Absolute  value, set the implicit bit, and shift to create a guard bit
-            ix = ix and F.SIG_MASK
-            ix = ix or F.IMPLICIT_BIT
+            ix = ix and x.SIG_MASK
+            ix = ix or x.IMPLICIT_BIT
             ix = ix shl 1
             return Norm(m = ix.toInt(), e = e, neg = neg)
         }

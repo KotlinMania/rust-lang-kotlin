@@ -2402,7 +2402,7 @@ public val EI_NIDENT: Int = 16
 
 public val EI_MAG0: Int = 0
 
-public val ELFMAG0: UByte = 0x7fu
+public val ELFMAG0: UByte = 0x7fu.toUByte()
 
 public val EI_MAG1: Int = 1
 
@@ -2420,11 +2420,11 @@ public val SELFMAG: Int = 4
 
 public val EI_CLASS: Int = 4
 
-public val ELFCLASSNONE: UByte = 0u
+public val ELFCLASSNONE: UByte = 0u.toUByte()
 
-public val ELFCLASS32: UByte = 1u
+public val ELFCLASS32: UByte = 1u.toUByte()
 
-public val ELFCLASS64: UByte = 2u
+public val ELFCLASS64: UByte = 2u.toUByte()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
@@ -2434,11 +2434,11 @@ public val ELFCLASSNUM: Int = 3
 
 public val EI_DATA: Int = 5
 
-public val ELFDATANONE: UByte = 0u
+public val ELFDATANONE: UByte = 0u.toUByte()
 
-public val ELFDATA2LSB: UByte = 1u
+public val ELFDATA2LSB: UByte = 1u.toUByte()
 
-public val ELFDATA2MSB: UByte = 2u
+public val ELFDATA2MSB: UByte = 2u.toUByte()
 
 public val ELFDATANUM: Int = 3
 
@@ -2446,219 +2446,219 @@ public val EI_VERSION: Int = 6
 
 public val EI_OSABI: Int = 7
 
-public val ELFOSABI_NONE: UByte = 0u
+public val ELFOSABI_NONE: UByte = 0u.toUByte()
 
-public val ELFOSABI_SYSV: UByte = 0u
+public val ELFOSABI_SYSV: UByte = 0u.toUByte()
 
-public val ELFOSABI_HPUX: UByte = 1u
+public val ELFOSABI_HPUX: UByte = 1u.toUByte()
 
-public val ELFOSABI_NETBSD: UByte = 2u
+public val ELFOSABI_NETBSD: UByte = 2u.toUByte()
 
-public val ELFOSABI_GNU: UByte = 3u
+public val ELFOSABI_GNU: UByte = 3u.toUByte()
 
 public val ELFOSABI_LINUX: UByte = ELFOSABI_GNU
 
-public val ELFOSABI_SOLARIS: UByte = 6u
+public val ELFOSABI_SOLARIS: UByte = 6u.toUByte()
 
-public val ELFOSABI_AIX: UByte = 7u
+public val ELFOSABI_AIX: UByte = 7u.toUByte()
 
-public val ELFOSABI_IRIX: UByte = 8u
+public val ELFOSABI_IRIX: UByte = 8u.toUByte()
 
-public val ELFOSABI_FREEBSD: UByte = 9u
+public val ELFOSABI_FREEBSD: UByte = 9u.toUByte()
 
-public val ELFOSABI_TRU64: UByte = 10u
+public val ELFOSABI_TRU64: UByte = 10u.toUByte()
 
-public val ELFOSABI_MODESTO: UByte = 11u
+public val ELFOSABI_MODESTO: UByte = 11u.toUByte()
 
-public val ELFOSABI_OPENBSD: UByte = 12u
+public val ELFOSABI_OPENBSD: UByte = 12u.toUByte()
 
-public val ELFOSABI_ARM: UByte = 97u
+public val ELFOSABI_ARM: UByte = 97u.toUByte()
 
-public val ELFOSABI_STANDALONE: UByte = 255u
+public val ELFOSABI_STANDALONE: UByte = 255u.toUByte()
 
 public val EI_ABIVERSION: Int = 8
 
 public val EI_PAD: Int = 9
 
 // elf.h - Legal values for eType (object file type).
-public val ET_NONE: UShort = 0u
+public val ET_NONE: UShort = 0u.toUShort()
 
-public val ET_REL: UShort = 1u
+public val ET_REL: UShort = 1u.toUShort()
 
-public val ET_EXEC: UShort = 2u
+public val ET_EXEC: UShort = 2u.toUShort()
 
-public val ET_DYN: UShort = 3u
+public val ET_DYN: UShort = 3u.toUShort()
 
-public val ET_CORE: UShort = 4u
+public val ET_CORE: UShort = 4u.toUShort()
 
-public val ET_NUM: UShort = 5u
+public val ET_NUM: UShort = 5u.toUShort()
 
-public val ET_LOOS: UShort = 0xfe00u
+public val ET_LOOS: UShort = 0xfe00u.toUShort()
 
-public val ET_HIOS: UShort = 0xfeffu
+public val ET_HIOS: UShort = 0xfeffu.toUShort()
 
-public val ET_LOPROC: UShort = 0xff00u
+public val ET_LOPROC: UShort = 0xff00u.toUShort()
 
-public val ET_HIPROC: UShort = 0xffffu
+public val ET_HIPROC: UShort = 0xffffu.toUShort()
 
 // elf.h - Legal values for eMachine (architecture).
-public val EM_NONE: UShort = 0u
+public val EM_NONE: UShort = 0u.toUShort()
 
-public val EM_M32: UShort = 1u
+public val EM_M32: UShort = 1u.toUShort()
 
-public val EM_SPARC: UShort = 2u
+public val EM_SPARC: UShort = 2u.toUShort()
 
-public val EM_386: UShort = 3u
+public val EM_386: UShort = 3u.toUShort()
 
-public val EM_68K: UShort = 4u
+public val EM_68K: UShort = 4u.toUShort()
 
-public val EM_88K: UShort = 5u
+public val EM_88K: UShort = 5u.toUShort()
 
-public val EM_860: UShort = 7u
+public val EM_860: UShort = 7u.toUShort()
 
-public val EM_MIPS: UShort = 8u
+public val EM_MIPS: UShort = 8u.toUShort()
 
-public val EM_S370: UShort = 9u
+public val EM_S370: UShort = 9u.toUShort()
 
-public val EM_MIPS_RS3_LE: UShort = 10u
+public val EM_MIPS_RS3_LE: UShort = 10u.toUShort()
 
-public val EM_PARISC: UShort = 15u
+public val EM_PARISC: UShort = 15u.toUShort()
 
-public val EM_VPP500: UShort = 17u
+public val EM_VPP500: UShort = 17u.toUShort()
 
-public val EM_SPARC32PLUS: UShort = 18u
+public val EM_SPARC32PLUS: UShort = 18u.toUShort()
 
-public val EM_960: UShort = 19u
+public val EM_960: UShort = 19u.toUShort()
 
-public val EM_PPC: UShort = 20u
+public val EM_PPC: UShort = 20u.toUShort()
 
-public val EM_PPC64: UShort = 21u
+public val EM_PPC64: UShort = 21u.toUShort()
 
-public val EM_S390: UShort = 22u
+public val EM_S390: UShort = 22u.toUShort()
 
-public val EM_V800: UShort = 36u
+public val EM_V800: UShort = 36u.toUShort()
 
-public val EM_FR20: UShort = 37u
+public val EM_FR20: UShort = 37u.toUShort()
 
-public val EM_RH32: UShort = 38u
+public val EM_RH32: UShort = 38u.toUShort()
 
-public val EM_RCE: UShort = 39u
+public val EM_RCE: UShort = 39u.toUShort()
 
-public val EM_ARM: UShort = 40u
+public val EM_ARM: UShort = 40u.toUShort()
 
-public val EM_FAKE_ALPHA: UShort = 41u
+public val EM_FAKE_ALPHA: UShort = 41u.toUShort()
 
-public val EM_SH: UShort = 42u
+public val EM_SH: UShort = 42u.toUShort()
 
-public val EM_SPARCV9: UShort = 43u
+public val EM_SPARCV9: UShort = 43u.toUShort()
 
-public val EM_TRICORE: UShort = 44u
+public val EM_TRICORE: UShort = 44u.toUShort()
 
-public val EM_ARC: UShort = 45u
+public val EM_ARC: UShort = 45u.toUShort()
 
-public val EM_H8_300: UShort = 46u
+public val EM_H8_300: UShort = 46u.toUShort()
 
-public val EM_H8_300H: UShort = 47u
+public val EM_H8_300H: UShort = 47u.toUShort()
 
-public val EM_H8S: UShort = 48u
+public val EM_H8S: UShort = 48u.toUShort()
 
-public val EM_H8_500: UShort = 49u
+public val EM_H8_500: UShort = 49u.toUShort()
 
-public val EM_IA_64: UShort = 50u
+public val EM_IA_64: UShort = 50u.toUShort()
 
-public val EM_MIPS_X: UShort = 51u
+public val EM_MIPS_X: UShort = 51u.toUShort()
 
-public val EM_COLDFIRE: UShort = 52u
+public val EM_COLDFIRE: UShort = 52u.toUShort()
 
-public val EM_68HC12: UShort = 53u
+public val EM_68HC12: UShort = 53u.toUShort()
 
-public val EM_MMA: UShort = 54u
+public val EM_MMA: UShort = 54u.toUShort()
 
-public val EM_PCP: UShort = 55u
+public val EM_PCP: UShort = 55u.toUShort()
 
-public val EM_NCPU: UShort = 56u
+public val EM_NCPU: UShort = 56u.toUShort()
 
-public val EM_NDR1: UShort = 57u
+public val EM_NDR1: UShort = 57u.toUShort()
 
-public val EM_STARCORE: UShort = 58u
+public val EM_STARCORE: UShort = 58u.toUShort()
 
-public val EM_ME16: UShort = 59u
+public val EM_ME16: UShort = 59u.toUShort()
 
-public val EM_ST100: UShort = 60u
+public val EM_ST100: UShort = 60u.toUShort()
 
-public val EM_TINYJ: UShort = 61u
+public val EM_TINYJ: UShort = 61u.toUShort()
 
-public val EM_X86_64: UShort = 62u
+public val EM_X86_64: UShort = 62u.toUShort()
 
-public val EM_PDSP: UShort = 63u
+public val EM_PDSP: UShort = 63u.toUShort()
 
-public val EM_FX66: UShort = 66u
+public val EM_FX66: UShort = 66u.toUShort()
 
-public val EM_ST9PLUS: UShort = 67u
+public val EM_ST9PLUS: UShort = 67u.toUShort()
 
-public val EM_ST7: UShort = 68u
+public val EM_ST7: UShort = 68u.toUShort()
 
-public val EM_68HC16: UShort = 69u
+public val EM_68HC16: UShort = 69u.toUShort()
 
-public val EM_68HC11: UShort = 70u
+public val EM_68HC11: UShort = 70u.toUShort()
 
-public val EM_68HC08: UShort = 71u
+public val EM_68HC08: UShort = 71u.toUShort()
 
-public val EM_68HC05: UShort = 72u
+public val EM_68HC05: UShort = 72u.toUShort()
 
-public val EM_SVX: UShort = 73u
+public val EM_SVX: UShort = 73u.toUShort()
 
-public val EM_ST19: UShort = 74u
+public val EM_ST19: UShort = 74u.toUShort()
 
-public val EM_VAX: UShort = 75u
+public val EM_VAX: UShort = 75u.toUShort()
 
-public val EM_CRIS: UShort = 76u
+public val EM_CRIS: UShort = 76u.toUShort()
 
-public val EM_JAVELIN: UShort = 77u
+public val EM_JAVELIN: UShort = 77u.toUShort()
 
-public val EM_FIREPATH: UShort = 78u
+public val EM_FIREPATH: UShort = 78u.toUShort()
 
-public val EM_ZSP: UShort = 79u
+public val EM_ZSP: UShort = 79u.toUShort()
 
-public val EM_MMIX: UShort = 80u
+public val EM_MMIX: UShort = 80u.toUShort()
 
-public val EM_HUANY: UShort = 81u
+public val EM_HUANY: UShort = 81u.toUShort()
 
-public val EM_PRISM: UShort = 82u
+public val EM_PRISM: UShort = 82u.toUShort()
 
-public val EM_AVR: UShort = 83u
+public val EM_AVR: UShort = 83u.toUShort()
 
-public val EM_FR30: UShort = 84u
+public val EM_FR30: UShort = 84u.toUShort()
 
-public val EM_D10V: UShort = 85u
+public val EM_D10V: UShort = 85u.toUShort()
 
-public val EM_D30V: UShort = 86u
+public val EM_D30V: UShort = 86u.toUShort()
 
-public val EM_V850: UShort = 87u
+public val EM_V850: UShort = 87u.toUShort()
 
-public val EM_M32R: UShort = 88u
+public val EM_M32R: UShort = 88u.toUShort()
 
-public val EM_MN10300: UShort = 89u
+public val EM_MN10300: UShort = 89u.toUShort()
 
-public val EM_MN10200: UShort = 90u
+public val EM_MN10200: UShort = 90u.toUShort()
 
-public val EM_PJ: UShort = 91u
+public val EM_PJ: UShort = 91u.toUShort()
 
-public val EM_OPENRISC: UShort = 92u
+public val EM_OPENRISC: UShort = 92u.toUShort()
 
-public val EM_ARC_A5: UShort = 93u
+public val EM_ARC_A5: UShort = 93u.toUShort()
 
-public val EM_XTENSA: UShort = 94u
+public val EM_XTENSA: UShort = 94u.toUShort()
 
-public val EM_AARCH64: UShort = 183u
+public val EM_AARCH64: UShort = 183u.toUShort()
 
-public val EM_TILEPRO: UShort = 188u
+public val EM_TILEPRO: UShort = 188u.toUShort()
 
-public val EM_TILEGX: UShort = 191u
+public val EM_TILEGX: UShort = 191u.toUShort()
 
-public val EM_RISCV: UShort = 243u
+public val EM_RISCV: UShort = 243u.toUShort()
 
-public val EM_ALPHA: UShort = 0x9026u
+public val EM_ALPHA: UShort = 0x9026u.toUShort()
 
 // elf.h - Legal values for eVersion (version).
 public val EV_NONE: UInt = 0u
@@ -3230,7 +3230,7 @@ public val ITIMER_VIRTUAL: CInt = 1
 
 public val ITIMER_PROF: CInt = 2
 
-public val POSIX_VDISABLE: CcT = 0u
+public val POSIX_VDISABLE: CcT = 0u.toUByte()
 
 public val IPV6_RTHDR_LOOSE: CInt = 0
 
@@ -3390,43 +3390,43 @@ public val SIOCGIFMAP: CUlong = 0x00008970uL
 
 public val SIOCSIFMAP: CUlong = 0x00008971uL
 
-public val IPTOS_TOS_MASK: UByte = 0x1Eu
+public val IPTOS_TOS_MASK: UByte = 0x1Eu.toUByte()
 
-public val IPTOS_PREC_MASK: UByte = 0xE0u
+public val IPTOS_PREC_MASK: UByte = 0xE0u.toUByte()
 
-public val IPTOS_ECN_NOT_ECT: UByte = 0x00u
+public val IPTOS_ECN_NOT_ECT: UByte = 0x00u.toUByte()
 
-public val RTF_UP: CUshort = 0x0001u
+public val RTF_UP: CUshort = 0x0001u.toUShort()
 
-public val RTF_GATEWAY: CUshort = 0x0002u
+public val RTF_GATEWAY: CUshort = 0x0002u.toUShort()
 
-public val RTF_HOST: CUshort = 0x0004u
+public val RTF_HOST: CUshort = 0x0004u.toUShort()
 
-public val RTF_REINSTATE: CUshort = 0x0008u
+public val RTF_REINSTATE: CUshort = 0x0008u.toUShort()
 
-public val RTF_DYNAMIC: CUshort = 0x0010u
+public val RTF_DYNAMIC: CUshort = 0x0010u.toUShort()
 
-public val RTF_MODIFIED: CUshort = 0x0020u
+public val RTF_MODIFIED: CUshort = 0x0020u.toUShort()
 
-public val RTF_MTU: CUshort = 0x0040u
+public val RTF_MTU: CUshort = 0x0040u.toUShort()
 
 public val RTF_MSS: CUshort = RTF_MTU
 
-public val RTF_WINDOW: CUshort = 0x0080u
+public val RTF_WINDOW: CUshort = 0x0080u.toUShort()
 
-public val RTF_IRTT: CUshort = 0x0100u
+public val RTF_IRTT: CUshort = 0x0100u.toUShort()
 
-public val RTF_REJECT: CUshort = 0x0200u
+public val RTF_REJECT: CUshort = 0x0200u.toUShort()
 
-public val RTF_STATIC: CUshort = 0x0400u
+public val RTF_STATIC: CUshort = 0x0400u.toUShort()
 
-public val RTF_XRESOLVE: CUshort = 0x0800u
+public val RTF_XRESOLVE: CUshort = 0x0800u.toUShort()
 
-public val RTF_NOFORWARD: CUshort = 0x1000u
+public val RTF_NOFORWARD: CUshort = 0x1000u.toUShort()
 
-public val RTF_THROW: CUshort = 0x2000u
+public val RTF_THROW: CUshort = 0x2000u.toUShort()
 
-public val RTF_NOPMTUDISC: CUshort = 0x4000u
+public val RTF_NOPMTUDISC: CUshort = 0x4000u.toUShort()
 
 public val RTF_DEFAULT: UInt = 0x00010000u
 
@@ -3468,27 +3468,27 @@ public val RTF_NAT: UInt = 0x08000000u
 
 public val RTF_ADDRCLASSMASK: UInt = 0xF8000000u
 
-public val RT_CLASS_UNSPEC: UByte = 0u
+public val RT_CLASS_UNSPEC: UByte = 0u.toUByte()
 
-public val RT_CLASS_DEFAULT: UByte = 253u
+public val RT_CLASS_DEFAULT: UByte = 253u.toUByte()
 
-public val RT_CLASS_MAIN: UByte = 254u
+public val RT_CLASS_MAIN: UByte = 254u.toUByte()
 
-public val RT_CLASS_LOCAL: UByte = 255u
+public val RT_CLASS_LOCAL: UByte = 255u.toUByte()
 
 /**
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val RT_CLASS_MAX: UByte = 255u
+public val RT_CLASS_MAX: UByte = 255u.toUByte()
 
 public val MAX_ADDR_LEN: Int = 7
 
-public val ARPD_UPDATE: CUshort = 0x01u
+public val ARPD_UPDATE: CUshort = 0x01u.toUShort()
 
-public val ARPD_LOOKUP: CUshort = 0x02u
+public val ARPD_LOOKUP: CUshort = 0x02u.toUShort()
 
-public val ARPD_FLUSH: CUshort = 0x03u
+public val ARPD_FLUSH: CUshort = 0x03u.toUShort()
 
 public val ATF_MAGIC: CInt = 0x80
 

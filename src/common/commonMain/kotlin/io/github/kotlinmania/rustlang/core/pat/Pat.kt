@@ -172,7 +172,7 @@ public val MIN12: Char = Char.MIN_VALUE
 public val MAX12: Char = Char.MAX_VALUE
 
 public fun Char.subOneChar(): Char =
-    when (val matchVal = Char.fromU32(this.toUInt() - 1u)) {
+    when (val matchVal = Char.fromU32(this.code.toUInt() - 1u)) {
         null -> error("exclusive range to start of valid chars")
         else -> {
             val value = matchVal

@@ -69,7 +69,7 @@ public class SetTestParSetInlineTests {
         a.parIter().forEach({ k ->
             observed.fetchOr(1 shl k.toInt(), Ordering.Relaxed)
         })
-        check(observed.intoInner() == 0xFFFFFFFF)
+        check(observed.intoInner() == 0xFFFFFFFF.toInt())
     }
 
     @kotlin.test.Test

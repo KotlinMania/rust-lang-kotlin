@@ -1,12 +1,12 @@
 // port-lint: source os/linux/raw.rs
 package io.github.kotlinmania.rustlang.std.os.linux.raw.arch
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
-import io.github.kotlinmania.rustlang.std.os.raw.CLong
 
 public typealias BlkcntT = ULong
 

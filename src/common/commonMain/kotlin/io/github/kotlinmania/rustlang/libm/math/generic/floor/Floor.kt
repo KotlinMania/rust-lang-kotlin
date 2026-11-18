@@ -19,13 +19,13 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> floorStatus(x: F, from
     var ix = x.toBits()
     val e = x.expUnbiased()
     // If the represented value has no fractional part, no truncation is needed.
-    if ((kmCompareValues(e, ((F.SIG_BITS as Any?) as kotlin.Int)) >= 0)) {
+    if ((kmCompareValues(e, ((x.SIG_BITS as Any?) as kotlin.Int)) >= 0)) {
         return FpResult.ok(x)
     }
     val res =
         if (e >= 0) {
             // |x| >= 1.0
-            val m = F.SIG_MASK shr e.unsigned().toInt()
+            val m = x.SIG_MASK shr e.unsigned().toInt()
             if (ix and m == zero) {
                 // Portion to be masked is already zero; no adjustment needed.
                 return FpResult.ok(x)
@@ -37,15 +37,15 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> floorStatus(x: F, from
             fromBitsFFn(ix)
         } else {
             // |x| < 1.0, zero or inexact with truncation
-            if ((ix and F.SIGN_MASK.inv()) == F.Int.ZERO) {
+            if ((ix and x.SIGN_MASK.inv()) == F.Int.ZERO) {
                 return FpResult.ok(x)
             }
             if (x.isSignPositive()) {
                 // 0.0 <= x < 1.0; rounding down goes toward +0.0.
-                F.ZERO
+                x.ZERO
             } else {
                 // -1.0 < x < 0.0; rounding down goes toward -1.0.
-                F.NEG_ONE
+                x.NEG_ONE
             }
         }
     return FpResult.new(res, Status.INEXACT)

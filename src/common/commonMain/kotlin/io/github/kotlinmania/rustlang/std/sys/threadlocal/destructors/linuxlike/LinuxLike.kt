@@ -1,6 +1,7 @@
 // port-lint: source sys/thread_local/destructors/linux_like.rs
 package io.github.kotlinmania.rustlang.std.sys.threadlocal.destructors.linuxlike
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -9,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 
 // Destructor registration for Linux-like systems.
 //
@@ -32,7 +32,7 @@ public fun interface FnCallback {
 }
 
 public fun interface FnCallback1 {
-    public operator fun invoke(arg0: FnCallback, arg1: MutPtr, arg2: MutPtr): CInt
+    public operator fun invoke(arg0: FnCallback, arg1: MutPtr, arg2: MutPtr): io.github.kotlinmania.rustlang.std.os.raw.CInt
 }
 
 public fun register(t: MutPtr, dtor: RegisterDtorCallback) {

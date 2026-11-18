@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sync.once.OnceExclusiveState
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.setthreaddescription.read
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -116,7 +116,7 @@ public open class LazyLock<T, F> internal constructor(
                 d.field(v)
             }
         }
-        return d.finish()
+        return run { d.finish(); Result.Ok<Unit, Error>(Unit) }
     }
 
     // We never create a `F` from a `LazyLock<T, F>` so it is fine

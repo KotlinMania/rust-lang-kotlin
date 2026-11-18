@@ -61,7 +61,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
     public open fun flushIfCompletedLine(): Result<Unit> =
         when (val matchVal = this.buffered().last()) {
             10u.toUByte() -> this.buffer.flushBuf()
-            else -> RustResult.Ok(Unit)
+            else -> RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
         }
 
     /**
@@ -105,7 +105,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
         // doing additional buffering; otherwise we're just guaranteeing
         // an "ErrorKind.WriteZero" later.
         if (flushed == 0) {
-            return RustResult.Ok(0)
+            return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(0)
         }
         // Don't try to reconstruct the exact amount written; just bail
         // in the event of a partial write.
@@ -115,14 +115,14 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
             // exceed usize.Max
             linesLen = linesLen.saturatingAdd(buf.len())
             if (flushed < linesLen) {
-                return RustResult.Ok(flushed)
+                return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(flushed)
             }
         }
         // Now that the write has succeeded, buffer the rest (or as much of the
         // rest as possible). `tail` is the part of the scanned prefix after the
         // last newline, so it cannot contain a newline of its own.
         val buffered: Int = tail.iter().filter({ buf1 -> !buf1.isEmpty() }).map({ buf1 -> this.buffer.writeToBuf(buf1) }).takeWhile({ n -> n > 0 }).sum()
-        return RustResult.Ok(flushed + buffered)
+        return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(flushed + buffered)
     }
 
     /**
@@ -177,7 +177,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
         // doing additional buffering; otherwise we're just guaranteeing
         // an "ErrorKind.WriteZero" later.
         if (flushed == 0) {
-            return RustResult.Ok(0)
+            return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(0)
         }
         // Now that the write has succeeded, buffer the rest (or as much of
         // the rest as possible). If there were any unwritten newlines, we
@@ -198,7 +198,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
                 // bytes if they're larger than the buffer.
                 // They can be written in full by the next call to write.
                 if (tail.size >= this.buffer.capacity()) {
-                    return RustResult.Ok(flushed)
+                    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(flushed)
                 }
                 tail
             } else if (newlineIdx1 - flushed <= this.buffer.capacity()) {
@@ -215,7 +215,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
                 }
             }
         val buffered = this.buffer.writeToBuf(tail1)
-        return RustResult.Ok(flushed + buffered)
+        return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(flushed + buffered)
     }
 
     public override fun flush(): Result<Unit> = this.buffer.flush()
@@ -275,7 +275,7 @@ public open class LineWriterShim<W : Write<W>> internal constructor(
         // write. This has the benefit of more granular partial-line handling.
         if (!this.isWriteVectored()) {
             return when (val matchVal = bufs.indexOf({ buf -> !buf.isEmpty() }).takeIf { it >= 0 }) {
-                null -> RustResult.Ok(0)
+                null -> RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(0)
                 else -> {
                     val buf = matchVal
                     this.write(buf)

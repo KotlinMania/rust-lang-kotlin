@@ -16,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.replace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.std.sync.poison.Flag
 import io.github.kotlinmania.rustlang.std.sync.poison.Guard
 import io.github.kotlinmania.rustlang.std.sync.poison.LockResult
@@ -25,7 +24,7 @@ import io.github.kotlinmania.rustlang.std.sync.poison.TryLockError
 import io.github.kotlinmania.rustlang.std.sync.poison.TryLockResult
 import io.github.kotlinmania.rustlang.std.sync.poison.mapResult
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -580,7 +579,7 @@ public open class RwLock<T>(
             }
         }
         d.field("poisoned", this.poison.get())
-        return d.finishNonExhaustive()
+        return run { d.finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
     }
 
     public companion object {

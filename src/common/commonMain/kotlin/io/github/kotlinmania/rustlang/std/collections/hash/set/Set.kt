@@ -17,7 +17,7 @@ import io.github.kotlinmania.rustlang.std.collections.hash.map.mapTryReserveErro
 import io.github.kotlinmania.rustlang.std.hash.random.RandomState
 import io.github.kotlinmania.rustlang.hashbrown.HashSet as Base
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -42,7 +42,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {

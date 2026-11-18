@@ -374,7 +374,7 @@ public open class Mask<T> internal constructor(
         val minIndex: Unsigned = run { val simdArg0 = maskedIndex1; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Unsigned>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Unsigned>()).alignBytes)); val res = (UnresolvedTypeLayout<Unsigned>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Unsigned>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Unsigned>()).alignBytes)); res } }
         // Safety: the return value is the unsigned version of T
         val minIndex1: T = transmuteCopy(minIndex)
-        return if (minIndex1.eq(T.TRUE)) {
+        return if (minIndex1.eq(minIndex1.TRUE)) {
             null
         } else {
             val minIndex2 = minIndex1.toUsize()
@@ -422,7 +422,7 @@ public open class Mask<T> internal constructor(
         val maskedIndex: Simd<T> = run { val simdArg0 = (!this).toSimd(); val simdArg1 = index1; simdArg0 }
         // Safety: the input is an integer vector
         val maxIndex: T = run { val simdArg0 = maskedIndex; run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<T>()).alignBytes)); val res = (UnresolvedTypeLayout<T>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<T>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<T>()).alignBytes)); res } }
-        return if (maxIndex.eq(T.TRUE)) {
+        return if (maxIndex.eq(maxIndex.TRUE)) {
             null
         } else {
             val maxIndex1 = maxIndex.toUsize()

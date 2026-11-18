@@ -927,7 +927,7 @@ public fun F128.Companion.fromBits(v: U128): F128 {
  * @feature(f128)
  * public fun doctestEntry() {
  *     val bytes = (F128.fromDouble(12.5)).toBeBytes()
- *     check(bytes == ubyteArrayOf(0x40u, 0x02u, 0x90u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u))
+ *     check(bytes == ubyteArrayOf(0x40u.toUByte(), 0x02u.toUByte(), 0x90u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte()))
  * }
  * ```
  */
@@ -950,7 +950,7 @@ public fun F128.toBeBytes(): UByteArray = this.toBits().toBeBytes()
  * @feature(f128)
  * public fun doctestEntry() {
  *     val bytes = (F128.fromDouble(12.5)).toLeBytes()
- *     check(bytes == ubyteArrayOf(0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x90u, 0x02u, 0x40u))
+ *     check(bytes == ubyteArrayOf(0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x90u.toUByte(), 0x02u.toUByte(), 0x40u.toUByte()))
  * }
  * ```
  */
@@ -1002,7 +1002,7 @@ public fun F128.toNeBytes(): UByteArray = this.toBits().toLeBytes()
  *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val value = F128.fromBeBytes(ubyteArrayOf(0x40u, 0x02u, 0x90u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u))
+ *     val value = F128.fromBeBytes(ubyteArrayOf(0x40u.toUByte(), 0x02u.toUByte(), 0x90u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte()))
  *     check(value == F128.fromDouble(12.5))
  * }
  * ```
@@ -1024,7 +1024,7 @@ public fun F128.Companion.fromBeBytes(bytes: UByteArray): F128 = F128.fromBits(U
  *
  * @feature(f128)
  * public fun doctestEntry() {
- *     val value = F128.fromLeBytes(ubyteArrayOf(0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x90u, 0x02u, 0x40u))
+ *     val value = F128.fromLeBytes(ubyteArrayOf(0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x90u.toUByte(), 0x02u.toUByte(), 0x40u.toUByte()))
  *     check(value == F128.fromDouble(12.5))
  * }
  * ```
@@ -1054,9 +1054,9 @@ public fun F128.Companion.fromLeBytes(bytes: UByteArray): F128 = F128.fromBits(U
  * @feature(f128)
  * public fun doctestEntry() {
  *     val value = F128.fromLeBytes(if (false) {
- *         ubyteArrayOf(0x40u, 0x02u, 0x90u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u)
+ *         ubyteArrayOf(0x40u.toUByte(), 0x02u.toUByte(), 0x90u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte())
  *     } else {
- *         ubyteArrayOf(0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x90u, 0x02u, 0x40u)
+ *         ubyteArrayOf(0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x90u.toUByte(), 0x02u.toUByte(), 0x40u.toUByte())
  *     })
  *     check(value == F128.fromDouble(12.5))
  * }

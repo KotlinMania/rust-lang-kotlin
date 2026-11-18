@@ -24,7 +24,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteSub
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 
 // This is a densely packed error representation which is used on targets with
 // 64-bit pointers.

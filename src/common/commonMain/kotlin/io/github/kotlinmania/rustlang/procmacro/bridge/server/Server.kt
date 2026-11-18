@@ -61,8 +61,8 @@ public open class HandleStore<S : Server<TokenStream, Span, Symbol>, TokenStream
         )
 
         public fun <TokenStream, Span, Symbol, S : Server<TokenStream, Span, Symbol>> new(): HandleStore<S, TokenStream, Span, Symbol> {
-            val TOKEN_STREAM: AtomicU32  = AtomicU32.new(1)
-            val SPAN: AtomicU32  = AtomicU32.new(1)
+            val TOKEN_STREAM: AtomicU32  = AtomicU32.new(1u)
+            val SPAN: AtomicU32  = AtomicU32.new(1u)
             return HandleStore(tokenStream = OwnedStore.new(TOKEN_STREAM), span = InternedStore.new(SPAN))
         }
     }

@@ -21,7 +21,7 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fminimum(x: F, y: F): 
             x
         } else if (y.isNan()) {
             y
-        } else if ((kmCompareValues(x, y) < 0) || (x.biteq(F.NEG_ZERO) && y.isSignPositive())) {
+        } else if ((kmCompareValues(x, y) < 0) || (x.biteq(x.NEG_ZERO) && y.isSignPositive())) {
             x
         } else {
             y

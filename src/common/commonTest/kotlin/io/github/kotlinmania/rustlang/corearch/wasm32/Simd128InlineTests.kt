@@ -51,11 +51,11 @@ import kotlin.experimental.inv
 
 public val C1: V128 = i8x16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
 
-public val C2: V128 = u8x16(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u)
+public val C2: V128 = u8x16(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte())
 
 public val C3: V128 = i16x8(0, 1, 2, 3, 4, 5, 6, 7)
 
-public val C4: V128 = u16x8(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u)
+public val C4: V128 = u16x8(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort())
 
 public val C5: V128 = i32x4(0, 1, 2, 3)
 
@@ -590,34 +590,34 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testI8x16AddSatU() {
         run {
-            val v1 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
+            val v1 = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
+            val v2 = ubyteArrayOf(1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte())
             val v1V128: V128 = transmuteWithLayouts<UByteArray, V128>(v1, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmuteWithLayouts<UByteArray, V128>(v2, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u8x16AddSat(v1V128, v2V128)
-            var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            var v3 = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
             v3 = transmuteWithLayouts<V128, UByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingAdd(v2[i])
                 check(actual == expected)
             }
-            val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            val v11 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
             val v1V1281: V128 = transmuteWithLayouts<UByteArray, V128>(v11, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u8x16AddSat(v1V1281, v2V1281)
-            var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            var v31 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             v31 = transmuteWithLayouts<V128, UByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingAdd(v21[i1].toUByte())
                 check(actual1 == expected1)
             }
-            val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
+            val v12 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
+            val v22 = ubyteArrayOf(127u.toUByte(), (-44).toUByte(), 43u.toUByte(), 126u.toUByte(), 4u.toUByte(), 2u.toUByte(), 9u.toUByte(), (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u.toUByte(), (-69).toUByte(), 79u.toUByte(), (-3).toUByte(), 9u.toUByte(), (-24).toUByte())
             val v1V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v12, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v22, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = u8x16AddSat(v1V1282, v2V1282)
-            var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            var v32 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             v32 = transmuteWithLayouts<V128, UByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].saturatingAdd(v22[i2])
@@ -707,34 +707,34 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testI8x16SubSatU() {
         run {
-            val v1 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
+            val v1 = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
+            val v2 = ubyteArrayOf(1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte())
             val v1V128: V128 = transmuteWithLayouts<UByteArray, V128>(v1, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmuteWithLayouts<UByteArray, V128>(v2, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u8x16SubSat(v1V128, v2V128)
-            var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            var v3 = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
             v3 = transmuteWithLayouts<V128, UByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingSub(v2[i])
                 check(actual == expected)
             }
-            val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            val v11 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
             val v1V1281: V128 = transmuteWithLayouts<UByteArray, V128>(v11, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u8x16SubSat(v1V1281, v2V1281)
-            var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            var v31 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             v31 = transmuteWithLayouts<V128, UByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingSub(v21[i1].toUByte())
                 check(actual1 == expected1)
             }
-            val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
+            val v12 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
+            val v22 = ubyteArrayOf(127u.toUByte(), (-44).toUByte(), 43u.toUByte(), 126u.toUByte(), 4u.toUByte(), 2u.toUByte(), 9u.toUByte(), (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u.toUByte(), (-69).toUByte(), 79u.toUByte(), (-3).toUByte(), 9u.toUByte(), (-24).toUByte())
             val v1V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v12, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v22, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = u8x16SubSat(v1V1282, v2V1282)
-            var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            var v32 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             v32 = transmuteWithLayouts<V128, UByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].saturatingSub(v22[i2])
@@ -785,34 +785,34 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testI8x16MinU() {
         run {
-            val v1 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
+            val v1 = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
+            val v2 = ubyteArrayOf(1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte())
             val v1V128: V128 = transmuteWithLayouts<UByteArray, V128>(v1, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmuteWithLayouts<UByteArray, V128>(v2, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u8x16Min(v1V128, v2V128)
-            var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            var v3 = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
             v3 = transmuteWithLayouts<V128, UByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].min(v2[i])
                 check(actual == expected)
             }
-            val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            val v11 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
             val v1V1281: V128 = transmuteWithLayouts<UByteArray, V128>(v11, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u8x16Min(v1V1281, v2V1281)
-            var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            var v31 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             v31 = transmuteWithLayouts<V128, UByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].min(v21[i1])
                 check(actual1 == expected1)
             }
-            val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
+            val v12 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
+            val v22 = ubyteArrayOf(127u.toUByte(), (-44).toUByte(), 43u.toUByte(), 126u.toUByte(), 4u.toUByte(), 2u.toUByte(), 9u.toUByte(), (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u.toUByte(), (-69).toUByte(), 79u.toUByte(), (-3).toUByte(), 9u.toUByte(), (-24).toUByte())
             val v1V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v12, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v22, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = u8x16Min(v1V1282, v2V1282)
-            var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            var v32 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             v32 = transmuteWithLayouts<V128, UByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].min(v22[i2])
@@ -863,34 +863,34 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testI8x16MaxU() {
         run {
-            val v1 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
+            val v1 = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
+            val v2 = ubyteArrayOf(1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte())
             val v1V128: V128 = transmuteWithLayouts<UByteArray, V128>(v1, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmuteWithLayouts<UByteArray, V128>(v2, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u8x16Max(v1V128, v2V128)
-            var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            var v3 = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
             v3 = transmuteWithLayouts<V128, UByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].max(v2[i])
                 check(actual == expected)
             }
-            val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            val v11 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
             val v1V1281: V128 = transmuteWithLayouts<UByteArray, V128>(v11, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u8x16Max(v1V1281, v2V1281)
-            var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            var v31 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             v31 = transmuteWithLayouts<V128, UByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].max(v21[i1])
                 check(actual1 == expected1)
             }
-            val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
+            val v12 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
+            val v22 = ubyteArrayOf(127u.toUByte(), (-44).toUByte(), 43u.toUByte(), 126u.toUByte(), 4u.toUByte(), 2u.toUByte(), 9u.toUByte(), (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u.toUByte(), (-69).toUByte(), 79u.toUByte(), (-3).toUByte(), 9u.toUByte(), (-24).toUByte())
             val v1V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v12, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v22, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = u8x16Max(v1V1282, v2V1282)
-            var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            var v32 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             v32 = transmuteWithLayouts<V128, UByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].max(v22[i2])
@@ -902,34 +902,34 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testI8x16AvgrU() {
         run {
-            val v1 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val v2 = ubyteArrayOf(1u.toUByte(), 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u, 1u)
+            val v1 = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
+            val v2 = ubyteArrayOf(1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte(), 1u.toUByte())
             val v1V128: V128 = transmuteWithLayouts<UByteArray, V128>(v1, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmuteWithLayouts<UByteArray, V128>(v2, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u8x16Avgr(v1V128, v2V128)
-            var v3 = ubyteArrayOf(0u.toUByte(), 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            var v3 = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
             v3 = transmuteWithLayouts<V128, UByteArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].avgr(v2[i])
                 check(actual == expected)
             }
-            val v11 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            val v11 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             val v21 = listOf(255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242, 241, 240)
             val v1V1281: V128 = transmuteWithLayouts<UByteArray, V128>(v11, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmuteWithLayouts<IntArray, V128>(v21, PrimitiveArrayLayouts.intArray((16).toInt()), UnresolvedTypeLayout<V128>())
             val v3V1281 = u8x16Avgr(v1V1281, v2V1281)
-            var v31 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            var v31 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             v31 = transmuteWithLayouts<V128, UByteArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].avgr(v21[i1])
                 check(actual1 == expected1)
             }
-            val v12 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
-            val v22 = ubyteArrayOf(127u, (-44).toUByte(), 43u, 126u, 4u, 2u, 9u, (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u, (-69).toUByte(), 79u, (-3).toUByte(), 9u, (-24).toUByte())
+            val v12 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
+            val v22 = ubyteArrayOf(127u.toUByte(), (-44).toUByte(), 43u.toUByte(), 126u.toUByte(), 4u.toUByte(), 2u.toUByte(), 9u.toUByte(), (-3).toUByte(), (-59).toUByte(), (-43).toUByte(), 39u.toUByte(), (-69).toUByte(), 79u.toUByte(), (-3).toUByte(), 9u.toUByte(), (-24).toUByte())
             val v1V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v12, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v2V1282: V128 = transmuteWithLayouts<UByteArray, V128>(v22, UnresolvedTypeLayout<UByteArray>(), UnresolvedTypeLayout<V128>())
             val v3V1282 = u8x16Avgr(v1V1282, v2V1282)
-            var v32 = ubyteArrayOf(1u.toUByte(), 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u, 16u)
+            var v32 = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte(), 16u.toUByte())
             v32 = transmuteWithLayouts<V128, UByteArray>(v3V1282, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UByteArray>())
             for ((i2, actual2) in v32.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected2 = v12[i2].avgr(v22[i2])
@@ -997,23 +997,23 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testI16x8AddSatU() {
         run {
-            val v1 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
+            val v1 = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
+            val v2 = ushortArrayOf(1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort())
             val v1V128: V128 = transmuteWithLayouts<UShortArray, V128>(v1, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmuteWithLayouts<UShortArray, V128>(v2, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u16x8AddSat(v1V128, v2V128)
-            var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            var v3 = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
             v3 = transmuteWithLayouts<V128, UShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingAdd(v2[i])
                 check(actual == expected)
             }
-            val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
-            val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
+            val v11 = ushortArrayOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort())
+            val v21 = ushortArrayOf(32767u.toUShort(), 8u.toUShort(), (-2494).toUShort(), (-4).toUShort(), 4882u.toUShort(), (-4).toUShort(), 848u.toUShort(), 3830u.toUShort())
             val v1V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v11, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v21, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = u16x8AddSat(v1V1281, v2V1281)
-            var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
+            var v31 = ushortArrayOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort())
             v31 = transmuteWithLayouts<V128, UShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingAdd(v21[i1])
@@ -1081,23 +1081,23 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testI16x8SubSatU() {
         run {
-            val v1 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
+            val v1 = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
+            val v2 = ushortArrayOf(1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort())
             val v1V128: V128 = transmuteWithLayouts<UShortArray, V128>(v1, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmuteWithLayouts<UShortArray, V128>(v2, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u16x8SubSat(v1V128, v2V128)
-            var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            var v3 = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
             v3 = transmuteWithLayouts<V128, UShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].saturatingSub(v2[i])
                 check(actual == expected)
             }
-            val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
-            val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
+            val v11 = ushortArrayOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort())
+            val v21 = ushortArrayOf(32767u.toUShort(), 8u.toUShort(), (-2494).toUShort(), (-4).toUShort(), 4882u.toUShort(), (-4).toUShort(), 848u.toUShort(), 3830u.toUShort())
             val v1V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v11, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v21, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = u16x8SubSat(v1V1281, v2V1281)
-            var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
+            var v31 = ushortArrayOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort())
             v31 = transmuteWithLayouts<V128, UShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].saturatingSub(v21[i1])
@@ -1165,23 +1165,23 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testI16x8MinU() {
         run {
-            val v1 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
+            val v1 = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
+            val v2 = ushortArrayOf(1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort())
             val v1V128: V128 = transmuteWithLayouts<UShortArray, V128>(v1, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmuteWithLayouts<UShortArray, V128>(v2, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u16x8Min(v1V128, v2V128)
-            var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            var v3 = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
             v3 = transmuteWithLayouts<V128, UShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].min(v2[i])
                 check(actual == expected)
             }
-            val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
-            val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
+            val v11 = ushortArrayOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort())
+            val v21 = ushortArrayOf(32767u.toUShort(), 8u.toUShort(), (-2494).toUShort(), (-4).toUShort(), 4882u.toUShort(), (-4).toUShort(), 848u.toUShort(), 3830u.toUShort())
             val v1V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v11, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v21, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = u16x8Min(v1V1281, v2V1281)
-            var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
+            var v31 = ushortArrayOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort())
             v31 = transmuteWithLayouts<V128, UShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].min(v21[i1])
@@ -1221,23 +1221,23 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testI16x8MaxU() {
         run {
-            val v1 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
+            val v1 = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
+            val v2 = ushortArrayOf(1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort())
             val v1V128: V128 = transmuteWithLayouts<UShortArray, V128>(v1, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmuteWithLayouts<UShortArray, V128>(v2, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u16x8Max(v1V128, v2V128)
-            var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            var v3 = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
             v3 = transmuteWithLayouts<V128, UShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].max(v2[i])
                 check(actual == expected)
             }
-            val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
-            val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
+            val v11 = ushortArrayOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort())
+            val v21 = ushortArrayOf(32767u.toUShort(), 8u.toUShort(), (-2494).toUShort(), (-4).toUShort(), 4882u.toUShort(), (-4).toUShort(), 848u.toUShort(), 3830u.toUShort())
             val v1V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v11, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v21, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = u16x8Max(v1V1281, v2V1281)
-            var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
+            var v31 = ushortArrayOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort())
             v31 = transmuteWithLayouts<V128, UShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].max(v21[i1])
@@ -1249,23 +1249,23 @@ public class Simd128InlineTests {
     @kotlin.test.Test
     public fun testI16x8AvgrU() {
         run {
-            val v1 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val v2 = ushortArrayOf(1u.toUShort(), 1u, 1u, 1u, 1u, 1u, 1u, 1u)
+            val v1 = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
+            val v2 = ushortArrayOf(1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort(), 1u.toUShort())
             val v1V128: V128 = transmuteWithLayouts<UShortArray, V128>(v1, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V128: V128 = transmuteWithLayouts<UShortArray, V128>(v2, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V128 = u16x8Avgr(v1V128, v2V128)
-            var v3 = ushortArrayOf(0u.toUShort(), 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            var v3 = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
             v3 = transmuteWithLayouts<V128, UShortArray>(v3V128, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i, actual) in v3.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected = v1[i].avgr(v2[i])
                 check(actual == expected)
             }
-            val v11 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
-            val v21 = ushortArrayOf(32767u, 8u, (-2494).toUShort(), (-4).toUShort(), 4882u, (-4).toUShort(), 848u, 3830u)
+            val v11 = ushortArrayOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort())
+            val v21 = ushortArrayOf(32767u.toUShort(), 8u.toUShort(), (-2494).toUShort(), (-4).toUShort(), 4882u.toUShort(), (-4).toUShort(), 848u.toUShort(), 3830u.toUShort())
             val v1V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v11, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v2V1281: V128 = transmuteWithLayouts<UShortArray, V128>(v21, UnresolvedTypeLayout<UShortArray>(), UnresolvedTypeLayout<V128>())
             val v3V1281 = u16x8Avgr(v1V1281, v2V1281)
-            var v31 = ushortArrayOf(1u.toUShort(), 2u, 3u, 4u, 5u, 6u, 7u, 8u)
+            var v31 = ushortArrayOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort())
             v31 = transmuteWithLayouts<V128, UShortArray>(v3V1281, UnresolvedTypeLayout<V128>(), UnresolvedTypeLayout<UShortArray>())
             for ((i1, actual1) in v31.mapIndexed { index, item -> Pair(index, item) }) {
                 val expected1 = v11[i1].avgr(v21[i1])
@@ -4528,7 +4528,7 @@ public class Simd128InlineTests {
             for (i in 0..255) {
                 compareBytes(i8x16Popcnt(u8x16Splat(i)), u8x16Splat(i.countOnes().toUByte()))
             }
-            val vectors = listOf(ubyteArrayOf(0u.toUByte(), 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 9u, 10u, 11u, 12u, 13u, 14u, 15u), listOf(100, 200, 50, 0, 10, 7, 38, 185, 192, 3, 34, 85, 93, 7, 31, 99))
+            val vectors = listOf(ubyteArrayOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()), listOf(100, 200, 50, 0, 10, 7, 38, 185, 192, 3, 34, 85, 93, 7, 31, 99))
             for (vector in vectors.iter()) {
                 compareBytes(i8x16Popcnt(transmuteWithLayouts<Any?, V128>(vector, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<V128>())), i8x16(vector[0].countOnes().toByte(), vector[1].countOnes().toByte(), vector[2].countOnes().toByte(), vector[3].countOnes().toByte(), vector[4].countOnes().toByte(), vector[5].countOnes().toByte(), vector[6].countOnes().toByte(), vector[7].countOnes().toByte(), vector[8].countOnes().toByte(), vector[9].countOnes().toByte(), vector[10].countOnes().toByte(), vector[11].countOnes().toByte(), vector[12].countOnes().toByte(), vector[13].countOnes().toByte(), vector[14].countOnes().toByte(), vector[15].countOnes().toByte()))
             }
@@ -4569,10 +4569,10 @@ public class Simd128InlineTests {
             }
         }
         run {
-            val a2: UByteArray = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val b2: UByteArray = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val low2 = transmuteWithLayouts<Any?, UShortArray>(u16x8ExtmulLowU8x16(u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()))
-            val high2 = transmuteWithLayouts<Any?, UShortArray>(u16x8ExtmulHighU8x16(u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u8x16(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()))
+            val a2: UByteArray = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
+            val b2: UByteArray = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
+            val low2 = transmuteWithLayouts<Any?, UShortArray>(u16x8ExtmulLowU8x16(u8x16(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte()), u8x16(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()))
+            val high2 = transmuteWithLayouts<Any?, UShortArray>(u16x8ExtmulHighU8x16(u8x16(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte()), u8x16(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()))
             val half2 = a2.size / 2
             for (i2 in 0 until half2) {
                 check(((a2[i2].toUShort()) * (b2[i2].toUShort())).toUShort() == low2[i2])
@@ -4580,10 +4580,10 @@ public class Simd128InlineTests {
             }
         }
         run {
-            val a3: UByteArray = ubyteArrayOf(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u)
-            val b3: UByteArray = ubyteArrayOf(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)
-            val low3 = transmuteWithLayouts<Any?, UShortArray>(u16x8ExtmulLowU8x16(u8x16(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u), u8x16(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()))
-            val high3 = transmuteWithLayouts<Any?, UShortArray>(u16x8ExtmulHighU8x16(u8x16(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u), u8x16(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()))
+            val a3: UByteArray = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 100u.toUByte(), 124u.toUByte(), 38u.toUByte(), 33u.toUByte(), 87u.toUByte(), 92u.toUByte(), 198u.toUByte(), 22u.toUByte(), 8u.toUByte(), 43u.toUByte(), 128u.toUByte(), 22u.toUByte(), 0u.toUByte())
+            val b3: UByteArray = ubyteArrayOf(5u.toUByte(), 200u.toUByte(), 6u.toUByte(), 10u.toUByte(), 45u.toUByte(), 248u.toUByte(), 4u.toUByte(), 2u.toUByte(), 0u.toUByte(), 2u.toUByte(), 92u.toUByte(), 102u.toUByte(), 234u.toUByte(), 83u.toUByte(), 73u.toUByte(), 54u.toUByte())
+            val low3 = transmuteWithLayouts<Any?, UShortArray>(u16x8ExtmulLowU8x16(u8x16(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 100u.toUByte(), 124u.toUByte(), 38u.toUByte(), 33u.toUByte(), 87u.toUByte(), 92u.toUByte(), 198u.toUByte(), 22u.toUByte(), 8u.toUByte(), 43u.toUByte(), 128u.toUByte(), 22u.toUByte(), 0u.toUByte()), u8x16(5u.toUByte(), 200u.toUByte(), 6u.toUByte(), 10u.toUByte(), 45u.toUByte(), 248u.toUByte(), 4u.toUByte(), 2u.toUByte(), 0u.toUByte(), 2u.toUByte(), 92u.toUByte(), 102u.toUByte(), 234u.toUByte(), 83u.toUByte(), 73u.toUByte(), 54u.toUByte())), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()))
+            val high3 = transmuteWithLayouts<Any?, UShortArray>(u16x8ExtmulHighU8x16(u8x16(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 100u.toUByte(), 124u.toUByte(), 38u.toUByte(), 33u.toUByte(), 87u.toUByte(), 92u.toUByte(), 198u.toUByte(), 22u.toUByte(), 8u.toUByte(), 43u.toUByte(), 128u.toUByte(), 22u.toUByte(), 0u.toUByte()), u8x16(5u.toUByte(), 200u.toUByte(), 6u.toUByte(), 10u.toUByte(), 45u.toUByte(), 248u.toUByte(), 4u.toUByte(), 2u.toUByte(), 0u.toUByte(), 2u.toUByte(), 92u.toUByte(), 102u.toUByte(), 234u.toUByte(), 83u.toUByte(), 73u.toUByte(), 54u.toUByte())), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()))
             val half3 = a3.size / 2
             for (i3 in 0 until half3) {
                 check(((a3[i3].toUShort()) * (b3[i3].toUShort())).toUShort() == low3[i3])
@@ -4613,10 +4613,10 @@ public class Simd128InlineTests {
             }
         }
         run {
-            val a6: UShortArray = ushortArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val b6: UShortArray = ushortArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
-            val low6 = transmuteWithLayouts<Any?, UIntArray>(u32x4ExtmulLowU16x8(u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uIntArray((16 / sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()))
-            val high6 = transmuteWithLayouts<Any?, UIntArray>(u32x4ExtmulHighU16x8(u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u), u16x8(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uIntArray((16 / sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()))
+            val a6: UShortArray = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
+            val b6: UShortArray = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
+            val low6 = transmuteWithLayouts<Any?, UIntArray>(u32x4ExtmulLowU16x8(u16x8(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort()), u16x8(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uIntArray((16 / sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()))
+            val high6 = transmuteWithLayouts<Any?, UIntArray>(u32x4ExtmulHighU16x8(u16x8(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort()), u16x8(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uIntArray((16 / sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()))
             val half6 = a6.size / 2
             for (i6 in 0 until half6) {
                 check(((a6[i6].toUInt()) * (b6[i6].toUInt())) == low6[i6])
@@ -4624,10 +4624,10 @@ public class Simd128InlineTests {
             }
         }
         run {
-            val a7: UShortArray = ushortArrayOf(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u)
-            val b7: UShortArray = ushortArrayOf(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)
-            val low7 = transmuteWithLayouts<Any?, UIntArray>(u32x4ExtmulLowU16x8(u16x8(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u), u16x8(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uIntArray((16 / sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()))
-            val high7 = transmuteWithLayouts<Any?, UIntArray>(u32x4ExtmulHighU16x8(u16x8(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u), u16x8(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uIntArray((16 / sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()))
+            val a7: UShortArray = ushortArrayOf(1u.toUShort(), 0u.toUShort(), UShort.MAX_VALUE, 19931u.toUShort(), 2259u.toUShort(), 64u.toUShort(), 200u.toUShort(), 87u.toUShort())
+            val b7: UShortArray = ushortArrayOf(1u.toUShort(), 1u.toUShort(), 3u.toUShort(), 29391u.toUShort(), 105u.toUShort(), 2u.toUShort(), 100u.toUShort(), 2u.toUShort())
+            val low7 = transmuteWithLayouts<Any?, UIntArray>(u32x4ExtmulLowU16x8(u16x8(1u.toUShort(), 0u.toUShort(), UShort.MAX_VALUE, 19931u.toUShort(), 2259u.toUShort(), 64u.toUShort(), 200u.toUShort(), 87u.toUShort()), u16x8(1u.toUShort(), 1u.toUShort(), 3u.toUShort(), 29391u.toUShort(), 105u.toUShort(), 2u.toUShort(), 100u.toUShort(), 2u.toUShort())), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uIntArray((16 / sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()))
+            val high7 = transmuteWithLayouts<Any?, UIntArray>(u32x4ExtmulHighU16x8(u16x8(1u.toUShort(), 0u.toUShort(), UShort.MAX_VALUE, 19931u.toUShort(), 2259u.toUShort(), 64u.toUShort(), 200u.toUShort(), 87u.toUShort()), u16x8(1u.toUShort(), 1u.toUShort(), 3u.toUShort(), 29391u.toUShort(), 105u.toUShort(), 2u.toUShort(), 100u.toUShort(), 2u.toUShort())), UnresolvedTypeLayout<Any?>(), PrimitiveArrayLayouts.uIntArray((16 / sizeOf<UInt>(typeLayoutT = PrimitiveLayouts.U32)).toInt()))
             val half7 = a7.size / 2
             for (i7 in 0 until half7) {
                 check(((a7[i7].toUInt()) * (b7[i7].toUInt())) == low7[i7])
@@ -4748,7 +4748,7 @@ public class Simd128InlineTests {
             }
         }
         run {
-            val a3: UByteArray = ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            val a3: UByteArray = ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
             val aV3 = transmuteWithLayouts<UByteArray, V128>(a3, PrimitiveArrayLayouts.uByteArray((16 / sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()), UnresolvedTypeLayout<V128>())
             val r3 = transmuteWithLayouts<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV3), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half3 = a3.size / 2
@@ -4757,7 +4757,7 @@ public class Simd128InlineTests {
             }
         }
         run {
-            val a4: UByteArray = ubyteArrayOf(1u, 2u, 3u, 100u, 124u, 38u, 33u, 87u, 92u, 198u, 22u, 8u, 43u, 128u, 22u, 0u)
+            val a4: UByteArray = ubyteArrayOf(1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 100u.toUByte(), 124u.toUByte(), 38u.toUByte(), 33u.toUByte(), 87u.toUByte(), 92u.toUByte(), 198u.toUByte(), 22u.toUByte(), 8u.toUByte(), 43u.toUByte(), 128u.toUByte(), 22u.toUByte(), 0u.toUByte())
             val aV4 = transmuteWithLayouts<UByteArray, V128>(a4, PrimitiveArrayLayouts.uByteArray((16 / sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()), UnresolvedTypeLayout<V128>())
             val r4 = transmuteWithLayouts<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV4), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half4 = a4.size / 2
@@ -4766,7 +4766,7 @@ public class Simd128InlineTests {
             }
         }
         run {
-            val a5: UByteArray = ubyteArrayOf(5u, 200u, 6u, 10u, 45u, 248u, 4u, 2u, 0u, 2u, 92u, 102u, 234u, 83u, 73u, 54u)
+            val a5: UByteArray = ubyteArrayOf(5u.toUByte(), 200u.toUByte(), 6u.toUByte(), 10u.toUByte(), 45u.toUByte(), 248u.toUByte(), 4u.toUByte(), 2u.toUByte(), 0u.toUByte(), 2u.toUByte(), 92u.toUByte(), 102u.toUByte(), 234u.toUByte(), 83u.toUByte(), 73u.toUByte(), 54u.toUByte())
             val aV5 = transmuteWithLayouts<UByteArray, V128>(a5, PrimitiveArrayLayouts.uByteArray((16 / sizeOf<UByte>(typeLayoutT = PrimitiveLayouts.U8)).toInt()), UnresolvedTypeLayout<V128>())
             val r5 = transmuteWithLayouts<V128, ShortArray>(i16x8ExtaddPairwiseU8x16(aV5), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.shortArray((16 / sizeOf<Short>(typeLayoutT = PrimitiveLayouts.I16)).toInt()))
             val half5 = a5.size / 2
@@ -4802,7 +4802,7 @@ public class Simd128InlineTests {
             }
         }
         run {
-            val a9: UShortArray = ushortArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u)
+            val a9: UShortArray = ushortArrayOf(0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort(), 0u.toUShort())
             val aV9 = transmuteWithLayouts<UShortArray, V128>(a9, PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()), UnresolvedTypeLayout<V128>())
             val r9 = transmuteWithLayouts<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV9), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half9 = a9.size / 2
@@ -4811,7 +4811,7 @@ public class Simd128InlineTests {
             }
         }
         run {
-            val a10: UShortArray = ushortArrayOf(1u, 0u, UShort.MAX_VALUE, 19931u, 2259u, 64u, 200u, 87u)
+            val a10: UShortArray = ushortArrayOf(1u.toUShort(), 0u.toUShort(), UShort.MAX_VALUE, 19931u.toUShort(), 2259u.toUShort(), 64u.toUShort(), 200u.toUShort(), 87u.toUShort())
             val aV10 = transmuteWithLayouts<UShortArray, V128>(a10, PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()), UnresolvedTypeLayout<V128>())
             val r10 = transmuteWithLayouts<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV10), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half10 = a10.size / 2
@@ -4820,7 +4820,7 @@ public class Simd128InlineTests {
             }
         }
         run {
-            val a11: UShortArray = ushortArrayOf(1u, 1u, 3u, 29391u, 105u, 2u, 100u, 2u)
+            val a11: UShortArray = ushortArrayOf(1u.toUShort(), 1u.toUShort(), 3u.toUShort(), 29391u.toUShort(), 105u.toUShort(), 2u.toUShort(), 100u.toUShort(), 2u.toUShort())
             val aV11 = transmuteWithLayouts<UShortArray, V128>(a11, PrimitiveArrayLayouts.uShortArray((16 / sizeOf<UShort>(typeLayoutT = PrimitiveLayouts.U16)).toInt()), UnresolvedTypeLayout<V128>())
             val r11 = transmuteWithLayouts<V128, IntArray>(i32x4ExtaddPairwiseU16x8(aV11), UnresolvedTypeLayout<V128>(), PrimitiveArrayLayouts.intArray((16 / sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)).toInt()))
             val half11 = a11.size / 2

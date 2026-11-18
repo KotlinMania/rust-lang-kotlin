@@ -2,7 +2,9 @@
 package io.github.kotlinmania.rustlang.std.os.fd
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.libc.wasi.STDERR_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.STDIN_FILENO
 import io.github.kotlinmania.rustlang.libc.wasi.STDOUT_FILENO
@@ -15,8 +17,6 @@ import io.github.kotlinmania.rustlang.std.io.stdio.Stdin
 import io.github.kotlinmania.rustlang.std.io.stdio.StdinLock
 import io.github.kotlinmania.rustlang.std.io.stdio.Stdout
 import io.github.kotlinmania.rustlang.std.io.stdio.StdoutLock
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
-import io.github.kotlinmania.rustlang.std.sync.Arc
 
 // Raw Unix-like file descriptors.
 
@@ -167,7 +167,7 @@ public fun StderrLock.asRawFd(): RawFd = STDERR_FILENO
  */
 public fun <T : AsRawFd> Arc<T, Global>.asRawFd(): RawFd = this.asRawFd()
 
-public fun <T : AsRawFd> Rc.Rc<T, Global>.asRawFd(): RawFd = this.asRawFd()
+public fun <T : AsRawFd> Rc<T, Global>.asRawFd(): RawFd = this.asRawFd()
 
 public fun <T : AsRawFd> Rc.UniqueRc<T>.asRawFd(): RawFd = this.asRawFd()
 

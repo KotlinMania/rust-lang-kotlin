@@ -1043,6 +1043,13 @@ public operator fun <T> MutableList<T>.get(range: IntRange): MutableList<T> {
     }
 }
 
+public operator fun String.get(range: IntRange): String = substring(range)
+
+public operator fun ByteArray.get(range: IntRange): ByteArray = sliceArray(range)
+
+@OptIn(ExperimentalUnsignedTypes::class)
+public operator fun UByteArray.get(range: IntRange): UByteArray = sliceArray(range)
+
 public fun BooleanArray.asPtr(): ConstPtr = constPtrFromRustCast(this)
 
 public fun BooleanArray.asMutPtr(): MutPtr = mutPtrFromRustCast(this)

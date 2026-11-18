@@ -21,7 +21,7 @@ import io.github.kotlinmania.rustlang.std.collections.hash.map.Entry.*
 import io.github.kotlinmania.rustlang.std.hash.random.RandomState
 import io.github.kotlinmania.rustlang.hashbrown.hashMap as base
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -46,7 +46,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -176,7 +176,7 @@ public class DebugTuple(
  * fun randomStatBuff(): UByte {
  *     // could actually return some random value here - let's just return
  *     // some fixed value for now
- *     return 42u
+ *     return 42u.toUByte()
  * }
  * // type inference lets us omit an explicit type signature (which
  * // would be `HashMap<String, UByte>` in this example).

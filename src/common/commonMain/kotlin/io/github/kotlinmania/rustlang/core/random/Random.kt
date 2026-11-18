@@ -253,7 +253,7 @@ public fun RangeInclusive<UByte>.sample(source: Rng): UByte {
     val offset =
         if (bound.isPowerOfTwo()) {
             val sample: UByte = RangeFull.sample(source)
-            sample and (bound - 1u)
+            sample and (bound - 1u.toUByte())
         } else {
             bounded32(bound.toUInt(), source).toUByte()
         }
@@ -312,7 +312,7 @@ public fun RangeInclusive<Byte>.sampleByte(source: Rng): Byte {
     val offset =
         if (bound.isPowerOfTwo()) {
             val sample: UByte = RangeFull.sample(source)
-            sample and (bound - 1u)
+            sample and (bound - 1u.toUByte())
         } else {
             bounded32(bound.toUInt(), source).toUByte()
         }
@@ -371,7 +371,7 @@ public fun RangeInclusive<UShort>.sampleUShort(source: Rng): UShort {
     val offset =
         if (bound.isPowerOfTwo()) {
             val sample: UShort = RangeFull.sample(source)
-            sample and (bound - 1u)
+            sample and (bound - 1u.toUShort())
         } else {
             bounded32(bound.toUInt(), source).toUShort()
         }
@@ -430,7 +430,7 @@ public fun RangeInclusive<Short>.sampleShort(source: Rng): Short {
     val offset =
         if (bound.isPowerOfTwo()) {
             val sample: UShort = RangeFull.sample(source)
-            sample and (bound - 1u)
+            sample and (bound - 1u.toUShort())
         } else {
             bounded32(bound.toUInt(), source).toUShort()
         }

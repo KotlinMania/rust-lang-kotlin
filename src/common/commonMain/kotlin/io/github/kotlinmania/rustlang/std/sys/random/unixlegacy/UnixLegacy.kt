@@ -1,7 +1,6 @@
 // port-lint: source sys/random/unix_legacy.rs
 package io.github.kotlinmania.rustlang.std.sys.random.unixlegacy
 
-import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.std.fs.File
 import io.github.kotlinmania.rustlang.std.sync.oncelock.OnceLock
 

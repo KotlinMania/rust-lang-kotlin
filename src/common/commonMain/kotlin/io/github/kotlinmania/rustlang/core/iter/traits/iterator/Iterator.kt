@@ -1974,7 +1974,7 @@ public interface Iterator<SelfType, Item> {
             val trueCount1 = trueCount
             return { x ->
                 val p = predicate1(x)
-                (trueCount1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (p.toInt()); targetPlace.write(currentValue) }
+                (trueCount1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += ((if (p) 1 else 0)); targetPlace.write(currentValue) }
                 !p
             }
         }

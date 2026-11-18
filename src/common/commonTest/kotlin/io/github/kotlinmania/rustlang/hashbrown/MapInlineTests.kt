@@ -1386,7 +1386,7 @@ public class MapTestMapInlineTests {
             }
         }
         // All allocator clones should already be dropped.
-        check(dropped.load(Ordering.SeqCst) == 0)
+        check(dropped.load(Ordering.SeqCst) == 0.toByte())
     }
 
     @kotlin.test.Test
@@ -1515,7 +1515,7 @@ public class MapTestMapInlineTests {
             }
         }
         // All allocator clones should already be dropped.
-        check(dropped.load(Ordering.SeqCst) == 0)
+        check(dropped.load(Ordering.SeqCst) == 0.toByte())
     }
 
     /**
@@ -1581,7 +1581,7 @@ public class MapTestMapInlineTests {
             }
         }
         // All allocator clones should already be dropped.
-        check(dropped.load(Ordering.SeqCst) == 0)
+        check(dropped.load(Ordering.SeqCst) == 0.toByte())
     }
 
     @kotlin.test.Test

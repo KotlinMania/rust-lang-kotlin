@@ -11,7 +11,6 @@ import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroU32Inner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.procmacro.bridge.Mark
 import io.github.kotlinmania.rustlang.procmacro.bridge.arena.Arena
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer

@@ -7,8 +7,6 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.castMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.iter
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align4
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
@@ -108,7 +106,7 @@ public fun openLinkNoReparse(parent: File, path: UnicodeStrRef, access: UInt, op
     // The `OBJ_DONT_REPARSE` attribute ensures that we haven't been
     // tricked into following a symlink. However, it may not be available in
     // earlier versions of Windows.
-    val ATTRIBUTES: Atomic<UInt, Align4<UInt>>  = AtomicU32.new(OBJ_DONT_REPARSE)
+    val ATTRIBUTES: AtomicU32  = AtomicU32.new(OBJ_DONT_REPARSE)
     val result1 =
         run {
             val obj = ObjectAttributes.withLength().copy(objectName = path.asPtr().castMut(), rootDirectory = parent.asRawHandle(), attributes = ATTRIBUTES.load(Ordering.Relaxed))

@@ -2,6 +2,8 @@
 package io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.handlersignal
 
 import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.ffi.CVoid
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
@@ -16,10 +18,6 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.mapAddr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.mapAddr
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
@@ -53,8 +51,6 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_READ
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.PROT_WRITE
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.MAP_STACK
 import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
-import io.github.kotlinmania.rustlang.std.os.raw.CVoid
 import io.github.kotlinmania.rustlang.std.process.abort
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.conf.pageSize
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.stackoverflow.Handler
@@ -153,7 +149,7 @@ public fun signalHandler(signum: CInt, info: MutPtr, data: MutPtr) {
     // See comment above for why this function returns.
 }
 
-public var PAGE_SIZE: Atomic<Int, Align8<Int>> = AtomicUsize.new(0)
+public var PAGE_SIZE: AtomicUsize = AtomicUsize.new(0)
 
 // Store a pointer to the allocation for the main thread's altstack so that
 // tools like valgrind don't complain about a leaked unreachable allocation.
@@ -161,9 +157,9 @@ public var PAGE_SIZE: Atomic<Int, Align8<Int>> = AtomicUsize.new(0)
 // If the main thread exits, the process will terminate so there's no use in
 // freeing resources. It also means that the altstack is still installed
 // while TLS destructors are run on the main thread (c.f. #111272).
-public var MAIN_ALTSTACK: Atomic<MutPtr, Align8<MutPtr>> = AtomicPtr.new(MutPtr(0L))
+public var MAIN_ALTSTACK: AtomicPtr = AtomicPtr.new(MutPtr(0L))
 
-public var NEED_ALTSTACK: Atomic<Boolean, Align1<UByte>> = AtomicBool.new(false)
+public var NEED_ALTSTACK: AtomicBool = AtomicBool.new(false)
 
 /**
  * # Safety

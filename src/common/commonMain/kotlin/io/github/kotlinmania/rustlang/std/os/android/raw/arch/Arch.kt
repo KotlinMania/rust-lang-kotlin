@@ -1,13 +1,13 @@
 // port-lint: source os/android/raw.rs
 package io.github.kotlinmania.rustlang.std.os.android.raw.arch
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CLong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveArrayLayouts
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.std.os.raw.CLong
-import io.github.kotlinmania.rustlang.std.os.raw.CUint
-import io.github.kotlinmania.rustlang.std.os.raw.CUlong
 import io.github.kotlinmania.rustlang.std.os.unix.raw.GidT
 import io.github.kotlinmania.rustlang.std.os.unix.raw.UidT
 

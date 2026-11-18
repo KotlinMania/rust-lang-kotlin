@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.fd
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
@@ -35,7 +36,6 @@ import io.github.kotlinmania.rustlang.std.os.raw.AsRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.FromRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.IntoRawFd
 import io.github.kotlinmania.rustlang.std.os.raw.RawFd
-import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.debugAssertFdIsOpen
@@ -43,7 +43,7 @@ import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
 // Owned and borrowed Unix-like file descriptors.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -388,7 +388,7 @@ public fun fromUdpSocket(ownedFd: OwnedFd): UdpSocket = UdpSocket.fromInner(From
  */
 public fun <T : AsFd> Arc<T, Global>.asFd(): BorrowedFd = this.asFd()
 
-public fun <T : AsFd> Rc.Rc<T, Global>.asFd(): BorrowedFd = this.asFd()
+public fun <T : AsFd> Rc<T, Global>.asFd(): BorrowedFd = this.asFd()
 
 public fun <T : AsFd> Rc.UniqueRc<T>.asFd(): BorrowedFd = this.asFd()
 

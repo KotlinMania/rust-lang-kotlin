@@ -35,9 +35,9 @@ public interface Int<T> : Shr<UInt, T>, Shl<UInt, T>, BitAnd<T, T>, BitOr<T, T>,
 
 public fun UShort.cast(): Short = this.toShort()
 
-public val ZERO: UShort = 0u
+public val ZERO: UShort = 0u.toUShort()
 
-public val ONE: UShort = 1u
+public val ONE: UShort = 1u.toUShort()
 
 public fun UInt.cast(): Short = this.toShort()
 

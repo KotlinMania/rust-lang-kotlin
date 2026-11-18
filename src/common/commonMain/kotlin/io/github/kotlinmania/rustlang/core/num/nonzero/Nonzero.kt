@@ -868,7 +868,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.uncheckedAdd(other: UByte): NonZero<UB
  * ```
  */
 public fun NonZero<UByte, NonZeroU8Inner>.divCeil(rhs: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> {
-    val v = (this.get() - 1u) / rhs.get() + 1u
+    val v = (this.get() - 1u.toUByte()) / rhs.get() + 1u.toUByte()
     return NonZero.newUnchecked<NonZeroU8Inner, UByte>(v)
 }
 

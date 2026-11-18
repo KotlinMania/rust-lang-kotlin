@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.std.path.Iter
 import io.github.kotlinmania.rustlang.std.sync.mpmc.IntoIter
 import io.github.kotlinmania.rustlang.std.sys.process.windows.EnvKey
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -52,7 +52,7 @@ public open class CommandEnv(
     public open fun fmt(f: StringBuilder): Result<Unit, Error> {
         val debugCommandEnv = DebugStruct(f, "CommandEnv")
         debugCommandEnv.field("clear", this.clear).field("vars", this.vars)
-        return debugCommandEnv.finish()
+        return run { debugCommandEnv.finish(); Result.Ok<Unit, Error>(Unit) }
     }
 
     // Capture the current environment with these changes applied

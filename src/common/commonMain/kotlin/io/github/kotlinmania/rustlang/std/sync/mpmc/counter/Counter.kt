@@ -8,9 +8,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -22,47 +19,24 @@ import io.github.kotlinmania.rustlang.std.process.abort
 /**
  * Reference counter internals.
  */
-public open class Counter<C> internal constructor(
-    sendersCtorArg: Atomic<Int, Align8<Int>>,
-    receiversCtorArg: Atomic<Int, Align8<Int>>,
-    destroyCtorArg: Atomic<Boolean, Align1<UByte>>,
+public open class Counter<C>(
+    /**
+     * The number of senders associated with the channel.
+     */
+    public var senders: AtomicUsize,
+    /**
+     * The number of receivers associated with the channel.
+     */
+    public var receivers: AtomicUsize,
+    /**
+     * Set to `true` if the last sender or the last receiver reference deallocates the channel.
+     */
+    public var destroy: AtomicBool,
     /**
      * The internal channel.
      */
     public var chan: C,
-) {
-    /**
-     * The number of senders associated with the channel.
-     */
-    public var senders: Atomic<Int, Align8<Int>> = sendersCtorArg
-        internal set
-
-    /**
-     * The number of receivers associated with the channel.
-     */
-    public var receivers: Atomic<Int, Align8<Int>> = receiversCtorArg
-        internal set
-
-    /**
-     * Set to `true` if the last sender or the last receiver reference deallocates the channel.
-     */
-    public var destroy: Atomic<Boolean, Align1<UByte>> = destroyCtorArg
-        internal set
-
-    public companion object {
-        public operator fun <C> invoke(
-            senders: Atomic<Int, Align8<Int>>,
-            receivers: Atomic<Int, Align8<Int>>,
-            destroy: Atomic<Boolean, Align1<UByte>>,
-            chan: C,
-        ): Counter<C> = Counter<C>(
-            sendersCtorArg = senders,
-            receiversCtorArg = receivers,
-            destroyCtorArg = destroy,
-            chan = chan,
-        )
-    }
-}
+)
 
 /**
  * Wraps a channel into the reference counter.

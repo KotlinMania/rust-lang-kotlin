@@ -6,8 +6,6 @@ import io.github.kotlinmania.rustlang.backtrace.print.PrintFmt
 import io.github.kotlinmania.rustlang.backtrace.types.BytesOrWideString
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.andThen
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.std.backtracers.resolveFrameUnsynchronized
 import io.github.kotlinmania.rustlang.std.backtracers.traceUnsynchronized
 import io.github.kotlinmania.rustlang.std.env.currentDir

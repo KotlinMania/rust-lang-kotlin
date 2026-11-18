@@ -214,7 +214,7 @@ public interface Write<T> {
                 when {
                     matchVal is RustResult.Ok<*, *> && matchVal.okValue() == 0 -> {
                         val okValueVal = matchVal.okValue()
-                        return RustResult.Err(Error.WRITE_ALL_EOF)
+                        return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Error.WRITE_ALL_EOF)
                     }
                     matchVal is RustResult.Ok<*, *> -> {
                         val n = matchVal.okValue()
@@ -225,12 +225,12 @@ public interface Write<T> {
                     }
                     else -> {
                         val e1 = matchVal.errValue()
-                        return RustResult.Err(e1)
+                        return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(e1)
                     }
                 }
             }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     /**
@@ -287,7 +287,7 @@ public interface Write<T> {
                 when {
                     matchVal is RustResult.Ok<*, *> && matchVal.okValue() == 0 -> {
                         val okValueVal = matchVal.okValue()
-                        return RustResult.Err(Error.WRITE_ALL_EOF)
+                        return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Error.WRITE_ALL_EOF)
                     }
                     matchVal is RustResult.Ok<*, *> -> {
                         val n = matchVal.okValue()
@@ -298,12 +298,12 @@ public interface Write<T> {
                     }
                     else -> {
                         val e1 = matchVal.errValue()
-                        return RustResult.Err(e1)
+                        return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(e1)
                     }
                 }
             }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     /**
@@ -400,15 +400,15 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: Arguments): Result<U
                 RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit)
             }; is RustResult.Err<*, *> -> {
                 val e = matchVal.errValue()
-                this.error = RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(e)
+                this.error = RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(e)
                 RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(io.github.kotlinmania.rustlang.core.fmt.Error())
             } }
         }
-    val output = Adapter(inner = thisRef, error = RustResult.Ok(Unit))
+    val output = Adapter(inner = thisRef, error = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit))
     return run {
         val matchVal = write(output, args)
         when (matchVal) { is RustResult.Ok<*, *> -> {
-            RustResult.Ok(Unit)
+            RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
         }; is RustResult.Err<*, *> -> {
             // Check whether the error came from the underlying `Write`.
             if (output.error.isErr()) {

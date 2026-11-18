@@ -209,7 +209,7 @@ public open class PartitionState<T>(
                 }
             val dst = MutPtr((dstBase).rawAddress + ((this.numLeft).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
             copyNonoverlapping(this.scan, dst, 1)
-            this.numLeft += towardsLeft.toInt()
+            this.numLeft += (if (towardsLeft) 1 else 0)
             this.scan = ConstPtr((this.scan).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
             dst
         }

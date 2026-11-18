@@ -531,7 +531,7 @@ public open class Big8x3(
             carry = c
         }
         if (carry) {
-            this.base[sz] = 1u
+            this.base[sz] = 1u.toUByte()
             sz += 1
         }
         this.size = sz
@@ -608,7 +608,7 @@ public open class Big8x3(
             this.base[i + digits] = this.base[i]
         }
         for (i1 in 0 until digits) {
-            this.base[i1] = 0u
+            this.base[i1] = 0u.toUByte()
         }
         var sz = this.size + digits
         if (bits1 > 0) {

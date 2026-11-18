@@ -15,12 +15,9 @@ import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Allocator
 import io.github.kotlinmania.rustlang.hashbrown.alloc.inner.Global
 import io.github.kotlinmania.rustlang.hashbrown.hasher.DefaultHashBuilder
-import io.github.kotlinmania.rustlang.hashbrown.map.EntryRef
-import io.github.kotlinmania.rustlang.hashbrown.map.HashMap
-import io.github.kotlinmania.rustlang.hashbrown.map.Keys
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawExtractIf
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -45,7 +42,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -609,11 +606,11 @@ public open class HashSet<T, S, A : Allocator>(
      */
     public open fun getOrInsert(value: T): T =
         when (val matchVal = this.map.entry(value)) {
-            is io.github.kotlinmania.rustlang.hashbrown.map.Entry.Occupied<*, *, *> -> {
+            is Entry.Occupied<*, *, *> -> {
                 val (entry) = matchVal
                 entry
             }
-            is io.github.kotlinmania.rustlang.hashbrown.map.Entry.Vacant<*, *, *> -> {
+            is Entry.Vacant<*, *, *> -> {
                 val (entry1) = matchVal
                 entry1.insertEntry(Unit)
             }
@@ -698,11 +695,11 @@ public open class HashSet<T, S, A : Allocator>(
      */
     public open fun entry(value: T): Entry<T, S, A> =
         when (val matchVal = this.map.entry(value)) {
-            is io.github.kotlinmania.rustlang.hashbrown.map.Entry.Occupied<*, *, *> -> {
+            is Entry.Occupied<*, *, *> -> {
                 val (entry) = matchVal
                 Entry.Occupied(OccupiedEntry(inner = entry))
             }
-            is io.github.kotlinmania.rustlang.hashbrown.map.Entry.Vacant<*, *, *> -> {
+            is Entry.Vacant<*, *, *> -> {
                 val (entry1) = matchVal
                 Entry.Vacant(VacantEntry(inner = entry1))
             }
@@ -1502,9 +1499,9 @@ public open class Iter<K> internal constructor(
  * [intoIter]: HashSet.intoIter
  */
 public open class IntoIter<K, A : Allocator> internal constructor(
-    iterCtorArg: io.github.kotlinmania.rustlang.hashbrown.map.IntoIter<K, Unit, A>,
+    iterCtorArg: IntoIter<K, Unit, A>,
 ) : Iterable<K> {
-    public var iter: io.github.kotlinmania.rustlang.hashbrown.map.IntoIter<K, Unit, A> = iterCtorArg
+    public var iter: IntoIter<K, Unit, A> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
@@ -1540,7 +1537,7 @@ public open class IntoIter<K, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, A : Allocator> invoke(
-            iter: io.github.kotlinmania.rustlang.hashbrown.map.IntoIter<K, Unit, A>,
+            iter: IntoIter<K, Unit, A>,
         ): IntoIter<K, A> = IntoIter<K, A>(
             iterCtorArg = iter,
         )
@@ -1558,9 +1555,9 @@ public open class IntoIter<K, A : Allocator> internal constructor(
  * [drain]: HashSet.drain
  */
 public open class Drain<K, A : Allocator> internal constructor(
-    iterCtorArg: io.github.kotlinmania.rustlang.hashbrown.map.Drain<K, Unit, A>,
+    iterCtorArg: Drain<K, Unit, A>,
 ) : Iterable<K> {
-    public var iter: io.github.kotlinmania.rustlang.hashbrown.map.Drain<K, Unit, A> = iterCtorArg
+    public var iter: Drain<K, Unit, A> = iterCtorArg
         internal set
 
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
@@ -1596,7 +1593,7 @@ public open class Drain<K, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <K, A : Allocator> invoke(
-            iter: io.github.kotlinmania.rustlang.hashbrown.map.Drain<K, Unit, A>,
+            iter: Drain<K, Unit, A>,
         ): Drain<K, A> = Drain<K, A>(
             iterCtorArg = iter,
         )
@@ -2056,9 +2053,9 @@ public sealed class Entry<T, S, A> {
  * ```
  */
 public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
-    innerCtorArg: io.github.kotlinmania.rustlang.hashbrown.map.OccupiedEntry<T, Unit, S, A>,
+    innerCtorArg: OccupiedEntry<T, Unit, S, A>,
 ) {
-    public var inner: io.github.kotlinmania.rustlang.hashbrown.map.OccupiedEntry<T, Unit, S, A> = innerCtorArg
+    public var inner: OccupiedEntry<T, Unit, S, A> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "OccupiedEntry").field("value", this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
@@ -2116,7 +2113,7 @@ public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
-            inner: io.github.kotlinmania.rustlang.hashbrown.map.OccupiedEntry<T, Unit, S, A>,
+            inner: OccupiedEntry<T, Unit, S, A>,
         ): OccupiedEntry<T, S, A> = OccupiedEntry<T, S, A>(
             innerCtorArg = inner,
         )
@@ -2156,9 +2153,9 @@ public open class OccupiedEntry<T, S, A : Allocator> internal constructor(
  * ```
  */
 public open class VacantEntry<T, S, A : Allocator> internal constructor(
-    innerCtorArg: io.github.kotlinmania.rustlang.hashbrown.map.VacantEntry<T, Unit, S, A>,
+    innerCtorArg: VacantEntry<T, Unit, S, A>,
 ) {
-    public var inner: io.github.kotlinmania.rustlang.hashbrown.map.VacantEntry<T, Unit, S, A> = innerCtorArg
+    public var inner: VacantEntry<T, Unit, S, A> = innerCtorArg
         internal set
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugTuple(f, "VacantEntry").field(this.get()).finish(); Result.Ok<Unit, Error>(Unit) }
@@ -2223,7 +2220,7 @@ public open class VacantEntry<T, S, A : Allocator> internal constructor(
 
     public companion object {
         public operator fun <T, S, A : Allocator> invoke(
-            inner: io.github.kotlinmania.rustlang.hashbrown.map.VacantEntry<T, Unit, S, A>,
+            inner: VacantEntry<T, Unit, S, A>,
         ): VacantEntry<T, S, A> = VacantEntry<T, S, A>(
             innerCtorArg = inner,
         )

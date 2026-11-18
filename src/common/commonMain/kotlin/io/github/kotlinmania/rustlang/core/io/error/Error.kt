@@ -43,7 +43,7 @@ public fun interface CustomOuterDropCallback {
     public operator fun invoke(arg0: NonNull)
 }
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -68,7 +68,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -406,7 +406,7 @@ unreachableUnchecked()
             }
             is ErrorData.SimpleMessage<*> -> {
                 val (msg) = matchVal
-                msg.message.fmt(fmt)
+                run { fmt.append(msg.message); RustResult.Ok<Unit, Unit>(Unit) }
             }
         }
 

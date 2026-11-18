@@ -1048,12 +1048,12 @@ public open class NonNull(
      *
      * public fun doctestEntry() {
      *     run {
-     *         val x = ubyteArrayOf(5u.toUByte(), 6u, 7u, 8u, 9u)
+     *         val x = ubyteArrayOf(5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte())
      *         val ptr = NonNull.new((x.asPtr()).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).unwrap()
      *         val offset = ptr.alignOffset(alignOf<UShort>(typeLayoutT = PrimitiveLayouts.U16))
      *         if (offset < x.size - 1) {
      *             val u16Ptr = ptr.add(offset).cast()
-     *             check(u16Ptr.read() == run { val bytesTmp0 = ubyteArrayOf(5u, 6u); ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort() } || u16Ptr.read() == run { val bytesTmp1 = ubyteArrayOf(6u, 7u); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
+     *             check(u16Ptr.read() == run { val bytesTmp0 = ubyteArrayOf(5u.toUByte(), 6u.toUByte()); ((bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt()).toUShort() } || u16Ptr.read() == run { val bytesTmp1 = ubyteArrayOf(6u.toUByte(), 7u.toUByte()); ((bytesTmp1[1].toInt() shl 8) or bytesTmp1[0].toInt()).toUShort() })
      *         } else {
      *             // while the pointer can be aligned via `offset`, it would point
      *             // outside the allocation

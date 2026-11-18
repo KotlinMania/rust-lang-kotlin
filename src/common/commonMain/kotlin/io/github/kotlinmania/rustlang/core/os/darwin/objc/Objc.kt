@@ -7,7 +7,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 
 // Defines types and macros for Objective-C interoperability.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

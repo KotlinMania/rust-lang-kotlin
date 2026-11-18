@@ -90,515 +90,515 @@ public sealed class AsciiChar(
     /**
      * U+0000 (The default variant)
      */
-    public data object Null : AsciiChar(0u)
+    public data object Null : AsciiChar(0u.toUByte())
     /**
      * U+0001
      */
-    public data object StartOfHeading : AsciiChar(1u)
+    public data object StartOfHeading : AsciiChar(1u.toUByte())
     /**
      * U+0002
      */
-    public data object StartOfText : AsciiChar(2u)
+    public data object StartOfText : AsciiChar(2u.toUByte())
     /**
      * U+0003
      */
-    public data object EndOfText : AsciiChar(3u)
+    public data object EndOfText : AsciiChar(3u.toUByte())
     /**
      * U+0004
      */
-    public data object EndOfTransmission : AsciiChar(4u)
+    public data object EndOfTransmission : AsciiChar(4u.toUByte())
     /**
      * U+0005
      */
-    public data object Enquiry : AsciiChar(5u)
+    public data object Enquiry : AsciiChar(5u.toUByte())
     /**
      * U+0006
      */
-    public data object Acknowledge : AsciiChar(6u)
+    public data object Acknowledge : AsciiChar(6u.toUByte())
     /**
      * U+0007
      */
-    public data object Bell : AsciiChar(7u)
+    public data object Bell : AsciiChar(7u.toUByte())
     /**
      * U+0008
      */
-    public data object Backspace : AsciiChar(8u)
+    public data object Backspace : AsciiChar(8u.toUByte())
     /**
      * U+0009
      */
-    public data object CharacterTabulation : AsciiChar(9u)
+    public data object CharacterTabulation : AsciiChar(9u.toUByte())
     /**
      * U+000A
      */
-    public data object LineFeed : AsciiChar(10u)
+    public data object LineFeed : AsciiChar(10u.toUByte())
     /**
      * U+000B
      */
-    public data object LineTabulation : AsciiChar(11u)
+    public data object LineTabulation : AsciiChar(11u.toUByte())
     /**
      * U+000C
      */
-    public data object FormFeed : AsciiChar(12u)
+    public data object FormFeed : AsciiChar(12u.toUByte())
     /**
      * U+000D
      */
-    public data object CarriageReturn : AsciiChar(13u)
+    public data object CarriageReturn : AsciiChar(13u.toUByte())
     /**
      * U+000E
      */
-    public data object ShiftOut : AsciiChar(14u)
+    public data object ShiftOut : AsciiChar(14u.toUByte())
     /**
      * U+000F
      */
-    public data object ShiftIn : AsciiChar(15u)
+    public data object ShiftIn : AsciiChar(15u.toUByte())
     /**
      * U+0010
      */
-    public data object DataLinkEscape : AsciiChar(16u)
+    public data object DataLinkEscape : AsciiChar(16u.toUByte())
     /**
      * U+0011
      */
-    public data object DeviceControlOne : AsciiChar(17u)
+    public data object DeviceControlOne : AsciiChar(17u.toUByte())
     /**
      * U+0012
      */
-    public data object DeviceControlTwo : AsciiChar(18u)
+    public data object DeviceControlTwo : AsciiChar(18u.toUByte())
     /**
      * U+0013
      */
-    public data object DeviceControlThree : AsciiChar(19u)
+    public data object DeviceControlThree : AsciiChar(19u.toUByte())
     /**
      * U+0014
      */
-    public data object DeviceControlFour : AsciiChar(20u)
+    public data object DeviceControlFour : AsciiChar(20u.toUByte())
     /**
      * U+0015
      */
-    public data object NegativeAcknowledge : AsciiChar(21u)
+    public data object NegativeAcknowledge : AsciiChar(21u.toUByte())
     /**
      * U+0016
      */
-    public data object SynchronousIdle : AsciiChar(22u)
+    public data object SynchronousIdle : AsciiChar(22u.toUByte())
     /**
      * U+0017
      */
-    public data object EndOfTransmissionBlock : AsciiChar(23u)
+    public data object EndOfTransmissionBlock : AsciiChar(23u.toUByte())
     /**
      * U+0018
      */
-    public data object Cancel : AsciiChar(24u)
+    public data object Cancel : AsciiChar(24u.toUByte())
     /**
      * U+0019
      */
-    public data object EndOfMedium : AsciiChar(25u)
+    public data object EndOfMedium : AsciiChar(25u.toUByte())
     /**
      * U+001A
      */
-    public data object Substitute : AsciiChar(26u)
+    public data object Substitute : AsciiChar(26u.toUByte())
     /**
      * U+001B
      */
-    public data object Escape : AsciiChar(27u)
+    public data object Escape : AsciiChar(27u.toUByte())
     /**
      * U+001C
      */
-    public data object InformationSeparatorFour : AsciiChar(28u)
+    public data object InformationSeparatorFour : AsciiChar(28u.toUByte())
     /**
      * U+001D
      */
-    public data object InformationSeparatorThree : AsciiChar(29u)
+    public data object InformationSeparatorThree : AsciiChar(29u.toUByte())
     /**
      * U+001E
      */
-    public data object InformationSeparatorTwo : AsciiChar(30u)
+    public data object InformationSeparatorTwo : AsciiChar(30u.toUByte())
     /**
      * U+001F
      */
-    public data object InformationSeparatorOne : AsciiChar(31u)
+    public data object InformationSeparatorOne : AsciiChar(31u.toUByte())
     /**
      * U+0020
      */
-    public data object Space : AsciiChar(32u)
+    public data object Space : AsciiChar(32u.toUByte())
     /**
      * U+0021
      */
-    public data object ExclamationMark : AsciiChar(33u)
+    public data object ExclamationMark : AsciiChar(33u.toUByte())
     /**
      * U+0022
      */
-    public data object QuotationMark : AsciiChar(34u)
+    public data object QuotationMark : AsciiChar(34u.toUByte())
     /**
      * U+0023
      */
-    public data object NumberSign : AsciiChar(35u)
+    public data object NumberSign : AsciiChar(35u.toUByte())
     /**
      * U+0024
      */
-    public data object DollarSign : AsciiChar(36u)
+    public data object DollarSign : AsciiChar(36u.toUByte())
     /**
      * U+0025
      */
-    public data object PercentSign : AsciiChar(37u)
+    public data object PercentSign : AsciiChar(37u.toUByte())
     /**
      * U+0026
      */
-    public data object Ampersand : AsciiChar(38u)
+    public data object Ampersand : AsciiChar(38u.toUByte())
     /**
      * U+0027
      */
-    public data object Apostrophe : AsciiChar(39u)
+    public data object Apostrophe : AsciiChar(39u.toUByte())
     /**
      * U+0028
      */
-    public data object LeftParenthesis : AsciiChar(40u)
+    public data object LeftParenthesis : AsciiChar(40u.toUByte())
     /**
      * U+0029
      */
-    public data object RightParenthesis : AsciiChar(41u)
+    public data object RightParenthesis : AsciiChar(41u.toUByte())
     /**
      * U+002A
      */
-    public data object Asterisk : AsciiChar(42u)
+    public data object Asterisk : AsciiChar(42u.toUByte())
     /**
      * U+002B
      */
-    public data object PlusSign : AsciiChar(43u)
+    public data object PlusSign : AsciiChar(43u.toUByte())
     /**
      * U+002C
      */
-    public data object Comma : AsciiChar(44u)
+    public data object Comma : AsciiChar(44u.toUByte())
     /**
      * U+002D
      */
-    public data object HyphenMinus : AsciiChar(45u)
+    public data object HyphenMinus : AsciiChar(45u.toUByte())
     /**
      * U+002E
      */
-    public data object FullStop : AsciiChar(46u)
+    public data object FullStop : AsciiChar(46u.toUByte())
     /**
      * U+002F
      */
-    public data object Solidus : AsciiChar(47u)
+    public data object Solidus : AsciiChar(47u.toUByte())
     /**
      * U+0030
      */
-    public data object Digit0 : AsciiChar(48u)
+    public data object Digit0 : AsciiChar(48u.toUByte())
     /**
      * U+0031
      */
-    public data object Digit1 : AsciiChar(49u)
+    public data object Digit1 : AsciiChar(49u.toUByte())
     /**
      * U+0032
      */
-    public data object Digit2 : AsciiChar(50u)
+    public data object Digit2 : AsciiChar(50u.toUByte())
     /**
      * U+0033
      */
-    public data object Digit3 : AsciiChar(51u)
+    public data object Digit3 : AsciiChar(51u.toUByte())
     /**
      * U+0034
      */
-    public data object Digit4 : AsciiChar(52u)
+    public data object Digit4 : AsciiChar(52u.toUByte())
     /**
      * U+0035
      */
-    public data object Digit5 : AsciiChar(53u)
+    public data object Digit5 : AsciiChar(53u.toUByte())
     /**
      * U+0036
      */
-    public data object Digit6 : AsciiChar(54u)
+    public data object Digit6 : AsciiChar(54u.toUByte())
     /**
      * U+0037
      */
-    public data object Digit7 : AsciiChar(55u)
+    public data object Digit7 : AsciiChar(55u.toUByte())
     /**
      * U+0038
      */
-    public data object Digit8 : AsciiChar(56u)
+    public data object Digit8 : AsciiChar(56u.toUByte())
     /**
      * U+0039
      */
-    public data object Digit9 : AsciiChar(57u)
+    public data object Digit9 : AsciiChar(57u.toUByte())
     /**
      * U+003A
      */
-    public data object Colon : AsciiChar(58u)
+    public data object Colon : AsciiChar(58u.toUByte())
     /**
      * U+003B
      */
-    public data object Semicolon : AsciiChar(59u)
+    public data object Semicolon : AsciiChar(59u.toUByte())
     /**
      * U+003C
      */
-    public data object LessThanSign : AsciiChar(60u)
+    public data object LessThanSign : AsciiChar(60u.toUByte())
     /**
      * U+003D
      */
-    public data object EqualsSign : AsciiChar(61u)
+    public data object EqualsSign : AsciiChar(61u.toUByte())
     /**
      * U+003E
      */
-    public data object GreaterThanSign : AsciiChar(62u)
+    public data object GreaterThanSign : AsciiChar(62u.toUByte())
     /**
      * U+003F
      */
-    public data object QuestionMark : AsciiChar(63u)
+    public data object QuestionMark : AsciiChar(63u.toUByte())
     /**
      * U+0040
      */
-    public data object CommercialAt : AsciiChar(64u)
+    public data object CommercialAt : AsciiChar(64u.toUByte())
     /**
      * U+0041
      */
-    public data object CapitalA : AsciiChar(65u)
+    public data object CapitalA : AsciiChar(65u.toUByte())
     /**
      * U+0042
      */
-    public data object CapitalB : AsciiChar(66u)
+    public data object CapitalB : AsciiChar(66u.toUByte())
     /**
      * U+0043
      */
-    public data object CapitalC : AsciiChar(67u)
+    public data object CapitalC : AsciiChar(67u.toUByte())
     /**
      * U+0044
      */
-    public data object CapitalD : AsciiChar(68u)
+    public data object CapitalD : AsciiChar(68u.toUByte())
     /**
      * U+0045
      */
-    public data object CapitalE : AsciiChar(69u)
+    public data object CapitalE : AsciiChar(69u.toUByte())
     /**
      * U+0046
      */
-    public data object CapitalF : AsciiChar(70u)
+    public data object CapitalF : AsciiChar(70u.toUByte())
     /**
      * U+0047
      */
-    public data object CapitalG : AsciiChar(71u)
+    public data object CapitalG : AsciiChar(71u.toUByte())
     /**
      * U+0048
      */
-    public data object CapitalH : AsciiChar(72u)
+    public data object CapitalH : AsciiChar(72u.toUByte())
     /**
      * U+0049
      */
-    public data object CapitalI : AsciiChar(73u)
+    public data object CapitalI : AsciiChar(73u.toUByte())
     /**
      * U+004A
      */
-    public data object CapitalJ : AsciiChar(74u)
+    public data object CapitalJ : AsciiChar(74u.toUByte())
     /**
      * U+004B
      */
-    public data object CapitalK : AsciiChar(75u)
+    public data object CapitalK : AsciiChar(75u.toUByte())
     /**
      * U+004C
      */
-    public data object CapitalL : AsciiChar(76u)
+    public data object CapitalL : AsciiChar(76u.toUByte())
     /**
      * U+004D
      */
-    public data object CapitalM : AsciiChar(77u)
+    public data object CapitalM : AsciiChar(77u.toUByte())
     /**
      * U+004E
      */
-    public data object CapitalN : AsciiChar(78u)
+    public data object CapitalN : AsciiChar(78u.toUByte())
     /**
      * U+004F
      */
-    public data object CapitalO : AsciiChar(79u)
+    public data object CapitalO : AsciiChar(79u.toUByte())
     /**
      * U+0050
      */
-    public data object CapitalP : AsciiChar(80u)
+    public data object CapitalP : AsciiChar(80u.toUByte())
     /**
      * U+0051
      */
-    public data object CapitalQ : AsciiChar(81u)
+    public data object CapitalQ : AsciiChar(81u.toUByte())
     /**
      * U+0052
      */
-    public data object CapitalR : AsciiChar(82u)
+    public data object CapitalR : AsciiChar(82u.toUByte())
     /**
      * U+0053
      */
-    public data object CapitalS : AsciiChar(83u)
+    public data object CapitalS : AsciiChar(83u.toUByte())
     /**
      * U+0054
      */
-    public data object CapitalT : AsciiChar(84u)
+    public data object CapitalT : AsciiChar(84u.toUByte())
     /**
      * U+0055
      */
-    public data object CapitalU : AsciiChar(85u)
+    public data object CapitalU : AsciiChar(85u.toUByte())
     /**
      * U+0056
      */
-    public data object CapitalV : AsciiChar(86u)
+    public data object CapitalV : AsciiChar(86u.toUByte())
     /**
      * U+0057
      */
-    public data object CapitalW : AsciiChar(87u)
+    public data object CapitalW : AsciiChar(87u.toUByte())
     /**
      * U+0058
      */
-    public data object CapitalX : AsciiChar(88u)
+    public data object CapitalX : AsciiChar(88u.toUByte())
     /**
      * U+0059
      */
-    public data object CapitalY : AsciiChar(89u)
+    public data object CapitalY : AsciiChar(89u.toUByte())
     /**
      * U+005A
      */
-    public data object CapitalZ : AsciiChar(90u)
+    public data object CapitalZ : AsciiChar(90u.toUByte())
     /**
      * U+005B
      */
-    public data object LeftSquareBracket : AsciiChar(91u)
+    public data object LeftSquareBracket : AsciiChar(91u.toUByte())
     /**
      * U+005C
      */
-    public data object ReverseSolidus : AsciiChar(92u)
+    public data object ReverseSolidus : AsciiChar(92u.toUByte())
     /**
      * U+005D
      */
-    public data object RightSquareBracket : AsciiChar(93u)
+    public data object RightSquareBracket : AsciiChar(93u.toUByte())
     /**
      * U+005E
      */
-    public data object CircumflexAccent : AsciiChar(94u)
+    public data object CircumflexAccent : AsciiChar(94u.toUByte())
     /**
      * U+005F
      */
-    public data object LowLine : AsciiChar(95u)
+    public data object LowLine : AsciiChar(95u.toUByte())
     /**
      * U+0060
      */
-    public data object GraveAccent : AsciiChar(96u)
+    public data object GraveAccent : AsciiChar(96u.toUByte())
     /**
      * U+0061
      */
-    public data object SmallA : AsciiChar(97u)
+    public data object SmallA : AsciiChar(97u.toUByte())
     /**
      * U+0062
      */
-    public data object SmallB : AsciiChar(98u)
+    public data object SmallB : AsciiChar(98u.toUByte())
     /**
      * U+0063
      */
-    public data object SmallC : AsciiChar(99u)
+    public data object SmallC : AsciiChar(99u.toUByte())
     /**
      * U+0064
      */
-    public data object SmallD : AsciiChar(100u)
+    public data object SmallD : AsciiChar(100u.toUByte())
     /**
      * U+0065
      */
-    public data object SmallE : AsciiChar(101u)
+    public data object SmallE : AsciiChar(101u.toUByte())
     /**
      * U+0066
      */
-    public data object SmallF : AsciiChar(102u)
+    public data object SmallF : AsciiChar(102u.toUByte())
     /**
      * U+0067
      */
-    public data object SmallG : AsciiChar(103u)
+    public data object SmallG : AsciiChar(103u.toUByte())
     /**
      * U+0068
      */
-    public data object SmallH : AsciiChar(104u)
+    public data object SmallH : AsciiChar(104u.toUByte())
     /**
      * U+0069
      */
-    public data object SmallI : AsciiChar(105u)
+    public data object SmallI : AsciiChar(105u.toUByte())
     /**
      * U+006A
      */
-    public data object SmallJ : AsciiChar(106u)
+    public data object SmallJ : AsciiChar(106u.toUByte())
     /**
      * U+006B
      */
-    public data object SmallK : AsciiChar(107u)
+    public data object SmallK : AsciiChar(107u.toUByte())
     /**
      * U+006C
      */
-    public data object SmallL : AsciiChar(108u)
+    public data object SmallL : AsciiChar(108u.toUByte())
     /**
      * U+006D
      */
-    public data object SmallM : AsciiChar(109u)
+    public data object SmallM : AsciiChar(109u.toUByte())
     /**
      * U+006E
      */
-    public data object SmallN : AsciiChar(110u)
+    public data object SmallN : AsciiChar(110u.toUByte())
     /**
      * U+006F
      */
-    public data object SmallO : AsciiChar(111u)
+    public data object SmallO : AsciiChar(111u.toUByte())
     /**
      * U+0070
      */
-    public data object SmallP : AsciiChar(112u)
+    public data object SmallP : AsciiChar(112u.toUByte())
     /**
      * U+0071
      */
-    public data object SmallQ : AsciiChar(113u)
+    public data object SmallQ : AsciiChar(113u.toUByte())
     /**
      * U+0072
      */
-    public data object SmallR : AsciiChar(114u)
+    public data object SmallR : AsciiChar(114u.toUByte())
     /**
      * U+0073
      */
-    public data object SmallS : AsciiChar(115u)
+    public data object SmallS : AsciiChar(115u.toUByte())
     /**
      * U+0074
      */
-    public data object SmallT : AsciiChar(116u)
+    public data object SmallT : AsciiChar(116u.toUByte())
     /**
      * U+0075
      */
-    public data object SmallU : AsciiChar(117u)
+    public data object SmallU : AsciiChar(117u.toUByte())
     /**
      * U+0076
      */
-    public data object SmallV : AsciiChar(118u)
+    public data object SmallV : AsciiChar(118u.toUByte())
     /**
      * U+0077
      */
-    public data object SmallW : AsciiChar(119u)
+    public data object SmallW : AsciiChar(119u.toUByte())
     /**
      * U+0078
      */
-    public data object SmallX : AsciiChar(120u)
+    public data object SmallX : AsciiChar(120u.toUByte())
     /**
      * U+0079
      */
-    public data object SmallY : AsciiChar(121u)
+    public data object SmallY : AsciiChar(121u.toUByte())
     /**
      * U+007A
      */
-    public data object SmallZ : AsciiChar(122u)
+    public data object SmallZ : AsciiChar(122u.toUByte())
     /**
      * U+007B
      */
-    public data object LeftCurlyBracket : AsciiChar(123u)
+    public data object LeftCurlyBracket : AsciiChar(123u.toUByte())
     /**
      * U+007C
      */
-    public data object VerticalLine : AsciiChar(124u)
+    public data object VerticalLine : AsciiChar(124u.toUByte())
     /**
      * U+007D
      */
-    public data object RightCurlyBracket : AsciiChar(125u)
+    public data object RightCurlyBracket : AsciiChar(125u.toUByte())
     /**
      * U+007E
      */
-    public data object Tilde : AsciiChar(126u)
+    public data object Tilde : AsciiChar(126u.toUByte())
     /**
      * U+007F
      */
-    public data object Delete : AsciiChar(127u)
+    public data object Delete : AsciiChar(127u.toUByte())
 
     public fun rustEquals(other: AsciiChar): Boolean = this == other
 

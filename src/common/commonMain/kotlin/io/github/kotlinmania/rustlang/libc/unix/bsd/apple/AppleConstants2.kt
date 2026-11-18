@@ -641,7 +641,7 @@ public val COPYFILE_STATE_BSIZE: CInt = 13
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val ATTR_BIT_MAP_COUNT: CUshort = 5u
+public val ATTR_BIT_MAP_COUNT: CUshort = 5u.toUShort()
 
 public val FSOPT_NOFOLLOW: UInt = 0x1u
 

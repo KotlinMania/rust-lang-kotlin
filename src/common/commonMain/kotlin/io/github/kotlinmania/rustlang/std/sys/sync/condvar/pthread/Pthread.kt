@@ -3,8 +3,6 @@ package io.github.kotlinmania.rustlang.std.sys.sync.condvar.pthread
 
 import io.github.kotlinmania.rustlang.core.pin.Pin
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
@@ -15,12 +13,9 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 
 public open class Condvar internal constructor(
     cvarCtorArg: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar.Condvar>,
-    mutexCtorArg: Atomic<Int, Align8<Int>>,
+    public var mutex: AtomicUsize,
 ) {
     public var cvar: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar.Condvar> = cvarCtorArg
-        internal set
-
-    public var mutex: Atomic<Int, Align8<Int>> = mutexCtorArg
         internal set
 
     public open fun get(): Pin<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar.Condvar> =
@@ -94,10 +89,10 @@ public open class Condvar internal constructor(
     public companion object {
         public operator fun invoke(
             cvar: OnceBox<io.github.kotlinmania.rustlang.std.sys.pal.unix.sync.condvar.Condvar>,
-            mutex: Atomic<Int, Align8<Int>>,
+            mutex: AtomicUsize,
         ): Condvar = Condvar(
             cvarCtorArg = cvar,
-            mutexCtorArg = mutex,
+            mutex = mutex,
         )
 
         public fun new(): Condvar = Condvar(cvar = OnceBox.new(), mutex = AtomicUsize.new(0))

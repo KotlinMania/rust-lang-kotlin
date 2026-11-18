@@ -24,7 +24,7 @@ import io.github.kotlinmania.rustlang.hashbrown.raw.RawIntoIter
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawIter
 import io.github.kotlinmania.rustlang.hashbrown.raw.RawTable
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -49,7 +49,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -154,7 +154,7 @@ public class DebugTuple(
  * fun randomStatBuff(): UByte {
  *     // could actually return some random value here - let's just return
  *     // some fixed value for now
- *     return 42u
+ *     return 42u.toUByte()
  * }
  * // type inference lets us omit an explicit type signature (which
  * // would be `HashMap<String, UByte>` in this example).

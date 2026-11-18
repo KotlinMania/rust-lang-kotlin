@@ -1809,10 +1809,10 @@ public fun mm256SadEpu8(a: M256i, b: M256i): M256i = transmuteWithLayouts<U64x4,
  *             // if the most significant bit of b is set,
  *             // then the destination byte is set to 0.
  *             if (b[i] and 0x80u.toUByte() == 0u.toUByte()) {
- *                 r[i] = a[(b[i] % 16u).toInt()]
+ *                 r[i] = a[(b[i] % 16u.toUByte()).toInt()]
  *             }
  *             if (b[i + 16] and 0x80u.toUByte() == 0u.toUByte()) {
- *                 r[i + 16] = a[(b[i + 16] % 16u + 16u).toInt()]
+ *                 r[i + 16] = a[(b[i + 16] % 16u.toUByte() + 16u.toUByte()).toInt()]
  *             }
  *         }
  *         return r

@@ -6,8 +6,6 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.load
@@ -167,18 +165,15 @@ public open class Waker(
  */
 public open class SyncWaker internal constructor(
     innerCtorArg: Mutex<Waker>,
-    isEmptyCtorArg: Atomic<Boolean, Align1<UByte>>,
+    /**
+     * `true` if the waker is empty.
+     */
+    public var isEmpty: AtomicBool,
 ) {
     /**
      * The inner `Waker`.
      */
     public var inner: Mutex<Waker> = innerCtorArg
-        internal set
-
-    /**
-     * `true` if the waker is empty.
-     */
-    public var isEmpty: Atomic<Boolean, Align1<UByte>> = isEmptyCtorArg
         internal set
 
     /**
@@ -230,10 +225,10 @@ public open class SyncWaker internal constructor(
     public companion object {
         public operator fun invoke(
             inner: Mutex<Waker>,
-            isEmpty: Atomic<Boolean, Align1<UByte>>,
+            isEmpty: AtomicBool,
         ): SyncWaker = SyncWaker(
             innerCtorArg = inner,
-            isEmptyCtorArg = isEmpty,
+            isEmpty = isEmpty,
         )
 
         /**

@@ -5,7 +5,7 @@ import io.github.kotlinmania.rustlang.core.cell.UnsafeCell
 import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.result.Result
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -368,7 +368,7 @@ public open class OnceCell<T>(
                 d.field(v)
             }
         }
-        return d.finish()
+        return run { d.finish(); Result.Ok<Unit, Unit>(Unit) }
     }
 
     public open fun clone(): OnceCell<T> =

@@ -1,6 +1,7 @@
 // port-lint: source sys/exit.rs
 package io.github.kotlinmania.rustlang.std.sys.exit
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
@@ -8,7 +9,6 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Acquire
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
 import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchange
 import io.github.kotlinmania.rustlang.libc.pause
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.io.error.unix.errnoLocation
 
 /**
@@ -69,7 +69,7 @@ public fun uniqueThreadExit() {
     }
 }
 
-public expect fun exit(status: CInt): Nothing
+public expect fun exit(status: io.github.kotlinmania.rustlang.core.ffi.primitives.CInt): Nothing
 
 public fun exit(code: Int): Nothing =
     run {

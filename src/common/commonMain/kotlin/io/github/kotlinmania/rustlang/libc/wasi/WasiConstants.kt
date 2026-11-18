@@ -146,21 +146,21 @@ public val S_ISGID: ModeT = 1024u
 
 public val S_ISUID: ModeT = 2048u
 
-public val DT_UNKNOWN: UByte = 0u
+public val DT_UNKNOWN: UByte = 0u.toUByte()
 
-public val DT_BLK: UByte = 1u
+public val DT_BLK: UByte = 1u.toUByte()
 
-public val DT_CHR: UByte = 2u
+public val DT_CHR: UByte = 2u.toUByte()
 
-public val DT_DIR: UByte = 3u
+public val DT_DIR: UByte = 3u.toUByte()
 
-public val DT_REG: UByte = 4u
+public val DT_REG: UByte = 4u.toUByte()
 
-public val DT_FIFO: UByte = 6u
+public val DT_FIFO: UByte = 6u.toUByte()
 
-public val DT_LNK: UByte = 7u
+public val DT_LNK: UByte = 7u.toUByte()
 
-public val DT_SOCK: UByte = 20u
+public val DT_SOCK: UByte = 20u.toUByte()
 
 public val FIONREAD: CInt = 1
 

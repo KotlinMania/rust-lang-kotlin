@@ -195,7 +195,7 @@ public fun testVecMulI16x8() {
 }
 
 public fun testVecMulU16x8() {
-    val a: VectorUnsignedShort = Simd<UShort>(listOf(0u.toUShort(), (UShort.MAX_VALUE - 1u).toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort())).into()
+    val a: VectorUnsignedShort = Simd<UShort>(listOf(0u.toUShort(), UShort.MAX_VALUE - 1u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort())).into()
     val b: VectorUnsignedShort = Simd<UShort>(listOf(5u.toUShort(), 6u.toUShort(), 7u.toUShort(), 8u.toUShort(), 9u.toUShort(), 8u.toUShort(), 7u.toUShort(), 6u.toUShort())).into()
     val d = Simd<UShort>(listOf(0u.toUShort(), 65524u.toUShort(), 7u.toUShort(), 16u.toUShort(), 27u.toUShort(), 32u.toUShort(), 35u.toUShort(), 36u.toUShort()))
     val r = U16x8.from(vecMul(a, b))
@@ -211,7 +211,7 @@ public fun testVecMulI8x16() {
 }
 
 public fun testVecMulU8x16() {
-    val a: VectorUnsignedChar = Simd<UByte>(listOf(0u.toUByte(), (UByte.MAX_VALUE - 1u).toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 8u.toUByte(), 7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte())).into()
+    val a: VectorUnsignedChar = Simd<UByte>(listOf(0u.toUByte(), UByte.MAX_VALUE - 1u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 8u.toUByte(), 7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte())).into()
     val b: VectorUnsignedChar = Simd<UByte>(listOf(5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 8u.toUByte(), 7u.toUByte(), 6u.toUByte(), 5u.toUByte(), 4u.toUByte(), 0u.toUByte(), UByte.MAX_VALUE, 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte())).into()
     val d = Simd<UByte>(listOf(0u.toUByte(), 244u.toUByte(), 7u.toUByte(), 16u.toUByte(), 27u.toUByte(), 32u.toUByte(), 35u.toUByte(), 36u.toUByte(), 35u.toUByte(), 32u.toUByte(), 0u.toUByte(), 248u.toUByte(), 7u.toUByte(), 12u.toUByte(), 15u.toUByte(), 16u.toUByte()))
     val r = U8x16.from(vecMul(a, b))
@@ -1569,18 +1569,18 @@ public class VectorInlineTests {
 
     @kotlin.test.Test
     public fun testVecMask() {
-        check(genmask(0x00FF) == ubyteArrayOf(0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u, 0xFFu, 0xFFu, 0xFFu, 0xFFu, 0xFFu, 0xFFu, 0xFFu, 0xFFu))
+        check(genmask(0x00FF) == ubyteArrayOf(0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0xFFu.toUByte(), 0xFFu.toUByte(), 0xFFu.toUByte(), 0xFFu.toUByte(), 0xFFu.toUByte(), 0xFFu.toUByte(), 0xFFu.toUByte(), 0xFFu.toUByte()))
     }
 
     @kotlin.test.Test
     public fun testGenmasks() {
-        check(genmasks(8u, 3u, 5u) == 28uL)
-        check(genmasks(8u, 3u, 7u) == 31uL)
+        check(genmasks(8u, 3u.toUByte(), 5u.toUByte()) == 28uL)
+        check(genmasks(8u, 3u.toUByte(), 7u.toUByte()) == 31uL)
         // If a or b is greater than 8, the operation is performed as if the value gets modulo by 8.
-        check(genmasks(8u, (3u + 8u).toUByte(), (7u + 8u).toUByte()) == 31uL)
+        check(genmasks(8u, 3u.toUByte() + 8u.toUByte(), 7u.toUByte() + 8u.toUByte()) == 31uL)
         // If a is greater than b, the operation is perform as if b equals 7.
-        check(genmasks(8u, 5u, 4u) == genmasks(8u, 5u, 7u))
-        check(genmasks(16u, 4u, 12u).toUShort() == run { val bytesTmp0 = ubyteArrayOf(15u, (-8).toUByte()); ((bytesTmp0[0].toInt() shl 8) or bytesTmp0[1].toInt()).toUShort() })
-        check(genmasks(32u, 4u, 29u).toUInt() == run { val bytesTmp1 = ubyteArrayOf(15u, 0xFFu, 0xFFu, (-4).toUByte()); ((bytesTmp1[0].toUInt() shl 24) or (bytesTmp1[1].toUInt() shl 16) or (bytesTmp1[2].toUInt() shl 8) or bytesTmp1[3].toUInt()) })
+        check(genmasks(8u, 5u.toUByte(), 4u.toUByte()) == genmasks(8u, 5u.toUByte(), 7u.toUByte()))
+        check(genmasks(16u, 4u.toUByte(), 12u.toUByte()).toUShort() == run { val bytesTmp0 = ubyteArrayOf(15u.toUByte(), (-8).toUByte()); ((bytesTmp0[0].toInt() shl 8) or bytesTmp0[1].toInt()).toUShort() })
+        check(genmasks(32u, 4u.toUByte(), 29u.toUByte()).toUInt() == run { val bytesTmp1 = ubyteArrayOf(15u.toUByte(), 0xFFu.toUByte(), 0xFFu.toUByte(), (-4).toUByte()); ((bytesTmp1[0].toUInt() shl 24) or (bytesTmp1[1].toUInt() shl 16) or (bytesTmp1[2].toUInt() shl 8) or bytesTmp1[3].toUInt()) })
     }
 }

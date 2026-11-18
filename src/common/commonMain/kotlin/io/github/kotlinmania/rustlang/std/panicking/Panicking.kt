@@ -19,10 +19,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.intoInner
@@ -309,7 +305,7 @@ public fun defaultHook(info: PanicHookInfo) {
                     writeMsg(err)
                 }
             })
-            var FIRST_PANIC: Atomic<Boolean, Align1<UByte>> = AtomicBool.new(true)
+            var FIRST_PANIC: AtomicBool = AtomicBool.new(true)
             when (backtrace) {
                 BacktraceStyle.Short -> {
                     (lock.print(err, PrintFmt.Short)).let { }

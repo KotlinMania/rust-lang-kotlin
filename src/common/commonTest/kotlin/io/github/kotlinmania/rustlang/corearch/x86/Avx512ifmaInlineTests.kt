@@ -1,7 +1,7 @@
 // port-lint: tests x86/avx512ifma.rs
 package io.github.kotlinmania.rustlang.corearch.x86
 
-public val K: Mmask8 = 0x6Du
+public val K: Mmask8 = 0x6Du.toUByte()
 
 public fun testMm512Madd52hiEpu64() {
     val a = mm512Set1Epi64(10L shl 40)

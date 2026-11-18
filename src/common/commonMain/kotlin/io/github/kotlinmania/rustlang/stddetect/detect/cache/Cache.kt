@@ -151,7 +151,7 @@ public open class Cache(
         return if (cached == 0) {
             null
         } else {
-            testBit(U128.fromLong(cached.toLong()), bit)
+            testBit(U128.fromInt(cached), bit)
         }
     }
 

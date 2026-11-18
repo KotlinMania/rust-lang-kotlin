@@ -16,7 +16,6 @@ import io.github.kotlinmania.rustlang.core.io.seek.streamLenDefault
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.std.ffi.osstr.OsString
@@ -62,7 +61,7 @@ import io.github.kotlinmania.rustlang.std.time.SystemTime
 // - Use atomic operations when possible (like [File.createNew] instead of checking existence then creating).
 // - Keep file open for the duration of operations.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -87,7 +86,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -1148,7 +1147,7 @@ public sealed class TryLockError {
                 val (err) = this as TryLockError.Error
                 err.fmt(f)
             }
-            TryLockError.WouldBlock -> "WouldBlock".fmt(f)
+            TryLockError.WouldBlock -> run { f.append("WouldBlock"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
         }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
@@ -1896,7 +1895,7 @@ public open class Metadata(
             }
             else -> {}
         }
-        return debug.finishNonExhaustive()
+        return run { debug.finishNonExhaustive(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
     }
 
     public override fun intoInner(): FileAttr = this.value
@@ -2872,7 +2871,7 @@ public open class DirBuilder(
  *
  * fun main(): Result<Unit> {
  *     val data: List<UByte> = read("image.jpg").getOrElse { return Result.failure(it) }
- *     check(((data).subList(0, 3)) == listOf(0xFFu, 0xD8u, 0xFFu))
+ *     check(((data).subList(0, 3)) == listOf(0xFFu.toUByte(), 0xD8u.toUByte(), 0xFFu.toUByte()))
  *     return Result.success(Unit)
  * }
  * ```

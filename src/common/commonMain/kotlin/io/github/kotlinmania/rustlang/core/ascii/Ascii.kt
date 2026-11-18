@@ -18,7 +18,7 @@ import io.github.kotlinmania.rustlang.core.str.len
 // The [escapeDefault] function provides an iterator over the bytes of an
 // escaped version of the character given.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

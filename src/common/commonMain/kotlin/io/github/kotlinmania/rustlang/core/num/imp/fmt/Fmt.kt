@@ -65,8 +65,8 @@ public sealed class Part {
                 is Part.Num -> {
                     val (v) = this as Part.Num
                     for (c in ((out).subList(0, len)).iterMut().rev()) {
-                        c = 48u.toUByte() + (v % 10u).toUByte()
-                        v /= 10u
+                        c = 48u.toUByte() + (v % 10u.toUShort()).toUByte()
+                        v /= 10u.toUShort()
                     }
                 }
                 is Part.Copy -> {

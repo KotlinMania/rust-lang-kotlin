@@ -153,7 +153,7 @@ import io.github.kotlinmania.rustlang.std.time.Instant
 // println("completed")
 // ```
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -178,7 +178,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -1083,7 +1083,7 @@ public open class SendError<T>(
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { DebugStruct(f, "SendError").finishNonExhaustive(); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = "sending on a closed channel".fmt(f)
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append("sending on a closed channel"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun <T> typeLayout(typeLayoutT: TypeLayout<T>): TypeLayout<SendError<T>> =
@@ -1120,7 +1120,7 @@ public open class SendError<T>(
 public open class RecvError {
     public open fun clone(): RecvError = RecvError()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "receiving on a closed channel".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("receiving on a closed channel"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<RecvError> =
@@ -1184,8 +1184,8 @@ public sealed class TryRecvError {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            TryRecvError.Empty -> "receiving on an empty channel".fmt(f)
-            TryRecvError.Disconnected -> "receiving on a closed channel".fmt(f)
+            TryRecvError.Empty -> run { f.append("receiving on an empty channel"); Result.Ok<Unit, Error>(Unit) }
+            TryRecvError.Disconnected -> run { f.append("receiving on a closed channel"); Result.Ok<Unit, Error>(Unit) }
         }
 
     public companion object {
@@ -1248,8 +1248,8 @@ public sealed class RecvTimeoutError {
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            RecvTimeoutError.Timeout -> "timed out waiting on channel".fmt(f)
-            RecvTimeoutError.Disconnected -> "channel is empty and sending half is closed".fmt(f)
+            RecvTimeoutError.Timeout -> run { f.append("timed out waiting on channel"); Result.Ok<Unit, Error>(Unit) }
+            RecvTimeoutError.Disconnected -> run { f.append("channel is empty and sending half is closed"); Result.Ok<Unit, Error>(Unit) }
         }
 
     public companion object {
@@ -1335,8 +1335,8 @@ public sealed class TrySendError<T> {
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is TrySendError.Full<*> -> "sending on a full channel".fmt(f)
-            is TrySendError.Disconnected<*> -> "sending on a closed channel".fmt(f)
+            is TrySendError.Full<*> -> run { f.append("sending on a full channel"); Result.Ok<Unit, Error>(Unit) }
+            is TrySendError.Disconnected<*> -> run { f.append("sending on a closed channel"); Result.Ok<Unit, Error>(Unit) }
         }
 
     public companion object {

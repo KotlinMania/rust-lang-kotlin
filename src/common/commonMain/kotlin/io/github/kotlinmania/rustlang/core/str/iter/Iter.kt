@@ -81,7 +81,7 @@ import io.github.kotlinmania.rustlang.core.slice.iter.Split as SliceSplit
 // and `DoubleEndedIterator` depending on the concrete pattern type, leading
 // to the complex impls seen above.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -106,7 +106,7 @@ public class DebugStruct(
     }
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -1574,7 +1574,7 @@ public open class EncodeUtf16(
     public open fun next(): UShort? {
         if (this.extra != 0u.toUShort()) {
             val tmp = this.extra
-            this.extra = 0u
+            this.extra = 0u.toUShort()
             return tmp
         }
         val buf = MutableList(2) { 0 }

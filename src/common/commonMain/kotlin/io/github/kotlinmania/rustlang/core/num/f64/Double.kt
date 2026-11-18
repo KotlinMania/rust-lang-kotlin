@@ -1030,7 +1030,7 @@ public fun Double.Companion.fromBits(v: ULong): Double {
  *
  * public fun doctestEntry() {
  *     val bytes = run { val rawBits = (12.5).toRawBits().toULong(); ubyteArrayOf((rawBits shr 56).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte()) }
- *     check(bytes == ubyteArrayOf(0x40u, 0x29u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u))
+ *     check(bytes == ubyteArrayOf(0x40u.toUByte(), 0x29u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte()))
  * }
  * ```
  */
@@ -1050,7 +1050,7 @@ public fun Double.toBeBytes(): UByteArray = run { val rawBits = this.toRawBits()
  *
  * public fun doctestEntry() {
  *     val bytes = run { val rawBits = (12.5).toRawBits().toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
- *     check(bytes == ubyteArrayOf(0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x29u, 0x40u))
+ *     check(bytes == ubyteArrayOf(0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x29u.toUByte(), 0x40u.toUByte()))
  * }
  * ```
  */
@@ -1098,7 +1098,7 @@ public fun Double.toNeBytes(): UByteArray = run { val rawBits = this.toRawBits()
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     val value = run { val bytesTmp0 = ubyteArrayOf(0x40u, 0x29u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u); Double.fromBits((bytesTmp0[0].toLong() shl 56) or (bytesTmp0[1].toLong() shl 48) or (bytesTmp0[2].toLong() shl 40) or (bytesTmp0[3].toLong() shl 32) or (bytesTmp0[4].toLong() shl 24) or (bytesTmp0[5].toLong() shl 16) or (bytesTmp0[6].toLong() shl 8) or bytesTmp0[7].toLong()) }
+ *     val value = run { val bytesTmp0 = ubyteArrayOf(0x40u.toUByte(), 0x29u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte()); Double.fromBits((bytesTmp0[0].toLong() shl 56) or (bytesTmp0[1].toLong() shl 48) or (bytesTmp0[2].toLong() shl 40) or (bytesTmp0[3].toLong() shl 32) or (bytesTmp0[4].toLong() shl 24) or (bytesTmp0[5].toLong() shl 16) or (bytesTmp0[6].toLong() shl 8) or bytesTmp0[7].toLong()) }
  *     check(value == 12.5.toDouble())
  * }
  * ```
@@ -1117,7 +1117,7 @@ public fun Double.Companion.fromBeBytes(bytes: UByteArray): Double = Double.from
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     val value = run { val bytesTmp0 = ubyteArrayOf(0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x29u, 0x40u); Double.fromBits((bytesTmp0[7].toLong() shl 56) or (bytesTmp0[6].toLong() shl 48) or (bytesTmp0[5].toLong() shl 40) or (bytesTmp0[4].toLong() shl 32) or (bytesTmp0[3].toLong() shl 24) or (bytesTmp0[2].toLong() shl 16) or (bytesTmp0[1].toLong() shl 8) or bytesTmp0[0].toLong()) }
+ *     val value = run { val bytesTmp0 = ubyteArrayOf(0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x29u.toUByte(), 0x40u.toUByte()); Double.fromBits((bytesTmp0[7].toLong() shl 56) or (bytesTmp0[6].toLong() shl 48) or (bytesTmp0[5].toLong() shl 40) or (bytesTmp0[4].toLong() shl 32) or (bytesTmp0[3].toLong() shl 24) or (bytesTmp0[2].toLong() shl 16) or (bytesTmp0[1].toLong() shl 8) or bytesTmp0[0].toLong()) }
  *     check(value == 12.5.toDouble())
  * }
  * ```
@@ -1144,9 +1144,9 @@ public fun Double.Companion.fromLeBytes(bytes: UByteArray): Double = Double.from
  *
  * public fun doctestEntry() {
  *     val value = run { val bytesTmp0 = if (false) {
- *         ubyteArrayOf(0x40u, 0x29u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u)
+ *         ubyteArrayOf(0x40u.toUByte(), 0x29u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte())
  *     } else {
- *         ubyteArrayOf(0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x00u, 0x29u, 0x40u)
+ *         ubyteArrayOf(0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte(), 0x29u.toUByte(), 0x40u.toUByte())
  *     }; Double.fromBits((bytesTmp0[7].toLong() shl 56) or (bytesTmp0[6].toLong() shl 48) or (bytesTmp0[5].toLong() shl 40) or (bytesTmp0[4].toLong() shl 32) or (bytesTmp0[3].toLong() shl 24) or (bytesTmp0[2].toLong() shl 16) or (bytesTmp0[1].toLong() shl 8) or bytesTmp0[0].toLong()) }
  *     check(value == 12.5.toDouble())
  * }

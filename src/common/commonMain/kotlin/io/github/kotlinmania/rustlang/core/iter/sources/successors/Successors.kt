@@ -3,7 +3,7 @@ package io.github.kotlinmania.rustlang.core.iter.sources.successors
 
 import io.github.kotlinmania.rustlang.core.result.Result
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

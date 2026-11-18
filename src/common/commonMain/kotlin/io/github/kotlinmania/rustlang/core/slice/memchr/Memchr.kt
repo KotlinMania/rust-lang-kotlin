@@ -16,9 +16,9 @@ import io.github.kotlinmania.rustlang.core.str.len
 
 public typealias Chunk = Int
 
-public val LO_USIZE: Int = Int.repeatU8(0x01u)
+public val LO_USIZE: Int = Int.repeatU8(0x01u.toUByte())
 
-public val HI_USIZE: Int = Int.repeatU8(0x80u)
+public val HI_USIZE: Int = Int.repeatU8(0x80u.toUByte())
 
 public val USIZE_BYTES: Int = sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)
 

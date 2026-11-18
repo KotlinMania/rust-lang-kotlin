@@ -52,7 +52,7 @@ public fun frequency(): Long {
     // uninitialized. Storing this as a single `AtomicI64` allows us to use
     // `Relaxed` operations, as we are only interested in the effects on a
     // single memory location.
-    val FREQUENCY: AtomicI64  = AtomicI64.new(0)
+    val FREQUENCY: AtomicI64  = AtomicI64.new(0L)
     val cached = FREQUENCY.load(Ordering.Relaxed)
     // If a previous thread has filled in this global state, use that.
     if (cached != 0) {
@@ -71,7 +71,7 @@ public fun frequencyInit(cache: AtomicI64): Long {
     // SAFETY: According to the MSDN entry for `QueryPerformanceFrequency`,
     // a value of 0 will never be returned starting from Windows XP.
     assertUnchecked(frequency != 0)
-    cache.store(frequency, Ordering.Relaxed)
+    cache.store(frequency.toLong(), Ordering.Relaxed)
     return frequency.toLong()
 }
 

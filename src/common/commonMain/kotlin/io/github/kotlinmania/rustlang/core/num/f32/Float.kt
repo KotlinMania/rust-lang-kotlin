@@ -1019,7 +1019,7 @@ public fun kotlin.Float.Companion.fromBits(v: UInt): kotlin.Float {
  *
  * public fun doctestEntry() {
  *     val bytes = run { val rawBits = (12.5f).toRawBits().toUInt(); ubyteArrayOf((rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte()) }
- *     check(bytes == ubyteArrayOf(0x41u, 0x48u, 0x00u, 0x00u))
+ *     check(bytes == ubyteArrayOf(0x41u.toUByte(), 0x48u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte()))
  * }
  * ```
  */
@@ -1039,7 +1039,7 @@ public fun kotlin.Float.toBeBytes(): UByteArray = run { val rawBits = this.toRaw
  *
  * public fun doctestEntry() {
  *     val bytes = run { val rawBits = (12.5f).toRawBits().toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
- *     check(bytes == ubyteArrayOf(0x00u, 0x00u, 0x48u, 0x41u))
+ *     check(bytes == ubyteArrayOf(0x00u.toUByte(), 0x00u.toUByte(), 0x48u.toUByte(), 0x41u.toUByte()))
  * }
  * ```
  */
@@ -1087,7 +1087,7 @@ public fun kotlin.Float.toNeBytes(): UByteArray = run { val rawBits = this.toRaw
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     val value = run { val bytesTmp0 = ubyteArrayOf(0x41u, 0x48u, 0x00u, 0x00u); Float.fromBits(((bytesTmp0[0].toInt() shl 24) or (bytesTmp0[1].toInt() shl 16) or (bytesTmp0[2].toInt() shl 8) or bytesTmp0[3].toInt())) }
+ *     val value = run { val bytesTmp0 = ubyteArrayOf(0x41u.toUByte(), 0x48u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte()); Float.fromBits(((bytesTmp0[0].toInt() shl 24) or (bytesTmp0[1].toInt() shl 16) or (bytesTmp0[2].toInt() shl 8) or bytesTmp0[3].toInt())) }
  *     check(value == 12.5f.toFloat())
  * }
  * ```
@@ -1106,7 +1106,7 @@ public fun kotlin.Float.Companion.fromBeBytes(bytes: UByteArray): kotlin.Float =
  * @file:OptIn(ExperimentalUnsignedTypes.cls)
  *
  * public fun doctestEntry() {
- *     val value = run { val bytesTmp0 = ubyteArrayOf(0x00u, 0x00u, 0x48u, 0x41u); Float.fromBits(((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt())) }
+ *     val value = run { val bytesTmp0 = ubyteArrayOf(0x00u.toUByte(), 0x00u.toUByte(), 0x48u.toUByte(), 0x41u.toUByte()); Float.fromBits(((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt())) }
  *     check(value == 12.5f.toFloat())
  * }
  * ```
@@ -1133,9 +1133,9 @@ public fun kotlin.Float.Companion.fromLeBytes(bytes: UByteArray): kotlin.Float =
  *
  * public fun doctestEntry() {
  *     val value = run { val bytesTmp0 = if (false) {
- *         ubyteArrayOf(0x41u, 0x48u, 0x00u, 0x00u)
+ *         ubyteArrayOf(0x41u.toUByte(), 0x48u.toUByte(), 0x00u.toUByte(), 0x00u.toUByte())
  *     } else {
- *         ubyteArrayOf(0x00u, 0x00u, 0x48u, 0x41u)
+ *         ubyteArrayOf(0x00u.toUByte(), 0x00u.toUByte(), 0x48u.toUByte(), 0x41u.toUByte())
  *     }; Float.fromBits(((bytesTmp0[3].toInt() shl 24) or (bytesTmp0[2].toInt() shl 16) or (bytesTmp0[1].toInt() shl 8) or bytesTmp0[0].toInt())) }
  *     check(value == 12.5f.toFloat())
  * }

@@ -418,7 +418,7 @@ public fun mmCvtsbhSs(a: Bf16): Float = Float.fromBits(((a.toBits().toUInt()) sh
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtneps_pbh)
  */
-public fun mmCvtnepsPbh(a: M128): M128bh = mmMaskCvtnepsPbh(m128bh.splat(0), (0u.inv()).toUByte(), a)
+public fun mmCvtnepsPbh(a: M128): M128bh = mmMaskCvtnepsPbh(m128bh.splat(0), (0u.toUByte()).inv(), a)
 
 /**
  * Converts packed single-precision (32-bit) floating-point elements in a to packed BF16 (16-bit)
@@ -446,6 +446,6 @@ public fun mmMaskzCvtnepsPbh(k: Mmask8, a: M128): M128bh = mmMaskCvtnepsPbh(m128
  */
 public fun mmCvtnessSbh(a: Float): Bf16 =
     run {
-        val value: UShort = run { val simdArg0 = mmCvtnepsPbh(mmSetSs(a)); val simdArg1 = 0u; 0u }
+        val value: UShort = run { val simdArg0 = mmCvtnepsPbh(mmSetSs(a)); val simdArg1 = 0u.toUShort(); 0u }
         Bf16.fromBits(value)
     }

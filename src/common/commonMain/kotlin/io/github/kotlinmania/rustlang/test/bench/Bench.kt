@@ -13,14 +13,14 @@ import io.github.kotlinmania.rustlang.std.io.stdio.setOutputCapture
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 import io.github.kotlinmania.rustlang.std.time.Instant
+import io.github.kotlinmania.rustlang.test.BenchMode
+import io.github.kotlinmania.rustlang.test.CompletedTest
 import io.github.kotlinmania.rustlang.test.Sender
-import io.github.kotlinmania.rustlang.test.event.CompletedTest
-import io.github.kotlinmania.rustlang.test.options.BenchMode
+import io.github.kotlinmania.rustlang.test.TestDesc
+import io.github.kotlinmania.rustlang.test.TestId
+import io.github.kotlinmania.rustlang.test.TestResult
 import io.github.kotlinmania.rustlang.test.stats.Summary
 import io.github.kotlinmania.rustlang.test.stats.winsorize
-import io.github.kotlinmania.rustlang.test.testresult.TestResult
-import io.github.kotlinmania.rustlang.test.types.TestDesc
-import io.github.kotlinmania.rustlang.test.types.TestId
 
 // Benchmarking module.
 

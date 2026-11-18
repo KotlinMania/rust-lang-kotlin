@@ -13,28 +13,28 @@ import io.github.kotlinmania.rustlang.libm.math.support.hexfloat.Hex
 public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> specTest(f: (F) -> F) {
     run {
         val l = f(F.ZERO)
-        val r = F.ZERO
+        val r = l.ZERO
         check(biteq(l, r)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l.toBits()).toString() + " " + (Hex(l)).toString() + ")\nr: " + (r).toString() + " (" + (r.toBits()).toString() + " " + (Hex(r)).toString() + ")" }
     }
     run {
-        val l1 = f(F.NEG_ZERO)
-        val r1 = F.ZERO
+        val l1 = f(l.NEG_ZERO)
+        val r1 = l.ZERO
         check(biteq(l1, r1)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l1.toBits()).toString() + " " + (Hex(l1)).toString() + ")\nr: " + (r).toString() + " (" + (r1.toBits()).toString() + " " + (Hex(r1)).toString() + ")" }
     }
     run {
-        val l2 = f(F.INFINITY)
-        val r2 = F.INFINITY
+        val l2 = f(l.INFINITY)
+        val r2 = l.INFINITY
         check(biteq(l2, r2)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l2.toBits()).toString() + " " + (Hex(l2)).toString() + ")\nr: " + (r).toString() + " (" + (r2.toBits()).toString() + " " + (Hex(r2)).toString() + ")" }
     }
     run {
-        val l3 = f(F.NEG_INFINITY)
-        val r3 = F.INFINITY
+        val l3 = f(l.NEG_INFINITY)
+        val r3 = l.INFINITY
         check(biteq(l3, r3)) { ("").toString() + "\nl: " + (l).toString() + " (" + (l3.toBits()).toString() + " " + (Hex(l3)).toString() + ")\nr: " + (r).toString() + " (" + (r3.toBits()).toString() + " " + (Hex(r3)).toString() + ")" }
     }
-    check(f(F.NAN).isNan())
+    check(f(l.NAN).isNan())
     // Not spec rewquired but we expect it
-    check(f(F.NAN).isSignPositive())
-    check(f(fromBits(F.NAN.toBits() or F.SIGN_MASK)).isSignPositive())
+    check(f(l.NAN).isSignPositive())
+    check(f(fromBits(l.NAN.toBits() or l.SIGN_MASK)).isSignPositive())
 }
 
 public class FabsInlineTests {

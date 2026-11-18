@@ -45,7 +45,7 @@ public open class BitMask(
     /**
      * Returns a new `BitMask` with the lowest bit removed.
      */
-    public open fun removeLowestBit(): BitMask = BitMask(this.value and (this.value - 1u))
+    public open fun removeLowestBit(): BitMask = BitMask(this.value and (this.value - 1u.toUShort()))
 
     /**
      * Returns whether the `BitMask` has at least one set bit.

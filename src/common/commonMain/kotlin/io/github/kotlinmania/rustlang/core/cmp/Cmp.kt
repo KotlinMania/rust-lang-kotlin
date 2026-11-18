@@ -2344,7 +2344,7 @@ public fun Boolean.cmp(other: Boolean): Ordering {
     // Casting to i8's and converting the difference to an Ordering generates
     // more optimal assembly.
     // See <https://github.com/rust-lang/rust/issues/66780> for more info.
-    return when ((this.toByte()) - (other.toByte())) {
+    return when (((if (this) 1 else 0).toByte()) - ((if (other) 1 else 0).toByte())) {
         -1.toByte() -> Less
         0.toByte() -> Equal
         1.toByte() -> Greater
@@ -2404,12 +2404,12 @@ public fun Char.clamp(min: Char, max: Char): Char {
 }
 
 public fun Char.min(other: Char): Char {
-    val c = minOf(this.toUInt(), other.toUInt())
+    val c = minOf(this.code.toUInt(), other.code.toUInt())
     return Char.fromU32Unchecked(c)
 }
 
 public fun Char.max(other: Char): Char {
-    val c = maxOf(this.toUInt(), other.toUInt())
+    val c = maxOf(this.code.toUInt(), other.code.toUInt())
     return Char.fromU32Unchecked(c)
 }
 

@@ -82,7 +82,7 @@ public fun List<UByte>.copyTo(to: Write<*>): Result<ULong> {
     val len = selfMut.size
     when (val tryResult = to.writeAll(selfMut)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     selfMut = ((selfMut).subList(len, (selfMut).size))
-    return RustResult.Ok(len.toULong())
+    return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(len.toULong())
 }
 
 public fun <A : Allocator> VecDeque<UByte, A>.bufferPriority(): BufferPriority = IN_MEMORY
@@ -93,7 +93,7 @@ public fun <A : Allocator> VecDeque<UByte, A>.copyTo(to: Write<*>): Result<ULong
     val bufs = listOf(IoSlice.new(front), IoSlice.new(back))
     when (val tryResult = to.writeAllVectored(bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.clear()
-    return RustResult.Ok(len.toULong())
+    return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(len.toULong())
 }
 
 public fun <I> BufReader<I>.bufferPriority(): BufferPriority = this.capacity()
@@ -115,13 +115,13 @@ public fun <I> BufReader<I>.copyTo(to: Write<*>): Result<ULong> {
                 }
                 else -> {
                     val e1 = matchVal.errValue()
-                    return RustResult.Err(e1)
+                    return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(e1)
                 }
             }
         }
         val buf = this.buffer()
         if (this.buffer().isEmpty()) {
-            return RustResult.Ok(len)
+            return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(len)
         }
         // In case the writer side is a BufWriter then its writeAll
         // implements an optimization that passes through large
@@ -179,7 +179,7 @@ public fun <I : Write<I>, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<
                         val okValueVal = matchVal.okValue()
                         val bytesRead = cursor.written()
                         if (bytesRead == 0) {
-                            return RustResult.Ok(len)
+                            return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(len)
                         }
                         init = readBuf.isInit()
                         len += bytesRead.toULong()
@@ -191,7 +191,7 @@ public fun <I : Write<I>, R : Read<R>> BufWriter<I>.copyFrom(reader: R): Result<
                     }
                     else -> {
                         val e1 = matchVal.errValue()
-                        return RustResult.Err(e1)
+                        return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(e1)
                     }
                 }
             }
@@ -225,7 +225,7 @@ public fun <R : Read<R>, W : Write<W>> stackBufferCopy(reader: R, writer: W): Re
                 }
                 else -> {
                     val e1 = matchVal.errValue()
-                    return RustResult.Err(e1)
+                    return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(e1)
                 }
             }
         }
@@ -236,5 +236,5 @@ public fun <R : Read<R>, W : Write<W>> stackBufferCopy(reader: R, writer: W): Re
         when (val tryResult = writer.writeAll(buf1.filled())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         buf1.clear()
     }
-    return RustResult.Ok(len)
+    return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(len)
 }

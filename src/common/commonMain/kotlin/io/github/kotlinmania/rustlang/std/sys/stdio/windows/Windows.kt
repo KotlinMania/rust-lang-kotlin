@@ -143,7 +143,7 @@ public open class Stdin(
                 }
             }
 
-        public fun new(): Stdin = Stdin(surrogate = 0u, incompleteUtf8 = IncompleteUtf8.new())
+        public fun new(): Stdin = Stdin(surrogate = 0u.toUShort(), incompleteUtf8 = IncompleteUtf8.new())
     }
 }
 
@@ -225,7 +225,7 @@ public open class IncompleteUtf8(
             this.bytes.copyWithin(toWrite until Int.MAX_VALUE, 0)
             this.len -= toWrite.toUByte()
         } else {
-            this.len = 0u
+            this.len = 0u.toUByte()
         }
         return toWrite
     }
@@ -255,7 +255,7 @@ public open class IncompleteUtf8(
                 }
             }
 
-        public fun new(): IncompleteUtf8 = IncompleteUtf8(bytes = UByteArray((Char.MAX_LEN_UTF8).toInt()) { 0u.toUByte() }, len = 0u)
+        public fun new(): IncompleteUtf8 = IncompleteUtf8(bytes = UByteArray((Char.MAX_LEN_UTF8).toInt()) { 0u.toUByte() }, len = 0u.toUByte())
     }
 }
 
@@ -465,7 +465,7 @@ public fun readU16s(handle: Handle, buf: MutableList<MaybeUninit<UShort>>): Resu
     // Configure the `pInputControl` parameter to not only return on `\r\n` but also Ctrl-Z, the
     // traditional DOS method to indicate end of character stream / user input (SUB).
     // See #38274 and https://stackoverflow.com/questions/43836040/win-api-readconsole.
-    val CTRL_Z: UShort = 0x1Au
+    val CTRL_Z: UShort = 0x1Au.toUShort()
     val CTRL_Z_MASK: UInt = 1u shl CTRL_Z.toInt()
     val inputControl = ConsoleReadconsoleControl(nLength = sizeOf<ConsoleReadconsoleControl>(typeLayoutT = UnresolvedTypeLayout<ConsoleReadconsoleControl>()).toUInt(), nInitialChars = 0u, dwCtrlWakeupMask = CTRL_Z_MASK, dwControlKeyState = 0u)
     val localStorageL374C4 = AddressableLocal(0, PrimitiveLayouts.I32)

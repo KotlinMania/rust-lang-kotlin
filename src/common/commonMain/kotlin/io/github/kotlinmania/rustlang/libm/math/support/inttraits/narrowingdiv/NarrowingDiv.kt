@@ -112,7 +112,7 @@ public fun <D, OtherSign, Unsigned, H, U> divThreeDigitsByTwo(a0: U, a: D, n: D)
             // so `r = aR + a0 - qn = (a - n) R + a0`
             r = U.D.fromLoHi(a0, a1.wrappingSub(n0))
             // Since `a<n`, the first decrement is always needed:
-            q = U.MAX
+            q = a0.MAX
             // R - 1
         }
         else -> {
@@ -134,7 +134,7 @@ public fun <D, OtherSign, Unsigned, H, U> divThreeDigitsByTwo(a0: U, a: D, n: D)
             }
             // ... or the remainder went "negative" (by as much as `d = qn0<RR`)
             // and we have to adjust.
-            q -= U.ONE
+            q -= a0.ONE
         }
     }
     run { val (destructVal0, destructVal1) = r.overflowingAdd(n); r = destructVal0; wrap = destructVal1 }
@@ -142,7 +142,7 @@ public fun <D, OtherSign, Unsigned, H, U> divThreeDigitsByTwo(a0: U, a: D, n: D)
         return Pair(q, r)
     }
     // If the remainder still didn't wrap, we need another step.
-    q -= U.ONE
+    q -= a0.ONE
     run { val (destructVal0, destructVal1) = r.overflowingAdd(n); r = destructVal0; wrap = destructVal1 }
     // Since `n >= RR / 2`, at least one of the two `r += n` must have wrapped.
     check(wrap) { "estimated quotient should be off by at most two" }

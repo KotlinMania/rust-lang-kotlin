@@ -19,10 +19,10 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
 public fun mulbyte(left: UByte, right: UByte): UByte {
     // this implementation follows the description in
     // https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_gf2p8mul_epi8
-    val REDUCTION_POLYNOMIAL: UShort = 0x11bu
+    val REDUCTION_POLYNOMIAL: UShort = 0x11bu.toUShort()
     val left1: UShort = left.into()
     val right1: UShort = right.into()
-    var carrylessProduct: UShort = 0u
+    var carrylessProduct: UShort = 0u.toUShort()
     // Carryless multiplication
     for (i in 0 until 8) {
         if ((((left1.toUInt() shr (i.toInt())).toUShort()) and 0x01u.toUShort()) != 0u.toUShort()) {
@@ -58,7 +58,7 @@ public val NUM_BYTES_WORDS_256: Int = NUM_BYTES_WORDS_128 / 2
 public val NUM_BYTES_WORDS_512: Int = NUM_BYTES_WORDS_256 / 2
 
 public fun parity(input: UByte): UByte {
-    var accumulator = 0u
+    var accumulator = 0u.toUByte()
     for (i in 0 until 8) {
         accumulator = accumulator xor (((input.toUInt() shr (i.toInt())).toUByte()) and 0x01u.toUByte())
     }
@@ -96,15 +96,15 @@ public fun generateInvTestsData(): Pair<UByteArray, UByteArray> {
     for (i in 0 until NUM_BYTES) {
         input[i] = (i % 256).toUByte()
         result[i] = if (i == 0) {
-            0u
+            0u.toUByte()
         } else {
-            1u
+            1u.toUByte()
         }
     }
     return Pair(input, result)
 }
 
-public val AES_S_BOX: UByteArray = ubyteArrayOf(0x63u, 0x7cu, 0x77u, 0x7bu, 0xf2u, 0x6bu, 0x6fu, 0xc5u, 0x30u, 0x01u, 0x67u, 0x2bu, 0xfeu, 0xd7u, 0xabu, 0x76u, 0xcau, 0x82u, 0xc9u, 0x7du, 0xfau, 0x59u, 0x47u, 0xf0u, 0xadu, 0xd4u, 0xa2u, 0xafu, 0x9cu, 0xa4u, 0x72u, 0xc0u, 0xb7u, 0xfdu, 0x93u, 0x26u, 0x36u, 0x3fu, 0xf7u, 0xccu, 0x34u, 0xa5u, 0xe5u, 0xf1u, 0x71u, 0xd8u, 0x31u, 0x15u, 0x04u, 0xc7u, 0x23u, 0xc3u, 0x18u, 0x96u, 0x05u, 0x9au, 0x07u, 0x12u, 0x80u, 0xe2u, 0xebu, 0x27u, 0xb2u, 0x75u, 0x09u, 0x83u, 0x2cu, 0x1au, 0x1bu, 0x6eu, 0x5au, 0xa0u, 0x52u, 0x3bu, 0xd6u, 0xb3u, 0x29u, 0xe3u, 0x2fu, 0x84u, 0x53u, 0xd1u, 0x00u, 0xedu, 0x20u, 0xfcu, 0xb1u, 0x5bu, 0x6au, 0xcbu, 0xbeu, 0x39u, 0x4au, 0x4cu, 0x58u, 0xcfu, 0xd0u, 0xefu, 0xaau, 0xfbu, 0x43u, 0x4du, 0x33u, 0x85u, 0x45u, 0xf9u, 0x02u, 0x7fu, 0x50u, 0x3cu, 0x9fu, 0xa8u, 0x51u, 0xa3u, 0x40u, 0x8fu, 0x92u, 0x9du, 0x38u, 0xf5u, 0xbcu, 0xb6u, 0xdau, 0x21u, 0x10u, 0xffu, 0xf3u, 0xd2u, 0xcdu, 0x0cu, 0x13u, 0xecu, 0x5fu, 0x97u, 0x44u, 0x17u, 0xc4u, 0xa7u, 0x7eu, 0x3du, 0x64u, 0x5du, 0x19u, 0x73u, 0x60u, 0x81u, 0x4fu, 0xdcu, 0x22u, 0x2au, 0x90u, 0x88u, 0x46u, 0xeeu, 0xb8u, 0x14u, 0xdeu, 0x5eu, 0x0bu, 0xdbu, 0xe0u, 0x32u, 0x3au, 0x0au, 0x49u, 0x06u, 0x24u, 0x5cu, 0xc2u, 0xd3u, 0xacu, 0x62u, 0x91u, 0x95u, 0xe4u, 0x79u, 0xe7u, 0xc8u, 0x37u, 0x6du, 0x8du, 0xd5u, 0x4eu, 0xa9u, 0x6cu, 0x56u, 0xf4u, 0xeau, 0x65u, 0x7au, 0xaeu, 0x08u, 0xbau, 0x78u, 0x25u, 0x2eu, 0x1cu, 0xa6u, 0xb4u, 0xc6u, 0xe8u, 0xddu, 0x74u, 0x1fu, 0x4bu, 0xbdu, 0x8bu, 0x8au, 0x70u, 0x3eu, 0xb5u, 0x66u, 0x48u, 0x03u, 0xf6u, 0x0eu, 0x61u, 0x35u, 0x57u, 0xb9u, 0x86u, 0xc1u, 0x1du, 0x9eu, 0xe1u, 0xf8u, 0x98u, 0x11u, 0x69u, 0xd9u, 0x8eu, 0x94u, 0x9bu, 0x1eu, 0x87u, 0xe9u, 0xceu, 0x55u, 0x28u, 0xdfu, 0x8cu, 0xa1u, 0x89u, 0x0du, 0xbfu, 0xe6u, 0x42u, 0x68u, 0x41u, 0x99u, 0x2du, 0x0fu, 0xb0u, 0x54u, 0xbbu, 0x16u)
+public val AES_S_BOX: UByteArray = ubyteArrayOf(0x63u.toUByte(), 0x7cu.toUByte(), 0x77u.toUByte(), 0x7bu.toUByte(), 0xf2u.toUByte(), 0x6bu.toUByte(), 0x6fu.toUByte(), 0xc5u.toUByte(), 0x30u.toUByte(), 0x01u.toUByte(), 0x67u.toUByte(), 0x2bu.toUByte(), 0xfeu.toUByte(), 0xd7u.toUByte(), 0xabu.toUByte(), 0x76u.toUByte(), 0xcau.toUByte(), 0x82u.toUByte(), 0xc9u.toUByte(), 0x7du.toUByte(), 0xfau.toUByte(), 0x59u.toUByte(), 0x47u.toUByte(), 0xf0u.toUByte(), 0xadu.toUByte(), 0xd4u.toUByte(), 0xa2u.toUByte(), 0xafu.toUByte(), 0x9cu.toUByte(), 0xa4u.toUByte(), 0x72u.toUByte(), 0xc0u.toUByte(), 0xb7u.toUByte(), 0xfdu.toUByte(), 0x93u.toUByte(), 0x26u.toUByte(), 0x36u.toUByte(), 0x3fu.toUByte(), 0xf7u.toUByte(), 0xccu.toUByte(), 0x34u.toUByte(), 0xa5u.toUByte(), 0xe5u.toUByte(), 0xf1u.toUByte(), 0x71u.toUByte(), 0xd8u.toUByte(), 0x31u.toUByte(), 0x15u.toUByte(), 0x04u.toUByte(), 0xc7u.toUByte(), 0x23u.toUByte(), 0xc3u.toUByte(), 0x18u.toUByte(), 0x96u.toUByte(), 0x05u.toUByte(), 0x9au.toUByte(), 0x07u.toUByte(), 0x12u.toUByte(), 0x80u.toUByte(), 0xe2u.toUByte(), 0xebu.toUByte(), 0x27u.toUByte(), 0xb2u.toUByte(), 0x75u.toUByte(), 0x09u.toUByte(), 0x83u.toUByte(), 0x2cu.toUByte(), 0x1au.toUByte(), 0x1bu.toUByte(), 0x6eu.toUByte(), 0x5au.toUByte(), 0xa0u.toUByte(), 0x52u.toUByte(), 0x3bu.toUByte(), 0xd6u.toUByte(), 0xb3u.toUByte(), 0x29u.toUByte(), 0xe3u.toUByte(), 0x2fu.toUByte(), 0x84u.toUByte(), 0x53u.toUByte(), 0xd1u.toUByte(), 0x00u.toUByte(), 0xedu.toUByte(), 0x20u.toUByte(), 0xfcu.toUByte(), 0xb1u.toUByte(), 0x5bu.toUByte(), 0x6au.toUByte(), 0xcbu.toUByte(), 0xbeu.toUByte(), 0x39u.toUByte(), 0x4au.toUByte(), 0x4cu.toUByte(), 0x58u.toUByte(), 0xcfu.toUByte(), 0xd0u.toUByte(), 0xefu.toUByte(), 0xaau.toUByte(), 0xfbu.toUByte(), 0x43u.toUByte(), 0x4du.toUByte(), 0x33u.toUByte(), 0x85u.toUByte(), 0x45u.toUByte(), 0xf9u.toUByte(), 0x02u.toUByte(), 0x7fu.toUByte(), 0x50u.toUByte(), 0x3cu.toUByte(), 0x9fu.toUByte(), 0xa8u.toUByte(), 0x51u.toUByte(), 0xa3u.toUByte(), 0x40u.toUByte(), 0x8fu.toUByte(), 0x92u.toUByte(), 0x9du.toUByte(), 0x38u.toUByte(), 0xf5u.toUByte(), 0xbcu.toUByte(), 0xb6u.toUByte(), 0xdau.toUByte(), 0x21u.toUByte(), 0x10u.toUByte(), 0xffu.toUByte(), 0xf3u.toUByte(), 0xd2u.toUByte(), 0xcdu.toUByte(), 0x0cu.toUByte(), 0x13u.toUByte(), 0xecu.toUByte(), 0x5fu.toUByte(), 0x97u.toUByte(), 0x44u.toUByte(), 0x17u.toUByte(), 0xc4u.toUByte(), 0xa7u.toUByte(), 0x7eu.toUByte(), 0x3du.toUByte(), 0x64u.toUByte(), 0x5du.toUByte(), 0x19u.toUByte(), 0x73u.toUByte(), 0x60u.toUByte(), 0x81u.toUByte(), 0x4fu.toUByte(), 0xdcu.toUByte(), 0x22u.toUByte(), 0x2au.toUByte(), 0x90u.toUByte(), 0x88u.toUByte(), 0x46u.toUByte(), 0xeeu.toUByte(), 0xb8u.toUByte(), 0x14u.toUByte(), 0xdeu.toUByte(), 0x5eu.toUByte(), 0x0bu.toUByte(), 0xdbu.toUByte(), 0xe0u.toUByte(), 0x32u.toUByte(), 0x3au.toUByte(), 0x0au.toUByte(), 0x49u.toUByte(), 0x06u.toUByte(), 0x24u.toUByte(), 0x5cu.toUByte(), 0xc2u.toUByte(), 0xd3u.toUByte(), 0xacu.toUByte(), 0x62u.toUByte(), 0x91u.toUByte(), 0x95u.toUByte(), 0xe4u.toUByte(), 0x79u.toUByte(), 0xe7u.toUByte(), 0xc8u.toUByte(), 0x37u.toUByte(), 0x6du.toUByte(), 0x8du.toUByte(), 0xd5u.toUByte(), 0x4eu.toUByte(), 0xa9u.toUByte(), 0x6cu.toUByte(), 0x56u.toUByte(), 0xf4u.toUByte(), 0xeau.toUByte(), 0x65u.toUByte(), 0x7au.toUByte(), 0xaeu.toUByte(), 0x08u.toUByte(), 0xbau.toUByte(), 0x78u.toUByte(), 0x25u.toUByte(), 0x2eu.toUByte(), 0x1cu.toUByte(), 0xa6u.toUByte(), 0xb4u.toUByte(), 0xc6u.toUByte(), 0xe8u.toUByte(), 0xddu.toUByte(), 0x74u.toUByte(), 0x1fu.toUByte(), 0x4bu.toUByte(), 0xbdu.toUByte(), 0x8bu.toUByte(), 0x8au.toUByte(), 0x70u.toUByte(), 0x3eu.toUByte(), 0xb5u.toUByte(), 0x66u.toUByte(), 0x48u.toUByte(), 0x03u.toUByte(), 0xf6u.toUByte(), 0x0eu.toUByte(), 0x61u.toUByte(), 0x35u.toUByte(), 0x57u.toUByte(), 0xb9u.toUByte(), 0x86u.toUByte(), 0xc1u.toUByte(), 0x1du.toUByte(), 0x9eu.toUByte(), 0xe1u.toUByte(), 0xf8u.toUByte(), 0x98u.toUByte(), 0x11u.toUByte(), 0x69u.toUByte(), 0xd9u.toUByte(), 0x8eu.toUByte(), 0x94u.toUByte(), 0x9bu.toUByte(), 0x1eu.toUByte(), 0x87u.toUByte(), 0xe9u.toUByte(), 0xceu.toUByte(), 0x55u.toUByte(), 0x28u.toUByte(), 0xdfu.toUByte(), 0x8cu.toUByte(), 0xa1u.toUByte(), 0x89u.toUByte(), 0x0du.toUByte(), 0xbfu.toUByte(), 0xe6u.toUByte(), 0x42u.toUByte(), 0x68u.toUByte(), 0x41u.toUByte(), 0x99u.toUByte(), 0x2du.toUByte(), 0x0fu.toUByte(), 0xb0u.toUByte(), 0x54u.toUByte(), 0xbbu.toUByte(), 0x16u.toUByte())
 
 public fun generateByteMulTestData(): Triple<UByteArray, UByteArray, UByteArray> {
     val left: UByteArray  = UByteArray(NUM_TEST_ENTRIES) { 0u.toUByte() }
@@ -152,7 +152,7 @@ public fun testMm512MaskzGf2p8mulEpi8() {
         val resultZero = mm512MaskzGf2p8mulEpi8(0uL, left1, right1)
         assertEqM512i(resultZero, mm512SetzeroSi512())
         val maskBytes: Mmask64 = 0x0F0F0F0FFFFF0000uL
-        val maskWords: Mmask16 = 0x55F0u
+        val maskWords: Mmask16 = 0x55F0u.toUShort()
         val expectedResult = mm512Gf2p8mulEpi8(left1, right1)
         val resultMasked = mm512MaskzGf2p8mulEpi8(maskBytes, left1, right1)
         val expectedMasked = mm512MaskBlendEpi32(maskWords, mm512SetzeroSi512(), expectedResult)
@@ -168,7 +168,7 @@ public fun testMm512MaskGf2p8mulEpi8() {
         val resultLeft = mm512MaskGf2p8mulEpi8(left1, 0uL, left1, right1)
         assertEqM512i(resultLeft, left1)
         val maskBytes: Mmask64 = 0x0F0F0F0FFFFF0000uL
-        val maskWords: Mmask16 = 0x55F0u
+        val maskWords: Mmask16 = 0x55F0u.toUShort()
         val expectedResult = mm512Gf2p8mulEpi8(left1, right1)
         val resultMasked = mm512MaskGf2p8mulEpi8(left1, maskBytes, left1, right1)
         val expectedMasked = mm512MaskBlendEpi32(maskWords, left1, expectedResult)
@@ -236,9 +236,9 @@ public fun testMmMaskzGf2p8mulEpi8() {
         val MASK_WORDS: Int = 0x6
         val left1 = loadM128iWord(left, i)
         val right1 = loadM128iWord(right, i)
-        val resultZero = mmMaskzGf2p8mulEpi8(0u, left1, right1)
+        val resultZero = mmMaskzGf2p8mulEpi8(0u.toUShort(), left1, right1)
         assertEqM128i(resultZero, mmSetzeroSi128())
-        val maskBytes: Mmask16 = 0x0FF0u
+        val maskBytes: Mmask16 = 0x0FF0u.toUShort()
         val expectedResult = mmGf2p8mulEpi8(left1, right1)
         val resultMasked = mmMaskzGf2p8mulEpi8(maskBytes, left1, right1)
         val expectedMasked = mmBlendEpi32(mmSetzeroSi128(), expectedResult, MASK_WORDS)
@@ -252,9 +252,9 @@ public fun testMmMaskGf2p8mulEpi8() {
         val MASK_WORDS: Int = 0x6
         val left1 = loadM128iWord(left, i)
         val right1 = loadM128iWord(right, i)
-        val resultLeft = mmMaskGf2p8mulEpi8(left1, 0u, left1, right1)
+        val resultLeft = mmMaskGf2p8mulEpi8(left1, 0u.toUShort(), left1, right1)
         assertEqM128i(resultLeft, left1)
-        val maskBytes: Mmask16 = 0x0FF0u
+        val maskBytes: Mmask16 = 0x0FF0u.toUShort()
         val expectedResult = mmGf2p8mulEpi8(left1, right1)
         val resultMasked = mmMaskGf2p8mulEpi8(left1, maskBytes, left1, right1)
         val expectedMasked = mmBlendEpi32(left1, expectedResult, MASK_WORDS)
@@ -300,7 +300,7 @@ public fun testMm512MaskzGf2p8affineEpi64Epi8() {
         val resultZero = mm512MaskzGf2p8affineEpi64Epi8(0uL, vector, matrix, CONSTANT_BYTE)
         assertEqM512i(resultZero, mm512SetzeroSi512())
         val maskBytes: Mmask64 = 0x0F0F0F0FFFFF0000uL
-        val maskWords: Mmask16 = 0x55F0u
+        val maskWords: Mmask16 = 0x55F0u.toUShort()
         val expectedResult = mm512Gf2p8affineEpi64Epi8(vector, matrix, CONSTANT_BYTE)
         val resultMasked = mm512MaskzGf2p8affineEpi64Epi8(maskBytes, vector, matrix, CONSTANT_BYTE)
         val expectedMasked = mm512MaskBlendEpi32(maskWords, mm512SetzeroSi512(), expectedResult)
@@ -317,7 +317,7 @@ public fun testMm512MaskGf2p8affineEpi64Epi8() {
         val resultLeft = mm512MaskGf2p8affineEpi64Epi8(left, 0uL, left, right, CONSTANT_BYTE)
         assertEqM512i(resultLeft, left)
         val maskBytes: Mmask64 = 0x0F0F0F0FFFFF0000uL
-        val maskWords: Mmask16 = 0x55F0u
+        val maskWords: Mmask16 = 0x55F0u.toUShort()
         val expectedResult = mm512Gf2p8affineEpi64Epi8(left, right, CONSTANT_BYTE)
         val resultMasked = mm512MaskGf2p8affineEpi64Epi8(left, maskBytes, left, right, CONSTANT_BYTE)
         val expectedMasked = mm512MaskBlendEpi32(maskWords, left, expectedResult)
@@ -424,9 +424,9 @@ public fun testMmMaskzGf2p8affineEpi64Epi8() {
         val MASK_WORDS: Int = 0x6
         val matrix = loadM128iWord(matrices, i)
         val vector = loadM128iWord(vectors, i)
-        val resultZero = mmMaskzGf2p8affineEpi64Epi8(0u, vector, matrix, CONSTANT_BYTE)
+        val resultZero = mmMaskzGf2p8affineEpi64Epi8(0u.toUShort(), vector, matrix, CONSTANT_BYTE)
         assertEqM128i(resultZero, mmSetzeroSi128())
-        val maskBytes: Mmask16 = 0x0FF0u
+        val maskBytes: Mmask16 = 0x0FF0u.toUShort()
         val expectedResult = mmGf2p8affineEpi64Epi8(vector, matrix, CONSTANT_BYTE)
         val resultMasked = mmMaskzGf2p8affineEpi64Epi8(maskBytes, vector, matrix, CONSTANT_BYTE)
         val expectedMasked = mmBlendEpi32(mmSetzeroSi128(), expectedResult, MASK_WORDS)
@@ -441,9 +441,9 @@ public fun testMmMaskGf2p8affineEpi64Epi8() {
         val MASK_WORDS: Int = 0x6
         val left = loadM128iWord(vectors, i)
         val right = loadM128iWord(matrices, i)
-        val resultLeft = mmMaskGf2p8affineEpi64Epi8(left, 0u, left, right, CONSTANT_BYTE)
+        val resultLeft = mmMaskGf2p8affineEpi64Epi8(left, 0u.toUShort(), left, right, CONSTANT_BYTE)
         assertEqM128i(resultLeft, left)
-        val maskBytes: Mmask16 = 0x0FF0u
+        val maskBytes: Mmask16 = 0x0FF0u.toUShort()
         val expectedResult = mmGf2p8affineEpi64Epi8(left, right, CONSTANT_BYTE)
         val resultMasked = mmMaskGf2p8affineEpi64Epi8(left, maskBytes, left, right, CONSTANT_BYTE)
         val expectedMasked = mmBlendEpi32(left, expectedResult, MASK_WORDS)
@@ -495,7 +495,7 @@ public fun testMm512MaskzGf2p8affineinvEpi64Epi8() {
         val resultZero = mm512MaskzGf2p8affineinvEpi64Epi8(0uL, vector, matrix, CONSTANT_BYTE)
         assertEqM512i(resultZero, mm512SetzeroSi512())
         val maskBytes: Mmask64 = 0x0F0F0F0FFFFF0000uL
-        val maskWords: Mmask16 = 0x55F0u
+        val maskWords: Mmask16 = 0x55F0u.toUShort()
         val expectedResult = mm512Gf2p8affineinvEpi64Epi8(vector, matrix, CONSTANT_BYTE)
         val resultMasked = mm512MaskzGf2p8affineinvEpi64Epi8(maskBytes, vector, matrix, CONSTANT_BYTE)
         val expectedMasked = mm512MaskBlendEpi32(maskWords, mm512SetzeroSi512(), expectedResult)
@@ -512,7 +512,7 @@ public fun testMm512MaskGf2p8affineinvEpi64Epi8() {
         val resultLeft = mm512MaskGf2p8affineinvEpi64Epi8(left, 0uL, left, right, CONSTANT_BYTE)
         assertEqM512i(resultLeft, left)
         val maskBytes: Mmask64 = 0x0F0F0F0FFFFF0000uL
-        val maskWords: Mmask16 = 0x55F0u
+        val maskWords: Mmask16 = 0x55F0u.toUShort()
         val expectedResult = mm512Gf2p8affineinvEpi64Epi8(left, right, CONSTANT_BYTE)
         val resultMasked = mm512MaskGf2p8affineinvEpi64Epi8(left, maskBytes, left, right, CONSTANT_BYTE)
         val expectedMasked = mm512MaskBlendEpi32(maskWords, left, expectedResult)
@@ -631,9 +631,9 @@ public fun testMmMaskzGf2p8affineinvEpi64Epi8() {
         val MASK_WORDS: Int = 0x6
         val matrix = loadM128iWord(matrices, i)
         val vector = loadM128iWord(vectors, i)
-        val resultZero = mmMaskzGf2p8affineinvEpi64Epi8(0u, vector, matrix, CONSTANT_BYTE)
+        val resultZero = mmMaskzGf2p8affineinvEpi64Epi8(0u.toUShort(), vector, matrix, CONSTANT_BYTE)
         assertEqM128i(resultZero, mmSetzeroSi128())
-        val maskBytes: Mmask16 = 0x0FF0u
+        val maskBytes: Mmask16 = 0x0FF0u.toUShort()
         val expectedResult = mmGf2p8affineinvEpi64Epi8(vector, matrix, CONSTANT_BYTE)
         val resultMasked = mmMaskzGf2p8affineinvEpi64Epi8(maskBytes, vector, matrix, CONSTANT_BYTE)
         val expectedMasked = mmBlendEpi32(mmSetzeroSi128(), expectedResult, MASK_WORDS)
@@ -648,9 +648,9 @@ public fun testMmMaskGf2p8affineinvEpi64Epi8() {
         val MASK_WORDS: Int = 0x6
         val left = loadM128iWord(vectors, i)
         val right = loadM128iWord(matrices, i)
-        val resultLeft = mmMaskGf2p8affineinvEpi64Epi8(left, 0u, left, right, CONSTANT_BYTE)
+        val resultLeft = mmMaskGf2p8affineinvEpi64Epi8(left, 0u.toUShort(), left, right, CONSTANT_BYTE)
         assertEqM128i(resultLeft, left)
-        val maskBytes: Mmask16 = 0x0FF0u
+        val maskBytes: Mmask16 = 0x0FF0u.toUShort()
         val expectedResult = mmGf2p8affineinvEpi64Epi8(left, right, CONSTANT_BYTE)
         val resultMasked = mmMaskGf2p8affineinvEpi64Epi8(left, maskBytes, left, right, CONSTANT_BYTE)
         val expectedMasked = mmBlendEpi32(left, expectedResult, MASK_WORDS)

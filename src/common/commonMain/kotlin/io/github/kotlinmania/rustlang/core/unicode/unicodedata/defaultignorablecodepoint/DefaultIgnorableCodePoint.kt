@@ -10,13 +10,13 @@ import io.github.kotlinmania.rustlang.core.unicode.unicodedata.skipSearch
 
 public var SHORT_OFFSET_RUNS: List<ShortOffsetRunHeader> = listOf(ShortOffsetRunHeader.new(0, 847), ShortOffsetRunHeader.new(3, 1564), ShortOffsetRunHeader.new(5, 4447), ShortOffsetRunHeader.new(7, 6068), ShortOffsetRunHeader.new(9, 8203), ShortOffsetRunHeader.new(13, 12644), ShortOffsetRunHeader.new(19, 65024), ShortOffsetRunHeader.new(21, 113824), ShortOffsetRunHeader.new(29, 119155), ShortOffsetRunHeader.new(31, 917504), ShortOffsetRunHeader.new(33, 921600), ShortOffsetRunHeader.new(34, 2035712))
 
-public var OFFSETS: UByteArray = ubyteArrayOf(173u, 1u, 0u, 1u, 0u, 1u, 0u, 2u, 0u, 2u, 85u, 5u, 0u, 5u, 26u, 5u, 49u, 16u, 0u, 1u, 0u, 16u, 239u, 1u, 160u, 1u, 79u, 9u, 0u, 4u, 0u, 8u, 0u, 0u, 0u)
+public var OFFSETS: UByteArray = ubyteArrayOf(173u.toUByte(), 1u.toUByte(), 0u.toUByte(), 1u.toUByte(), 0u.toUByte(), 1u.toUByte(), 0u.toUByte(), 2u.toUByte(), 0u.toUByte(), 2u.toUByte(), 85u.toUByte(), 5u.toUByte(), 0u.toUByte(), 5u.toUByte(), 26u.toUByte(), 5u.toUByte(), 49u.toUByte(), 16u.toUByte(), 0u.toUByte(), 1u.toUByte(), 0u.toUByte(), 16u.toUByte(), 239u.toUByte(), 1u.toUByte(), 160u.toUByte(), 1u.toUByte(), 79u.toUByte(), 9u.toUByte(), 0u.toUByte(), 4u.toUByte(), 0u.toUByte(), 8u.toUByte(), 0u.toUByte(), 0u.toUByte(), 0u.toUByte())
 
 public fun lookup(c: Char): Boolean {
     if (false) {
         check(!c.isAscii())
     }
-    return (c.toUInt()) >= 0xadu && lookupSlow(c)
+    return (c.code.toUInt()) >= 0xadu && lookupSlow(c)
 }
 
 public fun lookupSlow(c: Char): Boolean {

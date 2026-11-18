@@ -1,12 +1,12 @@
 // port-lint: source float/conv.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.conv.inttofloat
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.wrappingShl
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 // Conversions from integers to floats.
 //
@@ -76,7 +76,7 @@ public fun <I : Int, F : Float> shiftFGtI(n: UInt): UInt = F.SIG_BITS - I.BITS +
  * Perform a signed operation as unsigned, then add the sign back.
  */
 public fun <I, F> signed(i: I, conv: (I.Unsigned) -> F.Int, fromBitsFFn: (Any?) -> F): F where F : Float, I : Int {
-    val signBit = F.Int.castFromLossy(i shr (I.BITS - 1).toInt()) shl (F.BITS - 1).toInt()
+    val signBit = F.Int.castFromLossy(i shr (i.BITS - 1).toInt()) shl (F.BITS - 1).toInt()
     return fromBitsFFn(conv(i.unsignedAbs()) or signBit)
 }
 

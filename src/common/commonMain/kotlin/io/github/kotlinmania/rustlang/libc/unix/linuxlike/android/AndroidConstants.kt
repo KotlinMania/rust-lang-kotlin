@@ -97,7 +97,7 @@ public val TFD_TIMER_CANCEL_ON_SET: CInt = 2
 
 public val USER_PROCESS: CShort = 7
 
-public val POSIX_VDISABLE: CcT = 0u
+public val POSIX_VDISABLE: CcT = 0u.toUByte()
 
 // linux/falloc.h
 public val FALLOC_FL_KEEP_SIZE: CInt = 0x01
@@ -968,7 +968,7 @@ public val SCM_TIMESTAMPNS: CInt = SO_TIMESTAMPNS
 
 public val SCM_TIMESTAMPING: CInt = SO_TIMESTAMPING
 
-public val IPTOS_ECN_NOTECT: UByte = 0x00u
+public val IPTOS_ECN_NOTECT: UByte = 0x00u.toUByte()
 
 public val O_ACCMODE: CInt = 3
 
@@ -2728,7 +2728,7 @@ public val NFT_NG_RANDOM: CInt = 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val FF_MAX: U16 = 0x7fu
+public val FF_MAX: U16 = 0x7fu.toUShort()
 
 public val FF_CNT: Int = FF_MAX.toInt() + 1
 
@@ -2738,7 +2738,7 @@ public val FF_CNT: Int = FF_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val INPUT_PROP_MAX: U16 = 0x1fu
+public val INPUT_PROP_MAX: U16 = 0x1fu.toUShort()
 
 public val INPUT_PROP_CNT: Int = INPUT_PROP_MAX.toInt() + 1
 
@@ -2746,7 +2746,7 @@ public val INPUT_PROP_CNT: Int = INPUT_PROP_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val EV_MAX: U16 = 0x1fu
+public val EV_MAX: U16 = 0x1fu.toUShort()
 
 public val EV_CNT: Int = EV_MAX.toInt() + 1
 
@@ -2754,7 +2754,7 @@ public val EV_CNT: Int = EV_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val SYN_MAX: U16 = 0xfu
+public val SYN_MAX: U16 = 0xfu.toUShort()
 
 public val SYN_CNT: Int = SYN_MAX.toInt() + 1
 
@@ -2762,7 +2762,7 @@ public val SYN_CNT: Int = SYN_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val KEY_MAX: U16 = 0x2ffu
+public val KEY_MAX: U16 = 0x2ffu.toUShort()
 
 public val KEY_CNT: Int = KEY_MAX.toInt() + 1
 
@@ -2770,7 +2770,7 @@ public val KEY_CNT: Int = KEY_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val REL_MAX: U16 = 0x0fu
+public val REL_MAX: U16 = 0x0fu.toUShort()
 
 public val REL_CNT: Int = REL_MAX.toInt() + 1
 
@@ -2778,7 +2778,7 @@ public val REL_CNT: Int = REL_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val ABS_MAX: U16 = 0x3fu
+public val ABS_MAX: U16 = 0x3fu.toUShort()
 
 public val ABS_CNT: Int = ABS_MAX.toInt() + 1
 
@@ -2786,7 +2786,7 @@ public val ABS_CNT: Int = ABS_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val SW_MAX: U16 = 0x0fu
+public val SW_MAX: U16 = 0x0fu.toUShort()
 
 public val SW_CNT: Int = SW_MAX.toInt() + 1
 
@@ -2794,7 +2794,7 @@ public val SW_CNT: Int = SW_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val MSC_MAX: U16 = 0x07u
+public val MSC_MAX: U16 = 0x07u.toUShort()
 
 public val MSC_CNT: Int = MSC_MAX.toInt() + 1
 
@@ -2802,7 +2802,7 @@ public val MSC_CNT: Int = MSC_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val LED_MAX: U16 = 0x0fu
+public val LED_MAX: U16 = 0x0fu.toUShort()
 
 public val LED_CNT: Int = LED_MAX.toInt() + 1
 
@@ -2810,7 +2810,7 @@ public val LED_CNT: Int = LED_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val REP_MAX: U16 = 0x01u
+public val REP_MAX: U16 = 0x01u.toUShort()
 
 public val REP_CNT: Int = REP_MAX.toInt() + 1
 
@@ -2818,7 +2818,7 @@ public val REP_CNT: Int = REP_MAX.toInt() + 1
  * Constants may change across releases. See the [usage guidelines](crate#usage-guidelines)
  * for details.
  */
-public val SND_MAX: U16 = 0x07u
+public val SND_MAX: U16 = 0x07u.toUShort()
 
 public val SND_CNT: Int = SND_MAX.toInt() + 1
 
@@ -3020,134 +3020,134 @@ public val ETH_P_XDSA: CInt = 0x00F8
 // see rust-lang/libc#924 pub const ETH_P_MAP: cInt = 0x00F9;
 // end android/platform/bionic/libc/kernel/uapi/linux/ifEther.h
 // start android/platform/bionic/libc/kernel/uapi/linux/neighbour.h
-public val NDA_UNSPEC: CUshort = 0u
+public val NDA_UNSPEC: CUshort = 0u.toUShort()
 
-public val NDA_DST: CUshort = 1u
+public val NDA_DST: CUshort = 1u.toUShort()
 
-public val NDA_LLADDR: CUshort = 2u
+public val NDA_LLADDR: CUshort = 2u.toUShort()
 
-public val NDA_CACHEINFO: CUshort = 3u
+public val NDA_CACHEINFO: CUshort = 3u.toUShort()
 
-public val NDA_PROBES: CUshort = 4u
+public val NDA_PROBES: CUshort = 4u.toUShort()
 
-public val NDA_VLAN: CUshort = 5u
+public val NDA_VLAN: CUshort = 5u.toUShort()
 
-public val NDA_PORT: CUshort = 6u
+public val NDA_PORT: CUshort = 6u.toUShort()
 
-public val NDA_VNI: CUshort = 7u
+public val NDA_VNI: CUshort = 7u.toUShort()
 
-public val NDA_IFINDEX: CUshort = 8u
+public val NDA_IFINDEX: CUshort = 8u.toUShort()
 
-public val NDA_MASTER: CUshort = 9u
+public val NDA_MASTER: CUshort = 9u.toUShort()
 
-public val NDA_LINK_NETNSID: CUshort = 10u
+public val NDA_LINK_NETNSID: CUshort = 10u.toUShort()
 
-public val NDA_SRC_VNI: CUshort = 11u
+public val NDA_SRC_VNI: CUshort = 11u.toUShort()
 
-public val NDA_PROTOCOL: CUshort = 12u
+public val NDA_PROTOCOL: CUshort = 12u.toUShort()
 
-public val NDA_NH_ID: CUshort = 13u
+public val NDA_NH_ID: CUshort = 13u.toUShort()
 
-public val NDA_FDB_EXT_ATTRS: CUshort = 14u
+public val NDA_FDB_EXT_ATTRS: CUshort = 14u.toUShort()
 
-public val NDA_FLAGS_EXT: CUshort = 15u
+public val NDA_FLAGS_EXT: CUshort = 15u.toUShort()
 
-public val NDA_NDM_STATE_MASK: CUshort = 16u
+public val NDA_NDM_STATE_MASK: CUshort = 16u.toUShort()
 
-public val NDA_NDM_FLAGS_MASK: CUshort = 17u
+public val NDA_NDM_FLAGS_MASK: CUshort = 17u.toUShort()
 
-public val NTF_USE: UByte = 0x01u
+public val NTF_USE: UByte = 0x01u.toUByte()
 
-public val NTF_SELF: UByte = 0x02u
+public val NTF_SELF: UByte = 0x02u.toUByte()
 
-public val NTF_MASTER: UByte = 0x04u
+public val NTF_MASTER: UByte = 0x04u.toUByte()
 
-public val NTF_PROXY: UByte = 0x08u
+public val NTF_PROXY: UByte = 0x08u.toUByte()
 
-public val NTF_EXT_LEARNED: UByte = 0x10u
+public val NTF_EXT_LEARNED: UByte = 0x10u.toUByte()
 
-public val NTF_OFFLOADED: UByte = 0x20u
+public val NTF_OFFLOADED: UByte = 0x20u.toUByte()
 
-public val NTF_STICKY: UByte = 0x40u
+public val NTF_STICKY: UByte = 0x40u.toUByte()
 
-public val NTF_ROUTER: UByte = 0x80u
+public val NTF_ROUTER: UByte = 0x80u.toUByte()
 
-public val NTF_EXT_MANAGED: UByte = 0x01u
+public val NTF_EXT_MANAGED: UByte = 0x01u.toUByte()
 
-public val NTF_EXT_LOCKED: UByte = 0x02u
+public val NTF_EXT_LOCKED: UByte = 0x02u.toUByte()
 
-public val NUD_NONE: UShort = 0x00u
+public val NUD_NONE: UShort = 0x00u.toUShort()
 
-public val NUD_INCOMPLETE: UShort = 0x01u
+public val NUD_INCOMPLETE: UShort = 0x01u.toUShort()
 
-public val NUD_REACHABLE: UShort = 0x02u
+public val NUD_REACHABLE: UShort = 0x02u.toUShort()
 
-public val NUD_STALE: UShort = 0x04u
+public val NUD_STALE: UShort = 0x04u.toUShort()
 
-public val NUD_DELAY: UShort = 0x08u
+public val NUD_DELAY: UShort = 0x08u.toUShort()
 
-public val NUD_PROBE: UShort = 0x10u
+public val NUD_PROBE: UShort = 0x10u.toUShort()
 
-public val NUD_FAILED: UShort = 0x20u
+public val NUD_FAILED: UShort = 0x20u.toUShort()
 
-public val NUD_NOARP: UShort = 0x40u
+public val NUD_NOARP: UShort = 0x40u.toUShort()
 
-public val NUD_PERMANENT: UShort = 0x80u
+public val NUD_PERMANENT: UShort = 0x80u.toUShort()
 
-public val NDTPA_UNSPEC: CUshort = 0u
+public val NDTPA_UNSPEC: CUshort = 0u.toUShort()
 
-public val NDTPA_IFINDEX: CUshort = 1u
+public val NDTPA_IFINDEX: CUshort = 1u.toUShort()
 
-public val NDTPA_REFCNT: CUshort = 2u
+public val NDTPA_REFCNT: CUshort = 2u.toUShort()
 
-public val NDTPA_REACHABLE_TIME: CUshort = 3u
+public val NDTPA_REACHABLE_TIME: CUshort = 3u.toUShort()
 
-public val NDTPA_BASE_REACHABLE_TIME: CUshort = 4u
+public val NDTPA_BASE_REACHABLE_TIME: CUshort = 4u.toUShort()
 
-public val NDTPA_RETRANS_TIME: CUshort = 5u
+public val NDTPA_RETRANS_TIME: CUshort = 5u.toUShort()
 
-public val NDTPA_GC_STALETIME: CUshort = 6u
+public val NDTPA_GC_STALETIME: CUshort = 6u.toUShort()
 
-public val NDTPA_DELAY_PROBE_TIME: CUshort = 7u
+public val NDTPA_DELAY_PROBE_TIME: CUshort = 7u.toUShort()
 
-public val NDTPA_QUEUE_LEN: CUshort = 8u
+public val NDTPA_QUEUE_LEN: CUshort = 8u.toUShort()
 
-public val NDTPA_APP_PROBES: CUshort = 9u
+public val NDTPA_APP_PROBES: CUshort = 9u.toUShort()
 
-public val NDTPA_UCAST_PROBES: CUshort = 10u
+public val NDTPA_UCAST_PROBES: CUshort = 10u.toUShort()
 
-public val NDTPA_MCAST_PROBES: CUshort = 11u
+public val NDTPA_MCAST_PROBES: CUshort = 11u.toUShort()
 
-public val NDTPA_ANYCAST_DELAY: CUshort = 12u
+public val NDTPA_ANYCAST_DELAY: CUshort = 12u.toUShort()
 
-public val NDTPA_PROXY_DELAY: CUshort = 13u
+public val NDTPA_PROXY_DELAY: CUshort = 13u.toUShort()
 
-public val NDTPA_PROXY_QLEN: CUshort = 14u
+public val NDTPA_PROXY_QLEN: CUshort = 14u.toUShort()
 
-public val NDTPA_LOCKTIME: CUshort = 15u
+public val NDTPA_LOCKTIME: CUshort = 15u.toUShort()
 
-public val NDTPA_QUEUE_LENBYTES: CUshort = 16u
+public val NDTPA_QUEUE_LENBYTES: CUshort = 16u.toUShort()
 
-public val NDTPA_MCAST_REPROBES: CUshort = 17u
+public val NDTPA_MCAST_REPROBES: CUshort = 17u.toUShort()
 
-public val NDTPA_PAD: CUshort = 18u
+public val NDTPA_PAD: CUshort = 18u.toUShort()
 
-public val NDTPA_INTERVAL_PROBE_TIME_MS: CUshort = 19u
+public val NDTPA_INTERVAL_PROBE_TIME_MS: CUshort = 19u.toUShort()
 
-public val NDTA_UNSPEC: CUshort = 0u
+public val NDTA_UNSPEC: CUshort = 0u.toUShort()
 
-public val NDTA_NAME: CUshort = 1u
+public val NDTA_NAME: CUshort = 1u.toUShort()
 
-public val NDTA_THRESH1: CUshort = 2u
+public val NDTA_THRESH1: CUshort = 2u.toUShort()
 
-public val NDTA_THRESH2: CUshort = 3u
+public val NDTA_THRESH2: CUshort = 3u.toUShort()
 
-public val NDTA_THRESH3: CUshort = 4u
+public val NDTA_THRESH3: CUshort = 4u.toUShort()
 
-public val NDTA_CONFIG: CUshort = 5u
+public val NDTA_CONFIG: CUshort = 5u.toUShort()
 
-public val NDTA_PARMS: CUshort = 6u
+public val NDTA_PARMS: CUshort = 6u.toUShort()
 
-public val NDTA_STATS: CUshort = 7u
+public val NDTA_STATS: CUshort = 7u.toUShort()
 
-public val NDTA_GC_INTERVAL: CUshort = 8u
+public val NDTA_GC_INTERVAL: CUshort = 8u.toUShort()

@@ -622,11 +622,11 @@ public fun <H> hashHashSliceI128(data: List<I128>, state: H) {
 }
 
 public fun <H> Boolean.hash(state: H) {
-    state.writeU8(this.toUByte())
+    state.writeU8((if (this) 1u else 0u).toUByte())
 }
 
 public fun <H> Char.hash(state: H) {
-    state.writeU32(this.toUInt())
+    state.writeU32(this.code.toUInt())
 }
 
 public fun <H> String.hash(state: H) {

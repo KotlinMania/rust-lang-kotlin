@@ -254,7 +254,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                             ' ' -> flags1.space = true
                             '.' -> { fstate = FormatState.Precision }
                             in '0'..'9' -> {
-                                flags1.width = cur.toInt() - '0'.code
+                                flags1.width = cur.code - '0'.code
                                 fstate = FormatState.Width
                             }
                             else -> error("unreachable")
@@ -294,7 +294,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         }
                         else -> {
                             val arg1 = matchVal9
-                            val idx = (cur.toUByte()) - 65u.toUByte()
+                            val idx = (cur.code.toUByte()) - 65u.toUByte()
                             vars.staVa[idx.toInt()] = arg1
                         }
                     }
@@ -305,7 +305,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         }
                         else -> {
                             val arg2 = matchVal10
-                            val idx1 = (cur.toUByte()) - 97u.toUByte()
+                            val idx1 = (cur.code.toUByte()) - 97u.toUByte()
                             vars.dynVa[idx1.toInt()] = arg2
                         }
                     }
@@ -315,10 +315,10 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
             }
             GetVar -> {
                 if (cur.isAsciiUppercase()) {
-                    val idx2 = (cur.toUByte()) - 65u.toUByte()
+                    val idx2 = (cur.code.toUByte()) - 65u.toUByte()
                     stack.add(vars.staVa[idx2.toInt()].clone())
                 } else if (cur.isAsciiLowercase()) {
-                    val idx3 = (cur.toUByte()) - 97u.toUByte()
+                    val idx3 = (cur.code.toUByte()) - 97u.toUByte()
                     stack.add(vars.dynVa[idx3.toInt()].clone())
                 } else {
                     return Result.Err<List<UByte>, String>("bad variable name in %g".toString())
@@ -440,7 +440,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                             flags2.space = true
                         }
                         matchVal13.first == FormatState.Flags && matchVal13.second in '0'..'9' -> {
-                            flags2.width = cur.toInt() - '0'.code
+                            flags2.width = cur.code - '0'.code
                             fstate1 = FormatState.Width
                         }
                         matchVal13.first == FormatState.Flags && matchVal13.second == '.' -> {
@@ -448,7 +448,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         }
                         matchVal13.first == FormatState.Width && matchVal13.second in '0'..'9' -> {
                             val old = flags2.width
-                            flags2.width = flags2.width * 10 + (cur.toInt() - '0'.code)
+                            flags2.width = flags2.width * 10 + (cur.code - '0'.code)
                             if (flags2.width < old) {
                                 return Result.Err<List<UByte>, String>("format width overflow".toString())
                             }
@@ -458,7 +458,7 @@ public fun expand(cap: List<UByte>, params: List<Param>, vars: Variables): Resul
                         }
                         matchVal13.first == FormatState.Precision && matchVal13.second in '0'..'9' -> {
                             val old1 = flags2.precision
-                            flags2.precision = flags2.precision * 10 + (cur.toInt() - '0'.code)
+                            flags2.precision = flags2.precision * 10 + (cur.code - '0'.code)
                             if (flags2.precision < old1) {
                                 return Result.Err<List<UByte>, String>("format precision overflow".toString())
                             }

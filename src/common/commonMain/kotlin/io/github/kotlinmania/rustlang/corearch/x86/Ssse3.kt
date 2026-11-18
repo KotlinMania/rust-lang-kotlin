@@ -86,7 +86,7 @@ public fun mmAbsEpi32(a: M128i): M128i =
  *             // if the most significant bit of b is set,
  *             // then the destination byte is set to 0.
  *             if (b[i] and 0x80u.toUByte() == 0u.toUByte()) {
- *                 r[i] = a[(b[i] % 16u).toInt()]
+ *                 r[i] = a[(b[i] % 16u.toUByte()).toInt()]
  *             }
  *         }
  *         return r

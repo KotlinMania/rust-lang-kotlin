@@ -1,11 +1,11 @@
 // port-lint: source int/shift.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.shift
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.DInt
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.DInt
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 public interface Ashl<T> : DInt {
     /**

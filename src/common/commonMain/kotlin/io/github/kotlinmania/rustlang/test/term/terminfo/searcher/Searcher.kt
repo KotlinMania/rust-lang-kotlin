@@ -66,7 +66,7 @@ public fun getDbpathForTerm(term: String): PathBuf? {
             p.pop()
             // on some installations the dir is named after the hex of the char
             // (e.g., macOS)
-            p.push("${firstChar.toInt()}")
+            p.push("${firstChar.code}")
             p.push(term)
             if (metadata(p).isOk()) {
                 return p

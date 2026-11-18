@@ -15,8 +15,6 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
@@ -84,7 +82,7 @@ public fun currentVersion(): OSVersion {
     //
     // 0.0.0 is never going to be a valid version ("vtool" reports "n/a" on 0 versions), so we use
     // that as our sentinel value.
-    val CURRENT_VERSION: AtomicU32  = AtomicU32.new(0)
+    val CURRENT_VERSION: AtomicU32  = AtomicU32.new(0u)
     // We use relaxed atomics instead of e.g. a `Once`, it doesn't matter if multiple threads end up
     // racing to read or write the version, `lookupVersion` should be idempotent and always return
     // the same value.
@@ -285,7 +283,7 @@ public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError
     return when (val matchVal = version.splitOnce({ b -> b == 46u.toUByte() })) {
         null -> {
             val major = when (val tryResult = UShort.fromAsciiBytes(version)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.errValue()) }
-            Result.Ok<OSVersion, ParseIntError>(packOsVersion(major, 0u, 0u))
+            Result.Ok<OSVersion, ParseIntError>(packOsVersion(major, 0u.toUByte(), 0u.toUByte()))
         }
         else -> {
             val major1 = matchVal.first
@@ -294,7 +292,7 @@ public fun parseOsVersion(version: List<UByte>): Result<OSVersion, ParseIntError
             when (val matchVal1 = minor.let { s -> val d = { b -> b == 46u.toUByte() }; val idx = s.indexOf(d); if (idx < 0) null else Pair(s.substring(0, idx), s.substring(idx + d.length)) }) {
                 null -> {
                     val minor1 = when (val tryResult = UByte.fromAsciiBytes(minor)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OSVersion, ParseIntError>(tryResult.errValue()) }
-                    Result.Ok<OSVersion, ParseIntError>(packOsVersion(major2, minor1, 0u))
+                    Result.Ok<OSVersion, ParseIntError>(packOsVersion(major2, minor1, 0u.toUByte()))
                 }
                 else -> {
                     val minor2 = matchVal1.first

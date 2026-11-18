@@ -10,21 +10,21 @@ import io.github.kotlinmania.rustlang.corearch.simd.Simd
 import io.github.kotlinmania.rustlang.corearch.simd.U16x4
 import io.github.kotlinmania.rustlang.corearch.simd.U16x8
 
-public val BF16_ONE: UShort = 0x3F80u
+public val BF16_ONE: UShort = 0x3F80u.toUShort()
 
-public val BF16_TWO: UShort = 0x4000u
+public val BF16_TWO: UShort = 0x4000u.toUShort()
 
-public val BF16_THREE: UShort = 0x4040u
+public val BF16_THREE: UShort = 0x4040u.toUShort()
 
-public val BF16_FOUR: UShort = 0x4080u
+public val BF16_FOUR: UShort = 0x4080u.toUShort()
 
-public val BF16_FIVE: UShort = 0x40A0u
+public val BF16_FIVE: UShort = 0x40A0u.toUShort()
 
-public val BF16_SIX: UShort = 0x40C0u
+public val BF16_SIX: UShort = 0x40C0u.toUShort()
 
-public val BF16_SEVEN: UShort = 0x40E0u
+public val BF16_SEVEN: UShort = 0x40E0u.toUShort()
 
-public val BF16_EIGHT: UShort = 0x4100u
+public val BF16_EIGHT: UShort = 0x4100u.toUShort()
 
 public fun testMmBcstnebf16Ps() {
     val a = Bf16.fromBits(BF16_ONE)

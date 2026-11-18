@@ -72,8 +72,8 @@ public class MacrosInlineTests {
         cEnum(repr, e2, PRIV_ON_1, 42, PUB2, PRIV_ON_1, 2)
         check(RustTypeId.of<E1>() == RustTypeId.of<UByte>())
         check(RustTypeId.of<E2>() == RustTypeId.of<UShort>())
-        check(PUB1 == 10u.toUByte() * 2u)
-        check(PUB2 == 42u.toUShort() * 2u)
+        check(PUB1 == 10u.toUByte() * 2u.toUByte())
+        check(PUB2 == 42u.toUShort() * 2u.toUShort())
         // Verify that the default is private. If `PRIV_ON_1` was actually
         // public in `priv1`, this would be an ambiguous import and/or type
         // mismatch error.

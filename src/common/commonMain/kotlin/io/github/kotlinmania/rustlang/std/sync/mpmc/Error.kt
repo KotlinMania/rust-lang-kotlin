@@ -25,12 +25,12 @@ public sealed class SendTimeoutError<T> {
 
     public fun rustEquals(other: SendTimeoutError<T>): Boolean = this == other
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "SendTimeoutError(..)".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("SendTimeoutError(..)"); Result.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> =
         when (this) {
-            is SendTimeoutError.Timeout<*> -> "timed out waiting on send operation".fmt(f)
-            is SendTimeoutError.Disconnected<*> -> "sending on a disconnected channel".fmt(f)
+            is SendTimeoutError.Timeout<*> -> run { f.append("timed out waiting on send operation"); Result.Ok<Unit, Error>(Unit) }
+            is SendTimeoutError.Disconnected<*> -> run { f.append("sending on a disconnected channel"); Result.Ok<Unit, Error>(Unit) }
         }
 
     public companion object {

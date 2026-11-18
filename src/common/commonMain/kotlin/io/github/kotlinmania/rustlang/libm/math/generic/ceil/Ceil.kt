@@ -19,14 +19,14 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> ceilStatus(x: F, fromB
     var ix = x.toBits()
     val e = x.expUnbiased()
     // If the represented value has no fractional part, no truncation is needed.
-    if ((kmCompareValues(e, ((F.SIG_BITS as Any?) as kotlin.Int)) >= 0)) {
+    if ((kmCompareValues(e, ((x.SIG_BITS as Any?) as kotlin.Int)) >= 0)) {
         return FpResult.ok(x)
     }
     val status: Any?
     val res =
         if (e >= 0) {
             // |x| >= 1.0
-            val m = F.SIG_MASK shr e.unsigned().toInt()
+            val m = x.SIG_MASK shr e.unsigned().toInt()
             if ((ix and m) == zero) {
                 // Portion to be masked is already zero; no adjustment needed.
                 return FpResult.ok(x)
@@ -40,17 +40,17 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> ceilStatus(x: F, fromB
             fromBitsFFn(ix)
         } else {
             // |x| < 1.0, raise an inexact exception since truncation will happen (unless x == 0).
-            if (ix and F.SIGN_MASK.inv() == F.Int.ZERO) {
+            if (ix and x.SIGN_MASK.inv() == F.Int.ZERO) {
                 status = Status.OK
             } else {
                 status = Status.INEXACT
             }
             if (x.isSignNegative()) {
                 // -1.0 < x <= -0.0; rounding up goes toward -0.0.
-                F.NEG_ZERO
+                x.NEG_ZERO
             } else if (ix shl 1 != zero) {
                 // 0.0 < x < 1.0; rounding up goes toward +1.0.
-                F.ONE
+                x.ONE
             } else {
                 // +0.0 remains unchanged
                 x

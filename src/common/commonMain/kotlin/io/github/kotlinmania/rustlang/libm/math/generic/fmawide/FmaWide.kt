@@ -21,14 +21,14 @@ public fun <Int, SignedInt, F, B> fmaWideRound(x: F, y: F, z: F, round: Round, f
     var ui: Int = result.toBits().toInt()
     val re = result.ex()
     val zb: B = z.widen()
-    val precDiff = B.SIG_BITS - F.SIG_BITS
+    val precDiff = xy.SIG_BITS - x.SIG_BITS
     val excessPrec = ui and ((one shl precDiff.toInt()) - one)
     val halfway = one shl (precDiff - 1).toInt()
     // Common case: the larger precision is fine if...
     // This is not a halfway case
-    if (excessPrec != halfway || re == B.EXP_SAT || (result - xy == zb && result - zb == xy) || round != Round.Nearest) {
-        val minInexactExp = (((B.EXP_BIAS as Any?) as kotlin.Int) + F.EXP_MIN_SUBNORM).toUInt()
-        val maxInexactExp = (((B.EXP_BIAS as Any?) as kotlin.Int) + F.EXP_MIN).toUInt()
+    if (excessPrec != halfway || re == xy.EXP_SAT || (result - xy == zb && result - zb == xy) || round != Round.Nearest) {
+        val minInexactExp = (((xy.EXP_BIAS as Any?) as kotlin.Int) + x.EXP_MIN_SUBNORM).toUInt()
+        val maxInexactExp = (((xy.EXP_BIAS as Any?) as kotlin.Int) + x.EXP_MIN).toUInt()
         var status = Status.OK
         if ((minInexactExp until maxInexactExp).contains(re) && status.inexact()) {
             // This branch is never hit; requires previous operations to set a status
@@ -42,14 +42,14 @@ public fun <Int, SignedInt, F, B> fmaWideRound(x: F, y: F, z: F, round: Round, f
         }
         return FpResult(value = result.narrow(), status = status)
     }
-    val neg = ui shr (B.BITS - 1).toInt() != IntTy.ZERO
+    val neg = ui shr (xy.BITS - 1).toInt() != IntTy.ZERO
     val err =
         if (neg == ((kmCompareValues(zb, xy) > 0))) {
             xy - result + zb
         } else {
             zb - result + xy
         }
-    if (neg == (err < B.ZERO)) {
+    if (neg == (err < xy.ZERO)) {
         ui += one
     } else {
         ui -= one

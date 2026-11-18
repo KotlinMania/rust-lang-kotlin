@@ -410,7 +410,7 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: MutableLis
                         }
                         else -> {
                             val e1 = matchVal.errValue()
-                            return RustResult.Err(e1)
+                            return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(e1)
                         }
                     }
                 }
@@ -442,7 +442,7 @@ public fun <R : BufRead<R>> defaultReadUntil(r: R, delim: UByte, buf: MutableLis
         r.consume(used)
         read += used
         if (done1 || used == 0) {
-            return RustResult.Ok(read)
+            return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(read)
         }
     }
 }
@@ -465,7 +465,7 @@ public fun <R : BufRead<R>> defaultSkipUntil(r: R, delim: UByte): Result<Int> {
                         }
                         else -> {
                             val e1 = matchVal.errValue()
-                            return RustResult.Err(e1)
+                            return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(e1)
                         }
                     }
                 }
@@ -480,7 +480,7 @@ public fun <R : BufRead<R>> defaultSkipUntil(r: R, delim: UByte): Result<Int> {
         r.consume(used)
         read += used
         if (done || used == 0) {
-            return RustResult.Ok(read)
+            return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(read)
         }
     }
 }

@@ -39,36 +39,36 @@ public fun testMm512MaskzAbsEpi16() {
 
 public fun testMm256MaskAbsEpi16() {
     val a = mm256Set1Epi16((-1).toShort())
-    val r = mm256MaskAbsEpi16(a, 0u, a)
+    val r = mm256MaskAbsEpi16(a, 0u.toUShort(), a)
     assertEqM256i(r, a)
-    val r1 = mm256MaskAbsEpi16(a, 0xFFu, a)
+    val r1 = mm256MaskAbsEpi16(a, 0xFFu.toUShort(), a)
     val e = mm256SetEpi16((-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), 1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM256i(r1, e)
 }
 
 public fun testMm256MaskzAbsEpi16() {
     val a = mm256Set1Epi16((-1).toShort())
-    val r = mm256MaskzAbsEpi16(0u, a)
+    val r = mm256MaskzAbsEpi16(0u.toUShort(), a)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzAbsEpi16(0xFFu, a)
+    val r1 = mm256MaskzAbsEpi16(0xFFu.toUShort(), a)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM256i(r1, e)
 }
 
 public fun testMmMaskAbsEpi16() {
     val a = mmSet1Epi16((-1).toShort())
-    val r = mmMaskAbsEpi16(a, 0u, a)
+    val r = mmMaskAbsEpi16(a, 0u.toUByte(), a)
     assertEqM128i(r, a)
-    val r1 = mmMaskAbsEpi16(a, 0xFu, a)
+    val r1 = mmMaskAbsEpi16(a, 0xFu.toUByte(), a)
     val e = mmSetEpi16((-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), 1, 1, 1, 1)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzAbsEpi16() {
     val a = mmSet1Epi16((-1).toShort())
-    val r = mmMaskzAbsEpi16(0u, a)
+    val r = mmMaskzAbsEpi16(0u.toUByte(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAbsEpi16(0xFu, a)
+    val r1 = mmMaskzAbsEpi16(0xFu.toUByte(), a)
     val e = mmSetEpi16(0, 0, 0, 0, 1, 1, 1, 1)
     assertEqM128i(r1, e)
 }
@@ -118,18 +118,18 @@ public fun testMm256MaskzAbsEpi8() {
 
 public fun testMmMaskAbsEpi8() {
     val a = mmSet1Epi8((-1).toByte())
-    val r = mmMaskAbsEpi8(a, 0u, a)
+    val r = mmMaskAbsEpi8(a, 0u.toUShort(), a)
     assertEqM128i(r, a)
-    val r1 = mmMaskAbsEpi8(a, 0xFFu, a)
+    val r1 = mmMaskAbsEpi8(a, 0xFFu.toUShort(), a)
     val e = mmSetEpi8((-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), 1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzAbsEpi8() {
     val a = mmSet1Epi8((-1).toByte())
-    val r = mmMaskzAbsEpi8(0u, a)
+    val r = mmMaskzAbsEpi8(0u.toUShort(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAbsEpi8(0xFFu, a)
+    val r1 = mmMaskzAbsEpi8(0xFFu.toUShort(), a)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM128i(r1, e)
 }
@@ -165,9 +165,9 @@ public fun testMm512MaskzAddEpi16() {
 public fun testMm256MaskAddEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(2)
-    val r = mm256MaskAddEpi16(a, 0u, a, b)
+    val r = mm256MaskAddEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskAddEpi16(a, 0xFFu, a, b)
+    val r1 = mm256MaskAddEpi16(a, 0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3)
     assertEqM256i(r1, e)
 }
@@ -175,9 +175,9 @@ public fun testMm256MaskAddEpi16() {
 public fun testMm256MaskzAddEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(2)
-    val r = mm256MaskzAddEpi16(0u, a, b)
+    val r = mm256MaskzAddEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzAddEpi16(0xFFu, a, b)
+    val r1 = mm256MaskzAddEpi16(0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3)
     assertEqM256i(r1, e)
 }
@@ -185,9 +185,9 @@ public fun testMm256MaskzAddEpi16() {
 public fun testMmMaskAddEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(2)
-    val r = mmMaskAddEpi16(a, 0u, a, b)
+    val r = mmMaskAddEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskAddEpi16(a, 0xFu, a, b)
+    val r1 = mmMaskAddEpi16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, 3, 3, 3, 3)
     assertEqM128i(r1, e)
 }
@@ -195,9 +195,9 @@ public fun testMmMaskAddEpi16() {
 public fun testMmMaskzAddEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(2)
-    val r = mmMaskzAddEpi16(0u, a, b)
+    val r = mmMaskzAddEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAddEpi16(0xFu, a, b)
+    val r1 = mmMaskzAddEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 3, 3, 3, 3)
     assertEqM128i(r1, e)
 }
@@ -253,9 +253,9 @@ public fun testMm256MaskzAddEpi8() {
 public fun testMmMaskAddEpi8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(2)
-    val r = mmMaskAddEpi8(a, 0u, a, b)
+    val r = mmMaskAddEpi8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskAddEpi8(a, 0xFFu, a, b)
+    val r1 = mmMaskAddEpi8(a, 0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3)
     assertEqM128i(r1, e)
 }
@@ -263,9 +263,9 @@ public fun testMmMaskAddEpi8() {
 public fun testMmMaskzAddEpi8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(2)
-    val r = mmMaskzAddEpi8(0u, a, b)
+    val r = mmMaskzAddEpi8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAddEpi8(0xFFu, a, b)
+    val r1 = mmMaskzAddEpi8(0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3)
     assertEqM128i(r1, e)
 }
@@ -301,9 +301,9 @@ public fun testMm512MaskzAddsEpu16() {
 public fun testMm256MaskAddsEpu16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(UShort.MAX_VALUE.toShort())
-    val r = mm256MaskAddsEpu16(a, 0u, a, b)
+    val r = mm256MaskAddsEpu16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskAddsEpu16(a, 0xFu, a, b)
+    val r1 = mm256MaskAddsEpu16(a, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort())
     assertEqM256i(r1, e)
 }
@@ -311,9 +311,9 @@ public fun testMm256MaskAddsEpu16() {
 public fun testMm256MaskzAddsEpu16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(UShort.MAX_VALUE.toShort())
-    val r = mm256MaskzAddsEpu16(0u, a, b)
+    val r = mm256MaskzAddsEpu16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzAddsEpu16(0xFu, a, b)
+    val r1 = mm256MaskzAddsEpu16(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort())
     assertEqM256i(r1, e)
 }
@@ -321,9 +321,9 @@ public fun testMm256MaskzAddsEpu16() {
 public fun testMmMaskAddsEpu16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(UShort.MAX_VALUE.toShort())
-    val r = mmMaskAddsEpu16(a, 0u, a, b)
+    val r = mmMaskAddsEpu16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskAddsEpu16(a, 0xFu, a, b)
+    val r1 = mmMaskAddsEpu16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort())
     assertEqM128i(r1, e)
 }
@@ -331,9 +331,9 @@ public fun testMmMaskAddsEpu16() {
 public fun testMmMaskzAddsEpu16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(UShort.MAX_VALUE.toShort())
-    val r = mmMaskzAddsEpu16(0u, a, b)
+    val r = mmMaskzAddsEpu16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAddsEpu16(0xFu, a, b)
+    val r1 = mmMaskzAddsEpu16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort(), UShort.MAX_VALUE.toShort())
     assertEqM128i(r1, e)
 }
@@ -389,9 +389,9 @@ public fun testMm256MaskzAddsEpu8() {
 public fun testMmMaskAddsEpu8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(UByte.MAX_VALUE.toByte())
-    val r = mmMaskAddsEpu8(a, 0u, a, b)
+    val r = mmMaskAddsEpu8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskAddsEpu8(a, 0xFu, a, b)
+    val r1 = mmMaskAddsEpu8(a, 0xFu.toUShort(), a, b)
     val e = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte())
     assertEqM128i(r1, e)
 }
@@ -399,9 +399,9 @@ public fun testMmMaskAddsEpu8() {
 public fun testMmMaskzAddsEpu8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(UByte.MAX_VALUE.toByte())
-    val r = mmMaskzAddsEpu8(0u, a, b)
+    val r = mmMaskzAddsEpu8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAddsEpu8(0xFu, a, b)
+    val r1 = mmMaskzAddsEpu8(0xFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte())
     assertEqM128i(r1, e)
 }
@@ -437,9 +437,9 @@ public fun testMm512MaskzAddsEpi16() {
 public fun testMm256MaskAddsEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(Short.MAX_VALUE)
-    val r = mm256MaskAddsEpi16(a, 0u, a, b)
+    val r = mm256MaskAddsEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskAddsEpi16(a, 0xFu, a, b)
+    val r1 = mm256MaskAddsEpi16(a, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE)
     assertEqM256i(r1, e)
 }
@@ -447,9 +447,9 @@ public fun testMm256MaskAddsEpi16() {
 public fun testMm256MaskzAddsEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(Short.MAX_VALUE)
-    val r = mm256MaskzAddsEpi16(0u, a, b)
+    val r = mm256MaskzAddsEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzAddsEpi16(0xFu, a, b)
+    val r1 = mm256MaskzAddsEpi16(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE)
     assertEqM256i(r1, e)
 }
@@ -457,9 +457,9 @@ public fun testMm256MaskzAddsEpi16() {
 public fun testMmMaskAddsEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(Short.MAX_VALUE)
-    val r = mmMaskAddsEpi16(a, 0u, a, b)
+    val r = mmMaskAddsEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskAddsEpi16(a, 0xFu, a, b)
+    val r1 = mmMaskAddsEpi16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE)
     assertEqM128i(r1, e)
 }
@@ -467,9 +467,9 @@ public fun testMmMaskAddsEpi16() {
 public fun testMmMaskzAddsEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(Short.MAX_VALUE)
-    val r = mmMaskzAddsEpi16(0u, a, b)
+    val r = mmMaskzAddsEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAddsEpi16(0xFu, a, b)
+    val r1 = mmMaskzAddsEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE)
     assertEqM128i(r1, e)
 }
@@ -525,9 +525,9 @@ public fun testMm256MaskzAddsEpi8() {
 public fun testMmMaskAddsEpi8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(Byte.MAX_VALUE)
-    val r = mmMaskAddsEpi8(a, 0u, a, b)
+    val r = mmMaskAddsEpi8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskAddsEpi8(a, 0xFu, a, b)
+    val r1 = mmMaskAddsEpi8(a, 0xFu.toUShort(), a, b)
     val e = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE)
     assertEqM128i(r1, e)
 }
@@ -535,9 +535,9 @@ public fun testMmMaskAddsEpi8() {
 public fun testMmMaskzAddsEpi8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(Byte.MAX_VALUE)
-    val r = mmMaskzAddsEpi8(0u, a, b)
+    val r = mmMaskzAddsEpi8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAddsEpi8(0xFu, a, b)
+    val r1 = mmMaskzAddsEpi8(0xFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE)
     assertEqM128i(r1, e)
 }
@@ -573,9 +573,9 @@ public fun testMm512MaskzSubEpi16() {
 public fun testMm256MaskSubEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(2)
-    val r = mm256MaskSubEpi16(a, 0u, a, b)
+    val r = mm256MaskSubEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSubEpi16(a, 0xFFu, a, b)
+    val r1 = mm256MaskSubEpi16(a, 0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort())
     assertEqM256i(r1, e)
 }
@@ -583,9 +583,9 @@ public fun testMm256MaskSubEpi16() {
 public fun testMm256MaskzSubEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(2)
-    val r = mm256MaskzSubEpi16(0u, a, b)
+    val r = mm256MaskzSubEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSubEpi16(0xFFu, a, b)
+    val r1 = mm256MaskzSubEpi16(0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort())
     assertEqM256i(r1, e)
 }
@@ -593,9 +593,9 @@ public fun testMm256MaskzSubEpi16() {
 public fun testMmMaskSubEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(2)
-    val r = mmMaskSubEpi16(a, 0u, a, b)
+    val r = mmMaskSubEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskSubEpi16(a, 0xFu, a, b)
+    val r1 = mmMaskSubEpi16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort())
     assertEqM128i(r1, e)
 }
@@ -603,9 +603,9 @@ public fun testMmMaskSubEpi16() {
 public fun testMmMaskzSubEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(2)
-    val r = mmMaskzSubEpi16(0u, a, b)
+    val r = mmMaskzSubEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSubEpi16(0xFu, a, b)
+    val r1 = mmMaskzSubEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort())
     assertEqM128i(r1, e)
 }
@@ -661,9 +661,9 @@ public fun testMm256MaskzSubEpi8() {
 public fun testMmMaskSubEpi8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(2)
-    val r = mmMaskSubEpi8(a, 0u, a, b)
+    val r = mmMaskSubEpi8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskSubEpi8(a, 0xFFu, a, b)
+    val r1 = mmMaskSubEpi8(a, 0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte())
     assertEqM128i(r1, e)
 }
@@ -671,9 +671,9 @@ public fun testMmMaskSubEpi8() {
 public fun testMmMaskzSubEpi8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(2)
-    val r = mmMaskzSubEpi8(0u, a, b)
+    val r = mmMaskzSubEpi8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSubEpi8(0xFFu, a, b)
+    val r1 = mmMaskzSubEpi8(0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte())
     assertEqM128i(r1, e)
 }
@@ -709,9 +709,9 @@ public fun testMm512MaskzSubsEpu16() {
 public fun testMm256MaskSubsEpu16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(UShort.MAX_VALUE.toShort())
-    val r = mm256MaskSubsEpu16(a, 0u, a, b)
+    val r = mm256MaskSubsEpu16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSubsEpu16(a, 0xFu, a, b)
+    val r1 = mm256MaskSubsEpu16(a, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM256i(r1, e)
 }
@@ -719,9 +719,9 @@ public fun testMm256MaskSubsEpu16() {
 public fun testMm256MaskzSubsEpu16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(UShort.MAX_VALUE.toShort())
-    val r = mm256MaskzSubsEpu16(0u, a, b)
+    val r = mm256MaskzSubsEpu16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSubsEpu16(0xFu, a, b)
+    val r1 = mm256MaskzSubsEpu16(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM256i(r1, e)
 }
@@ -729,9 +729,9 @@ public fun testMm256MaskzSubsEpu16() {
 public fun testMmMaskSubsEpu16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(UShort.MAX_VALUE.toShort())
-    val r = mmMaskSubsEpu16(a, 0u, a, b)
+    val r = mmMaskSubsEpu16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskSubsEpu16(a, 0xFu, a, b)
+    val r1 = mmMaskSubsEpu16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -739,9 +739,9 @@ public fun testMmMaskSubsEpu16() {
 public fun testMmMaskzSubsEpu16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(UShort.MAX_VALUE.toShort())
-    val r = mmMaskzSubsEpu16(0u, a, b)
+    val r = mmMaskzSubsEpu16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSubsEpu16(0xFu, a, b)
+    val r1 = mmMaskzSubsEpu16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -797,9 +797,9 @@ public fun testMm256MaskzSubsEpu8() {
 public fun testMmMaskSubsEpu8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(UByte.MAX_VALUE.toByte())
-    val r = mmMaskSubsEpu8(a, 0u, a, b)
+    val r = mmMaskSubsEpu8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskSubsEpu8(a, 0xFu, a, b)
+    val r1 = mmMaskSubsEpu8(a, 0xFu.toUShort(), a, b)
     val e = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -807,9 +807,9 @@ public fun testMmMaskSubsEpu8() {
 public fun testMmMaskzSubsEpu8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(UByte.MAX_VALUE.toByte())
-    val r = mmMaskzSubsEpu8(0u, a, b)
+    val r = mmMaskzSubsEpu8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSubsEpu8(0xFu, a, b)
+    val r1 = mmMaskzSubsEpu8(0xFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -845,9 +845,9 @@ public fun testMm512MaskzSubsEpi16() {
 public fun testMm256MaskSubsEpi16() {
     val a = mm256Set1Epi16((-1).toShort())
     val b = mm256Set1Epi16(Short.MAX_VALUE)
-    val r = mm256MaskSubsEpi16(a, 0u, a, b)
+    val r = mm256MaskSubsEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSubsEpi16(a, 0xFu, a, b)
+    val r1 = mm256MaskSubsEpi16(a, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16((-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE)
     assertEqM256i(r1, e)
 }
@@ -855,9 +855,9 @@ public fun testMm256MaskSubsEpi16() {
 public fun testMm256MaskzSubsEpi16() {
     val a = mm256Set1Epi16((-1).toShort())
     val b = mm256Set1Epi16(Short.MAX_VALUE)
-    val r = mm256MaskzSubsEpi16(0u, a, b)
+    val r = mm256MaskzSubsEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSubsEpi16(0xFu, a, b)
+    val r1 = mm256MaskzSubsEpi16(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE)
     assertEqM256i(r1, e)
 }
@@ -865,9 +865,9 @@ public fun testMm256MaskzSubsEpi16() {
 public fun testMmMaskSubsEpi16() {
     val a = mmSet1Epi16((-1).toShort())
     val b = mmSet1Epi16(Short.MAX_VALUE)
-    val r = mmMaskSubsEpi16(a, 0u, a, b)
+    val r = mmMaskSubsEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskSubsEpi16(a, 0xFu, a, b)
+    val r1 = mmMaskSubsEpi16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16((-1).toShort(), (-1).toShort(), (-1).toShort(), (-1).toShort(), Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE)
     assertEqM128i(r1, e)
 }
@@ -875,9 +875,9 @@ public fun testMmMaskSubsEpi16() {
 public fun testMmMaskzSubsEpi16() {
     val a = mmSet1Epi16((-1).toShort())
     val b = mmSet1Epi16(Short.MAX_VALUE)
-    val r = mmMaskzSubsEpi16(0u, a, b)
+    val r = mmMaskzSubsEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSubsEpi16(0xFu, a, b)
+    val r1 = mmMaskzSubsEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE, Short.MIN_VALUE)
     assertEqM128i(r1, e)
 }
@@ -933,9 +933,9 @@ public fun testMm256MaskzSubsEpi8() {
 public fun testMmMaskSubsEpi8() {
     val a = mmSet1Epi8((-1).toByte())
     val b = mmSet1Epi8(Byte.MAX_VALUE)
-    val r = mmMaskSubsEpi8(a, 0u, a, b)
+    val r = mmMaskSubsEpi8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskSubsEpi8(a, 0xFu, a, b)
+    val r1 = mmMaskSubsEpi8(a, 0xFu.toUShort(), a, b)
     val e = mmSetEpi8((-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE)
     assertEqM128i(r1, e)
 }
@@ -943,9 +943,9 @@ public fun testMmMaskSubsEpi8() {
 public fun testMmMaskzSubsEpi8() {
     val a = mmSet1Epi8((-1).toByte())
     val b = mmSet1Epi8(Byte.MAX_VALUE)
-    val r = mmMaskzSubsEpi8(0u, a, b)
+    val r = mmMaskzSubsEpi8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSubsEpi8(0xFu, a, b)
+    val r1 = mmMaskzSubsEpi8(0xFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE, Byte.MIN_VALUE)
     assertEqM128i(r1, e)
 }
@@ -981,9 +981,9 @@ public fun testMm512MaskzMulhiEpu16() {
 public fun testMm256MaskMulhiEpu16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskMulhiEpu16(a, 0u, a, b)
+    val r = mm256MaskMulhiEpu16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskMulhiEpu16(a, 0xFu, a, b)
+    val r1 = mm256MaskMulhiEpu16(a, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM256i(r1, e)
 }
@@ -991,9 +991,9 @@ public fun testMm256MaskMulhiEpu16() {
 public fun testMm256MaskzMulhiEpu16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskzMulhiEpu16(0u, a, b)
+    val r = mm256MaskzMulhiEpu16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMulhiEpu16(0xFu, a, b)
+    val r1 = mm256MaskzMulhiEpu16(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM256i(r1, e)
 }
@@ -1001,9 +1001,9 @@ public fun testMm256MaskzMulhiEpu16() {
 public fun testMmMaskMulhiEpu16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskMulhiEpu16(a, 0u, a, b)
+    val r = mmMaskMulhiEpu16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMulhiEpu16(a, 0xFu, a, b)
+    val r1 = mmMaskMulhiEpu16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -1011,9 +1011,9 @@ public fun testMmMaskMulhiEpu16() {
 public fun testMmMaskzMulhiEpu16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskzMulhiEpu16(0u, a, b)
+    val r = mmMaskzMulhiEpu16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMulhiEpu16(0xFu, a, b)
+    val r1 = mmMaskzMulhiEpu16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -1049,9 +1049,9 @@ public fun testMm512MaskzMulhiEpi16() {
 public fun testMm256MaskMulhiEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskMulhiEpi16(a, 0u, a, b)
+    val r = mm256MaskMulhiEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskMulhiEpi16(a, 0xFu, a, b)
+    val r1 = mm256MaskMulhiEpi16(a, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM256i(r1, e)
 }
@@ -1059,9 +1059,9 @@ public fun testMm256MaskMulhiEpi16() {
 public fun testMm256MaskzMulhiEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskzMulhiEpi16(0u, a, b)
+    val r = mm256MaskzMulhiEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMulhiEpi16(0xFu, a, b)
+    val r1 = mm256MaskzMulhiEpi16(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM256i(r1, e)
 }
@@ -1069,9 +1069,9 @@ public fun testMm256MaskzMulhiEpi16() {
 public fun testMmMaskMulhiEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskMulhiEpi16(a, 0u, a, b)
+    val r = mmMaskMulhiEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMulhiEpi16(a, 0xFu, a, b)
+    val r1 = mmMaskMulhiEpi16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -1079,9 +1079,9 @@ public fun testMmMaskMulhiEpi16() {
 public fun testMmMaskzMulhiEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskzMulhiEpi16(0u, a, b)
+    val r = mmMaskzMulhiEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMulhiEpi16(0xFu, a, b)
+    val r1 = mmMaskzMulhiEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -1117,9 +1117,9 @@ public fun testMm512MaskzMulhrsEpi16() {
 public fun testMm256MaskMulhrsEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskMulhrsEpi16(a, 0u, a, b)
+    val r = mm256MaskMulhrsEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskMulhrsEpi16(a, 0xFu, a, b)
+    val r1 = mm256MaskMulhrsEpi16(a, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM256i(r1, e)
 }
@@ -1127,9 +1127,9 @@ public fun testMm256MaskMulhrsEpi16() {
 public fun testMm256MaskzMulhrsEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskzMulhrsEpi16(0u, a, b)
+    val r = mm256MaskzMulhrsEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMulhrsEpi16(0xFu, a, b)
+    val r1 = mm256MaskzMulhrsEpi16(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM256i(r1, e)
 }
@@ -1137,9 +1137,9 @@ public fun testMm256MaskzMulhrsEpi16() {
 public fun testMmMaskMulhrsEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskMulhrsEpi16(a, 0u, a, b)
+    val r = mmMaskMulhrsEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMulhrsEpi16(a, 0xFu, a, b)
+    val r1 = mmMaskMulhrsEpi16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -1147,9 +1147,9 @@ public fun testMmMaskMulhrsEpi16() {
 public fun testMmMaskzMulhrsEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskzMulhrsEpi16(0u, a, b)
+    val r = mmMaskzMulhrsEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMulhrsEpi16(0xFu, a, b)
+    val r1 = mmMaskzMulhrsEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -1185,9 +1185,9 @@ public fun testMm512MaskzMulloEpi16() {
 public fun testMm256MaskMulloEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskMulloEpi16(a, 0u, a, b)
+    val r = mm256MaskMulloEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskMulloEpi16(a, 0xFu, a, b)
+    val r1 = mm256MaskMulloEpi16(a, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM256i(r1, e)
 }
@@ -1195,9 +1195,9 @@ public fun testMm256MaskMulloEpi16() {
 public fun testMm256MaskzMulloEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskzMulloEpi16(0u, a, b)
+    val r = mm256MaskzMulloEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMulloEpi16(0xFu, a, b)
+    val r1 = mm256MaskzMulloEpi16(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1)
     assertEqM256i(r1, e)
 }
@@ -1205,9 +1205,9 @@ public fun testMm256MaskzMulloEpi16() {
 public fun testMmMaskMulloEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskMulloEpi16(a, 0u, a, b)
+    val r = mmMaskMulloEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMulloEpi16(a, 0xFu, a, b)
+    val r1 = mmMaskMulloEpi16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM128i(r1, e)
 }
@@ -1215,9 +1215,9 @@ public fun testMmMaskMulloEpi16() {
 public fun testMmMaskzMulloEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskzMulloEpi16(0u, a, b)
+    val r = mmMaskzMulloEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMulloEpi16(0xFu, a, b)
+    val r1 = mmMaskzMulloEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 1, 1, 1, 1)
     assertEqM128i(r1, e)
 }
@@ -1253,9 +1253,9 @@ public fun testMm512MaskzMaxEpu16() {
 public fun testMm256MaskMaxEpu16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mm256SetEpi16(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mm256MaskMaxEpu16(a, 0u, a, b)
+    val r = mm256MaskMaxEpu16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskMaxEpu16(a, 0xFFu, a, b)
+    val r1 = mm256MaskMaxEpu16(a, 0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     assertEqM256i(r1, e)
 }
@@ -1263,9 +1263,9 @@ public fun testMm256MaskMaxEpu16() {
 public fun testMm256MaskzMaxEpu16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mm256SetEpi16(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mm256MaskzMaxEpu16(0u, a, b)
+    val r = mm256MaskzMaxEpu16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMaxEpu16(0xFFu, a, b)
+    val r1 = mm256MaskzMaxEpu16(0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 8, 9, 10, 11, 12, 13, 14, 15)
     assertEqM256i(r1, e)
 }
@@ -1273,9 +1273,9 @@ public fun testMm256MaskzMaxEpu16() {
 public fun testMmMaskMaxEpu16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val b = mmSetEpi16(7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskMaxEpu16(a, 0u, a, b)
+    val r = mmMaskMaxEpu16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMaxEpu16(a, 0xFu, a, b)
+    val r1 = mmMaskMaxEpu16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     assertEqM128i(r1, e)
 }
@@ -1283,9 +1283,9 @@ public fun testMmMaskMaxEpu16() {
 public fun testMmMaskzMaxEpu16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val b = mmSetEpi16(7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskzMaxEpu16(0u, a, b)
+    val r = mmMaskzMaxEpu16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMaxEpu16(0xFu, a, b)
+    val r1 = mmMaskzMaxEpu16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 4, 5, 6, 7)
     assertEqM128i(r1, e)
 }
@@ -1341,9 +1341,9 @@ public fun testMm256MaskzMaxEpu8() {
 public fun testMmMaskMaxEpu8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mmSetEpi8(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskMaxEpu8(a, 0u, a, b)
+    val r = mmMaskMaxEpu8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMaxEpu8(a, 0xFFu, a, b)
+    val r1 = mmMaskMaxEpu8(a, 0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     assertEqM128i(r1, e)
 }
@@ -1351,9 +1351,9 @@ public fun testMmMaskMaxEpu8() {
 public fun testMmMaskzMaxEpu8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mmSetEpi8(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskzMaxEpu8(0u, a, b)
+    val r = mmMaskzMaxEpu8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMaxEpu8(0xFFu, a, b)
+    val r1 = mmMaskzMaxEpu8(0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 8, 9, 10, 11, 12, 13, 14, 15)
     assertEqM128i(r1, e)
 }
@@ -1389,9 +1389,9 @@ public fun testMm512MaskzMaxEpi16() {
 public fun testMm256MaskMaxEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mm256SetEpi16(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mm256MaskMaxEpi16(a, 0u, a, b)
+    val r = mm256MaskMaxEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskMaxEpi16(a, 0xFFu, a, b)
+    val r1 = mm256MaskMaxEpi16(a, 0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     assertEqM256i(r1, e)
 }
@@ -1399,9 +1399,9 @@ public fun testMm256MaskMaxEpi16() {
 public fun testMm256MaskzMaxEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mm256SetEpi16(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mm256MaskzMaxEpi16(0u, a, b)
+    val r = mm256MaskzMaxEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMaxEpi16(0xFFu, a, b)
+    val r1 = mm256MaskzMaxEpi16(0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 8, 9, 10, 11, 12, 13, 14, 15)
     assertEqM256i(r1, e)
 }
@@ -1409,9 +1409,9 @@ public fun testMm256MaskzMaxEpi16() {
 public fun testMmMaskMaxEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val b = mmSetEpi16(7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskMaxEpi16(a, 0u, a, b)
+    val r = mmMaskMaxEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMaxEpi16(a, 0xFu, a, b)
+    val r1 = mmMaskMaxEpi16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     assertEqM128i(r1, e)
 }
@@ -1419,9 +1419,9 @@ public fun testMmMaskMaxEpi16() {
 public fun testMmMaskzMaxEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val b = mmSetEpi16(7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskzMaxEpi16(0u, a, b)
+    val r = mmMaskzMaxEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMaxEpi16(0xFu, a, b)
+    val r1 = mmMaskzMaxEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 4, 5, 6, 7)
     assertEqM128i(r1, e)
 }
@@ -1477,9 +1477,9 @@ public fun testMm256MaskzMaxEpi8() {
 public fun testMmMaskMaxEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mmSetEpi8(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskMaxEpi8(a, 0u, a, b)
+    val r = mmMaskMaxEpi8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMaxEpi8(a, 0xFFu, a, b)
+    val r1 = mmMaskMaxEpi8(a, 0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     assertEqM128i(r1, e)
 }
@@ -1487,9 +1487,9 @@ public fun testMmMaskMaxEpi8() {
 public fun testMmMaskzMaxEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mmSetEpi8(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskzMaxEpi8(0u, a, b)
+    val r = mmMaskzMaxEpi8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMaxEpi8(0xFFu, a, b)
+    val r1 = mmMaskzMaxEpi8(0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 8, 9, 10, 11, 12, 13, 14, 15)
     assertEqM128i(r1, e)
 }
@@ -1525,9 +1525,9 @@ public fun testMm512MaskzMinEpu16() {
 public fun testMm256MaskMinEpu16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mm256SetEpi16(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mm256MaskMinEpu16(a, 0u, a, b)
+    val r = mm256MaskMinEpu16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskMinEpu16(a, 0xFFu, a, b)
+    val r1 = mm256MaskMinEpu16(a, 0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 0)
     assertEqM256i(r1, e)
 }
@@ -1535,9 +1535,9 @@ public fun testMm256MaskMinEpu16() {
 public fun testMm256MaskzMinEpu16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mm256SetEpi16(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mm256MaskzMinEpu16(0u, a, b)
+    val r = mm256MaskzMinEpu16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMinEpu16(0xFFu, a, b)
+    val r1 = mm256MaskzMinEpu16(0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 7, 6, 5, 4, 3, 2, 1, 0)
     assertEqM256i(r1, e)
 }
@@ -1545,9 +1545,9 @@ public fun testMm256MaskzMinEpu16() {
 public fun testMmMaskMinEpu16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val b = mmSetEpi16(7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskMinEpu16(a, 0u, a, b)
+    val r = mmMaskMinEpu16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMinEpu16(a, 0xFu, a, b)
+    val r1 = mmMaskMinEpu16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 1, 2, 3, 3, 2, 1, 0)
     assertEqM128i(r1, e)
 }
@@ -1555,9 +1555,9 @@ public fun testMmMaskMinEpu16() {
 public fun testMmMaskzMinEpu16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val b = mmSetEpi16(7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskzMinEpu16(0u, a, b)
+    val r = mmMaskzMinEpu16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMinEpu16(0xFu, a, b)
+    val r1 = mmMaskzMinEpu16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 3, 2, 1, 0)
     assertEqM128i(r1, e)
 }
@@ -1613,9 +1613,9 @@ public fun testMm256MaskzMinEpu8() {
 public fun testMmMaskMinEpu8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mmSetEpi8(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskMinEpu8(a, 0u, a, b)
+    val r = mmMaskMinEpu8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMinEpu8(a, 0xFFu, a, b)
+    val r1 = mmMaskMinEpu8(a, 0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 0)
     assertEqM128i(r1, e)
 }
@@ -1623,9 +1623,9 @@ public fun testMmMaskMinEpu8() {
 public fun testMmMaskzMinEpu8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mmSetEpi8(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskzMinEpu8(0u, a, b)
+    val r = mmMaskzMinEpu8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMinEpu8(0xFFu, a, b)
+    val r1 = mmMaskzMinEpu8(0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 7, 6, 5, 4, 3, 2, 1, 0)
     assertEqM128i(r1, e)
 }
@@ -1661,9 +1661,9 @@ public fun testMm512MaskzMinEpi16() {
 public fun testMm256MaskMinEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mm256SetEpi16(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mm256MaskMinEpi16(a, 0u, a, b)
+    val r = mm256MaskMinEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskMinEpi16(a, 0xFFu, a, b)
+    val r1 = mm256MaskMinEpi16(a, 0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 0)
     assertEqM256i(r1, e)
 }
@@ -1671,9 +1671,9 @@ public fun testMm256MaskMinEpi16() {
 public fun testMm256MaskzMinEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mm256SetEpi16(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mm256MaskzMinEpi16(0u, a, b)
+    val r = mm256MaskzMinEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMinEpi16(0xFFu, a, b)
+    val r1 = mm256MaskzMinEpi16(0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 7, 6, 5, 4, 3, 2, 1, 0)
     assertEqM256i(r1, e)
 }
@@ -1681,9 +1681,9 @@ public fun testMm256MaskzMinEpi16() {
 public fun testMmMaskMinEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val b = mmSetEpi16(7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskMinEpi16(a, 0u, a, b)
+    val r = mmMaskMinEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMinEpi16(a, 0xFu, a, b)
+    val r1 = mmMaskMinEpi16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 1, 2, 3, 3, 2, 1, 0)
     assertEqM128i(r1, e)
 }
@@ -1691,9 +1691,9 @@ public fun testMmMaskMinEpi16() {
 public fun testMmMaskzMinEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val b = mmSetEpi16(7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskzMinEpi16(0u, a, b)
+    val r = mmMaskzMinEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMinEpi16(0xFu, a, b)
+    val r1 = mmMaskzMinEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 3, 2, 1, 0)
     assertEqM128i(r1, e)
 }
@@ -1749,9 +1749,9 @@ public fun testMm256MaskzMinEpi8() {
 public fun testMmMaskMinEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mmSetEpi8(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskMinEpi8(a, 0u, a, b)
+    val r = mmMaskMinEpi8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMinEpi8(a, 0xFFu, a, b)
+    val r1 = mmMaskMinEpi8(a, 0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 0)
     assertEqM128i(r1, e)
 }
@@ -1759,9 +1759,9 @@ public fun testMmMaskMinEpi8() {
 public fun testMmMaskzMinEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mmSetEpi8(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-    val r = mmMaskzMinEpi8(0u, a, b)
+    val r = mmMaskzMinEpi8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMinEpi8(0xFFu, a, b)
+    val r1 = mmMaskzMinEpi8(0xFFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 7, 6, 5, 4, 3, 2, 1, 0)
     assertEqM128i(r1, e)
 }
@@ -3034,7 +3034,7 @@ public fun testMm256ReduceAddEpi16() {
 
 public fun testMm256MaskReduceAddEpi16() {
     val a = mm256Set1Epi16(1)
-    val e = mm256MaskReduceAddEpi16(0xFF00u, a)
+    val e = mm256MaskReduceAddEpi16(0xFF00u.toUShort(), a)
     check(8.toShort() == e)
 }
 
@@ -3046,7 +3046,7 @@ public fun testMmReduceAddEpi16() {
 
 public fun testMmMaskReduceAddEpi16() {
     val a = mmSet1Epi16(1)
-    val e = mmMaskReduceAddEpi16(0xF0u, a)
+    val e = mmMaskReduceAddEpi16(0xF0u.toUByte(), a)
     check(4.toShort() == e)
 }
 
@@ -3070,7 +3070,7 @@ public fun testMmReduceAddEpi8() {
 
 public fun testMmMaskReduceAddEpi8() {
     val a = mmSet1Epi8(1)
-    val e = mmMaskReduceAddEpi8(0xFF00u, a)
+    val e = mmMaskReduceAddEpi8(0xFF00u.toUShort(), a)
     check(8.toByte() == e)
 }
 
@@ -3082,7 +3082,7 @@ public fun testMm256ReduceAndEpi16() {
 
 public fun testMm256MaskReduceAndEpi16() {
     val a = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2)
-    val e = mm256MaskReduceAndEpi16(0xFF00u, a)
+    val e = mm256MaskReduceAndEpi16(0xFF00u.toUShort(), a)
     check(1.toShort() == e)
 }
 
@@ -3094,7 +3094,7 @@ public fun testMmReduceAndEpi16() {
 
 public fun testMmMaskReduceAndEpi16() {
     val a = mmSetEpi16(1, 1, 1, 1, 2, 2, 2, 2)
-    val e = mmMaskReduceAndEpi16(0xF0u, a)
+    val e = mmMaskReduceAndEpi16(0xF0u.toUByte(), a)
     check(1.toShort() == e)
 }
 
@@ -3118,7 +3118,7 @@ public fun testMmReduceAndEpi8() {
 
 public fun testMmMaskReduceAndEpi8() {
     val a = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2)
-    val e = mmMaskReduceAndEpi8(0xFF00u, a)
+    val e = mmMaskReduceAndEpi8(0xFF00u.toUShort(), a)
     check(1.toByte() == e)
 }
 
@@ -3130,7 +3130,7 @@ public fun testMm256ReduceMulEpi16() {
 
 public fun testMm256MaskReduceMulEpi16() {
     val a = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2)
-    val e = mm256MaskReduceMulEpi16(0xFF00u, a)
+    val e = mm256MaskReduceMulEpi16(0xFF00u.toUShort(), a)
     check(1.toShort() == e)
 }
 
@@ -3142,7 +3142,7 @@ public fun testMmReduceMulEpi16() {
 
 public fun testMmMaskReduceMulEpi16() {
     val a = mmSetEpi16(1, 1, 1, 1, 2, 2, 2, 2)
-    val e = mmMaskReduceMulEpi16(0xF0u, a)
+    val e = mmMaskReduceMulEpi16(0xF0u.toUByte(), a)
     check(1.toShort() == e)
 }
 
@@ -3166,7 +3166,7 @@ public fun testMmReduceMulEpi8() {
 
 public fun testMmMaskReduceMulEpi8() {
     val a = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2)
-    val e = mmMaskReduceMulEpi8(0xFF00u, a)
+    val e = mmMaskReduceMulEpi8(0xFF00u.toUShort(), a)
     check(1.toByte() == e)
 }
 
@@ -3178,7 +3178,7 @@ public fun testMm256ReduceMaxEpi16() {
 
 public fun testMm256MaskReduceMaxEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e: Short = mm256MaskReduceMaxEpi16(0xFF00u, a)
+    val e: Short = mm256MaskReduceMaxEpi16(0xFF00u.toUShort(), a)
     check(7.toShort() == e)
 }
 
@@ -3190,7 +3190,7 @@ public fun testMmReduceMaxEpi16() {
 
 public fun testMmMaskReduceMaxEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
-    val e: Short = mmMaskReduceMaxEpi16(0xF0u, a)
+    val e: Short = mmMaskReduceMaxEpi16(0xF0u.toUByte(), a)
     check(3.toShort() == e)
 }
 
@@ -3214,7 +3214,7 @@ public fun testMmReduceMaxEpi8() {
 
 public fun testMmMaskReduceMaxEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e: Byte = mmMaskReduceMaxEpi8(0xFF00u, a)
+    val e: Byte = mmMaskReduceMaxEpi8(0xFF00u.toUShort(), a)
     check(7.toByte() == e)
 }
 
@@ -3226,7 +3226,7 @@ public fun testMm256ReduceMaxEpu16() {
 
 public fun testMm256MaskReduceMaxEpu16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e: UShort = mm256MaskReduceMaxEpu16(0xFF00u, a)
+    val e: UShort = mm256MaskReduceMaxEpu16(0xFF00u.toUShort(), a)
     check(7u.toUShort() == e)
 }
 
@@ -3238,7 +3238,7 @@ public fun testMmReduceMaxEpu16() {
 
 public fun testMmMaskReduceMaxEpu16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
-    val e: UShort = mmMaskReduceMaxEpu16(0xF0u, a)
+    val e: UShort = mmMaskReduceMaxEpu16(0xF0u.toUByte(), a)
     check(3u.toUShort() == e)
 }
 
@@ -3262,7 +3262,7 @@ public fun testMmReduceMaxEpu8() {
 
 public fun testMmMaskReduceMaxEpu8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e: UByte = mmMaskReduceMaxEpu8(0xFF00u, a)
+    val e: UByte = mmMaskReduceMaxEpu8(0xFF00u.toUShort(), a)
     check(7u.toUByte() == e)
 }
 
@@ -3274,7 +3274,7 @@ public fun testMm256ReduceMinEpi16() {
 
 public fun testMm256MaskReduceMinEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e: Short = mm256MaskReduceMinEpi16(0xFF00u, a)
+    val e: Short = mm256MaskReduceMinEpi16(0xFF00u.toUShort(), a)
     check(0.toShort() == e)
 }
 
@@ -3286,7 +3286,7 @@ public fun testMmReduceMinEpi16() {
 
 public fun testMmMaskReduceMinEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
-    val e: Short = mmMaskReduceMinEpi16(0xF0u, a)
+    val e: Short = mmMaskReduceMinEpi16(0xF0u.toUByte(), a)
     check(0.toShort() == e)
 }
 
@@ -3310,7 +3310,7 @@ public fun testMmReduceMinEpi8() {
 
 public fun testMmMaskReduceMinEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e: Byte = mmMaskReduceMinEpi8(0xFF00u, a)
+    val e: Byte = mmMaskReduceMinEpi8(0xFF00u.toUShort(), a)
     check(0.toByte() == e)
 }
 
@@ -3322,7 +3322,7 @@ public fun testMm256ReduceMinEpu16() {
 
 public fun testMm256MaskReduceMinEpu16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e: UShort = mm256MaskReduceMinEpu16(0xFF00u, a)
+    val e: UShort = mm256MaskReduceMinEpu16(0xFF00u.toUShort(), a)
     check(0u.toUShort() == e)
 }
 
@@ -3334,7 +3334,7 @@ public fun testMmReduceMinEpu16() {
 
 public fun testMmMaskReduceMinEpu16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
-    val e: UShort = mmMaskReduceMinEpu16(0xF0u, a)
+    val e: UShort = mmMaskReduceMinEpu16(0xF0u.toUByte(), a)
     check(0u.toUShort() == e)
 }
 
@@ -3358,7 +3358,7 @@ public fun testMmReduceMinEpu8() {
 
 public fun testMmMaskReduceMinEpu8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val e: UByte = mmMaskReduceMinEpu8(0xFF00u, a)
+    val e: UByte = mmMaskReduceMinEpu8(0xFF00u.toUShort(), a)
     check(0u.toUByte() == e)
 }
 
@@ -3370,7 +3370,7 @@ public fun testMm256ReduceOrEpi16() {
 
 public fun testMm256MaskReduceOrEpi16() {
     val a = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2)
-    val e = mm256MaskReduceOrEpi16(0xFF00u, a)
+    val e = mm256MaskReduceOrEpi16(0xFF00u.toUShort(), a)
     check(1.toShort() == e)
 }
 
@@ -3382,7 +3382,7 @@ public fun testMmReduceOrEpi16() {
 
 public fun testMmMaskReduceOrEpi16() {
     val a = mmSetEpi16(1, 1, 1, 1, 2, 2, 2, 2)
-    val e = mmMaskReduceOrEpi16(0xF0u, a)
+    val e = mmMaskReduceOrEpi16(0xF0u.toUByte(), a)
     check(1.toShort() == e)
 }
 
@@ -3406,7 +3406,7 @@ public fun testMmReduceOrEpi8() {
 
 public fun testMmMaskReduceOrEpi8() {
     val a = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2)
-    val e = mmMaskReduceOrEpi8(0xFF00u, a)
+    val e = mmMaskReduceOrEpi8(0xFF00u.toUShort(), a)
     check(1.toByte() == e)
 }
 
@@ -3723,9 +3723,9 @@ public fun testMm512MaddEpi16() {
 public fun testMm512MaskMaddEpi16() {
     val a = mm512Set1Epi16(1)
     val b = mm512Set1Epi16(1)
-    val r = mm512MaskMaddEpi16(a, 0u, a, b)
+    val r = mm512MaskMaddEpi16(a, 0u.toUShort(), a, b)
     assertEqM512i(r, a)
-    val r1 = mm512MaskMaddEpi16(a, 0xFu, a, b)
+    val r1 = mm512MaskMaddEpi16(a, 0xFu.toUShort(), a, b)
     val e = mm512SetEpi32(1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 2, 2, 2, 2)
     assertEqM512i(r1, e)
 }
@@ -3733,9 +3733,9 @@ public fun testMm512MaskMaddEpi16() {
 public fun testMm512MaskzMaddEpi16() {
     val a = mm512Set1Epi16(1)
     val b = mm512Set1Epi16(1)
-    val r = mm512MaskzMaddEpi16(0u, a, b)
+    val r = mm512MaskzMaddEpi16(0u.toUShort(), a, b)
     assertEqM512i(r, mm512SetzeroSi512())
-    val r1 = mm512MaskzMaddEpi16(0xFu, a, b)
+    val r1 = mm512MaskzMaddEpi16(0xFu.toUShort(), a, b)
     val e = mm512SetEpi32(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2)
     assertEqM512i(r1, e)
 }
@@ -3743,9 +3743,9 @@ public fun testMm512MaskzMaddEpi16() {
 public fun testMm256MaskMaddEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskMaddEpi16(a, 0u, a, b)
+    val r = mm256MaskMaddEpi16(a, 0u.toUByte(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskMaddEpi16(a, 0xFu, a, b)
+    val r1 = mm256MaskMaddEpi16(a, 0xFu.toUByte(), a, b)
     val e = mm256SetEpi32(1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 1 shl 16 or 1, 2, 2, 2, 2)
     assertEqM256i(r1, e)
 }
@@ -3753,9 +3753,9 @@ public fun testMm256MaskMaddEpi16() {
 public fun testMm256MaskzMaddEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskzMaddEpi16(0u, a, b)
+    val r = mm256MaskzMaddEpi16(0u.toUByte(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMaddEpi16(0xFu, a, b)
+    val r1 = mm256MaskzMaddEpi16(0xFu.toUByte(), a, b)
     val e = mm256SetEpi32(0, 0, 0, 0, 2, 2, 2, 2)
     assertEqM256i(r1, e)
 }
@@ -3763,9 +3763,9 @@ public fun testMm256MaskzMaddEpi16() {
 public fun testMmMaskMaddEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskMaddEpi16(a, 0u, a, b)
+    val r = mmMaskMaddEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskMaddEpi16(a, 0xFu, a, b)
+    val r1 = mmMaskMaddEpi16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi32(2, 2, 2, 2)
     assertEqM128i(r1, e)
 }
@@ -3773,9 +3773,9 @@ public fun testMmMaskMaddEpi16() {
 public fun testMmMaskzMaddEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskzMaddEpi16(0u, a, b)
+    val r = mmMaskzMaddEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMaddEpi16(0xFu, a, b)
+    val r1 = mmMaskzMaddEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi32(2, 2, 2, 2)
     assertEqM128i(r1, e)
 }
@@ -3813,9 +3813,9 @@ public fun testMm256MaskMaddubsEpi16() {
     val a = mm256Set1Epi8(1)
     val b = mm256Set1Epi8(1)
     val src = mm256Set1Epi16(1)
-    val r = mm256MaskMaddubsEpi16(src, 0u, a, b)
+    val r = mm256MaskMaddubsEpi16(src, 0u.toUShort(), a, b)
     assertEqM256i(r, src)
-    val r1 = mm256MaskAddEpi16(src, 0x1u, a, b)
+    val r1 = mm256MaskAddEpi16(src, 0x1u.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, (((1.toInt() shl 9).toShort()).toInt() or 2.toInt()).toShort())
     assertEqM256i(r1, e)
 }
@@ -3823,9 +3823,9 @@ public fun testMm256MaskMaddubsEpi16() {
 public fun testMm256MaskzMaddubsEpi16() {
     val a = mm256Set1Epi8(1)
     val b = mm256Set1Epi8(1)
-    val r = mm256MaskzMaddubsEpi16(0u, a, b)
+    val r = mm256MaskzMaddubsEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMaddubsEpi16(0xFFu, a, b)
+    val r1 = mm256MaskzMaddubsEpi16(0xFFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2)
     assertEqM256i(r1, e)
 }
@@ -3834,9 +3834,9 @@ public fun testMmMaskMaddubsEpi16() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(1)
     val src = mmSet1Epi16(1)
-    val r = mmMaskMaddubsEpi16(src, 0u, a, b)
+    val r = mmMaskMaddubsEpi16(src, 0u.toUByte(), a, b)
     assertEqM128i(r, src)
-    val r1 = mmMaskAddEpi16(src, 0x1u, a, b)
+    val r1 = mmMaskAddEpi16(src, 0x1u.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, 1, 1, 1, (((1.toInt() shl 9).toShort()).toInt() or 2.toInt()).toShort())
     assertEqM128i(r1, e)
 }
@@ -3844,9 +3844,9 @@ public fun testMmMaskMaddubsEpi16() {
 public fun testMmMaskzMaddubsEpi16() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(1)
-    val r = mmMaskzMaddubsEpi16(0u, a, b)
+    val r = mmMaskzMaddubsEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMaddubsEpi16(0xFu, a, b)
+    val r1 = mmMaskzMaddubsEpi16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 2, 2, 2, 2)
     assertEqM128i(r1, e)
 }
@@ -3882,9 +3882,9 @@ public fun testMm512MaskzPacksEpi32() {
 public fun testMm256MaskPacksEpi32() {
     val a = mm256Set1Epi32(Int.MAX_VALUE)
     val b = mm256Set1Epi32(1 shl 16 or 1)
-    val r = mm256MaskPacksEpi32(a, 0u, a, b)
+    val r = mm256MaskPacksEpi32(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskPacksEpi32(b, 0xFu, a, b)
+    val r1 = mm256MaskPacksEpi32(b, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE)
     assertEqM256i(r1, e)
 }
@@ -3892,9 +3892,9 @@ public fun testMm256MaskPacksEpi32() {
 public fun testMm256MaskzPacksEpi32() {
     val a = mm256Set1Epi32(Int.MAX_VALUE)
     val b = mm256Set1Epi32(1)
-    val r = mm256MaskzPacksEpi32(0u, a, b)
+    val r = mm256MaskzPacksEpi32(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzPacksEpi32(0xFu, a, b)
+    val r1 = mm256MaskzPacksEpi32(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE)
     assertEqM256i(r1, e)
 }
@@ -3902,9 +3902,9 @@ public fun testMm256MaskzPacksEpi32() {
 public fun testMmMaskPacksEpi32() {
     val a = mmSet1Epi32(Int.MAX_VALUE)
     val b = mmSet1Epi32(1 shl 16 or 1)
-    val r = mmMaskPacksEpi32(a, 0u, a, b)
+    val r = mmMaskPacksEpi32(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskPacksEpi32(b, 0xFu, a, b)
+    val r1 = mmMaskPacksEpi32(b, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE)
     assertEqM128i(r1, e)
 }
@@ -3912,9 +3912,9 @@ public fun testMmMaskPacksEpi32() {
 public fun testMmMaskzPacksEpi32() {
     val a = mmSet1Epi32(Int.MAX_VALUE)
     val b = mmSet1Epi32(1)
-    val r = mmMaskzPacksEpi32(0u, a, b)
+    val r = mmMaskzPacksEpi32(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzPacksEpi32(0xFu, a, b)
+    val r1 = mmMaskzPacksEpi32(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE, Short.MAX_VALUE)
     assertEqM128i(r1, e)
 }
@@ -3970,9 +3970,9 @@ public fun testMm256MaskzPacksEpi16() {
 public fun testMmMaskPacksEpi16() {
     val a = mmSet1Epi16(Short.MAX_VALUE)
     val b = mmSet1Epi16((((1.toInt() shl 8).toShort()).toInt() or 1.toInt()).toShort())
-    val r = mmMaskPacksEpi16(a, 0u, a, b)
+    val r = mmMaskPacksEpi16(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskPacksEpi16(b, 0xFu, a, b)
+    val r1 = mmMaskPacksEpi16(b, 0xFu.toUShort(), a, b)
     val e = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE)
     assertEqM128i(r1, e)
 }
@@ -3980,9 +3980,9 @@ public fun testMmMaskPacksEpi16() {
 public fun testMmMaskzPacksEpi16() {
     val a = mmSet1Epi16(Short.MAX_VALUE)
     val b = mmSet1Epi16(1)
-    val r = mmMaskzPacksEpi16(0u, a, b)
+    val r = mmMaskzPacksEpi16(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzPacksEpi16(0xFu, a, b)
+    val r1 = mmMaskzPacksEpi16(0xFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE)
     assertEqM128i(r1, e)
 }
@@ -4018,9 +4018,9 @@ public fun testMm512MaskzPackusEpi32() {
 public fun testMm256MaskPackusEpi32() {
     val a = mm256Set1Epi32(-1)
     val b = mm256Set1Epi32(1 shl 16 or 1)
-    val r = mm256MaskPackusEpi32(a, 0u, a, b)
+    val r = mm256MaskPackusEpi32(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskPackusEpi32(b, 0xFu, a, b)
+    val r1 = mm256MaskPackusEpi32(b, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM256i(r1, e)
 }
@@ -4028,9 +4028,9 @@ public fun testMm256MaskPackusEpi32() {
 public fun testMm256MaskzPackusEpi32() {
     val a = mm256Set1Epi32(-1)
     val b = mm256Set1Epi32(1)
-    val r = mm256MaskzPackusEpi32(0u, a, b)
+    val r = mm256MaskzPackusEpi32(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzPackusEpi32(0xFu, a, b)
+    val r1 = mm256MaskzPackusEpi32(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM256i(r1, e)
 }
@@ -4038,9 +4038,9 @@ public fun testMm256MaskzPackusEpi32() {
 public fun testMmMaskPackusEpi32() {
     val a = mmSet1Epi32(-1)
     val b = mmSet1Epi32(1 shl 16 or 1)
-    val r = mmMaskPackusEpi32(a, 0u, a, b)
+    val r = mmMaskPackusEpi32(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskPackusEpi32(b, 0xFu, a, b)
+    val r1 = mmMaskPackusEpi32(b, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -4048,9 +4048,9 @@ public fun testMmMaskPackusEpi32() {
 public fun testMmMaskzPackusEpi32() {
     val a = mmSet1Epi32(-1)
     val b = mmSet1Epi32(1)
-    val r = mmMaskzPackusEpi32(0u, a, b)
+    val r = mmMaskzPackusEpi32(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzPackusEpi32(0xFu, a, b)
+    val r1 = mmMaskzPackusEpi32(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -4106,9 +4106,9 @@ public fun testMm256MaskzPackusEpi16() {
 public fun testMmMaskPackusEpi16() {
     val a = mmSet1Epi16((-1).toShort())
     val b = mmSet1Epi16((((1.toInt() shl 8).toShort()).toInt() or 1.toInt()).toShort())
-    val r = mmMaskPackusEpi16(a, 0u, a, b)
+    val r = mmMaskPackusEpi16(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskPackusEpi16(b, 0xFu, a, b)
+    val r1 = mmMaskPackusEpi16(b, 0xFu.toUShort(), a, b)
     val e = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -4116,9 +4116,9 @@ public fun testMmMaskPackusEpi16() {
 public fun testMmMaskzPackusEpi16() {
     val a = mmSet1Epi16((-1).toShort())
     val b = mmSet1Epi16(1)
-    val r = mmMaskzPackusEpi16(0u, a, b)
+    val r = mmMaskzPackusEpi16(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzPackusEpi16(0xFu, a, b)
+    val r1 = mmMaskzPackusEpi16(0xFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     assertEqM128i(r1, e)
 }
@@ -4154,9 +4154,9 @@ public fun testMm512MaskzAvgEpu16() {
 public fun testMm256MaskAvgEpu16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskAvgEpu16(a, 0u, a, b)
+    val r = mm256MaskAvgEpu16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskAvgEpu16(a, 0xFu, a, b)
+    val r1 = mm256MaskAvgEpu16(a, 0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM256i(r1, e)
 }
@@ -4164,9 +4164,9 @@ public fun testMm256MaskAvgEpu16() {
 public fun testMm256MaskzAvgEpu16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(1)
-    val r = mm256MaskzAvgEpu16(0u, a, b)
+    val r = mm256MaskzAvgEpu16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzAvgEpu16(0xFu, a, b)
+    val r1 = mm256MaskzAvgEpu16(0xFu.toUShort(), a, b)
     val e = mm256SetEpi16(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1)
     assertEqM256i(r1, e)
 }
@@ -4174,9 +4174,9 @@ public fun testMm256MaskzAvgEpu16() {
 public fun testMmMaskAvgEpu16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskAvgEpu16(a, 0u, a, b)
+    val r = mmMaskAvgEpu16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskAvgEpu16(a, 0xFu, a, b)
+    val r1 = mmMaskAvgEpu16(a, 0xFu.toUByte(), a, b)
     val e = mmSetEpi16(1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM128i(r1, e)
 }
@@ -4184,9 +4184,9 @@ public fun testMmMaskAvgEpu16() {
 public fun testMmMaskzAvgEpu16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(1)
-    val r = mmMaskzAvgEpu16(0u, a, b)
+    val r = mmMaskzAvgEpu16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAvgEpu16(0xFu, a, b)
+    val r1 = mmMaskzAvgEpu16(0xFu.toUByte(), a, b)
     val e = mmSetEpi16(0, 0, 0, 0, 1, 1, 1, 1)
     assertEqM128i(r1, e)
 }
@@ -4242,9 +4242,9 @@ public fun testMm256MaskzAvgEpu8() {
 public fun testMmMaskAvgEpu8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(1)
-    val r = mmMaskAvgEpu8(a, 0u, a, b)
+    val r = mmMaskAvgEpu8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskAvgEpu8(a, 0xFu, a, b)
+    val r1 = mmMaskAvgEpu8(a, 0xFu.toUShort(), a, b)
     val e = mmSetEpi8(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM128i(r1, e)
 }
@@ -4252,9 +4252,9 @@ public fun testMmMaskAvgEpu8() {
 public fun testMmMaskzAvgEpu8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(1)
-    val r = mmMaskzAvgEpu8(0u, a, b)
+    val r = mmMaskzAvgEpu8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAvgEpu8(0xFu, a, b)
+    val r1 = mmMaskzAvgEpu8(0xFu.toUShort(), a, b)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1)
     assertEqM128i(r1, e)
 }
@@ -4290,9 +4290,9 @@ public fun testMm512MaskzSllEpi16() {
 public fun testMm256MaskSllEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 15).toShort())
     val count = mmSet1Epi16(2)
-    val r = mm256MaskSllEpi16(a, 0u, a, count)
+    val r = mm256MaskSllEpi16(a, 0u.toUShort(), a, count)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSllEpi16(a, 0xFFFFu, a, count)
+    val r1 = mm256MaskSllEpi16(a, 0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
@@ -4300,9 +4300,9 @@ public fun testMm256MaskSllEpi16() {
 public fun testMm256MaskzSllEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 15).toShort())
     val count = mmSet1Epi16(2)
-    val r = mm256MaskzSllEpi16(0u, a, count)
+    val r = mm256MaskzSllEpi16(0u.toUShort(), a, count)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSllEpi16(0xFFFFu, a, count)
+    val r1 = mm256MaskzSllEpi16(0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
@@ -4310,9 +4310,9 @@ public fun testMm256MaskzSllEpi16() {
 public fun testMmMaskSllEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 15).toShort())
     val count = mmSet1Epi16(2)
-    val r = mmMaskSllEpi16(a, 0u, a, count)
+    val r = mmMaskSllEpi16(a, 0u.toUByte(), a, count)
     assertEqM128i(r, a)
-    val r1 = mmMaskSllEpi16(a, 0xFFu, a, count)
+    val r1 = mmMaskSllEpi16(a, 0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4320,9 +4320,9 @@ public fun testMmMaskSllEpi16() {
 public fun testMmMaskzSllEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 15).toShort())
     val count = mmSet1Epi16(2)
-    val r = mmMaskzSllEpi16(0u, a, count)
+    val r = mmMaskzSllEpi16(0u.toUByte(), a, count)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSllEpi16(0xFFu, a, count)
+    val r1 = mmMaskzSllEpi16(0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4354,36 +4354,36 @@ public fun testMm512MaskzSlliEpi16() {
 
 public fun testMm256MaskSlliEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 15).toShort())
-    val r = mm256MaskSlliEpi16(a, 0u, a, 1)
+    val r = mm256MaskSlliEpi16(a, 0u.toUShort(), a, 1)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSlliEpi16(a, 0xFFFFu, a, 1)
+    val r1 = mm256MaskSlliEpi16(a, 0xFFFFu.toUShort(), a, 1)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
 
 public fun testMm256MaskzSlliEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 15).toShort())
-    val r = mm256MaskzSlliEpi16(0u, a, 1)
+    val r = mm256MaskzSlliEpi16(0u.toUShort(), a, 1)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSlliEpi16(0xFFFFu, a, 1)
+    val r1 = mm256MaskzSlliEpi16(0xFFFFu.toUShort(), a, 1)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
 
 public fun testMmMaskSlliEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 15).toShort())
-    val r = mmMaskSlliEpi16(a, 0u, a, 1)
+    val r = mmMaskSlliEpi16(a, 0u.toUByte(), a, 1)
     assertEqM128i(r, a)
-    val r1 = mmMaskSlliEpi16(a, 0xFFu, a, 1)
+    val r1 = mmMaskSlliEpi16(a, 0xFFu.toUByte(), a, 1)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzSlliEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 15).toShort())
-    val r = mmMaskzSlliEpi16(0u, a, 1)
+    val r = mmMaskzSlliEpi16(0u.toUByte(), a, 1)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSlliEpi16(0xFFu, a, 1)
+    val r1 = mmMaskzSlliEpi16(0xFFu.toUByte(), a, 1)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4427,9 +4427,9 @@ public fun testMm256SllvEpi16() {
 public fun testMm256MaskSllvEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 15).toShort())
     val count = mm256Set1Epi16(2)
-    val r = mm256MaskSllvEpi16(a, 0u, a, count)
+    val r = mm256MaskSllvEpi16(a, 0u.toUShort(), a, count)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSllvEpi16(a, 0xFFFFu, a, count)
+    val r1 = mm256MaskSllvEpi16(a, 0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
@@ -4437,9 +4437,9 @@ public fun testMm256MaskSllvEpi16() {
 public fun testMm256MaskzSllvEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 15).toShort())
     val count = mm256Set1Epi16(2)
-    val r = mm256MaskzSllvEpi16(0u, a, count)
+    val r = mm256MaskzSllvEpi16(0u.toUShort(), a, count)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSllvEpi16(0xFFFFu, a, count)
+    val r1 = mm256MaskzSllvEpi16(0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
@@ -4455,9 +4455,9 @@ public fun testMmSllvEpi16() {
 public fun testMmMaskSllvEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 15).toShort())
     val count = mmSet1Epi16(2)
-    val r = mmMaskSllvEpi16(a, 0u, a, count)
+    val r = mmMaskSllvEpi16(a, 0u.toUByte(), a, count)
     assertEqM128i(r, a)
-    val r1 = mmMaskSllvEpi16(a, 0xFFu, a, count)
+    val r1 = mmMaskSllvEpi16(a, 0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4465,9 +4465,9 @@ public fun testMmMaskSllvEpi16() {
 public fun testMmMaskzSllvEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 15).toShort())
     val count = mmSet1Epi16(2)
-    val r = mmMaskzSllvEpi16(0u, a, count)
+    val r = mmMaskzSllvEpi16(0u.toUByte(), a, count)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSllvEpi16(0xFFu, a, count)
+    val r1 = mmMaskzSllvEpi16(0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4503,9 +4503,9 @@ public fun testMm512MaskzSrlEpi16() {
 public fun testMm256MaskSrlEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 1).toShort())
     val count = mmSet1Epi16(2)
-    val r = mm256MaskSrlEpi16(a, 0u, a, count)
+    val r = mm256MaskSrlEpi16(a, 0u.toUShort(), a, count)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSrlEpi16(a, 0xFFFFu, a, count)
+    val r1 = mm256MaskSrlEpi16(a, 0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
@@ -4513,9 +4513,9 @@ public fun testMm256MaskSrlEpi16() {
 public fun testMm256MaskzSrlEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 1).toShort())
     val count = mmSet1Epi16(2)
-    val r = mm256MaskzSrlEpi16(0u, a, count)
+    val r = mm256MaskzSrlEpi16(0u.toUShort(), a, count)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSrlEpi16(0xFFFFu, a, count)
+    val r1 = mm256MaskzSrlEpi16(0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
@@ -4523,9 +4523,9 @@ public fun testMm256MaskzSrlEpi16() {
 public fun testMmMaskSrlEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 1).toShort())
     val count = mmSet1Epi16(2)
-    val r = mmMaskSrlEpi16(a, 0u, a, count)
+    val r = mmMaskSrlEpi16(a, 0u.toUByte(), a, count)
     assertEqM128i(r, a)
-    val r1 = mmMaskSrlEpi16(a, 0xFFu, a, count)
+    val r1 = mmMaskSrlEpi16(a, 0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4533,9 +4533,9 @@ public fun testMmMaskSrlEpi16() {
 public fun testMmMaskzSrlEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 1).toShort())
     val count = mmSet1Epi16(2)
-    val r = mmMaskzSrlEpi16(0u, a, count)
+    val r = mmMaskzSrlEpi16(0u.toUByte(), a, count)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSrlEpi16(0xFFu, a, count)
+    val r1 = mmMaskzSrlEpi16(0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4567,36 +4567,36 @@ public fun testMm512MaskzSrliEpi16() {
 
 public fun testMm256MaskSrliEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 1).toShort())
-    val r = mm256MaskSrliEpi16(a, 0u, a, 2)
+    val r = mm256MaskSrliEpi16(a, 0u.toUShort(), a, 2)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSrliEpi16(a, 0xFFFFu, a, 2)
+    val r1 = mm256MaskSrliEpi16(a, 0xFFFFu.toUShort(), a, 2)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
 
 public fun testMm256MaskzSrliEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 1).toShort())
-    val r = mm256MaskzSrliEpi16(0u, a, 2)
+    val r = mm256MaskzSrliEpi16(0u.toUShort(), a, 2)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSrliEpi16(0xFFFFu, a, 2)
+    val r1 = mm256MaskzSrliEpi16(0xFFFFu.toUShort(), a, 2)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
 
 public fun testMmMaskSrliEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 1).toShort())
-    val r = mmMaskSrliEpi16(a, 0u, a, 2)
+    val r = mmMaskSrliEpi16(a, 0u.toUByte(), a, 2)
     assertEqM128i(r, a)
-    val r1 = mmMaskSrliEpi16(a, 0xFFu, a, 2)
+    val r1 = mmMaskSrliEpi16(a, 0xFFu.toUByte(), a, 2)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzSrliEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 1).toShort())
-    val r = mmMaskzSrliEpi16(0u, a, 2)
+    val r = mmMaskzSrliEpi16(0u.toUByte(), a, 2)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSrliEpi16(0xFFu, a, 2)
+    val r1 = mmMaskzSrliEpi16(0xFFu.toUByte(), a, 2)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4640,9 +4640,9 @@ public fun testMm256SrlvEpi16() {
 public fun testMm256MaskSrlvEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 1).toShort())
     val count = mm256Set1Epi16(2)
-    val r = mm256MaskSrlvEpi16(a, 0u, a, count)
+    val r = mm256MaskSrlvEpi16(a, 0u.toUShort(), a, count)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSrlvEpi16(a, 0xFFFFu, a, count)
+    val r1 = mm256MaskSrlvEpi16(a, 0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
@@ -4650,9 +4650,9 @@ public fun testMm256MaskSrlvEpi16() {
 public fun testMm256MaskzSrlvEpi16() {
     val a = mm256Set1Epi16((1.toInt() shl 1).toShort())
     val count = mm256Set1Epi16(2)
-    val r = mm256MaskzSrlvEpi16(0u, a, count)
+    val r = mm256MaskzSrlvEpi16(0u.toUShort(), a, count)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSrlvEpi16(0xFFFFu, a, count)
+    val r1 = mm256MaskzSrlvEpi16(0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
@@ -4668,9 +4668,9 @@ public fun testMmSrlvEpi16() {
 public fun testMmMaskSrlvEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 1).toShort())
     val count = mmSet1Epi16(2)
-    val r = mmMaskSrlvEpi16(a, 0u, a, count)
+    val r = mmMaskSrlvEpi16(a, 0u.toUByte(), a, count)
     assertEqM128i(r, a)
-    val r1 = mmMaskSrlvEpi16(a, 0xFFu, a, count)
+    val r1 = mmMaskSrlvEpi16(a, 0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4678,9 +4678,9 @@ public fun testMmMaskSrlvEpi16() {
 public fun testMmMaskzSrlvEpi16() {
     val a = mmSet1Epi16((1.toInt() shl 1).toShort())
     val count = mmSet1Epi16(2)
-    val r = mmMaskzSrlvEpi16(0u, a, count)
+    val r = mmMaskzSrlvEpi16(0u.toUByte(), a, count)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSrlvEpi16(0xFFu, a, count)
+    val r1 = mmMaskzSrlvEpi16(0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4716,9 +4716,9 @@ public fun testMm512MaskzSraEpi16() {
 public fun testMm256MaskSraEpi16() {
     val a = mm256Set1Epi16(8)
     val count = mmSet1Epi16(1)
-    val r = mm256MaskSraEpi16(a, 0u, a, count)
+    val r = mm256MaskSraEpi16(a, 0u.toUShort(), a, count)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSraEpi16(a, 0xFFFFu, a, count)
+    val r1 = mm256MaskSraEpi16(a, 0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
@@ -4726,9 +4726,9 @@ public fun testMm256MaskSraEpi16() {
 public fun testMm256MaskzSraEpi16() {
     val a = mm256Set1Epi16(8)
     val count = mmSet1Epi16(1)
-    val r = mm256MaskzSraEpi16(0u, a, count)
+    val r = mm256MaskzSraEpi16(0u.toUShort(), a, count)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSraEpi16(0xFFFFu, a, count)
+    val r1 = mm256MaskzSraEpi16(0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(0)
     assertEqM256i(r1, e)
 }
@@ -4736,9 +4736,9 @@ public fun testMm256MaskzSraEpi16() {
 public fun testMmMaskSraEpi16() {
     val a = mmSet1Epi16(8)
     val count = mmSet1Epi16(1)
-    val r = mmMaskSraEpi16(a, 0u, a, count)
+    val r = mmMaskSraEpi16(a, 0u.toUByte(), a, count)
     assertEqM128i(r, a)
-    val r1 = mmMaskSraEpi16(a, 0xFFu, a, count)
+    val r1 = mmMaskSraEpi16(a, 0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4746,9 +4746,9 @@ public fun testMmMaskSraEpi16() {
 public fun testMmMaskzSraEpi16() {
     val a = mmSet1Epi16(8)
     val count = mmSet1Epi16(1)
-    val r = mmMaskzSraEpi16(0u, a, count)
+    val r = mmMaskzSraEpi16(0u.toUByte(), a, count)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSraEpi16(0xFFu, a, count)
+    val r1 = mmMaskzSraEpi16(0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(0)
     assertEqM128i(r1, e)
 }
@@ -4780,36 +4780,36 @@ public fun testMm512MaskzSraiEpi16() {
 
 public fun testMm256MaskSraiEpi16() {
     val a = mm256Set1Epi16(8)
-    val r = mm256MaskSraiEpi16(a, 0u, a, 2)
+    val r = mm256MaskSraiEpi16(a, 0u.toUShort(), a, 2)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSraiEpi16(a, 0xFFFFu, a, 2)
+    val r1 = mm256MaskSraiEpi16(a, 0xFFFFu.toUShort(), a, 2)
     val e = mm256Set1Epi16(2)
     assertEqM256i(r1, e)
 }
 
 public fun testMm256MaskzSraiEpi16() {
     val a = mm256Set1Epi16(8)
-    val r = mm256MaskzSraiEpi16(0u, a, 2)
+    val r = mm256MaskzSraiEpi16(0u.toUShort(), a, 2)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSraiEpi16(0xFFFFu, a, 2)
+    val r1 = mm256MaskzSraiEpi16(0xFFFFu.toUShort(), a, 2)
     val e = mm256Set1Epi16(2)
     assertEqM256i(r1, e)
 }
 
 public fun testMmMaskSraiEpi16() {
     val a = mmSet1Epi16(8)
-    val r = mmMaskSraiEpi16(a, 0u, a, 2)
+    val r = mmMaskSraiEpi16(a, 0u.toUByte(), a, 2)
     assertEqM128i(r, a)
-    val r1 = mmMaskSraiEpi16(a, 0xFFu, a, 2)
+    val r1 = mmMaskSraiEpi16(a, 0xFFu.toUByte(), a, 2)
     val e = mmSet1Epi16(2)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzSraiEpi16() {
     val a = mmSet1Epi16(8)
-    val r = mmMaskzSraiEpi16(0u, a, 2)
+    val r = mmMaskzSraiEpi16(0u.toUByte(), a, 2)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSraiEpi16(0xFFu, a, 2)
+    val r1 = mmMaskzSraiEpi16(0xFFu.toUByte(), a, 2)
     val e = mmSet1Epi16(2)
     assertEqM128i(r1, e)
 }
@@ -4853,9 +4853,9 @@ public fun testMm256SravEpi16() {
 public fun testMm256MaskSravEpi16() {
     val a = mm256Set1Epi16(8)
     val count = mm256Set1Epi16(2)
-    val r = mm256MaskSravEpi16(a, 0u, a, count)
+    val r = mm256MaskSravEpi16(a, 0u.toUShort(), a, count)
     assertEqM256i(r, a)
-    val r1 = mm256MaskSravEpi16(a, 0xFFFFu, a, count)
+    val r1 = mm256MaskSravEpi16(a, 0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(2)
     assertEqM256i(r1, e)
 }
@@ -4863,9 +4863,9 @@ public fun testMm256MaskSravEpi16() {
 public fun testMm256MaskzSravEpi16() {
     val a = mm256Set1Epi16(8)
     val count = mm256Set1Epi16(2)
-    val r = mm256MaskzSravEpi16(0u, a, count)
+    val r = mm256MaskzSravEpi16(0u.toUShort(), a, count)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSravEpi16(0xFFFFu, a, count)
+    val r1 = mm256MaskzSravEpi16(0xFFFFu.toUShort(), a, count)
     val e = mm256Set1Epi16(2)
     assertEqM256i(r1, e)
 }
@@ -4881,9 +4881,9 @@ public fun testMmSravEpi16() {
 public fun testMmMaskSravEpi16() {
     val a = mmSet1Epi16(8)
     val count = mmSet1Epi16(2)
-    val r = mmMaskSravEpi16(a, 0u, a, count)
+    val r = mmMaskSravEpi16(a, 0u.toUByte(), a, count)
     assertEqM128i(r, a)
-    val r1 = mmMaskSravEpi16(a, 0xFFu, a, count)
+    val r1 = mmMaskSravEpi16(a, 0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(2)
     assertEqM128i(r1, e)
 }
@@ -4891,9 +4891,9 @@ public fun testMmMaskSravEpi16() {
 public fun testMmMaskzSravEpi16() {
     val a = mmSet1Epi16(8)
     val count = mmSet1Epi16(2)
-    val r = mmMaskzSravEpi16(0u, a, count)
+    val r = mmMaskzSravEpi16(0u.toUByte(), a, count)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSravEpi16(0xFFu, a, count)
+    val r1 = mmMaskzSravEpi16(0xFFu.toUByte(), a, count)
     val e = mmSet1Epi16(2)
     assertEqM128i(r1, e)
 }
@@ -4953,9 +4953,9 @@ public fun testMm256MaskPermutex2varEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val idx = mm256SetEpi16(1, (1.toInt() shl 4).toShort(), 2, (1.toInt() shl 4).toShort(), 3, (1.toInt() shl 4).toShort(), 4, (1.toInt() shl 4).toShort(), 5, (1.toInt() shl 4).toShort(), 6, (1.toInt() shl 4).toShort(), 7, (1.toInt() shl 4).toShort(), 8, (1.toInt() shl 4).toShort())
     val b = mm256Set1Epi16(100)
-    val r = mm256MaskPermutex2varEpi16(a, 0u, idx, b)
+    val r = mm256MaskPermutex2varEpi16(a, 0u.toUShort(), idx, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskPermutex2varEpi16(a, 0xFFFFu, idx, b)
+    val r1 = mm256MaskPermutex2varEpi16(a, 0xFFFFu.toUShort(), idx, b)
     val e = mm256SetEpi16(14, 100, 13, 100, 12, 100, 11, 100, 10, 100, 9, 100, 8, 100, 7, 100)
     assertEqM256i(r1, e)
 }
@@ -4964,9 +4964,9 @@ public fun testMm256MaskzPermutex2varEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val idx = mm256SetEpi16(1, (1.toInt() shl 4).toShort(), 2, (1.toInt() shl 4).toShort(), 3, (1.toInt() shl 4).toShort(), 4, (1.toInt() shl 4).toShort(), 5, (1.toInt() shl 4).toShort(), 6, (1.toInt() shl 4).toShort(), 7, (1.toInt() shl 4).toShort(), 8, (1.toInt() shl 4).toShort())
     val b = mm256Set1Epi16(100)
-    val r = mm256MaskzPermutex2varEpi16(0u, a, idx, b)
+    val r = mm256MaskzPermutex2varEpi16(0u.toUShort(), a, idx, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzPermutex2varEpi16(0xFFFFu, a, idx, b)
+    val r1 = mm256MaskzPermutex2varEpi16(0xFFFFu.toUShort(), a, idx, b)
     val e = mm256SetEpi16(14, 100, 13, 100, 12, 100, 11, 100, 10, 100, 9, 100, 8, 100, 7, 100)
     assertEqM256i(r1, e)
 }
@@ -4975,9 +4975,9 @@ public fun testMm256Mask2Permutex2varEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val idx = mm256SetEpi16(1, (1.toInt() shl 4).toShort(), 2, (1.toInt() shl 4).toShort(), 3, (1.toInt() shl 4).toShort(), 4, (1.toInt() shl 4).toShort(), 5, (1.toInt() shl 4).toShort(), 6, (1.toInt() shl 4).toShort(), 7, (1.toInt() shl 4).toShort(), 8, (1.toInt() shl 4).toShort())
     val b = mm256Set1Epi16(100)
-    val r = mm256Mask2Permutex2varEpi16(a, idx, 0u, b)
+    val r = mm256Mask2Permutex2varEpi16(a, idx, 0u.toUShort(), b)
     assertEqM256i(r, idx)
-    val r1 = mm256Mask2Permutex2varEpi16(a, idx, 0xFFFFu, b)
+    val r1 = mm256Mask2Permutex2varEpi16(a, idx, 0xFFFFu.toUShort(), b)
     val e = mm256SetEpi16(14, 100, 13, 100, 12, 100, 11, 100, 10, 100, 9, 100, 8, 100, 7, 100)
     assertEqM256i(r1, e)
 }
@@ -4995,9 +4995,9 @@ public fun testMmMaskPermutex2varEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val idx = mmSetEpi16(1, (1.toInt() shl 3).toShort(), 2, (1.toInt() shl 3).toShort(), 3, (1.toInt() shl 3).toShort(), 4, (1.toInt() shl 3).toShort())
     val b = mmSet1Epi16(100)
-    val r = mmMaskPermutex2varEpi16(a, 0u, idx, b)
+    val r = mmMaskPermutex2varEpi16(a, 0u.toUByte(), idx, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskPermutex2varEpi16(a, 0xFFu, idx, b)
+    val r1 = mmMaskPermutex2varEpi16(a, 0xFFu.toUByte(), idx, b)
     val e = mmSetEpi16(6, 100, 5, 100, 4, 100, 3, 100)
     assertEqM128i(r1, e)
 }
@@ -5006,9 +5006,9 @@ public fun testMmMaskzPermutex2varEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val idx = mmSetEpi16(1, (1.toInt() shl 3).toShort(), 2, (1.toInt() shl 3).toShort(), 3, (1.toInt() shl 3).toShort(), 4, (1.toInt() shl 3).toShort())
     val b = mmSet1Epi16(100)
-    val r = mmMaskzPermutex2varEpi16(0u, a, idx, b)
+    val r = mmMaskzPermutex2varEpi16(0u.toUByte(), a, idx, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzPermutex2varEpi16(0xFFu, a, idx, b)
+    val r1 = mmMaskzPermutex2varEpi16(0xFFu.toUByte(), a, idx, b)
     val e = mmSetEpi16(6, 100, 5, 100, 4, 100, 3, 100)
     assertEqM128i(r1, e)
 }
@@ -5017,9 +5017,9 @@ public fun testMmMask2Permutex2varEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
     val idx = mmSetEpi16(1, (1.toInt() shl 3).toShort(), 2, (1.toInt() shl 3).toShort(), 3, (1.toInt() shl 3).toShort(), 4, (1.toInt() shl 3).toShort())
     val b = mmSet1Epi16(100)
-    val r = mmMask2Permutex2varEpi16(a, idx, 0u, b)
+    val r = mmMask2Permutex2varEpi16(a, idx, 0u.toUByte(), b)
     assertEqM128i(r, idx)
-    val r1 = mmMask2Permutex2varEpi16(a, idx, 0xFFu, b)
+    val r1 = mmMask2Permutex2varEpi16(a, idx, 0xFFu.toUByte(), b)
     val e = mmSetEpi16(6, 100, 5, 100, 4, 100, 3, 100)
     assertEqM128i(r1, e)
 }
@@ -5063,9 +5063,9 @@ public fun testMm256PermutexvarEpi16() {
 public fun testMm256MaskPermutexvarEpi16() {
     val idx = mm256Set1Epi16(1)
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = mm256MaskPermutexvarEpi16(a, 0u, idx, a)
+    val r = mm256MaskPermutexvarEpi16(a, 0u.toUShort(), idx, a)
     assertEqM256i(r, a)
-    val r1 = mm256MaskPermutexvarEpi16(a, 0xFFFFu, idx, a)
+    val r1 = mm256MaskPermutexvarEpi16(a, 0xFFFFu.toUShort(), idx, a)
     val e = mm256Set1Epi16(14)
     assertEqM256i(r1, e)
 }
@@ -5073,9 +5073,9 @@ public fun testMm256MaskPermutexvarEpi16() {
 public fun testMm256MaskzPermutexvarEpi16() {
     val idx = mm256Set1Epi16(1)
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = mm256MaskzPermutexvarEpi16(0u, idx, a)
+    val r = mm256MaskzPermutexvarEpi16(0u.toUShort(), idx, a)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzPermutexvarEpi16(0xFFFFu, idx, a)
+    val r1 = mm256MaskzPermutexvarEpi16(0xFFFFu.toUShort(), idx, a)
     val e = mm256Set1Epi16(14)
     assertEqM256i(r1, e)
 }
@@ -5091,9 +5091,9 @@ public fun testMmPermutexvarEpi16() {
 public fun testMmMaskPermutexvarEpi16() {
     val idx = mmSet1Epi16(1)
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = mmMaskPermutexvarEpi16(a, 0u, idx, a)
+    val r = mmMaskPermutexvarEpi16(a, 0u.toUByte(), idx, a)
     assertEqM128i(r, a)
-    val r1 = mmMaskPermutexvarEpi16(a, 0xFFu, idx, a)
+    val r1 = mmMaskPermutexvarEpi16(a, 0xFFu.toUByte(), idx, a)
     val e = mmSet1Epi16(6)
     assertEqM128i(r1, e)
 }
@@ -5101,9 +5101,9 @@ public fun testMmMaskPermutexvarEpi16() {
 public fun testMmMaskzPermutexvarEpi16() {
     val idx = mmSet1Epi16(1)
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = mmMaskzPermutexvarEpi16(0u, idx, a)
+    val r = mmMaskzPermutexvarEpi16(0u.toUByte(), idx, a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzPermutexvarEpi16(0xFFu, idx, a)
+    val r1 = mmMaskzPermutexvarEpi16(0xFFu.toUByte(), idx, a)
     val e = mmSet1Epi16(6)
     assertEqM128i(r1, e)
 }
@@ -5119,7 +5119,7 @@ public fun testMm512MaskBlendEpi16() {
 public fun testMm256MaskBlendEpi16() {
     val a = mm256Set1Epi16(1)
     val b = mm256Set1Epi16(2)
-    val r = mm256MaskBlendEpi16(0xFF00u, a, b)
+    val r = mm256MaskBlendEpi16(0xFF00u.toUShort(), a, b)
     val e = mm256SetEpi16(2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM256i(r, e)
 }
@@ -5127,7 +5127,7 @@ public fun testMm256MaskBlendEpi16() {
 public fun testMmMaskBlendEpi16() {
     val a = mmSet1Epi16(1)
     val b = mmSet1Epi16(2)
-    val r = mmMaskBlendEpi16(0xF0u, a, b)
+    val r = mmMaskBlendEpi16(0xF0u.toUByte(), a, b)
     val e = mmSetEpi16(2, 2, 2, 2, 1, 1, 1, 1)
     assertEqM128i(r, e)
 }
@@ -5151,7 +5151,7 @@ public fun testMm256MaskBlendEpi8() {
 public fun testMmMaskBlendEpi8() {
     val a = mmSet1Epi8(1)
     val b = mmSet1Epi8(2)
-    val r = mmMaskBlendEpi8(0xFF00u, a, b)
+    val r = mmMaskBlendEpi8(0xFF00u.toUShort(), a, b)
     val e = mmSetEpi8(2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1)
     assertEqM128i(r, e)
 }
@@ -5185,18 +5185,18 @@ public fun testMm512MaskzBroadcastwEpi16() {
 public fun testMm256MaskBroadcastwEpi16() {
     val src = mm256Set1Epi16(1)
     val a = mmSetEpi16(17, 18, 19, 20, 21, 22, 23, 24)
-    val r = mm256MaskBroadcastwEpi16(src, 0u, a)
+    val r = mm256MaskBroadcastwEpi16(src, 0u.toUShort(), a)
     assertEqM256i(r, src)
-    val r1 = mm256MaskBroadcastwEpi16(src, 0xFFFFu, a)
+    val r1 = mm256MaskBroadcastwEpi16(src, 0xFFFFu.toUShort(), a)
     val e = mm256Set1Epi16(24)
     assertEqM256i(r1, e)
 }
 
 public fun testMm256MaskzBroadcastwEpi16() {
     val a = mmSetEpi16(17, 18, 19, 20, 21, 22, 23, 24)
-    val r = mm256MaskzBroadcastwEpi16(0u, a)
+    val r = mm256MaskzBroadcastwEpi16(0u.toUShort(), a)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzBroadcastwEpi16(0xFFFFu, a)
+    val r1 = mm256MaskzBroadcastwEpi16(0xFFFFu.toUShort(), a)
     val e = mm256Set1Epi16(24)
     assertEqM256i(r1, e)
 }
@@ -5204,18 +5204,18 @@ public fun testMm256MaskzBroadcastwEpi16() {
 public fun testMmMaskBroadcastwEpi16() {
     val src = mmSet1Epi16(1)
     val a = mmSetEpi16(17, 18, 19, 20, 21, 22, 23, 24)
-    val r = mmMaskBroadcastwEpi16(src, 0u, a)
+    val r = mmMaskBroadcastwEpi16(src, 0u.toUByte(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskBroadcastwEpi16(src, 0xFFu, a)
+    val r1 = mmMaskBroadcastwEpi16(src, 0xFFu.toUByte(), a)
     val e = mmSet1Epi16(24)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzBroadcastwEpi16() {
     val a = mmSetEpi16(17, 18, 19, 20, 21, 22, 23, 24)
-    val r = mmMaskzBroadcastwEpi16(0u, a)
+    val r = mmMaskzBroadcastwEpi16(0u.toUByte(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzBroadcastwEpi16(0xFFu, a)
+    val r1 = mmMaskzBroadcastwEpi16(0xFFu.toUByte(), a)
     val e = mmSet1Epi16(24)
     assertEqM128i(r1, e)
 }
@@ -5268,18 +5268,18 @@ public fun testMm256MaskzBroadcastbEpi8() {
 public fun testMmMaskBroadcastbEpi8() {
     val src = mmSet1Epi8(1)
     val a = mmSetEpi8(17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32)
-    val r = mmMaskBroadcastbEpi8(src, 0u, a)
+    val r = mmMaskBroadcastbEpi8(src, 0u.toUShort(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskBroadcastbEpi8(src, 0xFFFFu, a)
+    val r1 = mmMaskBroadcastbEpi8(src, 0xFFFFu.toUShort(), a)
     val e = mmSet1Epi8(32)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzBroadcastbEpi8() {
     val a = mmSetEpi8(17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32)
-    val r = mmMaskzBroadcastbEpi8(0u, a)
+    val r = mmMaskzBroadcastbEpi8(0u.toUShort(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzBroadcastbEpi8(0xFFFFu, a)
+    val r1 = mmMaskzBroadcastbEpi8(0xFFFFu.toUShort(), a)
     val e = mmSet1Epi8(32)
     assertEqM128i(r1, e)
 }
@@ -5315,9 +5315,9 @@ public fun testMm512MaskzUnpackhiEpi16() {
 public fun testMm256MaskUnpackhiEpi16() {
     val a = mm256SetEpi16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val b = mm256SetEpi16(33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48)
-    val r = mm256MaskUnpackhiEpi16(a, 0u, a, b)
+    val r = mm256MaskUnpackhiEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskUnpackhiEpi16(a, 0xFFFFu, a, b)
+    val r1 = mm256MaskUnpackhiEpi16(a, 0xFFFFu.toUShort(), a, b)
     val e = mm256SetEpi16(33, 1, 34, 2, 35, 3, 36, 4, 41, 9, 42, 10, 43, 11, 44, 12)
     assertEqM256i(r1, e)
 }
@@ -5325,9 +5325,9 @@ public fun testMm256MaskUnpackhiEpi16() {
 public fun testMm256MaskzUnpackhiEpi16() {
     val a = mm256SetEpi16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val b = mm256SetEpi16(33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48)
-    val r = mm256MaskzUnpackhiEpi16(0u, a, b)
+    val r = mm256MaskzUnpackhiEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzUnpackhiEpi16(0xFFFFu, a, b)
+    val r1 = mm256MaskzUnpackhiEpi16(0xFFFFu.toUShort(), a, b)
     val e = mm256SetEpi16(33, 1, 34, 2, 35, 3, 36, 4, 41, 9, 42, 10, 43, 11, 44, 12)
     assertEqM256i(r1, e)
 }
@@ -5335,9 +5335,9 @@ public fun testMm256MaskzUnpackhiEpi16() {
 public fun testMmMaskUnpackhiEpi16() {
     val a = mmSetEpi16(1, 2, 3, 4, 5, 6, 7, 8)
     val b = mmSetEpi16(33, 34, 35, 36, 37, 38, 39, 40)
-    val r = mmMaskUnpackhiEpi16(a, 0u, a, b)
+    val r = mmMaskUnpackhiEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskUnpackhiEpi16(a, 0xFFu, a, b)
+    val r1 = mmMaskUnpackhiEpi16(a, 0xFFu.toUByte(), a, b)
     val e = mmSetEpi16(33, 1, 34, 2, 35, 3, 36, 4)
     assertEqM128i(r1, e)
 }
@@ -5345,9 +5345,9 @@ public fun testMmMaskUnpackhiEpi16() {
 public fun testMmMaskzUnpackhiEpi16() {
     val a = mmSetEpi16(1, 2, 3, 4, 5, 6, 7, 8)
     val b = mmSetEpi16(33, 34, 35, 36, 37, 38, 39, 40)
-    val r = mmMaskzUnpackhiEpi16(0u, a, b)
+    val r = mmMaskzUnpackhiEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzUnpackhiEpi16(0xFFu, a, b)
+    val r1 = mmMaskzUnpackhiEpi16(0xFFu.toUByte(), a, b)
     val e = mmSetEpi16(33, 1, 34, 2, 35, 3, 36, 4)
     assertEqM128i(r1, e)
 }
@@ -5403,9 +5403,9 @@ public fun testMm256MaskzUnpackhiEpi8() {
 public fun testMmMaskUnpackhiEpi8() {
     val a = mmSetEpi8(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val b = mmSetEpi8(65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80)
-    val r = mmMaskUnpackhiEpi8(a, 0u, a, b)
+    val r = mmMaskUnpackhiEpi8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskUnpackhiEpi8(a, 0xFFFFu, a, b)
+    val r1 = mmMaskUnpackhiEpi8(a, 0xFFFFu.toUShort(), a, b)
     val e = mmSetEpi8(65, 1, 66, 2, 67, 3, 68, 4, 69, 5, 70, 6, 71, 7, 72, 8)
     assertEqM128i(r1, e)
 }
@@ -5413,9 +5413,9 @@ public fun testMmMaskUnpackhiEpi8() {
 public fun testMmMaskzUnpackhiEpi8() {
     val a = mmSetEpi8(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val b = mmSetEpi8(65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80)
-    val r = mmMaskzUnpackhiEpi8(0u, a, b)
+    val r = mmMaskzUnpackhiEpi8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzUnpackhiEpi8(0xFFFFu, a, b)
+    val r1 = mmMaskzUnpackhiEpi8(0xFFFFu.toUShort(), a, b)
     val e = mmSetEpi8(65, 1, 66, 2, 67, 3, 68, 4, 69, 5, 70, 6, 71, 7, 72, 8)
     assertEqM128i(r1, e)
 }
@@ -5451,9 +5451,9 @@ public fun testMm512MaskzUnpackloEpi16() {
 public fun testMm256MaskUnpackloEpi16() {
     val a = mm256SetEpi16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val b = mm256SetEpi16(33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48)
-    val r = mm256MaskUnpackloEpi16(a, 0u, a, b)
+    val r = mm256MaskUnpackloEpi16(a, 0u.toUShort(), a, b)
     assertEqM256i(r, a)
-    val r1 = mm256MaskUnpackloEpi16(a, 0xFFFFu, a, b)
+    val r1 = mm256MaskUnpackloEpi16(a, 0xFFFFu.toUShort(), a, b)
     val e = mm256SetEpi16(37, 5, 38, 6, 39, 7, 40, 8, 45, 13, 46, 14, 47, 15, 48, 16)
     assertEqM256i(r1, e)
 }
@@ -5461,9 +5461,9 @@ public fun testMm256MaskUnpackloEpi16() {
 public fun testMm256MaskzUnpackloEpi16() {
     val a = mm256SetEpi16(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val b = mm256SetEpi16(33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48)
-    val r = mm256MaskzUnpackloEpi16(0u, a, b)
+    val r = mm256MaskzUnpackloEpi16(0u.toUShort(), a, b)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzUnpackloEpi16(0xFFFFu, a, b)
+    val r1 = mm256MaskzUnpackloEpi16(0xFFFFu.toUShort(), a, b)
     val e = mm256SetEpi16(37, 5, 38, 6, 39, 7, 40, 8, 45, 13, 46, 14, 47, 15, 48, 16)
     assertEqM256i(r1, e)
 }
@@ -5471,9 +5471,9 @@ public fun testMm256MaskzUnpackloEpi16() {
 public fun testMmMaskUnpackloEpi16() {
     val a = mmSetEpi16(1, 2, 3, 4, 5, 6, 7, 8)
     val b = mmSetEpi16(33, 34, 35, 36, 37, 38, 39, 40)
-    val r = mmMaskUnpackloEpi16(a, 0u, a, b)
+    val r = mmMaskUnpackloEpi16(a, 0u.toUByte(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskUnpackloEpi16(a, 0xFFu, a, b)
+    val r1 = mmMaskUnpackloEpi16(a, 0xFFu.toUByte(), a, b)
     val e = mmSetEpi16(37, 5, 38, 6, 39, 7, 40, 8)
     assertEqM128i(r1, e)
 }
@@ -5481,9 +5481,9 @@ public fun testMmMaskUnpackloEpi16() {
 public fun testMmMaskzUnpackloEpi16() {
     val a = mmSetEpi16(1, 2, 3, 4, 5, 6, 7, 8)
     val b = mmSetEpi16(33, 34, 35, 36, 37, 38, 39, 40)
-    val r = mmMaskzUnpackloEpi16(0u, a, b)
+    val r = mmMaskzUnpackloEpi16(0u.toUByte(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzUnpackloEpi16(0xFFu, a, b)
+    val r1 = mmMaskzUnpackloEpi16(0xFFu.toUByte(), a, b)
     val e = mmSetEpi16(37, 5, 38, 6, 39, 7, 40, 8)
     assertEqM128i(r1, e)
 }
@@ -5539,9 +5539,9 @@ public fun testMm256MaskzUnpackloEpi8() {
 public fun testMmMaskUnpackloEpi8() {
     val a = mmSetEpi8(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val b = mmSetEpi8(65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80)
-    val r = mmMaskUnpackloEpi8(a, 0u, a, b)
+    val r = mmMaskUnpackloEpi8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskUnpackloEpi8(a, 0xFFFFu, a, b)
+    val r1 = mmMaskUnpackloEpi8(a, 0xFFFFu.toUShort(), a, b)
     val e = mmSetEpi8(73, 9, 74, 10, 75, 11, 76, 12, 77, 13, 78, 14, 79, 15, 80, 16)
     assertEqM128i(r1, e)
 }
@@ -5549,9 +5549,9 @@ public fun testMmMaskUnpackloEpi8() {
 public fun testMmMaskzUnpackloEpi8() {
     val a = mmSetEpi8(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
     val b = mmSetEpi8(65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80)
-    val r = mmMaskzUnpackloEpi8(0u, a, b)
+    val r = mmMaskzUnpackloEpi8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzUnpackloEpi8(0xFFFFu, a, b)
+    val r1 = mmMaskzUnpackloEpi8(0xFFFFu.toUShort(), a, b)
     val e = mmSetEpi8(73, 9, 74, 10, 75, 11, 76, 12, 77, 13, 78, 14, 79, 15, 80, 16)
     assertEqM128i(r1, e)
 }
@@ -5576,34 +5576,34 @@ public fun testMm512MaskzMovEpi16() {
 public fun testMm256MaskMovEpi16() {
     val src = mm256Set1Epi16(1)
     val a = mm256Set1Epi16(2)
-    val r = mm256MaskMovEpi16(src, 0u, a)
+    val r = mm256MaskMovEpi16(src, 0u.toUShort(), a)
     assertEqM256i(r, src)
-    val r1 = mm256MaskMovEpi16(src, 0xFFFFu, a)
+    val r1 = mm256MaskMovEpi16(src, 0xFFFFu.toUShort(), a)
     assertEqM256i(r1, a)
 }
 
 public fun testMm256MaskzMovEpi16() {
     val a = mm256Set1Epi16(2)
-    val r = mm256MaskzMovEpi16(0u, a)
+    val r = mm256MaskzMovEpi16(0u.toUShort(), a)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzMovEpi16(0xFFFFu, a)
+    val r1 = mm256MaskzMovEpi16(0xFFFFu.toUShort(), a)
     assertEqM256i(r1, a)
 }
 
 public fun testMmMaskMovEpi16() {
     val src = mmSet1Epi16(1)
     val a = mmSet1Epi16(2)
-    val r = mmMaskMovEpi16(src, 0u, a)
+    val r = mmMaskMovEpi16(src, 0u.toUByte(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskMovEpi16(src, 0xFFu, a)
+    val r1 = mmMaskMovEpi16(src, 0xFFu.toUByte(), a)
     assertEqM128i(r1, a)
 }
 
 public fun testMmMaskzMovEpi16() {
     val a = mmSet1Epi16(2)
-    val r = mmMaskzMovEpi16(0u, a)
+    val r = mmMaskzMovEpi16(0u.toUByte(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMovEpi16(0xFFu, a)
+    val r1 = mmMaskzMovEpi16(0xFFu.toUByte(), a)
     assertEqM128i(r1, a)
 }
 
@@ -5644,17 +5644,17 @@ public fun testMm256MaskzMovEpi8() {
 public fun testMmMaskMovEpi8() {
     val src = mmSet1Epi8(1)
     val a = mmSet1Epi8(2)
-    val r = mmMaskMovEpi8(src, 0u, a)
+    val r = mmMaskMovEpi8(src, 0u.toUShort(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskMovEpi8(src, 0xFFFFu, a)
+    val r1 = mmMaskMovEpi8(src, 0xFFFFu.toUShort(), a)
     assertEqM128i(r1, a)
 }
 
 public fun testMmMaskzMovEpi8() {
     val a = mmSet1Epi8(2)
-    val r = mmMaskzMovEpi8(0u, a)
+    val r = mmMaskzMovEpi8(0u.toUShort(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzMovEpi8(0xFFFFu, a)
+    val r1 = mmMaskzMovEpi8(0xFFFFu.toUShort(), a)
     assertEqM128i(r1, a)
 }
 
@@ -5680,18 +5680,18 @@ public fun testMm512MaskzSet1Epi16() {
 public fun testMm256MaskSet1Epi16() {
     val src = mm256Set1Epi16(2)
     val a: Short = 11
-    val r = mm256MaskSet1Epi16(src, 0u, a)
+    val r = mm256MaskSet1Epi16(src, 0u.toUShort(), a)
     assertEqM256i(r, src)
-    val r1 = mm256MaskSet1Epi16(src, 0xFFFFu, a)
+    val r1 = mm256MaskSet1Epi16(src, 0xFFFFu.toUShort(), a)
     val e = mm256Set1Epi16(11)
     assertEqM256i(r1, e)
 }
 
 public fun testMm256MaskzSet1Epi16() {
     val a: Short = 11
-    val r = mm256MaskzSet1Epi16(0u, a)
+    val r = mm256MaskzSet1Epi16(0u.toUShort(), a)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzSet1Epi16(0xFFFFu, a)
+    val r1 = mm256MaskzSet1Epi16(0xFFFFu.toUShort(), a)
     val e = mm256Set1Epi16(11)
     assertEqM256i(r1, e)
 }
@@ -5699,18 +5699,18 @@ public fun testMm256MaskzSet1Epi16() {
 public fun testMmMaskSet1Epi16() {
     val src = mmSet1Epi16(2)
     val a: Short = 11
-    val r = mmMaskSet1Epi16(src, 0u, a)
+    val r = mmMaskSet1Epi16(src, 0u.toUByte(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskSet1Epi16(src, 0xFFu, a)
+    val r1 = mmMaskSet1Epi16(src, 0xFFu.toUByte(), a)
     val e = mmSet1Epi16(11)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzSet1Epi16() {
     val a: Short = 11
-    val r = mmMaskzSet1Epi16(0u, a)
+    val r = mmMaskzSet1Epi16(0u.toUByte(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSet1Epi16(0xFFu, a)
+    val r1 = mmMaskzSet1Epi16(0xFFu.toUByte(), a)
     val e = mmSet1Epi16(11)
     assertEqM128i(r1, e)
 }
@@ -5756,18 +5756,18 @@ public fun testMm256MaskzSet1Epi8() {
 public fun testMmMaskSet1Epi8() {
     val src = mmSet1Epi8(2)
     val a: Byte = 11
-    val r = mmMaskSet1Epi8(src, 0u, a)
+    val r = mmMaskSet1Epi8(src, 0u.toUShort(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskSet1Epi8(src, 0xFFFFu, a)
+    val r1 = mmMaskSet1Epi8(src, 0xFFFFu.toUShort(), a)
     val e = mmSet1Epi8(11)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzSet1Epi8() {
     val a: Byte = 11
-    val r = mmMaskzSet1Epi8(0u, a)
+    val r = mmMaskzSet1Epi8(0u.toUShort(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzSet1Epi8(0xFFFFu, a)
+    val r1 = mmMaskzSet1Epi8(0xFFFFu.toUShort(), a)
     val e = mmSet1Epi8(11)
     assertEqM128i(r1, e)
 }
@@ -5799,36 +5799,36 @@ public fun testMm512MaskzShuffleloEpi16() {
 
 public fun testMm256MaskShuffleloEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = mm256MaskShuffleloEpi16(a, 0u, a, 0x17)
+    val r = mm256MaskShuffleloEpi16(a, 0u.toUShort(), a, 0x17)
     assertEqM256i(r, a)
-    val r1 = mm256MaskShuffleloEpi16(a, 0xFFFFu, a, 0x17)
+    val r1 = mm256MaskShuffleloEpi16(a, 0xFFFFu.toUShort(), a, 0x17)
     val e = mm256SetEpi16(0, 1, 2, 3, 7, 6, 6, 4, 8, 9, 10, 11, 15, 14, 14, 12)
     assertEqM256i(r1, e)
 }
 
 public fun testMm256MaskzShuffleloEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = mm256MaskzShuffleloEpi16(0u, a, 0x17)
+    val r = mm256MaskzShuffleloEpi16(0u.toUShort(), a, 0x17)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzShuffleloEpi16(0xFFFFu, a, 0x17)
+    val r1 = mm256MaskzShuffleloEpi16(0xFFFFu.toUShort(), a, 0x17)
     val e = mm256SetEpi16(0, 1, 2, 3, 7, 6, 6, 4, 8, 9, 10, 11, 15, 14, 14, 12)
     assertEqM256i(r1, e)
 }
 
 public fun testMmMaskShuffleloEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = mmMaskShuffleloEpi16(a, 0u, a, 0x17)
+    val r = mmMaskShuffleloEpi16(a, 0u.toUByte(), a, 0x17)
     assertEqM128i(r, a)
-    val r1 = mmMaskShuffleloEpi16(a, 0xFFu, a, 0x17)
+    val r1 = mmMaskShuffleloEpi16(a, 0xFFu.toUByte(), a, 0x17)
     val e = mmSetEpi16(0, 1, 2, 3, 7, 6, 6, 4)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzShuffleloEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = mmMaskzShuffleloEpi16(0u, a, 0x17)
+    val r = mmMaskzShuffleloEpi16(0u.toUByte(), a, 0x17)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzShuffleloEpi16(0xFFu, a, 0x17)
+    val r1 = mmMaskzShuffleloEpi16(0xFFu.toUByte(), a, 0x17)
     val e = mmSetEpi16(0, 1, 2, 3, 7, 6, 6, 4)
     assertEqM128i(r1, e)
 }
@@ -5860,36 +5860,36 @@ public fun testMm512MaskzShufflehiEpi16() {
 
 public fun testMm256MaskShufflehiEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = mm256MaskShufflehiEpi16(a, 0u, a, 0x17)
+    val r = mm256MaskShufflehiEpi16(a, 0u.toUShort(), a, 0x17)
     assertEqM256i(r, a)
-    val r1 = mm256MaskShufflehiEpi16(a, 0xFFFFu, a, 0x17)
+    val r1 = mm256MaskShufflehiEpi16(a, 0xFFFFu.toUShort(), a, 0x17)
     val e = mm256SetEpi16(3, 2, 2, 0, 4, 5, 6, 7, 11, 10, 10, 8, 12, 13, 14, 15)
     assertEqM256i(r1, e)
 }
 
 public fun testMm256MaskzShufflehiEpi16() {
     val a = mm256SetEpi16(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-    val r = mm256MaskzShufflehiEpi16(0u, a, 0x17)
+    val r = mm256MaskzShufflehiEpi16(0u.toUShort(), a, 0x17)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzShufflehiEpi16(0xFFFFu, a, 0x17)
+    val r1 = mm256MaskzShufflehiEpi16(0xFFFFu.toUShort(), a, 0x17)
     val e = mm256SetEpi16(3, 2, 2, 0, 4, 5, 6, 7, 11, 10, 10, 8, 12, 13, 14, 15)
     assertEqM256i(r1, e)
 }
 
 public fun testMmMaskShufflehiEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = mmMaskShufflehiEpi16(a, 0u, a, 0x17)
+    val r = mmMaskShufflehiEpi16(a, 0u.toUByte(), a, 0x17)
     assertEqM128i(r, a)
-    val r1 = mmMaskShufflehiEpi16(a, 0xFFu, a, 0x17)
+    val r1 = mmMaskShufflehiEpi16(a, 0xFFu.toUByte(), a, 0x17)
     val e = mmSetEpi16(3, 2, 2, 0, 4, 5, 6, 7)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzShufflehiEpi16() {
     val a = mmSetEpi16(0, 1, 2, 3, 4, 5, 6, 7)
-    val r = mmMaskzShufflehiEpi16(0u, a, 0x17)
+    val r = mmMaskzShufflehiEpi16(0u.toUByte(), a, 0x17)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzShufflehiEpi16(0xFFu, a, 0x17)
+    val r1 = mmMaskzShufflehiEpi16(0xFFu.toUByte(), a, 0x17)
     val e = mmSetEpi16(3, 2, 2, 0, 4, 5, 6, 7)
     assertEqM128i(r1, e)
 }
@@ -5945,9 +5945,9 @@ public fun testMm256MaskzShuffleEpi8() {
 public fun testMmMaskShuffleEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mmSet1Epi8(1)
-    val r = mmMaskShuffleEpi8(a, 0u, a, b)
+    val r = mmMaskShuffleEpi8(a, 0u.toUShort(), a, b)
     assertEqM128i(r, a)
-    val r1 = mmMaskShuffleEpi8(a, 0xFFFFu, a, b)
+    val r1 = mmMaskShuffleEpi8(a, 0xFFFFu.toUShort(), a, b)
     val e = mmSetEpi8(14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14)
     assertEqM128i(r1, e)
 }
@@ -5955,9 +5955,9 @@ public fun testMmMaskShuffleEpi8() {
 public fun testMmMaskzShuffleEpi8() {
     val a = mmSetEpi8(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     val b = mmSet1Epi8(1)
-    val r = mmMaskzShuffleEpi8(0u, a, b)
+    val r = mmMaskzShuffleEpi8(0u.toUShort(), a, b)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzShuffleEpi8(0xFFFFu, a, b)
+    val r1 = mmMaskzShuffleEpi8(0xFFFFu.toUShort(), a, b)
     val e = mmSetEpi8(14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14)
     assertEqM128i(r1, e)
 }
@@ -5984,17 +5984,17 @@ public fun testMm256TestEpi16Mask() {
     val a = mm256Set1Epi16((1.toInt() shl 0).toShort())
     val b = mm256Set1Epi16((((1.toInt() shl 0).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort())
     val r = mm256TestEpi16Mask(a, b)
-    val e: Mmask16 = 0xFFFFu
+    val e: Mmask16 = 0xFFFFu.toUShort()
     check(r == e)
 }
 
 public fun testMm256MaskTestEpi16Mask() {
     val a = mm256Set1Epi16((1.toInt() shl 0).toShort())
     val b = mm256Set1Epi16((((1.toInt() shl 0).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort())
-    val r = mm256MaskTestEpi16Mask(0u, a, b)
+    val r = mm256MaskTestEpi16Mask(0u.toUShort(), a, b)
     check(r == 0u.toUShort())
-    val r1 = mm256MaskTestEpi16Mask(0xFFFFu, a, b)
-    val e: Mmask16 = 0xFFFFu
+    val r1 = mm256MaskTestEpi16Mask(0xFFFFu.toUShort(), a, b)
+    val e: Mmask16 = 0xFFFFu.toUShort()
     check(r1 == e)
 }
 
@@ -6002,17 +6002,17 @@ public fun testMmTestEpi16Mask() {
     val a = mmSet1Epi16((1.toInt() shl 0).toShort())
     val b = mmSet1Epi16((((1.toInt() shl 0).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort())
     val r = mmTestEpi16Mask(a, b)
-    val e: Mmask8 = 0xFFu
+    val e: Mmask8 = 0xFFu.toUByte()
     check(r == e)
 }
 
 public fun testMmMaskTestEpi16Mask() {
     val a = mmSet1Epi16((1.toInt() shl 0).toShort())
     val b = mmSet1Epi16((((1.toInt() shl 0).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort())
-    val r = mmMaskTestEpi16Mask(0u, a, b)
+    val r = mmMaskTestEpi16Mask(0u.toUByte(), a, b)
     check(r == 0u.toUByte())
-    val r1 = mmMaskTestEpi16Mask(0xFFu, a, b)
-    val e: Mmask8 = 0xFFu
+    val r1 = mmMaskTestEpi16Mask(0xFFu.toUByte(), a, b)
+    val e: Mmask8 = 0xFFu.toUByte()
     check(r1 == e)
 }
 
@@ -6056,17 +6056,17 @@ public fun testMmTestEpi8Mask() {
     val a = mmSet1Epi8((1.toInt() shl 0).toByte())
     val b = mmSet1Epi8((((1.toInt() shl 0).toByte()).toInt() or ((1.toInt() shl 1).toByte()).toInt()).toByte())
     val r = mmTestEpi8Mask(a, b)
-    val e: Mmask16 = 0xFFFFu
+    val e: Mmask16 = 0xFFFFu.toUShort()
     check(r == e)
 }
 
 public fun testMmMaskTestEpi8Mask() {
     val a = mmSet1Epi8((1.toInt() shl 0).toByte())
     val b = mmSet1Epi8((((1.toInt() shl 0).toByte()).toInt() or ((1.toInt() shl 1).toByte()).toInt()).toByte())
-    val r = mmMaskTestEpi8Mask(0u, a, b)
+    val r = mmMaskTestEpi8Mask(0u.toUShort(), a, b)
     check(r == 0u.toUShort())
-    val r1 = mmMaskTestEpi8Mask(0xFFFFu, a, b)
-    val e: Mmask16 = 0xFFFFu
+    val r1 = mmMaskTestEpi8Mask(0xFFFFu.toUShort(), a, b)
+    val e: Mmask16 = 0xFFFFu.toUShort()
     check(r1 == e)
 }
 
@@ -6092,17 +6092,17 @@ public fun testMm256TestnEpi16Mask() {
     val a = mm256Set1Epi16((1.toInt() shl 0).toShort())
     val b = mm256Set1Epi16((((1.toInt() shl 0).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort())
     val r = mm256TestnEpi16Mask(a, b)
-    val e: Mmask16 = 0x0u
+    val e: Mmask16 = 0x0u.toUShort()
     check(r == e)
 }
 
 public fun testMm256MaskTestnEpi16Mask() {
     val a = mm256Set1Epi16((1.toInt() shl 0).toShort())
     val b = mm256Set1Epi16((((1.toInt() shl 0).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort())
-    val r = mm256MaskTestnEpi16Mask(0u, a, b)
+    val r = mm256MaskTestnEpi16Mask(0u.toUShort(), a, b)
     check(r == 0u.toUShort())
-    val r1 = mm256MaskTestnEpi16Mask(0xFFFFu, a, b)
-    val e: Mmask16 = 0x0u
+    val r1 = mm256MaskTestnEpi16Mask(0xFFFFu.toUShort(), a, b)
+    val e: Mmask16 = 0x0u.toUShort()
     check(r1 == e)
 }
 
@@ -6110,17 +6110,17 @@ public fun testMmTestnEpi16Mask() {
     val a = mmSet1Epi16((1.toInt() shl 0).toShort())
     val b = mmSet1Epi16((((1.toInt() shl 0).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort())
     val r = mmTestnEpi16Mask(a, b)
-    val e: Mmask8 = 0x0u
+    val e: Mmask8 = 0x0u.toUByte()
     check(r == e)
 }
 
 public fun testMmMaskTestnEpi16Mask() {
     val a = mmSet1Epi16((1.toInt() shl 0).toShort())
     val b = mmSet1Epi16((((1.toInt() shl 0).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort())
-    val r = mmMaskTestnEpi16Mask(0u, a, b)
+    val r = mmMaskTestnEpi16Mask(0u.toUByte(), a, b)
     check(r == 0u.toUByte())
-    val r1 = mmMaskTestnEpi16Mask(0xFFu, a, b)
-    val e: Mmask8 = 0x0u
+    val r1 = mmMaskTestnEpi16Mask(0xFFu.toUByte(), a, b)
+    val e: Mmask8 = 0x0u.toUByte()
     check(r1 == e)
 }
 
@@ -6164,17 +6164,17 @@ public fun testMmTestnEpi8Mask() {
     val a = mmSet1Epi8((1.toInt() shl 0).toByte())
     val b = mmSet1Epi8((((1.toInt() shl 0).toByte()).toInt() or ((1.toInt() shl 1).toByte()).toInt()).toByte())
     val r = mmTestnEpi8Mask(a, b)
-    val e: Mmask16 = 0x0u
+    val e: Mmask16 = 0x0u.toUShort()
     check(r == e)
 }
 
 public fun testMmMaskTestnEpi8Mask() {
     val a = mmSet1Epi8((1.toInt() shl 0).toByte())
     val b = mmSet1Epi8((((1.toInt() shl 0).toByte()).toInt() or ((1.toInt() shl 1).toByte()).toInt()).toByte())
-    val r = mmMaskTestnEpi8Mask(0u, a, b)
+    val r = mmMaskTestnEpi8Mask(0u.toUShort(), a, b)
     check(r == 0u.toUShort())
-    val r1 = mmMaskTestnEpi8Mask(0xFFFFu, a, b)
-    val e: Mmask16 = 0x0u
+    val r1 = mmMaskTestnEpi8Mask(0xFFFFu.toUShort(), a, b)
+    val e: Mmask16 = 0x0u.toUShort()
     check(r1 == e)
 }
 
@@ -6259,9 +6259,9 @@ public fun testMm256MaskDbsadEpu8() {
     val src = mm256Set1Epi16(1)
     val a = mm256Set1Epi8(2)
     val b = mm256Set1Epi8(4)
-    val r = mm256MaskDbsadEpu8(src, 0u, a, b, 0)
+    val r = mm256MaskDbsadEpu8(src, 0u.toUShort(), a, b, 0)
     assertEqM256i(r, src)
-    val r1 = mm256MaskDbsadEpu8(src, 0xFFFFu, a, b, 0)
+    val r1 = mm256MaskDbsadEpu8(src, 0xFFFFu.toUShort(), a, b, 0)
     val e = mm256Set1Epi16(8)
     assertEqM256i(r1, e)
 }
@@ -6269,9 +6269,9 @@ public fun testMm256MaskDbsadEpu8() {
 public fun testMm256MaskzDbsadEpu8() {
     val a = mm256Set1Epi8(2)
     val b = mm256Set1Epi8(4)
-    val r = mm256MaskzDbsadEpu8(0u, a, b, 0)
+    val r = mm256MaskzDbsadEpu8(0u.toUShort(), a, b, 0)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzDbsadEpu8(0xFFFFu, a, b, 0)
+    val r1 = mm256MaskzDbsadEpu8(0xFFFFu.toUShort(), a, b, 0)
     val e = mm256Set1Epi16(8)
     assertEqM256i(r1, e)
 }
@@ -6288,9 +6288,9 @@ public fun testMmMaskDbsadEpu8() {
     val src = mmSet1Epi16(1)
     val a = mmSet1Epi8(2)
     val b = mmSet1Epi8(4)
-    val r = mmMaskDbsadEpu8(src, 0u, a, b, 0)
+    val r = mmMaskDbsadEpu8(src, 0u.toUByte(), a, b, 0)
     assertEqM128i(r, src)
-    val r1 = mmMaskDbsadEpu8(src, 0xFFu, a, b, 0)
+    val r1 = mmMaskDbsadEpu8(src, 0xFFu.toUByte(), a, b, 0)
     val e = mmSet1Epi16(8)
     assertEqM128i(r1, e)
 }
@@ -6298,9 +6298,9 @@ public fun testMmMaskDbsadEpu8() {
 public fun testMmMaskzDbsadEpu8() {
     val a = mmSet1Epi8(2)
     val b = mmSet1Epi8(4)
-    val r = mmMaskzDbsadEpu8(0u, a, b, 0)
+    val r = mmMaskzDbsadEpu8(0u.toUByte(), a, b, 0)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzDbsadEpu8(0xFFu, a, b, 0)
+    val r1 = mmMaskzDbsadEpu8(0xFFu.toUByte(), a, b, 0)
     val e = mmSet1Epi16(8)
     assertEqM128i(r1, e)
 }
@@ -6315,14 +6315,14 @@ public fun testMm512Movepi16Mask() {
 public fun testMm256Movepi16Mask() {
     val a = mm256Set1Epi16((1.toInt() shl 15).toShort())
     val r = mm256Movepi16Mask(a)
-    val e: Mmask16 = 0xFFFFu
+    val e: Mmask16 = 0xFFFFu.toUShort()
     check(r == e)
 }
 
 public fun testMmMovepi16Mask() {
     val a = mmSet1Epi16((1.toInt() shl 15).toShort())
     val r = mmMovepi16Mask(a)
-    val e: Mmask8 = 0xFFu
+    val e: Mmask8 = 0xFFu.toUByte()
     check(r == e)
 }
 
@@ -6343,7 +6343,7 @@ public fun testMm256Movepi8Mask() {
 public fun testMmMovepi8Mask() {
     val a = mmSet1Epi8((1.toInt() shl 7).toByte())
     val r = mmMovepi8Mask(a)
-    val e: Mmask16 = 0xFFFFu
+    val e: Mmask16 = 0xFFFFu.toUShort()
     check(r == e)
 }
 
@@ -6355,14 +6355,14 @@ public fun testMm512MovmEpi16() {
 }
 
 public fun testMm256MovmEpi16() {
-    val a: Mmask16 = 0xFFFFu
+    val a: Mmask16 = 0xFFFFu.toUShort()
     val r = mm256MovmEpi16(a)
     val e = mm256Set1Epi16((((((((((((((((((((((((((((((((1.toInt() shl 15).toShort()).toInt() or ((1.toInt() shl 14).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 13).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 12).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 11).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 10).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 9).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 8).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 7).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 6).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 5).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 4).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 3).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 2).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 0).toShort()).toInt()).toShort())
     assertEqM256i(r, e)
 }
 
 public fun testMmMovmEpi16() {
-    val a: Mmask8 = 0xFFu
+    val a: Mmask8 = 0xFFu.toUByte()
     val r = mmMovmEpi16(a)
     val e = mmSet1Epi16((((((((((((((((((((((((((((((((1.toInt() shl 15).toShort()).toInt() or ((1.toInt() shl 14).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 13).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 12).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 11).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 10).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 9).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 8).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 7).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 6).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 5).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 4).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 3).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 2).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 1).toShort()).toInt()).toShort()).toInt() or ((1.toInt() shl 0).toShort()).toInt()).toShort())
     assertEqM128i(r, e)
@@ -6383,7 +6383,7 @@ public fun testMm256MovmEpi8() {
 }
 
 public fun testMmMovmEpi8() {
-    val a: Mmask16 = 0xFFFFu
+    val a: Mmask16 = 0xFFFFu.toUShort()
     val r = mmMovmEpi8(a)
     val e = mmSet1Epi8((((((((((((((((1.toInt() shl 7).toByte()).toInt() or ((1.toInt() shl 6).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 5).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 4).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 3).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 2).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 1).toByte()).toInt()).toByte()).toInt() or ((1.toInt() shl 0).toByte()).toInt()).toByte())
     assertEqM128i(r, e)
@@ -6516,7 +6516,7 @@ public fun testKxnorMask64() {
 public fun testKortestMask32U8() {
     val a: Mmask32 = 0x69696969u
     val b: Mmask32 = 0xB6B6B6B6u
-    val localStorageL21073C8 = AddressableLocal(0u, PrimitiveLayouts.U8)
+    val localStorageL21073C8 = AddressableLocal(0u.toUByte(), PrimitiveLayouts.U8)
     var allOnes by localStorageL21073C8
     val r = kortestMask32U8(a, b, RustMutableReference(localStorageL21073C8.asMutPtr(), localStorageL21073C8.layout))
     check(r == 0u.toUByte())
@@ -6526,7 +6526,7 @@ public fun testKortestMask32U8() {
 public fun testKortestMask64U8() {
     val a: Mmask64 = 0x69696969uL
     val b: Mmask64 = 0xB6B6B6B6uL
-    val localStorageL21083C8 = AddressableLocal(0u, PrimitiveLayouts.U8)
+    val localStorageL21083C8 = AddressableLocal(0u.toUByte(), PrimitiveLayouts.U8)
     var allOnes by localStorageL21083C8
     val r = kortestMask64U8(a, b, RustMutableReference(localStorageL21083C8.asMutPtr(), localStorageL21083C8.layout))
     check(r == 0u.toUByte())
@@ -6631,7 +6631,7 @@ public fun testKshiftriMask64() {
 public fun testKtestMask32U8() {
     val a: Mmask32 = 0x693C693Cu
     val b: Mmask32 = 0x96C396C3u
-    val localStorageL21209C8 = AddressableLocal(0u, PrimitiveLayouts.U8)
+    val localStorageL21209C8 = AddressableLocal(0u.toUByte(), PrimitiveLayouts.U8)
     var andNot by localStorageL21209C8
     val r = ktestMask32U8(a, b, RustMutableReference(localStorageL21209C8.asMutPtr(), localStorageL21209C8.layout))
     check(r == 1u.toUByte())
@@ -6655,7 +6655,7 @@ public fun testKtestzMask32U8() {
 public fun testKtestMask64U8() {
     val a: Mmask64 = 0x693C693CuL
     val b: Mmask64 = 0x96C396C3uL
-    val localStorageL21235C8 = AddressableLocal(0u, PrimitiveLayouts.U8)
+    val localStorageL21235C8 = AddressableLocal(0u.toUByte(), PrimitiveLayouts.U8)
     var andNot by localStorageL21235C8
     val r = ktestMask64U8(a, b, RustMutableReference(localStorageL21235C8.asMutPtr(), localStorageL21235C8.layout))
     check(r == 1u.toUByte())
@@ -6728,18 +6728,18 @@ public fun testMm256Cvtepi16Epi8() {
 public fun testMm256MaskCvtepi16Epi8() {
     val src = mmSet1Epi8(1)
     val a = mm256Set1Epi16(2)
-    val r = mm256MaskCvtepi16Epi8(src, 0u, a)
+    val r = mm256MaskCvtepi16Epi8(src, 0u.toUShort(), a)
     assertEqM128i(r, src)
-    val r1 = mm256MaskCvtepi16Epi8(src, 0xFFFFu, a)
+    val r1 = mm256MaskCvtepi16Epi8(src, 0xFFFFu.toUShort(), a)
     val e = mmSet1Epi8(2)
     assertEqM128i(r1, e)
 }
 
 public fun testMm256MaskzCvtepi16Epi8() {
     val a = mm256Set1Epi16(2)
-    val r = mm256MaskzCvtepi16Epi8(0u, a)
+    val r = mm256MaskzCvtepi16Epi8(0u.toUShort(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mm256MaskzCvtepi16Epi8(0xFFFFu, a)
+    val r1 = mm256MaskzCvtepi16Epi8(0xFFFFu.toUShort(), a)
     val e = mmSet1Epi8(2)
     assertEqM128i(r1, e)
 }
@@ -6754,18 +6754,18 @@ public fun testMmCvtepi16Epi8() {
 public fun testMmMaskCvtepi16Epi8() {
     val src = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1)
     val a = mmSet1Epi16(2)
-    val r = mmMaskCvtepi16Epi8(src, 0u, a)
+    val r = mmMaskCvtepi16Epi8(src, 0u.toUByte(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskCvtepi16Epi8(src, 0xFFu, a)
+    val r1 = mmMaskCvtepi16Epi8(src, 0xFFu.toUByte(), a)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzCvtepi16Epi8() {
     val a = mmSet1Epi16(2)
-    val r = mmMaskzCvtepi16Epi8(0u, a)
+    val r = mmMaskzCvtepi16Epi8(0u.toUByte(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzCvtepi16Epi8(0xFFu, a)
+    val r1 = mmMaskzCvtepi16Epi8(0xFFu.toUByte(), a)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2)
     assertEqM128i(r1, e)
 }
@@ -6797,18 +6797,18 @@ public fun testMm256Cvtsepi16Epi8() {
 public fun testMm256MaskCvtsepi16Epi8() {
     val src = mmSet1Epi8(1)
     val a = mm256Set1Epi16(Short.MAX_VALUE)
-    val r = mm256MaskCvtsepi16Epi8(src, 0u, a)
+    val r = mm256MaskCvtsepi16Epi8(src, 0u.toUShort(), a)
     assertEqM128i(r, src)
-    val r1 = mm256MaskCvtsepi16Epi8(src, 0xFFFFu, a)
+    val r1 = mm256MaskCvtsepi16Epi8(src, 0xFFFFu.toUShort(), a)
     val e = mmSet1Epi8(Byte.MAX_VALUE)
     assertEqM128i(r1, e)
 }
 
 public fun testMm256MaskzCvtsepi16Epi8() {
     val a = mm256Set1Epi16(Short.MAX_VALUE)
-    val r = mm256MaskzCvtsepi16Epi8(0u, a)
+    val r = mm256MaskzCvtsepi16Epi8(0u.toUShort(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mm256MaskzCvtsepi16Epi8(0xFFFFu, a)
+    val r1 = mm256MaskzCvtsepi16Epi8(0xFFFFu.toUShort(), a)
     val e = mmSet1Epi8(Byte.MAX_VALUE)
     assertEqM128i(r1, e)
 }
@@ -6823,18 +6823,18 @@ public fun testMmCvtsepi16Epi8() {
 public fun testMmMaskCvtsepi16Epi8() {
     val src = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1)
     val a = mmSet1Epi16(Short.MAX_VALUE)
-    val r = mmMaskCvtsepi16Epi8(src, 0u, a)
+    val r = mmMaskCvtsepi16Epi8(src, 0u.toUByte(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskCvtsepi16Epi8(src, 0xFFu, a)
+    val r1 = mmMaskCvtsepi16Epi8(src, 0xFFu.toUByte(), a)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzCvtsepi16Epi8() {
     val a = mmSet1Epi16(Short.MAX_VALUE)
-    val r = mmMaskzCvtsepi16Epi8(0u, a)
+    val r = mmMaskzCvtsepi16Epi8(0u.toUByte(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzCvtsepi16Epi8(0xFFu, a)
+    val r1 = mmMaskzCvtsepi16Epi8(0xFFu.toUByte(), a)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE)
     assertEqM128i(r1, e)
 }
@@ -6884,18 +6884,18 @@ public fun testMm256Cvtusepi16Epi8() {
 public fun testMm256MaskCvtusepi16Epi8() {
     val src = mmSet1Epi8(1)
     val a = mm256Set1Epi16(Short.MIN_VALUE)
-    val r = mm256MaskCvtusepi16Epi8(src, 0u, a)
+    val r = mm256MaskCvtusepi16Epi8(src, 0u.toUShort(), a)
     assertEqM128i(r, src)
-    val r1 = mm256MaskCvtusepi16Epi8(src, 0xFFFFu, a)
+    val r1 = mm256MaskCvtusepi16Epi8(src, 0xFFFFu.toUShort(), a)
     val e = mmSet1Epi8((-1).toByte())
     assertEqM128i(r1, e)
 }
 
 public fun testMm256MaskzCvtusepi16Epi8() {
     val a = mm256Set1Epi16(Short.MIN_VALUE)
-    val r = mm256MaskzCvtusepi16Epi8(0u, a)
+    val r = mm256MaskzCvtusepi16Epi8(0u.toUShort(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mm256MaskzCvtusepi16Epi8(0xFFFFu, a)
+    val r1 = mm256MaskzCvtusepi16Epi8(0xFFFFu.toUShort(), a)
     val e = mmSet1Epi8((-1).toByte())
     assertEqM128i(r1, e)
 }
@@ -6910,18 +6910,18 @@ public fun testMmCvtusepi16Epi8() {
 public fun testMmMaskCvtusepi16Epi8() {
     val src = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1)
     val a = mmSet1Epi16(Short.MIN_VALUE)
-    val r = mmMaskCvtusepi16Epi8(src, 0u, a)
+    val r = mmMaskCvtusepi16Epi8(src, 0u.toUByte(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskCvtusepi16Epi8(src, 0xFFu, a)
+    val r1 = mmMaskCvtusepi16Epi8(src, 0xFFu.toUByte(), a)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte())
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzCvtusepi16Epi8() {
     val a = mmSet1Epi16(Short.MIN_VALUE)
-    val r = mmMaskzCvtusepi16Epi8(0u, a)
+    val r = mmMaskzCvtusepi16Epi8(0u.toUByte(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzCvtusepi16Epi8(0xFFu, a)
+    val r1 = mmMaskzCvtusepi16Epi8(0xFFu.toUByte(), a)
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte(), (-1).toByte())
     assertEqM128i(r1, e)
 }
@@ -6955,18 +6955,18 @@ public fun testMm512MaskzCvtepi8Epi16() {
 public fun testMm256MaskCvtepi8Epi16() {
     val src = mm256Set1Epi16(1)
     val a = mmSet1Epi8(2)
-    val r = mm256MaskCvtepi8Epi16(src, 0u, a)
+    val r = mm256MaskCvtepi8Epi16(src, 0u.toUShort(), a)
     assertEqM256i(r, src)
-    val r1 = mm256MaskCvtepi8Epi16(src, 0xFFFFu, a)
+    val r1 = mm256MaskCvtepi8Epi16(src, 0xFFFFu.toUShort(), a)
     val e = mm256Set1Epi16(2)
     assertEqM256i(r1, e)
 }
 
 public fun testMm256MaskzCvtepi8Epi16() {
     val a = mmSet1Epi8(2)
-    val r = mm256MaskzCvtepi8Epi16(0u, a)
+    val r = mm256MaskzCvtepi8Epi16(0u.toUShort(), a)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzCvtepi8Epi16(0xFFFFu, a)
+    val r1 = mm256MaskzCvtepi8Epi16(0xFFFFu.toUShort(), a)
     val e = mm256Set1Epi16(2)
     assertEqM256i(r1, e)
 }
@@ -6974,18 +6974,18 @@ public fun testMm256MaskzCvtepi8Epi16() {
 public fun testMmMaskCvtepi8Epi16() {
     val src = mmSet1Epi16(1)
     val a = mmSet1Epi8(2)
-    val r = mmMaskCvtepi8Epi16(src, 0u, a)
+    val r = mmMaskCvtepi8Epi16(src, 0u.toUByte(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskCvtepi8Epi16(src, 0xFFu, a)
+    val r1 = mmMaskCvtepi8Epi16(src, 0xFFu.toUByte(), a)
     val e = mmSet1Epi16(2)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzCvtepi8Epi16() {
     val a = mmSet1Epi8(2)
-    val r = mmMaskzCvtepi8Epi16(0u, a)
+    val r = mmMaskzCvtepi8Epi16(0u.toUByte(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzCvtepi8Epi16(0xFFu, a)
+    val r1 = mmMaskzCvtepi8Epi16(0xFFu.toUByte(), a)
     val e = mmSet1Epi16(2)
     assertEqM128i(r1, e)
 }
@@ -7019,18 +7019,18 @@ public fun testMm512MaskzCvtepu8Epi16() {
 public fun testMm256MaskCvtepu8Epi16() {
     val src = mm256Set1Epi16(1)
     val a = mmSet1Epi8(2)
-    val r = mm256MaskCvtepu8Epi16(src, 0u, a)
+    val r = mm256MaskCvtepu8Epi16(src, 0u.toUShort(), a)
     assertEqM256i(r, src)
-    val r1 = mm256MaskCvtepu8Epi16(src, 0xFFFFu, a)
+    val r1 = mm256MaskCvtepu8Epi16(src, 0xFFFFu.toUShort(), a)
     val e = mm256Set1Epi16(2)
     assertEqM256i(r1, e)
 }
 
 public fun testMm256MaskzCvtepu8Epi16() {
     val a = mmSet1Epi8(2)
-    val r = mm256MaskzCvtepu8Epi16(0u, a)
+    val r = mm256MaskzCvtepu8Epi16(0u.toUShort(), a)
     assertEqM256i(r, mm256SetzeroSi256())
-    val r1 = mm256MaskzCvtepu8Epi16(0xFFFFu, a)
+    val r1 = mm256MaskzCvtepu8Epi16(0xFFFFu.toUShort(), a)
     val e = mm256Set1Epi16(2)
     assertEqM256i(r1, e)
 }
@@ -7038,18 +7038,18 @@ public fun testMm256MaskzCvtepu8Epi16() {
 public fun testMmMaskCvtepu8Epi16() {
     val src = mmSet1Epi16(1)
     val a = mmSet1Epi8(2)
-    val r = mmMaskCvtepu8Epi16(src, 0u, a)
+    val r = mmMaskCvtepu8Epi16(src, 0u.toUByte(), a)
     assertEqM128i(r, src)
-    val r1 = mmMaskCvtepu8Epi16(src, 0xFFu, a)
+    val r1 = mmMaskCvtepu8Epi16(src, 0xFFu.toUByte(), a)
     val e = mmSet1Epi16(2)
     assertEqM128i(r1, e)
 }
 
 public fun testMmMaskzCvtepu8Epi16() {
     val a = mmSet1Epi8(2)
-    val r = mmMaskzCvtepu8Epi16(0u, a)
+    val r = mmMaskzCvtepu8Epi16(0u.toUByte(), a)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzCvtepu8Epi16(0xFFu, a)
+    val r1 = mmMaskzCvtepu8Epi16(0xFFu.toUByte(), a)
     val e = mmSet1Epi16(2)
     assertEqM128i(r1, e)
 }
@@ -7119,9 +7119,9 @@ public fun testMm256MaskzAlignrEpi8() {
 public fun testMmMaskAlignrEpi8() {
     val a = mmSetEpi8(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
     val b = mmSet1Epi8(1)
-    val r = mmMaskAlignrEpi8(a, 0u, a, b, 14)
+    val r = mmMaskAlignrEpi8(a, 0u.toUShort(), a, b, 14)
     assertEqM128i(r, a)
-    val r1 = mmMaskAlignrEpi8(a, 0xFFFFu, a, b, 14)
+    val r1 = mmMaskAlignrEpi8(a, 0xFFFFu.toUShort(), a, b, 14)
     val e = mmSetEpi8(0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1)
     assertEqM128i(r1, e)
 }
@@ -7129,9 +7129,9 @@ public fun testMmMaskAlignrEpi8() {
 public fun testMmMaskzAlignrEpi8() {
     val a = mmSetEpi8(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
     val b = mmSet1Epi8(1)
-    val r = mmMaskzAlignrEpi8(0u, a, b, 14)
+    val r = mmMaskzAlignrEpi8(0u.toUShort(), a, b, 14)
     assertEqM128i(r, mmSetzeroSi128())
-    val r1 = mmMaskzAlignrEpi8(0xFFFFu, a, b, 14)
+    val r1 = mmMaskzAlignrEpi8(0xFFFFu.toUShort(), a, b, 14)
     val e = mmSetEpi8(0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1)
     assertEqM128i(r1, e)
 }
@@ -7152,7 +7152,7 @@ public fun testMm256MaskCvtsepi16StoreuEpi8() {
     val localStorageL21875C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL21875C8
     run {
-        mm256MaskCvtsepi16StoreuEpi8((MutPtr(localStorageL21875C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu, a)
+        mm256MaskCvtsepi16StoreuEpi8((MutPtr(localStorageL21875C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu.toUShort(), a)
     }
     val e = mmSet1Epi8(Byte.MAX_VALUE)
     assertEqM128i(r, e)
@@ -7163,7 +7163,7 @@ public fun testMmMaskCvtsepi16StoreuEpi8() {
     val localStorageL21886C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL21886C8
     run {
-        mmMaskCvtsepi16StoreuEpi8((MutPtr(localStorageL21886C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
+        mmMaskCvtsepi16StoreuEpi8((MutPtr(localStorageL21886C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu.toUByte(), a)
     }
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE, Byte.MAX_VALUE)
     assertEqM128i(r, e)
@@ -7185,7 +7185,7 @@ public fun testMm256MaskCvtepi16StoreuEpi8() {
     val localStorageL21916C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL21916C8
     run {
-        mm256MaskCvtepi16StoreuEpi8((MutPtr(localStorageL21916C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu, a)
+        mm256MaskCvtepi16StoreuEpi8((MutPtr(localStorageL21916C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu.toUShort(), a)
     }
     val e = mmSet1Epi8(8)
     assertEqM128i(r, e)
@@ -7196,7 +7196,7 @@ public fun testMmMaskCvtepi16StoreuEpi8() {
     val localStorageL21927C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL21927C8
     run {
-        mmMaskCvtepi16StoreuEpi8((MutPtr(localStorageL21927C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
+        mmMaskCvtepi16StoreuEpi8((MutPtr(localStorageL21927C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu.toUByte(), a)
     }
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, 8, 8, 8, 8, 8, 8, 8, 8)
     assertEqM128i(r, e)
@@ -7218,7 +7218,7 @@ public fun testMm256MaskCvtusepi16StoreuEpi8() {
     val localStorageL21953C8 = AddressableLocal(mmUndefinedSi128(), UnresolvedTypeLayout<M128i>())
     val r by localStorageL21953C8
     run {
-        mm256MaskCvtusepi16StoreuEpi8((MutPtr(localStorageL21953C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu, a)
+        mm256MaskCvtusepi16StoreuEpi8((MutPtr(localStorageL21953C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFFFu.toUShort(), a)
     }
     val e = mmSet1Epi8(UByte.MAX_VALUE.toByte())
     assertEqM128i(r, e)
@@ -7229,7 +7229,7 @@ public fun testMmMaskCvtusepi16StoreuEpi8() {
     val localStorageL21964C8 = AddressableLocal(mmSet1Epi8(0), UnresolvedTypeLayout<M128i>())
     val r by localStorageL21964C8
     run {
-        mmMaskCvtusepi16StoreuEpi8((MutPtr(localStorageL21964C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu, a)
+        mmMaskCvtusepi16StoreuEpi8((MutPtr(localStorageL21964C8.asMutPtr().rawAddress)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }, 0xFFu.toUByte(), a)
     }
     val e = mmSetEpi8(0, 0, 0, 0, 0, 0, 0, 0, UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte(), UByte.MAX_VALUE.toByte())
     assertEqM128i(r, e)

@@ -21,7 +21,7 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fmaximum(x: F, y: F): 
             x
         } else if (y.isNan()) {
             y
-        } else if ((kmCompareValues(x, y) > 0) || (y.biteq(F.NEG_ZERO) && x.isSignPositive())) {
+        } else if ((kmCompareValues(x, y) > 0) || (y.biteq(x.NEG_ZERO) && x.isSignPositive())) {
             x
         } else {
             y

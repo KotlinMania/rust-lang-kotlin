@@ -216,12 +216,12 @@ public fun defaultInt(): Int = 0
 /**
  * Returns the default value of `0`
  */
-public fun defaultUByte(): UByte = 0u
+public fun defaultUByte(): UByte = 0u.toUByte()
 
 /**
  * Returns the default value of `0`
  */
-public fun defaultUShort(): UShort = 0u
+public fun defaultUShort(): UShort = 0u.toUShort()
 
 /**
  * Returns the default value of `0`

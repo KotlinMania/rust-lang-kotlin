@@ -523,7 +523,7 @@ public fun init(): Result<Init, Unit> {
                 }
                 else -> {
                     val h1 = matchVal
-                    65u.toUByte() + (h1 - 10u)
+                    65u.toUByte() + (h1 - 10u.toUByte())
                 }
             }
             id = id shr 4

@@ -14,11 +14,8 @@ import io.github.kotlinmania.rustlang.core.io.ioslice.IoSlice
 import io.github.kotlinmania.rustlang.core.io.ioslice.IoSliceMut
 import io.github.kotlinmania.rustlang.core.io.write.Write
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.intoInner
@@ -38,7 +35,7 @@ public fun interface FnCallback {
     public operator fun invoke(): T
 }
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -79,7 +76,7 @@ public typealias LocalStream = Mutex<List<UByte>>
  * the same thread*. Within the same thread, things always have a perfectly
  * consistent order. So Ordering.Relaxed is fine.
  */
-public var OUTPUT_CAPTURE_USED: Atomic<Boolean, Align1<UByte>> = AtomicBool.new(false)
+public var OUTPUT_CAPTURE_USED: AtomicBool = AtomicBool.new(false)
 
 /**
  * A handle to a raw instance of the standard input stream of this process.

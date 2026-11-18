@@ -111,7 +111,7 @@ public fun testVld1qLaneS64() {
 
 public fun testVld1LaneU8() {
     val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
-    val elem: UByte = 42u
+    val elem: UByte = 42u.toUByte()
     val e = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 42u.toUByte()))
     val r = U8x8.from(vld1LaneU8(elem, a.into(), 7))
     check(r == e)
@@ -119,7 +119,7 @@ public fun testVld1LaneU8() {
 
 public fun testVld1qLaneU8() {
     val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
-    val elem: UByte = 42u
+    val elem: UByte = 42u.toUByte()
     val e = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 42u.toUByte()))
     val r = U8x16.from(vld1qLaneU8(elem, a.into(), 15))
     check(r == e)
@@ -127,7 +127,7 @@ public fun testVld1qLaneU8() {
 
 public fun testVld1LaneU16() {
     val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
-    val elem: UShort = 42u
+    val elem: UShort = 42u.toUShort()
     val e = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 42u.toUShort()))
     val r = U16x4.from(vld1LaneU16(elem, a.into(), 3))
     check(r == e)
@@ -135,7 +135,7 @@ public fun testVld1LaneU16() {
 
 public fun testVld1qLaneU16() {
     val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
-    val elem: UShort = 42u
+    val elem: UShort = 42u.toUShort()
     val e = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 42u.toUShort()))
     val r = U16x8.from(vld1qLaneU16(elem, a.into(), 7))
     check(r == e)
@@ -175,7 +175,7 @@ public fun testVld1qLaneU64() {
 
 public fun testVld1LaneP8() {
     val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
-    val elem: P8 = 42u
+    val elem: P8 = 42u.toUByte()
     val e = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 42u.toUByte()))
     val r = U8x8.from(vld1LaneP8(elem, a.into(), 7))
     check(r == e)
@@ -183,7 +183,7 @@ public fun testVld1LaneP8() {
 
 public fun testVld1qLaneP8() {
     val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
-    val elem: P8 = 42u
+    val elem: P8 = 42u.toUByte()
     val e = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 42u.toUByte()))
     val r = U8x16.from(vld1qLaneP8(elem, a.into(), 15))
     check(r == e)
@@ -191,7 +191,7 @@ public fun testVld1qLaneP8() {
 
 public fun testVld1LaneP16() {
     val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
-    val elem: P16 = 42u
+    val elem: P16 = 42u.toUShort()
     val e = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 42u.toUShort()))
     val r = U16x4.from(vld1LaneP16(elem, a.into(), 3))
     check(r == e)
@@ -199,7 +199,7 @@ public fun testVld1LaneP16() {
 
 public fun testVld1qLaneP16() {
     val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
-    val elem: P16 = 42u
+    val elem: P16 = 42u.toUShort()
     val e = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 42u.toUShort()))
     val r = U16x8.from(vld1qLaneP16(elem, a.into(), 7))
     check(r == e)
@@ -294,28 +294,28 @@ public fun testVld1qDupS64() {
 }
 
 public fun testVld1DupU8() {
-    val elem: UByte = 42u
+    val elem: UByte = 42u.toUByte()
     val e = Simd<UByte>(listOf(42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte()))
     val r = U8x8.from(vld1DupU8(elem))
     check(r == e)
 }
 
 public fun testVld1qDupU8() {
-    val elem: UByte = 42u
+    val elem: UByte = 42u.toUByte()
     val e = Simd<UByte>(listOf(42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte()))
     val r = U8x16.from(vld1qDupU8(elem))
     check(r == e)
 }
 
 public fun testVld1DupU16() {
-    val elem: UShort = 42u
+    val elem: UShort = 42u.toUShort()
     val e = Simd<UShort>(listOf(42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort()))
     val r = U16x4.from(vld1DupU16(elem))
     check(r == e)
 }
 
 public fun testVld1qDupU16() {
-    val elem: UShort = 42u
+    val elem: UShort = 42u.toUShort()
     val e = Simd<UShort>(listOf(42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort()))
     val r = U16x8.from(vld1qDupU16(elem))
     check(r == e)
@@ -350,28 +350,28 @@ public fun testVld1qDupU64() {
 }
 
 public fun testVld1DupP8() {
-    val elem: P8 = 42u
+    val elem: P8 = 42u.toUByte()
     val e = Simd<UByte>(listOf(42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte()))
     val r = U8x8.from(vld1DupP8(elem))
     check(r == e)
 }
 
 public fun testVld1qDupP8() {
-    val elem: P8 = 42u
+    val elem: P8 = 42u.toUByte()
     val e = Simd<UByte>(listOf(42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte(), 42u.toUByte()))
     val r = U8x16.from(vld1qDupP8(elem))
     check(r == e)
 }
 
 public fun testVld1DupP16() {
-    val elem: P16 = 42u
+    val elem: P16 = 42u.toUShort()
     val e = Simd<UShort>(listOf(42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort()))
     val r = U16x4.from(vld1DupP16(elem))
     check(r == e)
 }
 
 public fun testVld1qDupP16() {
-    val elem: P16 = 42u
+    val elem: P16 = 42u.toUShort()
     val e = Simd<UShort>(listOf(42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort(), 42u.toUShort()))
     val r = U16x8.from(vld1qDupP16(elem))
     check(r == e)
@@ -450,14 +450,14 @@ public fun testVdupqNS64() {
 }
 
 public fun testVdupqNU8() {
-    val v: UByte = 64u
+    val v: UByte = 64u.toUByte()
     val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = U8x16.from(vdupqNU8(v))
     check(r == e)
 }
 
 public fun testVdupqNU16() {
-    val v: UShort = 64u
+    val v: UShort = 64u.toUShort()
     val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = U16x8.from(vdupqNU16(v))
     check(r == e)
@@ -478,14 +478,14 @@ public fun testVdupqNU64() {
 }
 
 public fun testVdupqNP8() {
-    val v: P8 = 64u
+    val v: P8 = 64u.toUByte()
     val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = U8x16.from(vdupqNP8(v))
     check(r == e)
 }
 
 public fun testVdupqNP16() {
-    val v: P16 = 64u
+    val v: P16 = 64u.toUShort()
     val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = U16x8.from(vdupqNP16(v))
     check(r == e)
@@ -527,14 +527,14 @@ public fun testVdupNS64() {
 }
 
 public fun testVdupNU8() {
-    val v: UByte = 64u
+    val v: UByte = 64u.toUByte()
     val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = U8x8.from(vdupNU8(v))
     check(r == e)
 }
 
 public fun testVdupNU16() {
-    val v: UShort = 64u
+    val v: UShort = 64u.toUShort()
     val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = U16x4.from(vdupNU16(v))
     check(r == e)
@@ -555,14 +555,14 @@ public fun testVdupNU64() {
 }
 
 public fun testVdupNP8() {
-    val v: P8 = 64u
+    val v: P8 = 64u.toUByte()
     val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = U8x8.from(vdupNP8(v))
     check(r == e)
 }
 
 public fun testVdupNP16() {
-    val v: P16 = 64u
+    val v: P16 = 64u.toUShort()
     val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = U16x4.from(vdupNP16(v))
     check(r == e)
@@ -621,14 +621,14 @@ public fun testVmovNS64() {
 }
 
 public fun testVmovNU8() {
-    val v: UByte = 64u
+    val v: UByte = 64u.toUByte()
     val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = U8x8.from(vmovNU8(v))
     check(r == e)
 }
 
 public fun testVmovNU16() {
-    val v: UShort = 64u
+    val v: UShort = 64u.toUShort()
     val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = U16x4.from(vmovNU16(v))
     check(r == e)
@@ -649,14 +649,14 @@ public fun testVmovNU64() {
 }
 
 public fun testVmovNP8() {
-    val v: P8 = 64u
+    val v: P8 = 64u.toUByte()
     val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = U8x8.from(vmovNP8(v))
     check(r == e)
 }
 
 public fun testVmovNP16() {
-    val v: P16 = 64u
+    val v: P16 = 64u.toUShort()
     val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = U16x4.from(vmovNP16(v))
     check(r == e)
@@ -698,14 +698,14 @@ public fun testVmovqNS64() {
 }
 
 public fun testVmovqNU8() {
-    val v: UByte = 64u
+    val v: UByte = 64u.toUByte()
     val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = U8x16.from(vmovqNU8(v))
     check(r == e)
 }
 
 public fun testVmovqNU16() {
-    val v: UShort = 64u
+    val v: UShort = 64u.toUShort()
     val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = U16x8.from(vmovqNU16(v))
     check(r == e)
@@ -726,14 +726,14 @@ public fun testVmovqNU64() {
 }
 
 public fun testVmovqNP8() {
-    val v: P8 = 64u
+    val v: P8 = 64u.toUByte()
     val e = Simd<UByte>(listOf(64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte(), 64u.toUByte()))
     val r = U8x16.from(vmovqNP8(v))
     check(r == e)
 }
 
 public fun testVmovqNP16() {
-    val v: P16 = 64u
+    val v: P16 = 64u.toUShort()
     val e = Simd<UShort>(listOf(64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort(), 64u.toUShort()))
     val r = U16x8.from(vmovqNP16(v))
     check(r == e)
@@ -860,7 +860,7 @@ public fun testVaddlS32() {
 public fun testVaddlU8() {
     val v = UByte.MAX_VALUE
     val a = Simd<UByte>(listOf(v, v, v, v, v, v, v, v))
-    val v1 = 2u * (v.toUShort())
+    val v1 = 2u.toUShort() * (v.toUShort())
     val e = Simd<UShort>(listOf(v1, v1, v1, v1, v1, v1, v1, v1))
     val r = U16x8.from(vaddlU8(a.into(), a.into()))
     check(r == e)
@@ -923,7 +923,7 @@ public fun testVaddwU8() {
     val y = UByte.MAX_VALUE
     val b = Simd<UByte>(listOf(y, y, y, y, y, y, y, y))
     val y1 = y.toUShort()
-    val e = Simd<UShort>(listOf((x + (y1.toUShort())).toUShort(), (1u + y1).toUShort(), (2u + y1).toUShort(), (3u + y1).toUShort(), (4u + y1).toUShort(), (5u + y1).toUShort(), (6u + y1).toUShort(), (7u + y1).toUShort()))
+    val e = Simd<UShort>(listOf((x + (y1.toUShort())).toUShort(), (1u.toUShort() + y1).toUShort(), (2u.toUShort() + y1).toUShort(), (3u.toUShort() + y1).toUShort(), (4u.toUShort() + y1).toUShort(), (5u.toUShort() + y1).toUShort(), (6u.toUShort() + y1).toUShort(), (7u.toUShort() + y1).toUShort()))
     val r = U16x8.from(vaddwU8(a.into(), b.into()))
     check(r == e)
 }
@@ -1440,7 +1440,7 @@ public fun testVornqS64() {
 
 public fun testVornU8() {
     val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
-    val t = UByte.MAX_VALUE - 1u
+    val t = UByte.MAX_VALUE - 1u.toUByte()
     val b = Simd<UByte>(listOf(t, t, t, t, t, t, t, t))
     val e = Simd<UByte>(listOf(1u.toUByte(), 1u.toUByte(), 3u.toUByte(), 3u.toUByte(), 5u.toUByte(), 5u.toUByte(), 7u.toUByte(), 7u.toUByte()))
     val r = U8x8.from(vornU8(a.into(), b.into()))
@@ -1449,7 +1449,7 @@ public fun testVornU8() {
 
 public fun testVornqU8() {
     val a = Simd<UByte>(listOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte(), 4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte(), 8u.toUByte(), 9u.toUByte(), 10u.toUByte(), 11u.toUByte(), 12u.toUByte(), 13u.toUByte(), 14u.toUByte(), 15u.toUByte()))
-    val t = UByte.MAX_VALUE - 1u
+    val t = UByte.MAX_VALUE - 1u.toUByte()
     val b = Simd<UByte>(listOf(t, t, t, t, t, t, t, t, t, t, t, t, t, t, t, t))
     val e = Simd<UByte>(listOf(1u.toUByte(), 1u.toUByte(), 3u.toUByte(), 3u.toUByte(), 5u.toUByte(), 5u.toUByte(), 7u.toUByte(), 7u.toUByte(), 9u.toUByte(), 9u.toUByte(), 11u.toUByte(), 11u.toUByte(), 13u.toUByte(), 13u.toUByte(), 15u.toUByte(), 15u.toUByte()))
     val r = U8x16.from(vornqU8(a.into(), b.into()))
@@ -1458,7 +1458,7 @@ public fun testVornqU8() {
 
 public fun testVornU16() {
     val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
-    val t = UShort.MAX_VALUE - 1u
+    val t = UShort.MAX_VALUE - 1u.toUShort()
     val b = Simd<UShort>(listOf(t, t, t, t))
     val e = Simd<UShort>(listOf(1u.toUShort(), 1u.toUShort(), 3u.toUShort(), 3u.toUShort()))
     val r = U16x4.from(vornU16(a.into(), b.into()))
@@ -1467,7 +1467,7 @@ public fun testVornU16() {
 
 public fun testVornqU16() {
     val a = Simd<UShort>(listOf(0u.toUShort(), 1u.toUShort(), 2u.toUShort(), 3u.toUShort(), 4u.toUShort(), 5u.toUShort(), 6u.toUShort(), 7u.toUShort()))
-    val t = UShort.MAX_VALUE - 1u
+    val t = UShort.MAX_VALUE - 1u.toUShort()
     val b = Simd<UShort>(listOf(t, t, t, t, t, t, t, t))
     val e = Simd<UShort>(listOf(1u.toUShort(), 1u.toUShort(), 3u.toUShort(), 3u.toUShort(), 5u.toUShort(), 5u.toUShort(), 7u.toUShort(), 7u.toUShort()))
     val r = U16x8.from(vornqU16(a.into(), b.into()))
@@ -1885,9 +1885,9 @@ public fun testVeorqU64() {
 public fun testVceqS8() {
     testCmpS8({ i, j -> vceqS8(i, j) }, { a: Byte, b: Byte ->
         if (a == b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -1895,9 +1895,9 @@ public fun testVceqS8() {
 public fun testVceqqS8() {
     testqCmpS8({ i, j -> vceqqS8(i, j) }, { a: Byte, b: Byte ->
         if (a == b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -1905,9 +1905,9 @@ public fun testVceqqS8() {
 public fun testVceqS16() {
     testCmpS16({ i, j -> vceqS16(i, j) }, { a: Short, b: Short ->
         if (a == b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -1915,9 +1915,9 @@ public fun testVceqS16() {
 public fun testVceqqS16() {
     testqCmpS16({ i, j -> vceqqS16(i, j) }, { a: Short, b: Short ->
         if (a == b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -1945,9 +1945,9 @@ public fun testVceqqS32() {
 public fun testVceqU8() {
     testCmpU8({ i, j -> vceqU8(i, j) }, { a: UByte, b: UByte ->
         if (a == b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -1955,9 +1955,9 @@ public fun testVceqU8() {
 public fun testVceqqU8() {
     testqCmpU8({ i, j -> vceqqU8(i, j) }, { a: UByte, b: UByte ->
         if (a == b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -1965,9 +1965,9 @@ public fun testVceqqU8() {
 public fun testVceqU16() {
     testCmpU16({ i, j -> vceqU16(i, j) }, { a: UShort, b: UShort ->
         if (a == b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -1975,9 +1975,9 @@ public fun testVceqU16() {
 public fun testVceqqU16() {
     testqCmpU16({ i, j -> vceqqU16(i, j) }, { a: UShort, b: UShort ->
         if (a == b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2025,9 +2025,9 @@ public fun testVceqqF32() {
 public fun testVcgtS8() {
     testCmpS8({ i, j -> vcgtS8(i, j) }, { a: Byte, b: Byte ->
         if (a > b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2035,9 +2035,9 @@ public fun testVcgtS8() {
 public fun testVcgtqS8() {
     testqCmpS8({ i, j -> vcgtqS8(i, j) }, { a: Byte, b: Byte ->
         if (a > b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2045,9 +2045,9 @@ public fun testVcgtqS8() {
 public fun testVcgtS16() {
     testCmpS16({ i, j -> vcgtS16(i, j) }, { a: Short, b: Short ->
         if (a > b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2055,9 +2055,9 @@ public fun testVcgtS16() {
 public fun testVcgtqS16() {
     testqCmpS16({ i, j -> vcgtqS16(i, j) }, { a: Short, b: Short ->
         if (a > b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2085,9 +2085,9 @@ public fun testVcgtqS32() {
 public fun testVcgtU8() {
     testCmpU8({ i, j -> vcgtU8(i, j) }, { a: UByte, b: UByte ->
         if (a > b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2095,9 +2095,9 @@ public fun testVcgtU8() {
 public fun testVcgtqU8() {
     testqCmpU8({ i, j -> vcgtqU8(i, j) }, { a: UByte, b: UByte ->
         if (a > b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2105,9 +2105,9 @@ public fun testVcgtqU8() {
 public fun testVcgtU16() {
     testCmpU16({ i, j -> vcgtU16(i, j) }, { a: UShort, b: UShort ->
         if (a > b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2115,9 +2115,9 @@ public fun testVcgtU16() {
 public fun testVcgtqU16() {
     testqCmpU16({ i, j -> vcgtqU16(i, j) }, { a: UShort, b: UShort ->
         if (a > b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2165,9 +2165,9 @@ public fun testVcgtqF32() {
 public fun testVcltS8() {
     testCmpS8({ i, j -> vcltS8(i, j) }, { a: Byte, b: Byte ->
         if (a < b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2175,9 +2175,9 @@ public fun testVcltS8() {
 public fun testVcltqS8() {
     testqCmpS8({ i, j -> vcltqS8(i, j) }, { a: Byte, b: Byte ->
         if (a < b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2185,9 +2185,9 @@ public fun testVcltqS8() {
 public fun testVcltS16() {
     testCmpS16({ i, j -> vcltS16(i, j) }, { a: Short, b: Short ->
         if (a < b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2195,9 +2195,9 @@ public fun testVcltS16() {
 public fun testVcltqS16() {
     testqCmpS16({ i, j -> vcltqS16(i, j) }, { a: Short, b: Short ->
         if (a < b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2225,9 +2225,9 @@ public fun testVcltqS32() {
 public fun testVcltU8() {
     testCmpU8({ i, j -> vcltU8(i, j) }, { a: UByte, b: UByte ->
         if (a < b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2235,9 +2235,9 @@ public fun testVcltU8() {
 public fun testVcltqU8() {
     testqCmpU8({ i, j -> vcltqU8(i, j) }, { a: UByte, b: UByte ->
         if (a < b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2245,9 +2245,9 @@ public fun testVcltqU8() {
 public fun testVcltU16() {
     testCmpU16({ i, j -> vcltU16(i, j) }, { a: UShort, b: UShort ->
         if (a < b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2255,9 +2255,9 @@ public fun testVcltU16() {
 public fun testVcltqU16() {
     testqCmpU16({ i, j -> vcltqU16(i, j) }, { a: UShort, b: UShort ->
         if (a < b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2305,9 +2305,9 @@ public fun testVcltqF32() {
 public fun testVcleS8() {
     testCmpS8({ i, j -> vcleS8(i, j) }, { a: Byte, b: Byte ->
         if (a <= b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2315,9 +2315,9 @@ public fun testVcleS8() {
 public fun testVcleqS8() {
     testqCmpS8({ i, j -> vcleqS8(i, j) }, { a: Byte, b: Byte ->
         if (a <= b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2325,9 +2325,9 @@ public fun testVcleqS8() {
 public fun testVcleS16() {
     testCmpS16({ i, j -> vcleS16(i, j) }, { a: Short, b: Short ->
         if (a <= b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2335,9 +2335,9 @@ public fun testVcleS16() {
 public fun testVcleqS16() {
     testqCmpS16({ i, j -> vcleqS16(i, j) }, { a: Short, b: Short ->
         if (a <= b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2365,9 +2365,9 @@ public fun testVcleqS32() {
 public fun testVcleU8() {
     testCmpU8({ i, j -> vcleU8(i, j) }, { a: UByte, b: UByte ->
         if (a <= b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2375,9 +2375,9 @@ public fun testVcleU8() {
 public fun testVcleqU8() {
     testqCmpU8({ i, j -> vcleqU8(i, j) }, { a: UByte, b: UByte ->
         if (a <= b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2385,9 +2385,9 @@ public fun testVcleqU8() {
 public fun testVcleU16() {
     testCmpU16({ i, j -> vcleU16(i, j) }, { a: UShort, b: UShort ->
         if (a <= b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2395,9 +2395,9 @@ public fun testVcleU16() {
 public fun testVcleqU16() {
     testqCmpU16({ i, j -> vcleqU16(i, j) }, { a: UShort, b: UShort ->
         if (a <= b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2445,9 +2445,9 @@ public fun testVcleqF32() {
 public fun testVcgeS8() {
     testCmpS8({ i, j -> vcgeS8(i, j) }, { a: Byte, b: Byte ->
         if (a >= b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2455,9 +2455,9 @@ public fun testVcgeS8() {
 public fun testVcgeqS8() {
     testqCmpS8({ i, j -> vcgeqS8(i, j) }, { a: Byte, b: Byte ->
         if (a >= b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2465,9 +2465,9 @@ public fun testVcgeqS8() {
 public fun testVcgeS16() {
     testCmpS16({ i, j -> vcgeS16(i, j) }, { a: Short, b: Short ->
         if (a >= b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2475,9 +2475,9 @@ public fun testVcgeS16() {
 public fun testVcgeqS16() {
     testqCmpS16({ i, j -> vcgeqS16(i, j) }, { a: Short, b: Short ->
         if (a >= b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2505,9 +2505,9 @@ public fun testVcgeqS32() {
 public fun testVcgeU8() {
     testCmpU8({ i, j -> vcgeU8(i, j) }, { a: UByte, b: UByte ->
         if (a >= b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2515,9 +2515,9 @@ public fun testVcgeU8() {
 public fun testVcgeqU8() {
     testqCmpU8({ i, j -> vcgeqU8(i, j) }, { a: UByte, b: UByte ->
         if (a >= b) {
-            0xFFu
+            0xFFu.toUByte()
         } else {
-            0u
+            0u.toUByte()
         }
     })
 }
@@ -2525,9 +2525,9 @@ public fun testVcgeqU8() {
 public fun testVcgeU16() {
     testCmpU16({ i, j -> vcgeU16(i, j) }, { a: UShort, b: UShort ->
         if (a >= b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -2535,9 +2535,9 @@ public fun testVcgeU16() {
 public fun testVcgeqU16() {
     testqCmpU16({ i, j -> vcgeqU16(i, j) }, { a: UShort, b: UShort ->
         if (a >= b) {
-            0xFFFFu
+            0xFFFFu.toUShort()
         } else {
-            0u
+            0u.toUShort()
         }
     })
 }
@@ -3076,25 +3076,25 @@ public fun testVhsubqS32() {
 
 public fun testVhsubU8() {
     testAriU8({ i, j -> vhsubU8(i, j) }, { a: UByte, b: UByte ->
-        (((a.toUShort()) - (b.toUShort())) / 2u).toUByte()
+        (((a.toUShort()) - (b.toUShort())) / 2u.toUShort()).toUByte()
     })
 }
 
 public fun testVhsubqU8() {
     testqAriU8({ i, j -> vhsubqU8(i, j) }, { a: UByte, b: UByte ->
-        (((a.toUShort()) - (b.toUShort())) / 2u).toUByte()
+        (((a.toUShort()) - (b.toUShort())) / 2u.toUShort()).toUByte()
     })
 }
 
 public fun testVhsubU16() {
     testAriU16({ i, j -> vhsubU16(i, j) }, { a: UShort, b: UShort ->
-        (((a.toUShort()) - (b.toUShort())) / 2u)
+        (((a.toUShort()) - (b.toUShort())) / 2u.toUShort())
     })
 }
 
 public fun testVhsubqU16() {
     testqAriU16({ i, j -> vhsubqU16(i, j) }, { a: UShort, b: UShort ->
-        (((a.toUShort()) - (b.toUShort())) / 2u)
+        (((a.toUShort()) - (b.toUShort())) / 2u.toUShort())
     })
 }
 

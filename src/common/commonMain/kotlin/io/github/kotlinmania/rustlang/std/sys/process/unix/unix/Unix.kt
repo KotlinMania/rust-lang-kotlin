@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.std.sys.process.unix.unix
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
@@ -44,7 +45,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.iterMut
 import io.github.kotlinmania.rustlang.core.slice.len
@@ -137,7 +137,6 @@ import io.github.kotlinmania.rustlang.libc.windows.SIGILL
 import io.github.kotlinmania.rustlang.libc.windows.SIGINT
 import io.github.kotlinmania.rustlang.libc.windows.SIGSEGV
 import io.github.kotlinmania.rustlang.libc.windows.SIGTERM
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.panic.alwaysAbort
 import io.github.kotlinmania.rustlang.std.process.Child
 import io.github.kotlinmania.rustlang.std.process.StdioPipes
@@ -159,14 +158,14 @@ import io.github.kotlinmania.rustlang.std.sys.process.unix.pidfd.PidFd
 import io.github.kotlinmania.rustlang.std.sys.stdio.unix.panicOutput
 
 public fun interface FnCallback {
-    public operator fun invoke(arg0: MutPtr, arg1: ConstPtr): CInt
+    public operator fun invoke(arg0: MutPtr, arg1: ConstPtr): io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 }
 
 public fun interface FnCallback1 {
     public operator fun invoke(): Duration
 }
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {

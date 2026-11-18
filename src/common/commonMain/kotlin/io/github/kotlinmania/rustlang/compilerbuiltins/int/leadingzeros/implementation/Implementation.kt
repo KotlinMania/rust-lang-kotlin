@@ -1,7 +1,7 @@
 // port-lint: source int/leading_zeros.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.leadingzeros.implementation
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 /**
  * Returns the number of leading binary zeros in `x`.
@@ -17,43 +17,43 @@ public fun <I : Int> leadingZerosDefault(x: I): Int {
     // because it simplifies the final bisection step.
     var x2 = x1
     // the number of potential leading zeros
-    var z = I.BITS.toInt()
+    var z = x.BITS.toInt()
     // a temporary
     var t: I
-    check(I.BITS <= 64)
-    if (I.BITS >= 64) {
+    check(x.BITS <= 64)
+    if (x.BITS >= 64) {
         t = x2 shr 32
-        if (t != I.ZERO) {
+        if (t != x.ZERO) {
             z -= 32
             x2 = t
         }
     }
-    if (I.BITS >= 32) {
+    if (x.BITS >= 32) {
         t = x2 shr 16
-        if (t != I.ZERO) {
+        if (t != x.ZERO) {
             z -= 16
             x2 = t
         }
     }
-    check(I.BITS >= 16)
+    check(x.BITS >= 16)
     t = x2 shr 8
-    if (t != I.ZERO) {
+    if (t != x.ZERO) {
         z -= 8
         x2 = t
     }
     t = x2 shr 4
-    if (t != I.ZERO) {
+    if (t != x.ZERO) {
         z -= 4
         x2 = t
     }
     t = x2 shr 2
-    if (t != I.ZERO) {
+    if (t != x.ZERO) {
         z -= 2
         x2 = t
     }
     // the last two bisections are combined into one conditional
     t = x2 shr 1
-    return if (t != I.ZERO) {
+    return if (t != x.ZERO) {
         z - 2
     } else {
         z - Int.castFrom(x2)
@@ -84,7 +84,7 @@ public fun <I : Int> leadingZerosCondset(x: I): Int {
     val x1 = x
     var x2 = x1
     // the number of potential leading zeros
-    var z = I.BITS
+    var z = x.BITS
     // a temporary
     var t: UInt
     // RISC-V and LoongArch do not have a set-if-greater-than-or-equal instruction and
@@ -95,11 +95,11 @@ public fun <I : Int> leadingZerosCondset(x: I): Int {
     // right). If we try to save an instruction by using `x<imm` for each bisection, we
     // have to shift `x` left and compare with powers of two approaching `Int.MAX + 1`,
     // but the immediate will never fit into 12 bits and never save an instruction.
-    check(I.BITS <= 64)
-    if (I.BITS >= 64) {
+    check(x.BITS <= 64)
+    if (x.BITS >= 64) {
         // If the upper 32 bits of `x` are not all 0, `t` is set to `1<<5`, otherwise
         // `t` is set to 0.
-        t = ((if (x2 >= (I.ONE shl 32)) 1u else 0u)) shl 5
+        t = ((if (x2 >= (x.ONE shl 32)) 1u else 0u)) shl 5
         // If `t` was set to `1<<5`, then the upper 32 bits are shifted down for the
         // next step to process.
         x2 = x2 shr t.toInt()
@@ -107,22 +107,22 @@ public fun <I : Int> leadingZerosCondset(x: I): Int {
         // leading zeros
         z -= t
     }
-    if (I.BITS >= 32) {
-        t = ((if (x2 >= (I.ONE shl 16)) 1u else 0u)) shl 4
+    if (x.BITS >= 32) {
+        t = ((if (x2 >= (x.ONE shl 16)) 1u else 0u)) shl 4
         x2 = x2 shr t.toInt()
         z -= t
     }
-    check(I.BITS >= 16)
-    t = ((if (x2 >= (I.ONE shl 8)) 1u else 0u)) shl 3
+    check(x.BITS >= 16)
+    t = ((if (x2 >= (x.ONE shl 8)) 1u else 0u)) shl 3
     x2 = x2 shr t.toInt()
     z -= t
-    t = ((if (x2 >= (I.ONE shl 4)) 1u else 0u)) shl 2
+    t = ((if (x2 >= (x.ONE shl 4)) 1u else 0u)) shl 2
     x2 = x2 shr t.toInt()
     z -= t
-    t = ((if (x2 >= (I.ONE shl 2)) 1u else 0u)) shl 1
+    t = ((if (x2 >= (x.ONE shl 2)) 1u else 0u)) shl 1
     x2 = x2 shr t.toInt()
     z -= t
-    t = (if (x2 >= (I.ONE shl 1)) 1u else 0u)
+    t = (if (x2 >= (x.ONE shl 1)) 1u else 0u)
     x2 = x2 shr t.toInt()
     z -= t
     // All bits except the LSB are guaranteed to be zero for this final bisection step.

@@ -14,7 +14,7 @@ import io.github.kotlinmania.rustlang.libm.math.support.featuredetect.getOrInitF
  * Get CPU features, loading from a cache if available.
  */
 public fun getCpuFeatures(): Flags {
-    val CACHE: AtomicU32  = AtomicU32.new(0)
+    val CACHE: AtomicU32  = AtomicU32.new(0u)
     return getOrInitFlagsCache(CACHE, ::loadX86Features)
 }
 

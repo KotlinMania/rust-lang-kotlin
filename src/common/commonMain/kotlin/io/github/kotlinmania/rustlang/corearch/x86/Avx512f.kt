@@ -3794,7 +3794,7 @@ public fun mmMask3FnmsubPd(a: M128d, b: M128d, c: M128d, k: Mmask8): M128d = run
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_rcp14_ps&expand=4502)
  */
-public fun mm512Rcp14Ps(a: M512): M512 = transmuteWithLayouts<F32x16, M512>(vrcp14ps(a.asF32x16(), Simd<Float>(List(16) { 0.0f }), 0xFFFFu), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
+public fun mm512Rcp14Ps(a: M512): M512 = transmuteWithLayouts<F32x16, M512>(vrcp14ps(a.asF32x16(), Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort()), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
 
 /**
  * Compute the approximate reciprocal of packed single-precision (32-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -3815,7 +3815,7 @@ public fun mm512MaskzRcp14Ps(k: Mmask16, a: M512): M512 = transmuteWithLayouts<F
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_rcp14_ps&expand=4499)
  */
-public fun mm256Rcp14Ps(a: M256): M256 = transmuteWithLayouts<F32x8, M256>(vrcp14ps256(a.asF32x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
+public fun mm256Rcp14Ps(a: M256): M256 = transmuteWithLayouts<F32x8, M256>(vrcp14ps256(a.asF32x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu.toUByte()), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
 
 /**
  * Compute the approximate reciprocal of packed single-precision (32-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -3836,7 +3836,7 @@ public fun mm256MaskzRcp14Ps(k: Mmask8, a: M256): M256 = transmuteWithLayouts<F3
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_rcp14_ps&expand=4496)
  */
-public fun mmRcp14Ps(a: M128): M128 = transmuteWithLayouts<F32x4, M128>(vrcp14ps128(a.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0xFu), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+public fun mmRcp14Ps(a: M128): M128 = transmuteWithLayouts<F32x4, M128>(vrcp14ps128(a.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0xFu.toUByte()), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Compute the approximate reciprocal of packed single-precision (32-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -3857,7 +3857,7 @@ public fun mmMaskzRcp14Ps(k: Mmask8, a: M128): M128 = transmuteWithLayouts<F32x4
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_rcp14_pd&expand=4493)
  */
-public fun mm512Rcp14Pd(a: M512d): M512d = transmuteWithLayouts<F64x8, M512d>(vrcp14pd(a.asF64x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
+public fun mm512Rcp14Pd(a: M512d): M512d = transmuteWithLayouts<F64x8, M512d>(vrcp14pd(a.asF64x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte()), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
 
 /**
  * Compute the approximate reciprocal of packed double-precision (64-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -3878,7 +3878,7 @@ public fun mm512MaskzRcp14Pd(k: Mmask8, a: M512d): M512d = transmuteWithLayouts<
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_rcp14_pd&expand=4490)
  */
-public fun mm256Rcp14Pd(a: M256d): M256d = transmuteWithLayouts<F64x4, M256d>(vrcp14pd256(a.asF64x4(), Simd<Double>(List(4) { 0.0 }), 0xFu), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
+public fun mm256Rcp14Pd(a: M256d): M256d = transmuteWithLayouts<F64x4, M256d>(vrcp14pd256(a.asF64x4(), Simd<Double>(List(4) { 0.0 }), 0xFu.toUByte()), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
 
 /**
  * Compute the approximate reciprocal of packed double-precision (64-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -3899,7 +3899,7 @@ public fun mm256MaskzRcp14Pd(k: Mmask8, a: M256d): M256d = transmuteWithLayouts<
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_rcp14_pd&expand=4487)
  */
-public fun mmRcp14Pd(a: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vrcp14pd128(a.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x3u), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
+public fun mmRcp14Pd(a: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vrcp14pd128(a.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x3u.toUByte()), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Compute the approximate reciprocal of packed double-precision (64-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -3920,7 +3920,7 @@ public fun mmMaskzRcp14Pd(k: Mmask8, a: M128d): M128d = transmuteWithLayouts<F64
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_rsqrt14_ps&expand=4819)
  */
-public fun mm512Rsqrt14Ps(a: M512): M512 = transmuteWithLayouts<F32x16, M512>(vrsqrt14ps(a.asF32x16(), Simd<Float>(List(16) { 0.0f }), 0xFFFFu), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
+public fun mm512Rsqrt14Ps(a: M512): M512 = transmuteWithLayouts<F32x16, M512>(vrsqrt14ps(a.asF32x16(), Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort()), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
 
 /**
  * Compute the approximate reciprocal square root of packed single-precision (32-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -3941,7 +3941,7 @@ public fun mm512MaskzRsqrt14Ps(k: Mmask16, a: M512): M512 = transmuteWithLayouts
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_rsqrt14_ps)
  */
-public fun mm256Rsqrt14Ps(a: M256): M256 = transmuteWithLayouts<F32x8, M256>(vrsqrt14ps256(a.asF32x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
+public fun mm256Rsqrt14Ps(a: M256): M256 = transmuteWithLayouts<F32x8, M256>(vrsqrt14ps256(a.asF32x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu.toUByte()), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
 
 /**
  * Compute the approximate reciprocal square root of packed single-precision (32-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -3962,7 +3962,7 @@ public fun mm256MaskzRsqrt14Ps(k: Mmask8, a: M256): M256 = transmuteWithLayouts<
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_rsqrt14_ps)
  */
-public fun mmRsqrt14Ps(a: M128): M128 = transmuteWithLayouts<F32x4, M128>(vrsqrt14ps128(a.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0xFu), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+public fun mmRsqrt14Ps(a: M128): M128 = transmuteWithLayouts<F32x4, M128>(vrsqrt14ps128(a.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0xFu.toUByte()), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Compute the approximate reciprocal square root of packed single-precision (32-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -3983,7 +3983,7 @@ public fun mmMaskzRsqrt14Ps(k: Mmask8, a: M128): M128 = transmuteWithLayouts<F32
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_rsqrt14_pd&expand=4812)
  */
-public fun mm512Rsqrt14Pd(a: M512d): M512d = transmuteWithLayouts<F64x8, M512d>(vrsqrt14pd(a.asF64x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
+public fun mm512Rsqrt14Pd(a: M512d): M512d = transmuteWithLayouts<F64x8, M512d>(vrsqrt14pd(a.asF64x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte()), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
 
 /**
  * Compute the approximate reciprocal square root of packed double-precision (64-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -4004,7 +4004,7 @@ public fun mm512MaskzRsqrt14Pd(k: Mmask8, a: M512d): M512d = transmuteWithLayout
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_rsqrt14_pd)
  */
-public fun mm256Rsqrt14Pd(a: M256d): M256d = transmuteWithLayouts<F64x4, M256d>(vrsqrt14pd256(a.asF64x4(), Simd<Double>(List(4) { 0.0 }), 0xFu), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
+public fun mm256Rsqrt14Pd(a: M256d): M256d = transmuteWithLayouts<F64x4, M256d>(vrsqrt14pd256(a.asF64x4(), Simd<Double>(List(4) { 0.0 }), 0xFu.toUByte()), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
 
 /**
  * Compute the approximate reciprocal square root of packed double-precision (64-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -4025,7 +4025,7 @@ public fun mm256MaskzRsqrt14Pd(k: Mmask8, a: M256d): M256d = transmuteWithLayout
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_rsqrt14_pd)
  */
-public fun mmRsqrt14Pd(a: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vrsqrt14pd128(a.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x3u), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
+public fun mmRsqrt14Pd(a: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vrsqrt14pd128(a.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x3u.toUByte()), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Compute the approximate reciprocal square root of packed double-precision (64-bit) floating-point elements in a, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). The maximum relative error for this approximation is less than 2^-14.
@@ -4046,7 +4046,7 @@ public fun mmMaskzRsqrt14Pd(k: Mmask8, a: M128d): M128d = transmuteWithLayouts<F
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_getexp_ps&expand=2844)
  */
-public fun mm512GetexpPs(a: M512): M512 = transmuteWithLayouts<F32x16, M512>(vgetexpps(a.asF32x16(), Simd<Float>(List(16) { 0.0f }), 0xFFFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
+public fun mm512GetexpPs(a: M512): M512 = transmuteWithLayouts<F32x16, M512>(vgetexpps(a.asF32x16(), Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
 
 /**
  * Convert the exponent of each packed single-precision (32-bit) floating-point element in a to a single-precision (32-bit) floating-point number representing the integer exponent, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). This intrinsic essentially calculates floor(log2(x)) for each element.
@@ -4067,7 +4067,7 @@ public fun mm512MaskzGetexpPs(k: Mmask16, a: M512): M512 = transmuteWithLayouts<
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_getexp_ps&expand=2841)
  */
-public fun mm256GetexpPs(a: M256): M256 = transmuteWithLayouts<F32x8, M256>(vgetexpps256(a.asF32x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
+public fun mm256GetexpPs(a: M256): M256 = transmuteWithLayouts<F32x8, M256>(vgetexpps256(a.asF32x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu.toUByte()), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
 
 /**
  * Convert the exponent of each packed single-precision (32-bit) floating-point element in a to a single-precision (32-bit) floating-point number representing the integer exponent, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). This intrinsic essentially calculates floor(log2(x)) for each element.
@@ -4088,7 +4088,7 @@ public fun mm256MaskzGetexpPs(k: Mmask8, a: M256): M256 = transmuteWithLayouts<F
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_getexp_ps&expand=2838)
  */
-public fun mmGetexpPs(a: M128): M128 = transmuteWithLayouts<F32x4, M128>(vgetexpps128(a.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0xFu), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+public fun mmGetexpPs(a: M128): M128 = transmuteWithLayouts<F32x4, M128>(vgetexpps128(a.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0xFu.toUByte()), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Convert the exponent of each packed single-precision (32-bit) floating-point element in a to a single-precision (32-bit) floating-point number representing the integer exponent, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). This intrinsic essentially calculates floor(log2(x)) for each element.
@@ -4109,7 +4109,7 @@ public fun mmMaskzGetexpPs(k: Mmask8, a: M128): M128 = transmuteWithLayouts<F32x
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_getexp_pd&expand=2835)
  */
-public fun mm512GetexpPd(a: M512d): M512d = transmuteWithLayouts<F64x8, M512d>(vgetexppd(a.asF64x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
+public fun mm512GetexpPd(a: M512d): M512d = transmuteWithLayouts<F64x8, M512d>(vgetexppd(a.asF64x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
 
 /**
  * Convert the exponent of each packed double-precision (64-bit) floating-point element in a to a double-precision (64-bit) floating-point number representing the integer exponent, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). This intrinsic essentially calculates floor(log2(x)) for each element.
@@ -4130,7 +4130,7 @@ public fun mm512MaskzGetexpPd(k: Mmask8, a: M512d): M512d = transmuteWithLayouts
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_getexp_pd&expand=2832)
  */
-public fun mm256GetexpPd(a: M256d): M256d = transmuteWithLayouts<F64x4, M256d>(vgetexppd256(a.asF64x4(), Simd<Double>(List(4) { 0.0 }), 0xFu), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
+public fun mm256GetexpPd(a: M256d): M256d = transmuteWithLayouts<F64x4, M256d>(vgetexppd256(a.asF64x4(), Simd<Double>(List(4) { 0.0 }), 0xFu.toUByte()), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
 
 /**
  * Convert the exponent of each packed double-precision (64-bit) floating-point element in a to a double-precision (64-bit) floating-point number representing the integer exponent, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). This intrinsic essentially calculates floor(log2(x)) for each element.
@@ -4151,7 +4151,7 @@ public fun mm256MaskzGetexpPd(k: Mmask8, a: M256d): M256d = transmuteWithLayouts
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_getexp_pd&expand=2829)
  */
-public fun mmGetexpPd(a: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vgetexppd128(a.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x3u), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
+public fun mmGetexpPd(a: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vgetexppd128(a.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x3u.toUByte()), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Convert the exponent of each packed double-precision (64-bit) floating-point element in a to a double-precision (64-bit) floating-point number representing the integer exponent, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set). This intrinsic essentially calculates floor(log2(x)) for each element.
@@ -4184,7 +4184,7 @@ public fun mm512RoundscalePs(a: M512, imm8: Int): M512 =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val a1 = a.asF32x16()
-        val r = vrndscaleps(a1, imm8, Simd<Float>(List(16) { 0.0f }), 0xFFFFu, MM_FROUND_CUR_DIRECTION)
+        val r = vrndscaleps(a1, imm8, Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort(), MM_FROUND_CUR_DIRECTION)
         transmuteWithLayouts<F32x16, M512>(r, UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
     }
 
@@ -4248,7 +4248,7 @@ public fun mm256RoundscalePs(a: M256, imm8: Int): M256 =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val a1 = a.asF32x8()
-        val r = vrndscaleps256(a1, imm8, Simd<Float>(List(8) { 0.0f }), 0xFFu)
+        val r = vrndscaleps256(a1, imm8, Simd<Float>(List(8) { 0.0f }), 0xFFu.toUByte())
         transmuteWithLayouts<F32x8, M256>(r, UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
     }
 
@@ -4312,7 +4312,7 @@ public fun mmRoundscalePs(a: M128, imm8: Int): M128 =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val a1 = a.asF32x4()
-        val r = vrndscaleps128(a1, imm8, Simd<Float>(List(4) { 0.0f }), 0xFu)
+        val r = vrndscaleps128(a1, imm8, Simd<Float>(List(4) { 0.0f }), 0xFu.toUByte())
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -4376,7 +4376,7 @@ public fun mm512RoundscalePd(a: M512d, imm8: Int): M512d =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val a1 = a.asF64x8()
-        val r = vrndscalepd(a1, imm8, Simd<Double>(List(8) { 0.0 }), 0xFFu, MM_FROUND_CUR_DIRECTION)
+        val r = vrndscalepd(a1, imm8, Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION)
         transmuteWithLayouts<F64x8, M512d>(r, UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
     }
 
@@ -4440,7 +4440,7 @@ public fun mm256RoundscalePd(a: M256d, imm8: Int): M256d =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val a1 = a.asF64x4()
-        val r = vrndscalepd256(a1, imm8, Simd<Double>(List(4) { 0.0 }), 0xFu)
+        val r = vrndscalepd256(a1, imm8, Simd<Double>(List(4) { 0.0 }), 0xFu.toUByte())
         transmuteWithLayouts<F64x4, M256d>(r, UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
     }
 
@@ -4504,7 +4504,7 @@ public fun mmRoundscalePd(a: M128d, imm8: Int): M128d =
             check(0 <= imm8 && imm8 < (1 shl 8)) { "IMM8 doesn't fit in 8 bits (unsigned)" }
         }
         val a1 = a.asF64x2()
-        val r = vrndscalepd128(a1, imm8, Simd<Double>(List(2) { 0.0 }), 0x3u)
+        val r = vrndscalepd128(a1, imm8, Simd<Double>(List(2) { 0.0 }), 0x3u.toUByte())
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -4556,7 +4556,7 @@ public fun mmMaskzRoundscalePd(k: Mmask8, a: M128d, imm8: Int): M128d =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_scalef_ps&expand=4883)
  */
-public fun mm512ScalefPs(a: M512, b: M512): M512 = transmuteWithLayouts<F32x16, M512>(vscalefps(a.asF32x16(), b.asF32x16(), Simd<Float>(List(16) { 0.0f }), 0xFFFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
+public fun mm512ScalefPs(a: M512, b: M512): M512 = transmuteWithLayouts<F32x16, M512>(vscalefps(a.asF32x16(), b.asF32x16(), Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
 
 /**
  * Scale the packed single-precision (32-bit) floating-point elements in a using values from b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4577,7 +4577,7 @@ public fun mm512MaskzScalefPs(k: Mmask16, a: M512, b: M512): M512 = transmuteWit
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_scalef_ps&expand=4880)
  */
-public fun mm256ScalefPs(a: M256, b: M256): M256 = transmuteWithLayouts<F32x8, M256>(vscalefps256(a.asF32x8(), b.asF32x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
+public fun mm256ScalefPs(a: M256, b: M256): M256 = transmuteWithLayouts<F32x8, M256>(vscalefps256(a.asF32x8(), b.asF32x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu.toUByte()), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
 
 /**
  * Scale the packed single-precision (32-bit) floating-point elements in a using values from b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4598,7 +4598,7 @@ public fun mm256MaskzScalefPs(k: Mmask8, a: M256, b: M256): M256 = transmuteWith
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_scalef_ps&expand=4877)
  */
-public fun mmScalefPs(a: M128, b: M128): M128 = transmuteWithLayouts<F32x4, M128>(vscalefps128(a.asF32x4(), b.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0xFu), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+public fun mmScalefPs(a: M128, b: M128): M128 = transmuteWithLayouts<F32x4, M128>(vscalefps128(a.asF32x4(), b.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0xFu.toUByte()), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Scale the packed single-precision (32-bit) floating-point elements in a using values from b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4619,7 +4619,7 @@ public fun mmMaskzScalefPs(k: Mmask8, a: M128, b: M128): M128 = transmuteWithLay
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_scalef_pd&expand=4874)
  */
-public fun mm512ScalefPd(a: M512d, b: M512d): M512d = transmuteWithLayouts<F64x8, M512d>(vscalefpd(a.asF64x8(), b.asF64x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
+public fun mm512ScalefPd(a: M512d, b: M512d): M512d = transmuteWithLayouts<F64x8, M512d>(vscalefpd(a.asF64x8(), b.asF64x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
 
 /**
  * Scale the packed double-precision (64-bit) floating-point elements in a using values from b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4640,7 +4640,7 @@ public fun mm512MaskzScalefPd(k: Mmask8, a: M512d, b: M512d): M512d = transmuteW
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_scalef_pd&expand=4871)
  */
-public fun mm256ScalefPd(a: M256d, b: M256d): M256d = transmuteWithLayouts<F64x4, M256d>(vscalefpd256(a.asF64x4(), b.asF64x4(), Simd<Double>(List(4) { 0.0 }), 0xFu), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
+public fun mm256ScalefPd(a: M256d, b: M256d): M256d = transmuteWithLayouts<F64x4, M256d>(vscalefpd256(a.asF64x4(), b.asF64x4(), Simd<Double>(List(4) { 0.0 }), 0xFu.toUByte()), UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
 
 /**
  * Scale the packed double-precision (64-bit) floating-point elements in a using values from b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4661,7 +4661,7 @@ public fun mm256MaskzScalefPd(k: Mmask8, a: M256d, b: M256d): M256d = transmuteW
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_scalef_pd&expand=4868)
  */
-public fun mmScalefPd(a: M128d, b: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vscalefpd128(a.asF64x2(), b.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x3u), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
+public fun mmScalefPd(a: M128d, b: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vscalefpd128(a.asF64x2(), b.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x3u.toUByte()), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Scale the packed double-precision (64-bit) floating-point elements in a using values from b, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -4690,7 +4690,7 @@ public fun mm512FixupimmPs(a: M512, b: M512, c: M512i, imm8: Int): M512 =
         val a1 = a.asF32x16()
         val b1 = b.asF32x16()
         val c1 = c.asI32x16()
-        val r = vfixupimmps(a1, b1, c1, imm8, 0xFFFFu, MM_FROUND_CUR_DIRECTION)
+        val r = vfixupimmps(a1, b1, c1, imm8, 0xFFFFu.toUShort(), MM_FROUND_CUR_DIRECTION)
         transmuteWithLayouts<F32x16, M512>(r, UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
     }
 
@@ -4741,7 +4741,7 @@ public fun mm256FixupimmPs(a: M256, b: M256, c: M256i, imm8: Int): M256 =
         val a1 = a.asF32x8()
         val b1 = b.asF32x8()
         val c1 = c.asI32x8()
-        val r = vfixupimmps256(a1, b1, c1, imm8, 0xFFu)
+        val r = vfixupimmps256(a1, b1, c1, imm8, 0xFFu.toUByte())
         transmuteWithLayouts<F32x8, M256>(r, UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
     }
 
@@ -4792,7 +4792,7 @@ public fun mmFixupimmPs(a: M128, b: M128, c: M128i, imm8: Int): M128 =
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
         val c1 = c.asI32x4()
-        val r = vfixupimmps128(a1, b1, c1, imm8, 0xFu)
+        val r = vfixupimmps128(a1, b1, c1, imm8, 0xFu.toUByte())
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -4843,7 +4843,7 @@ public fun mm512FixupimmPd(a: M512d, b: M512d, c: M512i, imm8: Int): M512d =
         val a1 = a.asF64x8()
         val b1 = b.asF64x8()
         val c1 = c.asI64x8()
-        val r = vfixupimmpd(a1, b1, c1, imm8, 0xFFu, MM_FROUND_CUR_DIRECTION)
+        val r = vfixupimmpd(a1, b1, c1, imm8, 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION)
         transmuteWithLayouts<F64x8, M512d>(r, UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
     }
 
@@ -4894,7 +4894,7 @@ public fun mm256FixupimmPd(a: M256d, b: M256d, c: M256i, imm8: Int): M256d =
         val a1 = a.asF64x4()
         val b1 = b.asF64x4()
         val c1 = c.asI64x4()
-        val r = vfixupimmpd256(a1, b1, c1, imm8, 0xFu)
+        val r = vfixupimmpd256(a1, b1, c1, imm8, 0xFu.toUByte())
         transmuteWithLayouts<F64x4, M256d>(r, UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
     }
 
@@ -4945,7 +4945,7 @@ public fun mmFixupimmPd(a: M128d, b: M128d, c: M128i, imm8: Int): M128d =
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
         val c1 = c.asI64x2()
-        val r = vfixupimmpd128(a1, b1, c1, imm8, 0x3u)
+        val r = vfixupimmpd128(a1, b1, c1, imm8, 0x3u.toUByte())
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -5313,7 +5313,7 @@ public fun mm512GetmantPs(a: M512, norm: MmMantissaNormEnum, sign: MmMantissaSig
         }
         val a1 = a.asF32x16()
         val zero = Simd<Float>(List(16) { 0.0f })
-        val r = vgetmantps(a1, sign shl 2 or norm, zero, 0xFFFFu, MM_FROUND_CUR_DIRECTION)
+        val r = vgetmantps(a1, sign shl 2 or norm, zero, 0xFFFFu.toUShort(), MM_FROUND_CUR_DIRECTION)
         transmuteWithLayouts<F32x16, M512>(r, UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
     }
 
@@ -5395,7 +5395,7 @@ public fun mm256GetmantPs(a: M256, norm: MmMantissaNormEnum, sign: MmMantissaSig
             check(0 <= sign && sign < (1 shl 2)) { "SIGN doesn't fit in 2 bits (unsigned)" }
         }
         val a1 = a.asF32x8()
-        val r = vgetmantps256(a1, sign shl 2 or norm, Simd<Float>(List(8) { 0.0f }), 0xFFu)
+        val r = vgetmantps256(a1, sign shl 2 or norm, Simd<Float>(List(8) { 0.0f }), 0xFFu.toUByte())
         transmuteWithLayouts<F32x8, M256>(r, UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
     }
 
@@ -5477,7 +5477,7 @@ public fun mmGetmantPs(a: M128, norm: MmMantissaNormEnum, sign: MmMantissaSignEn
             check(0 <= sign && sign < (1 shl 2)) { "SIGN doesn't fit in 2 bits (unsigned)" }
         }
         val a1 = a.asF32x4()
-        val r = vgetmantps128(a1, sign shl 2 or norm, Simd<Float>(List(4) { 0.0f }), 0xFu)
+        val r = vgetmantps128(a1, sign shl 2 or norm, Simd<Float>(List(4) { 0.0f }), 0xFu.toUByte())
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -5560,7 +5560,7 @@ public fun mm512GetmantPd(a: M512d, norm: MmMantissaNormEnum, sign: MmMantissaSi
         }
         val a1 = a.asF64x8()
         val zero = Simd<Double>(List(8) { 0.0 })
-        val r = vgetmantpd(a1, sign shl 2 or norm, zero, 0xFFu, MM_FROUND_CUR_DIRECTION)
+        val r = vgetmantpd(a1, sign shl 2 or norm, zero, 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION)
         transmuteWithLayouts<F64x8, M512d>(r, UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
     }
 
@@ -5642,7 +5642,7 @@ public fun mm256GetmantPd(a: M256d, norm: MmMantissaNormEnum, sign: MmMantissaSi
             check(0 <= sign && sign < (1 shl 2)) { "SIGN doesn't fit in 2 bits (unsigned)" }
         }
         val a1 = a.asF64x4()
-        val r = vgetmantpd256(a1, sign shl 2 or norm, Simd<Double>(List(4) { 0.0 }), 0xFu)
+        val r = vgetmantpd256(a1, sign shl 2 or norm, Simd<Double>(List(4) { 0.0 }), 0xFu.toUByte())
         transmuteWithLayouts<F64x4, M256d>(r, UnresolvedTypeLayout<F64x4>(), UnresolvedTypeLayout<M256d>())
     }
 
@@ -5724,7 +5724,7 @@ public fun mmGetmantPd(a: M128d, norm: MmMantissaNormEnum, sign: MmMantissaSignE
             check(0 <= sign && sign < (1 shl 2)) { "SIGN doesn't fit in 2 bits (unsigned)" }
         }
         val a1 = a.asF64x2()
-        val r = vgetmantpd128(a1, sign shl 2 or norm, Simd<Double>(List(2) { 0.0 }), 0x3u)
+        val r = vgetmantpd128(a1, sign shl 2 or norm, Simd<Double>(List(2) { 0.0 }), 0x3u.toUByte())
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -7763,7 +7763,7 @@ public fun mm512GetexpRoundPs(a: M512, sae: Int): M512 =
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
         val a1 = a.asF32x16()
-        val r = vgetexpps(a1, Simd<Float>(List(16) { 0.0f }), 0xFFFFu, sae)
+        val r = vgetexpps(a1, Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort(), sae)
         transmuteWithLayouts<F32x16, M512>(r, UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
     }
 
@@ -7812,7 +7812,7 @@ public fun mm512GetexpRoundPd(a: M512d, sae: Int): M512d =
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
         val a1 = a.asF64x8()
-        val r = vgetexppd(a1, Simd<Double>(List(8) { 0.0 }), 0xFFu, sae)
+        val r = vgetexppd(a1, Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte(), sae)
         transmuteWithLayouts<F64x8, M512d>(r, UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
     }
 
@@ -7870,7 +7870,7 @@ public fun mm512RoundscaleRoundPs(a: M512, imm8: Int, sae: Int): M512 =
             check(sae == 4 || sae == 8 || sae == 12) { "Invalid IMM value" }
         }
         val a1 = a.asF32x16()
-        val r = vrndscaleps(a1, imm8, Simd<Float>(List(16) { 0.0f }), 0xFFFFu, sae)
+        val r = vrndscaleps(a1, imm8, Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort(), sae)
         transmuteWithLayouts<F32x16, M512>(r, UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
     }
 
@@ -7946,7 +7946,7 @@ public fun mm512RoundscaleRoundPd(a: M512d, imm8: Int, sae: Int): M512d =
             check(sae == 4 || sae == 8 || sae == 12) { "Invalid IMM value" }
         }
         val a1 = a.asF64x8()
-        val r = vrndscalepd(a1, imm8, Simd<Double>(List(8) { 0.0 }), 0xFFu, sae)
+        val r = vrndscalepd(a1, imm8, Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte(), sae)
         transmuteWithLayouts<F64x8, M512d>(r, UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
     }
 
@@ -8020,7 +8020,7 @@ public fun mm512ScalefRoundPs(a: M512, b: M512, rounding: Int): M512 =
         }
         val a1 = a.asF32x16()
         val b1 = b.asF32x16()
-        val r = vscalefps(a1, b1, Simd<Float>(List(16) { 0.0f }), 0xFFFFu, rounding)
+        val r = vscalefps(a1, b1, Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort(), rounding)
         transmuteWithLayouts<F32x16, M512>(r, UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
     }
 
@@ -8090,7 +8090,7 @@ public fun mm512ScalefRoundPd(a: M512d, b: M512d, rounding: Int): M512d =
         }
         val a1 = a.asF64x8()
         val b1 = b.asF64x8()
-        val r = vscalefpd(a1, b1, Simd<Double>(List(8) { 0.0 }), 0xFFu, rounding)
+        val r = vscalefpd(a1, b1, Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte(), rounding)
         transmuteWithLayouts<F64x8, M512d>(r, UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
     }
 
@@ -8158,7 +8158,7 @@ public fun mm512FixupimmRoundPs(a: M512, b: M512, c: M512i, imm8: Int, sae: Int)
         val a1 = a.asF32x16()
         val b1 = b.asF32x16()
         val c1 = c.asI32x16()
-        val r = vfixupimmps(a1, b1, c1, imm8, 0xFFFFu, sae)
+        val r = vfixupimmps(a1, b1, c1, imm8, 0xFFFFu.toUShort(), sae)
         transmuteWithLayouts<F32x16, M512>(r, UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
     }
 
@@ -8221,7 +8221,7 @@ public fun mm512FixupimmRoundPd(a: M512d, b: M512d, c: M512i, imm8: Int, sae: In
         val a1 = a.asF64x8()
         val b1 = b.asF64x8()
         val c1 = c.asI64x8()
-        val r = vfixupimmpd(a1, b1, c1, imm8, 0xFFu, sae)
+        val r = vfixupimmpd(a1, b1, c1, imm8, 0xFFu.toUByte(), sae)
         transmuteWithLayouts<F64x8, M512d>(r, UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
     }
 
@@ -8294,7 +8294,7 @@ public fun mm512GetmantRoundPs(a: M512, norm: MmMantissaNormEnum, sign: MmMantis
             check(sae == 4 || sae == 8 || sae == 12) { "Invalid IMM value" }
         }
         val a1 = a.asF32x16()
-        val r = vgetmantps(a1, sign shl 2 or norm, Simd<Float>(List(16) { 0.0f }), 0xFFFFu, sae)
+        val r = vgetmantps(a1, sign shl 2 or norm, Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort(), sae)
         transmuteWithLayouts<F32x16, M512>(r, UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
     }
 
@@ -8388,7 +8388,7 @@ public fun mm512GetmantRoundPd(a: M512d, norm: MmMantissaNormEnum, sign: MmManti
             check(sae == 4 || sae == 8 || sae == 12) { "Invalid IMM value" }
         }
         val a1 = a.asF64x8()
-        val r = vgetmantpd(a1, sign shl 2 or norm, Simd<Double>(List(8) { 0.0 }), 0xFFu, sae)
+        val r = vgetmantpd(a1, sign shl 2 or norm, Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte(), sae)
         transmuteWithLayouts<F64x8, M512d>(r, UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
     }
 
@@ -8460,7 +8460,7 @@ public fun mm512MaskzGetmantRoundPd(k: Mmask8, a: M512d, norm: MmMantissaNormEnu
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtps_epi32&expand=1737)
  */
-public fun mm512CvtpsEpi32(a: M512): M512i = transmuteWithLayouts<I32x16, M512i>(vcvtps2dq(a.asF32x16(), Simd<Int>(List(16) { 0 }), 0xFFFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
+public fun mm512CvtpsEpi32(a: M512): M512i = transmuteWithLayouts<I32x16, M512i>(vcvtps2dq(a.asF32x16(), Simd<Int>(List(16) { 0 }), 0xFFFFu.toUShort(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed 32-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8525,7 +8525,7 @@ public fun mmMaskzCvtpsEpi32(k: Mmask8, a: M128): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtps_epu32&expand=1755)
  */
-public fun mm512CvtpsEpu32(a: M512): M512i = transmuteWithLayouts<U32x16, M512i>(vcvtps2udq(a.asF32x16(), Simd<UInt>(List(16) { 0u }), 0xFFFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U32x16>(), UnresolvedTypeLayout<M512i>())
+public fun mm512CvtpsEpu32(a: M512): M512i = transmuteWithLayouts<U32x16, M512i>(vcvtps2udq(a.asF32x16(), Simd<UInt>(List(16) { 0u }), 0xFFFFu.toUShort(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed unsigned 32-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8546,7 +8546,7 @@ public fun mm512MaskzCvtpsEpu32(k: Mmask16, a: M512): M512i = transmuteWithLayou
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtps_epu32&expand=1752)
  */
-public fun mm256CvtpsEpu32(a: M256): M256i = transmuteWithLayouts<U32x8, M256i>(vcvtps2udq256(a.asF32x8(), Simd<UInt>(List(8) { 0u }), 0xFFu), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
+public fun mm256CvtpsEpu32(a: M256): M256i = transmuteWithLayouts<U32x8, M256i>(vcvtps2udq256(a.asF32x8(), Simd<UInt>(List(8) { 0u }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed unsigned 32-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8567,7 +8567,7 @@ public fun mm256MaskzCvtpsEpu32(k: Mmask8, a: M256): M256i = transmuteWithLayout
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtps_epu32&expand=1749)
  */
-public fun mmCvtpsEpu32(a: M128): M128i = transmuteWithLayouts<U32x4, M128i>(vcvtps2udq128(a.asF32x4(), Simd<UInt>(List(4) { 0u }), 0xFFu), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtpsEpu32(a: M128): M128i = transmuteWithLayouts<U32x4, M128i>(vcvtps2udq128(a.asF32x4(), Simd<UInt>(List(4) { 0u }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed unsigned 32-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8588,7 +8588,7 @@ public fun mmMaskzCvtpsEpu32(k: Mmask8, a: M128): M128i = transmuteWithLayouts<U
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtps_pd&expand=1769)
  */
-public fun mm512CvtpsPd(a: M256): M512d = transmuteWithLayouts<F64x8, M512d>(vcvtps2pd(a.asF32x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
+public fun mm512CvtpsPd(a: M256): M512d = transmuteWithLayouts<F64x8, M512d>(vcvtps2pd(a.asF32x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed double-precision (64-bit) floating-point elements, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8609,7 +8609,7 @@ public fun mm512MaskzCvtpsPd(k: Mmask8, a: M256): M512d = transmuteWithLayouts<F
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtpslo_pd&expand=1784)
  */
-public fun mm512CvtpsloPd(v2: M512): M512d = transmuteWithLayouts<F64x8, M512d>(vcvtps2pd(mm512Castps512Ps256(v2).asF32x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
+public fun mm512CvtpsloPd(v2: M512): M512d = transmuteWithLayouts<F64x8, M512d>(vcvtps2pd(mm512Castps512Ps256(v2).asF32x8(), Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
 
 /**
  * Performs element-by-element conversion of the lower half of packed single-precision (32-bit) floating-point elements in v2 to packed double-precision (64-bit) floating-point elements, storing the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8623,7 +8623,7 @@ public fun mm512MaskCvtpsloPd(src: M512d, k: Mmask8, v2: M512): M512d = transmut
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtpd_ps&expand=1712)
  */
-public fun mm512CvtpdPs(a: M512d): M256 = transmuteWithLayouts<F32x8, M256>(vcvtpd2ps(a.asF64x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
+public fun mm512CvtpdPs(a: M512d): M256 = transmuteWithLayouts<F32x8, M256>(vcvtpd2ps(a.asF64x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed single-precision (32-bit) floating-point elements, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8684,7 +8684,7 @@ public fun mmMaskzCvtpdPs(k: Mmask8, a: M128d): M128 =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtpd_epi32&expand=1675)
  */
-public fun mm512CvtpdEpi32(a: M512d): M256i = transmuteWithLayouts<I32x8, M256i>(vcvtpd2dq(a.asF64x8(), Simd<Int>(List(8) { 0 }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
+public fun mm512CvtpdEpi32(a: M512d): M256i = transmuteWithLayouts<I32x8, M256i>(vcvtpd2dq(a.asF64x8(), Simd<Int>(List(8) { 0 }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed 32-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8745,7 +8745,7 @@ public fun mmMaskzCvtpdEpi32(k: Mmask8, a: M128d): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtpd_epu32&expand=1693)
  */
-public fun mm512CvtpdEpu32(a: M512d): M256i = transmuteWithLayouts<U32x8, M256i>(vcvtpd2udq(a.asF64x8(), Simd<UInt>(List(8) { 0u }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
+public fun mm512CvtpdEpu32(a: M512d): M256i = transmuteWithLayouts<U32x8, M256i>(vcvtpd2udq(a.asF64x8(), Simd<UInt>(List(8) { 0u }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed unsigned 32-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8766,7 +8766,7 @@ public fun mm512MaskzCvtpdEpu32(k: Mmask8, a: M512d): M256i = transmuteWithLayou
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtpd_epu32&expand=1690)
  */
-public fun mm256CvtpdEpu32(a: M256d): M128i = transmuteWithLayouts<U32x4, M128i>(vcvtpd2udq256(a.asF64x4(), Simd<UInt>(List(4) { 0u }), 0xFFu), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mm256CvtpdEpu32(a: M256d): M128i = transmuteWithLayouts<U32x4, M128i>(vcvtpd2udq256(a.asF64x4(), Simd<UInt>(List(4) { 0u }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed unsigned 32-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8787,7 +8787,7 @@ public fun mm256MaskzCvtpdEpu32(k: Mmask8, a: M256d): M128i = transmuteWithLayou
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtpd_epu32&expand=1687)
  */
-public fun mmCvtpdEpu32(a: M128d): M128i = transmuteWithLayouts<U32x4, M128i>(vcvtpd2udq128(a.asF64x2(), Simd<UInt>(List(4) { 0u }), 0xFFu), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtpdEpu32(a: M128d): M128i = transmuteWithLayouts<U32x4, M128i>(vcvtpd2udq128(a.asF64x2(), Simd<UInt>(List(4) { 0u }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed unsigned 32-bit integers, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -8810,7 +8810,7 @@ public fun mmMaskzCvtpdEpu32(k: Mmask8, a: M128d): M128i = transmuteWithLayouts<
  */
 public fun mm512CvtpdPslo(v2: M512d): M512 =
     run {
-        val r: F32x8 = vcvtpd2ps(v2.asF64x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu, MM_FROUND_CUR_DIRECTION)
+        val r: F32x8 = vcvtpd2ps(v2.asF64x8(), Simd<Float>(List(8) { 0.0f }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION)
         run { val simdArg0 = r; val simdArg1 = Simd<Float>(List(8) { 0.0f }); val simdArg2 = SimdShuffleIdx(uintArrayOf(0u, 1u, 2u, 3u, 4u, 5u, 6u, 7u, 8u, 8u, 8u, 8u, 8u, 8u, 8u, 8u)); M512() }
     }
 
@@ -10075,7 +10075,7 @@ public fun mm256MaskzCvtepi32Epi16(k: Mmask8, a: M256i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtepi32_epi16&expand=1413)
  */
-public fun mmCvtepi32Epi16(a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovdw128(a.asI32x4(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtepi32Epi16(a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovdw128(a.asI32x4(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed 32-bit integers in a to packed 16-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10129,7 +10129,7 @@ public fun mm512MaskzCvtepi32Epi8(k: Mmask16, a: M512i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtepi32_epi8&expand=1434)
  */
-public fun mm256Cvtepi32Epi8(a: M256i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovdb256(a.asI32x8(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtepi32Epi8(a: M256i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovdb256(a.asI32x8(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed 32-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10150,7 +10150,7 @@ public fun mm256MaskzCvtepi32Epi8(k: Mmask8, a: M256i): M128i = transmuteWithLay
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtepi32_epi8&expand=1431)
  */
-public fun mmCvtepi32Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovdb128(a.asI32x4(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtepi32Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovdb128(a.asI32x4(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed 32-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10237,7 +10237,7 @@ public fun mm256MaskzCvtepi64Epi32(k: Mmask8, a: M256i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtepi64_epi32&expand=1475)
  */
-public fun mmCvtepi64Epi32(a: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpmovqd128(a.asI64x2(), Simd<Int>(List(4) { 0 }), 0xFFu), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtepi64Epi32(a: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpmovqd128(a.asI64x2(), Simd<Int>(List(4) { 0 }), 0xFFu.toUByte()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed 64-bit integers in a to packed 32-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10291,7 +10291,7 @@ public fun mm512MaskzCvtepi64Epi16(k: Mmask8, a: M512i): M128i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtepi64_epi16&expand=1469)
  */
-public fun mm256Cvtepi64Epi16(a: M256i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovqw256(a.asI64x4(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtepi64Epi16(a: M256i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovqw256(a.asI64x4(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed 64-bit integers in a to packed 16-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10312,7 +10312,7 @@ public fun mm256MaskzCvtepi64Epi16(k: Mmask8, a: M256i): M128i = transmuteWithLa
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtepi64_epi16&expand=1466)
  */
-public fun mmCvtepi64Epi16(a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovqw128(a.asI64x2(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtepi64Epi16(a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovqw128(a.asI64x2(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed 64-bit integers in a to packed 16-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10333,7 +10333,7 @@ public fun mmMaskzCvtepi64Epi16(k: Mmask8, a: M128i): M128i = transmuteWithLayou
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtepi64_epi8&expand=1490)
  */
-public fun mm512Cvtepi64Epi8(a: M512i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovqb(a.asI64x8(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm512Cvtepi64Epi8(a: M512i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovqb(a.asI64x8(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed 64-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10354,7 +10354,7 @@ public fun mm512MaskzCvtepi64Epi8(k: Mmask8, a: M512i): M128i = transmuteWithLay
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtepi64_epi8&expand=1487)
  */
-public fun mm256Cvtepi64Epi8(a: M256i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovqb256(a.asI64x4(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtepi64Epi8(a: M256i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovqb256(a.asI64x4(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed 64-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10375,7 +10375,7 @@ public fun mm256MaskzCvtepi64Epi8(k: Mmask8, a: M256i): M128i = transmuteWithLay
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtepi64_epi8&expand=1484)
  */
-public fun mmCvtepi64Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovqb128(a.asI64x2(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtepi64Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovqb128(a.asI64x2(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed 64-bit integers in a to packed 8-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10396,7 +10396,7 @@ public fun mmMaskzCvtepi64Epi8(k: Mmask8, a: M128i): M128i = transmuteWithLayout
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtsepi32_epi16&expand=1819)
  */
-public fun mm512Cvtsepi32Epi16(a: M512i): M256i = transmuteWithLayouts<I16x16, M256i>(vpmovsdw(a.asI32x16(), Simd<Short>(List(16) { 0.toShort() }), 0xFFFFu), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
+public fun mm512Cvtsepi32Epi16(a: M512i): M256i = transmuteWithLayouts<I16x16, M256i>(vpmovsdw(a.asI32x16(), Simd<Short>(List(16) { 0.toShort() }), 0xFFFFu.toUShort()), UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed signed 32-bit integers in a to packed 16-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10417,7 +10417,7 @@ public fun mm512MaskzCvtsepi32Epi16(k: Mmask16, a: M512i): M256i = transmuteWith
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtsepi32_epi16&expand=1816)
  */
-public fun mm256Cvtsepi32Epi16(a: M256i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovsdw256(a.asI32x8(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtsepi32Epi16(a: M256i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovsdw256(a.asI32x8(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 32-bit integers in a to packed 16-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10438,7 +10438,7 @@ public fun mm256MaskzCvtsepi32Epi16(k: Mmask8, a: M256i): M128i = transmuteWithL
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsepi32_epi16&expand=1813)
  */
-public fun mmCvtsepi32Epi16(a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovsdw128(a.asI32x4(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtsepi32Epi16(a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovsdw128(a.asI32x4(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 32-bit integers in a to packed 16-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10459,7 +10459,7 @@ public fun mmMaskzCvtsepi32Epi16(k: Mmask8, a: M128i): M128i = transmuteWithLayo
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtsepi32_epi8&expand=1828)
  */
-public fun mm512Cvtsepi32Epi8(a: M512i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsdb(a.asI32x16(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm512Cvtsepi32Epi8(a: M512i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsdb(a.asI32x16(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFFFu.toUShort()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 32-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10480,7 +10480,7 @@ public fun mm512MaskzCvtsepi32Epi8(k: Mmask16, a: M512i): M128i = transmuteWithL
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtsepi32_epi8&expand=1825)
  */
-public fun mm256Cvtsepi32Epi8(a: M256i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsdb256(a.asI32x8(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtsepi32Epi8(a: M256i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsdb256(a.asI32x8(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 32-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10501,7 +10501,7 @@ public fun mm256MaskzCvtsepi32Epi8(k: Mmask8, a: M256i): M128i = transmuteWithLa
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsepi32_epi8&expand=1822)
  */
-public fun mmCvtsepi32Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsdb128(a.asI32x4(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtsepi32Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsdb128(a.asI32x4(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 32-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10522,7 +10522,7 @@ public fun mmMaskzCvtsepi32Epi8(k: Mmask8, a: M128i): M128i = transmuteWithLayou
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtsepi64_epi32&expand=1852)
  */
-public fun mm512Cvtsepi64Epi32(a: M512i): M256i = transmuteWithLayouts<I32x8, M256i>(vpmovsqd(a.asI64x8(), Simd<Int>(List(8) { 0 }), 0xFFu), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
+public fun mm512Cvtsepi64Epi32(a: M512i): M256i = transmuteWithLayouts<I32x8, M256i>(vpmovsqd(a.asI64x8(), Simd<Int>(List(8) { 0 }), 0xFFu.toUByte()), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed signed 64-bit integers in a to packed 32-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10543,7 +10543,7 @@ public fun mm512MaskzCvtsepi64Epi32(k: Mmask8, a: M512i): M256i = transmuteWithL
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtsepi64_epi32&expand=1849)
  */
-public fun mm256Cvtsepi64Epi32(a: M256i): M128i = transmuteWithLayouts<I32x4, M128i>(vpmovsqd256(a.asI64x4(), Simd<Int>(List(4) { 0 }), 0xFFu), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtsepi64Epi32(a: M256i): M128i = transmuteWithLayouts<I32x4, M128i>(vpmovsqd256(a.asI64x4(), Simd<Int>(List(4) { 0 }), 0xFFu.toUByte()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 64-bit integers in a to packed 32-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10564,7 +10564,7 @@ public fun mm256MaskzCvtsepi64Epi32(k: Mmask8, a: M256i): M128i = transmuteWithL
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsepi64_epi32&expand=1846)
  */
-public fun mmCvtsepi64Epi32(a: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpmovsqd128(a.asI64x2(), Simd<Int>(List(4) { 0 }), 0xFFu), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtsepi64Epi32(a: M128i): M128i = transmuteWithLayouts<I32x4, M128i>(vpmovsqd128(a.asI64x2(), Simd<Int>(List(4) { 0 }), 0xFFu.toUByte()), UnresolvedTypeLayout<I32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 64-bit integers in a to packed 32-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10585,7 +10585,7 @@ public fun mmMaskzCvtsepi64Epi32(k: Mmask8, a: M128i): M128i = transmuteWithLayo
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtsepi64_epi16&expand=1843)
  */
-public fun mm512Cvtsepi64Epi16(a: M512i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovsqw(a.asI64x8(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mm512Cvtsepi64Epi16(a: M512i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovsqw(a.asI64x8(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 64-bit integers in a to packed 16-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10606,7 +10606,7 @@ public fun mm512MaskzCvtsepi64Epi16(k: Mmask8, a: M512i): M128i = transmuteWithL
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtsepi64_epi16&expand=1840)
  */
-public fun mm256Cvtsepi64Epi16(a: M256i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovsqw256(a.asI64x4(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtsepi64Epi16(a: M256i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovsqw256(a.asI64x4(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 64-bit integers in a to packed 16-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10627,7 +10627,7 @@ public fun mm256MaskzCvtsepi64Epi16(k: Mmask8, a: M256i): M128i = transmuteWithL
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsepi64_epi16&expand=1837)
  */
-public fun mmCvtsepi64Epi16(a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovsqw128(a.asI64x2(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtsepi64Epi16(a: M128i): M128i = transmuteWithLayouts<I16x8, M128i>(vpmovsqw128(a.asI64x2(), Simd<Short>(List(8) { 0.toShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 64-bit integers in a to packed 16-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10648,7 +10648,7 @@ public fun mmMaskzCvtsepi64Epi16(k: Mmask8, a: M128i): M128i = transmuteWithLayo
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtsepi64_epi8&expand=1861)
  */
-public fun mm512Cvtsepi64Epi8(a: M512i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsqb(a.asI64x8(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm512Cvtsepi64Epi8(a: M512i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsqb(a.asI64x8(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 64-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10669,7 +10669,7 @@ public fun mm512MaskzCvtsepi64Epi8(k: Mmask8, a: M512i): M128i = transmuteWithLa
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtsepi64_epi8&expand=1858)
  */
-public fun mm256Cvtsepi64Epi8(a: M256i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsqb256(a.asI64x4(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtsepi64Epi8(a: M256i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsqb256(a.asI64x4(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 64-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10690,7 +10690,7 @@ public fun mm256MaskzCvtsepi64Epi8(k: Mmask8, a: M256i): M128i = transmuteWithLa
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtsepi64_epi8&expand=1855)
  */
-public fun mmCvtsepi64Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsqb128(a.asI64x2(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtsepi64Epi8(a: M128i): M128i = transmuteWithLayouts<I8x16, M128i>(vpmovsqb128(a.asI64x2(), Simd<Byte>(List(16) { 0.toByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<I8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed signed 64-bit integers in a to packed 8-bit integers with signed saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10711,7 +10711,7 @@ public fun mmMaskzCvtsepi64Epi8(k: Mmask8, a: M128i): M128i = transmuteWithLayou
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtusepi32_epi16&expand=2054)
  */
-public fun mm512Cvtusepi32Epi16(a: M512i): M256i = transmuteWithLayouts<U16x16, M256i>(vpmovusdw(a.asU32x16(), Simd<UShort>(List(16) { 0u.toUShort() }), 0xFFFFu), UnresolvedTypeLayout<U16x16>(), UnresolvedTypeLayout<M256i>())
+public fun mm512Cvtusepi32Epi16(a: M512i): M256i = transmuteWithLayouts<U16x16, M256i>(vpmovusdw(a.asU32x16(), Simd<UShort>(List(16) { 0u.toUShort() }), 0xFFFFu.toUShort()), UnresolvedTypeLayout<U16x16>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed unsigned 32-bit integers in a to packed unsigned 16-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10732,7 +10732,7 @@ public fun mm512MaskzCvtusepi32Epi16(k: Mmask16, a: M512i): M256i = transmuteWit
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtusepi32_epi16&expand=2051)
  */
-public fun mm256Cvtusepi32Epi16(a: M256i): M128i = transmuteWithLayouts<U16x8, M128i>(vpmovusdw256(a.asU32x8(), Simd<UShort>(List(8) { 0u.toUShort() }), 0xFFu), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtusepi32Epi16(a: M256i): M128i = transmuteWithLayouts<U16x8, M128i>(vpmovusdw256(a.asU32x8(), Simd<UShort>(List(8) { 0u.toUShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 32-bit integers in a to packed unsigned 16-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10753,7 +10753,7 @@ public fun mm256MaskzCvtusepi32Epi16(k: Mmask8, a: M256i): M128i = transmuteWith
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtusepi32_epi16&expand=2048)
  */
-public fun mmCvtusepi32Epi16(a: M128i): M128i = transmuteWithLayouts<U16x8, M128i>(vpmovusdw128(a.asU32x4(), Simd<UShort>(List(8) { 0u.toUShort() }), 0xFFu), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtusepi32Epi16(a: M128i): M128i = transmuteWithLayouts<U16x8, M128i>(vpmovusdw128(a.asU32x4(), Simd<UShort>(List(8) { 0u.toUShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 32-bit integers in a to packed unsigned 16-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10774,7 +10774,7 @@ public fun mmMaskzCvtusepi32Epi16(k: Mmask8, a: M128i): M128i = transmuteWithLay
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtusepi32_epi8&expand=2063)
  */
-public fun mm512Cvtusepi32Epi8(a: M512i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusdb(a.asU32x16(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFFFu), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm512Cvtusepi32Epi8(a: M512i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusdb(a.asU32x16(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFFFu.toUShort()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 32-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10795,7 +10795,7 @@ public fun mm512MaskzCvtusepi32Epi8(k: Mmask16, a: M512i): M128i = transmuteWith
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtusepi32_epi8&expand=2060)
  */
-public fun mm256Cvtusepi32Epi8(a: M256i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusdb256(a.asU32x8(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtusepi32Epi8(a: M256i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusdb256(a.asU32x8(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 32-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10816,7 +10816,7 @@ public fun mm256MaskzCvtusepi32Epi8(k: Mmask8, a: M256i): M128i = transmuteWithL
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtusepi32_epi8&expand=2057)
  */
-public fun mmCvtusepi32Epi8(a: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusdb128(a.asU32x4(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtusepi32Epi8(a: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusdb128(a.asU32x4(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 32-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10837,7 +10837,7 @@ public fun mmMaskzCvtusepi32Epi8(k: Mmask8, a: M128i): M128i = transmuteWithLayo
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtusepi64_epi32&expand=2087)
  */
-public fun mm512Cvtusepi64Epi32(a: M512i): M256i = transmuteWithLayouts<U32x8, M256i>(vpmovusqd(a.asU64x8(), Simd<UInt>(List(8) { 0u }), 0xFFu), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
+public fun mm512Cvtusepi64Epi32(a: M512i): M256i = transmuteWithLayouts<U32x8, M256i>(vpmovusqd(a.asU64x8(), Simd<UInt>(List(8) { 0u }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed unsigned 32-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10858,7 +10858,7 @@ public fun mm512MaskzCvtusepi64Epi32(k: Mmask8, a: M512i): M256i = transmuteWith
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtusepi64_epi32&expand=2084)
  */
-public fun mm256Cvtusepi64Epi32(a: M256i): M128i = transmuteWithLayouts<U32x4, M128i>(vpmovusqd256(a.asU64x4(), Simd<UInt>(List(4) { 0u }), 0xFFu), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtusepi64Epi32(a: M256i): M128i = transmuteWithLayouts<U32x4, M128i>(vpmovusqd256(a.asU64x4(), Simd<UInt>(List(4) { 0u }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed unsigned 32-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10879,7 +10879,7 @@ public fun mm256MaskzCvtusepi64Epi32(k: Mmask8, a: M256i): M128i = transmuteWith
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtusepi64_epi32&expand=2081)
  */
-public fun mmCvtusepi64Epi32(a: M128i): M128i = transmuteWithLayouts<U32x4, M128i>(vpmovusqd128(a.asU64x2(), Simd<UInt>(List(4) { 0u }), 0xFFu), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtusepi64Epi32(a: M128i): M128i = transmuteWithLayouts<U32x4, M128i>(vpmovusqd128(a.asU64x2(), Simd<UInt>(List(4) { 0u }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed unsigned 32-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10900,7 +10900,7 @@ public fun mmMaskzCvtusepi64Epi32(k: Mmask8, a: M128i): M128i = transmuteWithLay
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtusepi64_epi16&expand=2078)
  */
-public fun mm512Cvtusepi64Epi16(a: M512i): M128i = transmuteWithLayouts<U16x8, M128i>(vpmovusqw(a.asU64x8(), Simd<UShort>(List(8) { 0u.toUShort() }), 0xFFu), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mm512Cvtusepi64Epi16(a: M512i): M128i = transmuteWithLayouts<U16x8, M128i>(vpmovusqw(a.asU64x8(), Simd<UShort>(List(8) { 0u.toUShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed unsigned 16-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10921,7 +10921,7 @@ public fun mm512MaskzCvtusepi64Epi16(k: Mmask8, a: M512i): M128i = transmuteWith
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtusepi64_epi16&expand=2075)
  */
-public fun mm256Cvtusepi64Epi16(a: M256i): M128i = transmuteWithLayouts<U16x8, M128i>(vpmovusqw256(a.asU64x4(), Simd<UShort>(List(8) { 0u.toUShort() }), 0xFFu), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtusepi64Epi16(a: M256i): M128i = transmuteWithLayouts<U16x8, M128i>(vpmovusqw256(a.asU64x4(), Simd<UShort>(List(8) { 0u.toUShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed unsigned 16-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10942,7 +10942,7 @@ public fun mm256MaskzCvtusepi64Epi16(k: Mmask8, a: M256i): M128i = transmuteWith
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtusepi64_epi16&expand=2072)
  */
-public fun mmCvtusepi64Epi16(a: M128i): M128i = transmuteWithLayouts<U16x8, M128i>(vpmovusqw128(a.asU64x2(), Simd<UShort>(List(8) { 0u.toUShort() }), 0xFFu), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtusepi64Epi16(a: M128i): M128i = transmuteWithLayouts<U16x8, M128i>(vpmovusqw128(a.asU64x2(), Simd<UShort>(List(8) { 0u.toUShort() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U16x8>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed unsigned 16-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10963,7 +10963,7 @@ public fun mmMaskzCvtusepi64Epi16(k: Mmask8, a: M128i): M128i = transmuteWithLay
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtusepi64_epi8&expand=2096)
  */
-public fun mm512Cvtusepi64Epi8(a: M512i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusqb(a.asU64x8(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm512Cvtusepi64Epi8(a: M512i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusqb(a.asU64x8(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -10984,7 +10984,7 @@ public fun mm512MaskzCvtusepi64Epi8(k: Mmask8, a: M512i): M128i = transmuteWithL
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvtusepi64_epi8&expand=2093)
  */
-public fun mm256Cvtusepi64Epi8(a: M256i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusqb256(a.asU64x4(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mm256Cvtusepi64Epi8(a: M256i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusqb256(a.asU64x4(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -11005,7 +11005,7 @@ public fun mm256MaskzCvtusepi64Epi8(k: Mmask8, a: M256i): M128i = transmuteWithL
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvtusepi64_epi8&expand=2090)
  */
-public fun mmCvtusepi64Epi8(a: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusqb128(a.asU64x2(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvtusepi64Epi8(a: M128i): M128i = transmuteWithLayouts<U8x16, M128i>(vpmovusqb128(a.asU64x2(), Simd<UByte>(List(16) { 0u.toUByte() }), 0xFFu.toUByte()), UnresolvedTypeLayout<U8x16>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed unsigned 64-bit integers in a to packed unsigned 8-bit integers with unsigned saturation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -11039,7 +11039,7 @@ public fun mm512CvtRoundpsEpi32(a: M512, rounding: Int): M512i =
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val a1 = a.asF32x16()
-        val r = vcvtps2dq(a1, Simd<Int>(List(16) { 0 }), 0xFFFFu, rounding)
+        val r = vcvtps2dq(a1, Simd<Int>(List(16) { 0 }), 0xFFFFu.toUShort(), rounding)
         transmuteWithLayouts<I32x16, M512i>(r, UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
     }
 
@@ -11106,7 +11106,7 @@ public fun mm512CvtRoundpsEpu32(a: M512, rounding: Int): M512i =
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val a1 = a.asF32x16()
-        val r = vcvtps2udq(a1, Simd<UInt>(List(16) { 0u }), 0xFFFFu, rounding)
+        val r = vcvtps2udq(a1, Simd<UInt>(List(16) { 0u }), 0xFFFFu.toUShort(), rounding)
         transmuteWithLayouts<U32x16, M512i>(r, UnresolvedTypeLayout<U32x16>(), UnresolvedTypeLayout<M512i>())
     }
 
@@ -11167,7 +11167,7 @@ public fun mm512CvtRoundpsPd(a: M256, sae: Int): M512d =
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
         val a1 = a.asF32x8()
-        val r = vcvtps2pd(a1, Simd<Double>(List(8) { 0.0 }), 0xFFu, sae)
+        val r = vcvtps2pd(a1, Simd<Double>(List(8) { 0.0 }), 0xFFu.toUByte(), sae)
         transmuteWithLayouts<F64x8, M512d>(r, UnresolvedTypeLayout<F64x8>(), UnresolvedTypeLayout<M512d>())
     }
 
@@ -11222,7 +11222,7 @@ public fun mm512CvtRoundpdEpi32(a: M512d, rounding: Int): M256i =
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val a1 = a.asF64x8()
-        val r = vcvtpd2dq(a1, Simd<Int>(List(8) { 0 }), 0xFFu, rounding)
+        val r = vcvtpd2dq(a1, Simd<Int>(List(8) { 0 }), 0xFFu.toUByte(), rounding)
         transmuteWithLayouts<I32x8, M256i>(r, UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
     }
 
@@ -11289,7 +11289,7 @@ public fun mm512CvtRoundpdEpu32(a: M512d, rounding: Int): M256i =
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val a1 = a.asF64x8()
-        val r = vcvtpd2udq(a1, Simd<UInt>(List(8) { 0u }), 0xFFu, rounding)
+        val r = vcvtpd2udq(a1, Simd<UInt>(List(8) { 0u }), 0xFFu.toUByte(), rounding)
         transmuteWithLayouts<U32x8, M256i>(r, UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
     }
 
@@ -11356,7 +11356,7 @@ public fun mm512CvtRoundpdPs(a: M512d, rounding: Int): M256 =
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
         val a1 = a.asF64x8()
-        val r = vcvtpd2ps(a1, Simd<Float>(List(8) { 0.0f }), 0xFFu, rounding)
+        val r = vcvtpd2ps(a1, Simd<Float>(List(8) { 0.0f }), 0xFFu.toUByte(), rounding)
         transmuteWithLayouts<F32x8, M256>(r, UnresolvedTypeLayout<F32x8>(), UnresolvedTypeLayout<M256>())
     }
 
@@ -11559,7 +11559,7 @@ public fun mm512CvtRoundpsPh(a: M512, rounding: Int): M256i =
             check((rounding and 7) < 5 && (rounding and 15.inv()) == 0) { "Invalid IMM value" }
         }
         val a1 = a.asF32x16()
-        val r = vcvtps2ph(a1, rounding, Simd<Short>(List(16) { 0.toShort() }), 0xFFFFu)
+        val r = vcvtps2ph(a1, rounding, Simd<Short>(List(16) { 0.toShort() }), 0xFFFFu.toUShort())
         transmuteWithLayouts<I16x16, M256i>(r, UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
     }
 
@@ -11724,7 +11724,7 @@ public fun mm512CvtpsPh(a: M512, rounding: Int): M256i =
             check((rounding and 7) < 5 && (rounding and 15.inv()) == 0) { "Invalid IMM value" }
         }
         val a1 = a.asF32x16()
-        val r = vcvtps2ph(a1, rounding, Simd<Short>(List(16) { 0.toShort() }), 0xFFFFu)
+        val r = vcvtps2ph(a1, rounding, Simd<Short>(List(16) { 0.toShort() }), 0xFFFFu.toUShort())
         transmuteWithLayouts<I16x16, M256i>(r, UnresolvedTypeLayout<I16x16>(), UnresolvedTypeLayout<M256i>())
     }
 
@@ -11879,7 +11879,7 @@ public fun mm512CvtRoundphPs(a: M256i, sae: Int): M512 =
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
         val a1 = a.asI16x16()
-        val r = vcvtph2ps(a1, Simd<Float>(List(16) { 0.0f }), 0xFFFFu, sae)
+        val r = vcvtph2ps(a1, Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort(), sae)
         transmuteWithLayouts<F32x16, M512>(r, UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
     }
 
@@ -11921,7 +11921,7 @@ public fun mm512MaskzCvtRoundphPs(k: Mmask16, a: M256i, sae: Int): M512 =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvtph_ps&expand=1723)
  */
-public fun mm512CvtphPs(a: M256i): M512 = transmuteWithLayouts<F32x16, M512>(vcvtph2ps(a.asI16x16(), Simd<Float>(List(16) { 0.0f }), 0xFFFFu, MM_FROUND_NO_EXC), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
+public fun mm512CvtphPs(a: M256i): M512 = transmuteWithLayouts<F32x16, M512>(vcvtph2ps(a.asI16x16(), Simd<Float>(List(16) { 0.0f }), 0xFFFFu.toUShort(), MM_FROUND_NO_EXC), UnresolvedTypeLayout<F32x16>(), UnresolvedTypeLayout<M512>())
 
 /**
  * Convert packed half-precision (16-bit) floating-point elements in a to packed single-precision (32-bit) floating-point elements, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -11993,7 +11993,7 @@ public fun mm512CvttRoundpsEpi32(a: M512, sae: Int): M512i =
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
         val a1 = a.asF32x16()
-        val r = vcvttps2dq(a1, Simd<Int>(List(16) { 0 }), 0xFFFFu, sae)
+        val r = vcvttps2dq(a1, Simd<Int>(List(16) { 0 }), 0xFFFFu.toUShort(), sae)
         transmuteWithLayouts<I32x16, M512i>(r, UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
     }
 
@@ -12042,7 +12042,7 @@ public fun mm512CvttRoundpsEpu32(a: M512, sae: Int): M512i =
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
         val a1 = a.asF32x16()
-        val r = vcvttps2udq(a1, Simd<UInt>(List(16) { 0u }), 0xFFFFu, sae)
+        val r = vcvttps2udq(a1, Simd<UInt>(List(16) { 0u }), 0xFFFFu.toUShort(), sae)
         transmuteWithLayouts<U32x16, M512i>(r, UnresolvedTypeLayout<U32x16>(), UnresolvedTypeLayout<M512i>())
     }
 
@@ -12091,7 +12091,7 @@ public fun mm512CvttRoundpdEpi32(a: M512d, sae: Int): M256i =
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
         val a1 = a.asF64x8()
-        val r = vcvttpd2dq(a1, Simd<Int>(List(8) { 0 }), 0xFFu, sae)
+        val r = vcvttpd2dq(a1, Simd<Int>(List(8) { 0 }), 0xFFu.toUByte(), sae)
         transmuteWithLayouts<I32x8, M256i>(r, UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
     }
 
@@ -12140,7 +12140,7 @@ public fun mm512CvttRoundpdEpu32(a: M512d, sae: Int): M256i =
             check(sae == 4 || sae == 8) { "Invalid IMM value" }
         }
         val a1 = a.asF64x8()
-        val r = vcvttpd2udq(a1, Simd<Int>(List(8) { 0 }), 0xFFu, sae)
+        val r = vcvttpd2udq(a1, Simd<Int>(List(8) { 0 }), 0xFFu.toUByte(), sae)
         transmuteWithLayouts<U32x8, M256i>(r, UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
     }
 
@@ -12166,7 +12166,7 @@ public fun mm512MaskCvttRoundpdEpu32(src: M256i, k: Mmask8, a: M512d, sae: Int):
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvttps_epi32&expand=1984)
  */
-public fun mm512CvttpsEpi32(a: M512): M512i = transmuteWithLayouts<I32x16, M512i>(vcvttps2dq(a.asF32x16(), Simd<Int>(List(16) { 0 }), 0xFFFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
+public fun mm512CvttpsEpi32(a: M512): M512i = transmuteWithLayouts<I32x16, M512i>(vcvttps2dq(a.asF32x16(), Simd<Int>(List(16) { 0 }), 0xFFFFu.toUShort(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed single-precision (32-bit) floating-point elements in a to packed 32-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -12215,7 +12215,7 @@ public fun mmMaskzCvttpsEpi32(k: Mmask8, a: M128): M128i = mmMaskCvttpsEpi32(mmS
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvttps_epu32&expand=2002)
  */
-public fun mm512CvttpsEpu32(a: M512): M512i = transmuteWithLayouts<U32x16, M512i>(vcvttps2udq(a.asF32x16(), Simd<UInt>(List(16) { 0u }), 0xFFFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U32x16>(), UnresolvedTypeLayout<M512i>())
+public fun mm512CvttpsEpu32(a: M512): M512i = transmuteWithLayouts<U32x16, M512i>(vcvttps2udq(a.asF32x16(), Simd<UInt>(List(16) { 0u }), 0xFFFFu.toUShort(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U32x16>(), UnresolvedTypeLayout<M512i>())
 
 /**
  * Convert packed double-precision (32-bit) floating-point elements in a to packed unsigned 32-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -12236,7 +12236,7 @@ public fun mm512MaskzCvttpsEpu32(k: Mmask16, a: M512): M512i = transmuteWithLayo
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvttps_epu32&expand=1999)
  */
-public fun mm256CvttpsEpu32(a: M256): M256i = transmuteWithLayouts<U32x8, M256i>(vcvttps2udq256(a.asF32x8(), Simd<UInt>(List(8) { 0u }), 0xFFu), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
+public fun mm256CvttpsEpu32(a: M256): M256i = transmuteWithLayouts<U32x8, M256i>(vcvttps2udq256(a.asF32x8(), Simd<UInt>(List(8) { 0u }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed double-precision (32-bit) floating-point elements in a to packed unsigned 32-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -12257,7 +12257,7 @@ public fun mm256MaskzCvttpsEpu32(k: Mmask8, a: M256): M256i = transmuteWithLayou
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvttps_epu32&expand=1996)
  */
-public fun mmCvttpsEpu32(a: M128): M128i = transmuteWithLayouts<U32x4, M128i>(vcvttps2udq128(a.asF32x4(), Simd<UInt>(List(4) { 0u }), 0xFFu), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvttpsEpu32(a: M128): M128i = transmuteWithLayouts<U32x4, M128i>(vcvttps2udq128(a.asF32x4(), Simd<UInt>(List(4) { 0u }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed double-precision (32-bit) floating-point elements in a to packed unsigned 32-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -12294,7 +12294,7 @@ public fun mm512MaskzCvttRoundpdEpu32(k: Mmask8, a: M512d, sae: Int): M256i =
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvttpd_epi32&expand=1947)
  */
-public fun mm512CvttpdEpi32(a: M512d): M256i = transmuteWithLayouts<I32x8, M256i>(vcvttpd2dq(a.asF64x8(), Simd<Int>(List(8) { 0 }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
+public fun mm512CvttpdEpi32(a: M512d): M256i = transmuteWithLayouts<I32x8, M256i>(vcvttpd2dq(a.asF64x8(), Simd<Int>(List(8) { 0 }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<I32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed 32-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -12343,7 +12343,7 @@ public fun mmMaskzCvttpdEpi32(k: Mmask8, a: M128d): M128i = transmuteWithLayouts
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm512_cvttpd_epu32&expand=1965)
  */
-public fun mm512CvttpdEpu32(a: M512d): M256i = transmuteWithLayouts<U32x8, M256i>(vcvttpd2udq(a.asF64x8(), Simd<Int>(List(8) { 0 }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
+public fun mm512CvttpdEpu32(a: M512d): M256i = transmuteWithLayouts<U32x8, M256i>(vcvttpd2udq(a.asF64x8(), Simd<Int>(List(8) { 0 }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<U32x8>(), UnresolvedTypeLayout<M256i>())
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed unsigned 32-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -12364,7 +12364,7 @@ public fun mm512MaskzCvttpdEpu32(k: Mmask8, a: M512d): M256i = transmuteWithLayo
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm256_cvttpd_epu32&expand=1962)
  */
-public fun mm256CvttpdEpu32(a: M256d): M128i = transmuteWithLayouts<U32x4, M128i>(vcvttpd2udq256(a.asF64x4(), Simd<Int>(List(4) { 0 }), 0xFFu), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mm256CvttpdEpu32(a: M256d): M128i = transmuteWithLayouts<U32x4, M128i>(vcvttpd2udq256(a.asF64x4(), Simd<Int>(List(4) { 0 }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed unsigned 32-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -12385,7 +12385,7 @@ public fun mm256MaskzCvttpdEpu32(k: Mmask8, a: M256d): M128i = transmuteWithLayo
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=_mm_cvttpd_epu32&expand=1959)
  */
-public fun mmCvttpdEpu32(a: M128d): M128i = transmuteWithLayouts<U32x4, M128i>(vcvttpd2udq128(a.asF64x2(), Simd<Int>(List(4) { 0 }), 0xFFu), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
+public fun mmCvttpdEpu32(a: M128d): M128i = transmuteWithLayouts<U32x4, M128i>(vcvttpd2udq128(a.asF64x2(), Simd<Int>(List(4) { 0 }), 0xFFu.toUByte()), UnresolvedTypeLayout<U32x4>(), UnresolvedTypeLayout<M128i>())
 
 /**
  * Convert packed double-precision (64-bit) floating-point elements in a to packed unsigned 32-bit integers with truncation, and store the results in dst using writemask k (elements are copied from src when the corresponding mask bit is not set).
@@ -13151,7 +13151,7 @@ public fun mm256I32scatterEpi32(baseAddr: MutPtr, vindex: M256i, a: M256i, scale
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterdd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x8(), a.asI32x8(), scale)
+    vpscatterdd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI32x8(), a.asI32x8(), scale)
 }
 
 /**
@@ -13180,7 +13180,7 @@ public fun mm256I32scatterEpi64(slice: MutPtr, offsets: M128i, src: M256i, scale
     val src1 = src.asI64x4()
     val slice1 = MutPtr(slice.rawAddress, slice.rawMeta)
     val offsets1 = offsets.asI32x4()
-    vpscatterdq256(slice1, 0xffu, offsets1, src1, scale)
+    vpscatterdq256(slice1, 0xffu.toUByte(), offsets1, src1, scale)
 }
 
 /**
@@ -13207,7 +13207,7 @@ public fun mm256I32scatterPd(baseAddr: MutPtr, vindex: M128i, a: M256d, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdpd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x4(), a.asF64x4(), scale)
+    vscatterdpd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI32x4(), a.asF64x4(), scale)
 }
 
 /**
@@ -13234,7 +13234,7 @@ public fun mm256I32scatterPs(baseAddr: MutPtr, vindex: M256i, a: M256, scale: In
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdps256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x8(), a.asF32x8(), scale)
+    vscatterdps256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI32x8(), a.asF32x8(), scale)
 }
 
 /**
@@ -13261,7 +13261,7 @@ public fun mm256I64scatterEpi32(baseAddr: MutPtr, vindex: M256i, a: M128i, scale
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x4(), a.asI32x4(), scale)
+    vpscatterqd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI64x4(), a.asI32x4(), scale)
 }
 
 /**
@@ -13288,7 +13288,7 @@ public fun mm256I64scatterEpi64(baseAddr: MutPtr, vindex: M256i, a: M256i, scale
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqq256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x4(), a.asI64x4(), scale)
+    vpscatterqq256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI64x4(), a.asI64x4(), scale)
 }
 
 /**
@@ -13315,7 +13315,7 @@ public fun mm256I64scatterPd(baseAddr: MutPtr, vindex: M256i, a: M256d, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqpd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x4(), a.asF64x4(), scale)
+    vscatterqpd256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI64x4(), a.asF64x4(), scale)
 }
 
 /**
@@ -13342,7 +13342,7 @@ public fun mm256I64scatterPs(baseAddr: MutPtr, vindex: M256i, a: M128, scale: In
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqps256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x4(), a.asF32x4(), scale)
+    vscatterqps256(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI64x4(), a.asF32x4(), scale)
 }
 
 /**
@@ -13481,7 +13481,7 @@ public fun mmI32scatterEpi32(baseAddr: MutPtr, vindex: M128i, a: M128i, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterdd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x4(), a.asI32x4(), scale)
+    vpscatterdd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI32x4(), a.asI32x4(), scale)
 }
 
 /**
@@ -13508,7 +13508,7 @@ public fun mmI32scatterEpi64(baseAddr: MutPtr, vindex: M128i, a: M128i, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterdq128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x4(), a.asI64x2(), scale)
+    vpscatterdq128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI32x4(), a.asI64x2(), scale)
 }
 
 /**
@@ -13535,7 +13535,7 @@ public fun mmI32scatterPd(baseAddr: MutPtr, vindex: M128i, a: M128d, scale: Int)
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdpd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x4(), a.asF64x2(), scale)
+    vscatterdpd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI32x4(), a.asF64x2(), scale)
 }
 
 /**
@@ -13562,7 +13562,7 @@ public fun mmI32scatterPs(baseAddr: MutPtr, vindex: M128i, a: M128, scale: Int) 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterdps128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI32x4(), a.asF32x4(), scale)
+    vscatterdps128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI32x4(), a.asF32x4(), scale)
 }
 
 /**
@@ -13589,7 +13589,7 @@ public fun mmI64scatterEpi32(baseAddr: MutPtr, vindex: M128i, a: M128i, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x2(), a.asI32x4(), scale)
+    vpscatterqd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI64x2(), a.asI32x4(), scale)
 }
 
 /**
@@ -13616,7 +13616,7 @@ public fun mmI64scatterEpi64(baseAddr: MutPtr, vindex: M128i, a: M128i, scale: I
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vpscatterqq128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x2(), a.asI64x2(), scale)
+    vpscatterqq128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI64x2(), a.asI64x2(), scale)
 }
 
 /**
@@ -13643,7 +13643,7 @@ public fun mmI64scatterPd(baseAddr: MutPtr, vindex: M128i, a: M128d, scale: Int)
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqpd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x2(), a.asF64x2(), scale)
+    vscatterqpd128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI64x2(), a.asF64x2(), scale)
 }
 
 /**
@@ -13670,7 +13670,7 @@ public fun mmI64scatterPs(baseAddr: MutPtr, vindex: M128i, a: M128, scale: Int) 
     run {
         check(scale == 1 || scale == 2 || scale == 4 || scale == 8) { "Invalid SCALE value" }
     }
-    vscatterqps128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu, vindex.asI64x2(), a.asF32x4(), scale)
+    vscatterqps128(MutPtr(baseAddr.rawAddress, baseAddr.rawMeta), 0xffu.toUByte(), vindex.asI64x2(), a.asF32x4(), scale)
 }
 
 /**
@@ -28115,7 +28115,7 @@ public fun mmMaskzSqrtSd(k: Mmask8, a: M128d, b: M128d): M128d = vsqrtsd(a, b, m
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=mmRsqrt14Ss&expand=4825)
  */
-public fun mmRsqrt14Ss(a: M128, b: M128): M128 = transmuteWithLayouts<F32x4, M128>(vrsqrt14ss(a.asF32x4(), b.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0x1u), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+public fun mmRsqrt14Ss(a: M128, b: M128): M128 = transmuteWithLayouts<F32x4, M128>(vrsqrt14ss(a.asF32x4(), b.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte()), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Compute the approximate reciprocal square root of the lower single-precision (32-bit) floating-point element in b, store the result in the lower element of dst using writemask k (the element is copied from src when mask bit 0 is not set), and copy the upper 3 packed elements from a to the upper elements of dst. The maximum relative error for this approximation is less than 2^-14.
@@ -28136,7 +28136,7 @@ public fun mmMaskzRsqrt14Ss(k: Mmask8, a: M128, b: M128): M128 = transmuteWithLa
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=mmRsqrt14Sd&expand=4822)
  */
-public fun mmRsqrt14Sd(a: M128d, b: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vrsqrt14sd(a.asF64x2(), b.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x1u), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
+public fun mmRsqrt14Sd(a: M128d, b: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vrsqrt14sd(a.asF64x2(), b.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte()), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Compute the approximate reciprocal square root of the lower double-precision (64-bit) floating-point element in b, store the result in the lower element of dst using writemask k (the element is copied from src when mask bit 0 is not set), and copy the upper element from a to the upper element of dst. The maximum relative error for this approximation is less than 2^-14.
@@ -28157,7 +28157,7 @@ public fun mmMaskzRsqrt14Sd(k: Mmask8, a: M128d, b: M128d): M128d = transmuteWit
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=mmRcp14Ss&expand=4508)
  */
-public fun mmRcp14Ss(a: M128, b: M128): M128 = transmuteWithLayouts<F32x4, M128>(vrcp14ss(a.asF32x4(), b.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0x1u), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+public fun mmRcp14Ss(a: M128, b: M128): M128 = transmuteWithLayouts<F32x4, M128>(vrcp14ss(a.asF32x4(), b.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte()), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Compute the approximate reciprocal of the lower single-precision (32-bit) floating-point element in b, store the result in the lower element of dst using writemask k (the element is copied from src when mask bit 0 is not set), and copy the upper 3 packed elements from a to the upper elements of dst. The maximum relative error for this approximation is less than 2^-14.
@@ -28178,7 +28178,7 @@ public fun mmMaskzRcp14Ss(k: Mmask8, a: M128, b: M128): M128 = transmuteWithLayo
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=mmRcp14Sd&expand=4505)
  */
-public fun mmRcp14Sd(a: M128d, b: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vrcp14sd(a.asF64x2(), b.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x1u), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
+public fun mmRcp14Sd(a: M128d, b: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vrcp14sd(a.asF64x2(), b.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte()), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Compute the approximate reciprocal of the lower double-precision (64-bit) floating-point element in b, store the result in the lower element of dst using writemask k (the element is copied from src when mask bit 0 is not set), and copy the upper element from a to the upper element of dst. The maximum relative error for this approximation is less than 2^-14.
@@ -28199,7 +28199,7 @@ public fun mmMaskzRcp14Sd(k: Mmask8, a: M128d, b: M128d): M128d = transmuteWithL
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=mmGetexpSs&expand=2862)
  */
-public fun mmGetexpSs(a: M128, b: M128): M128 = transmuteWithLayouts<F32x4, M128>(vgetexpss(a.asF32x4(), b.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0x1u, MM_FROUND_NO_EXC), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+public fun mmGetexpSs(a: M128, b: M128): M128 = transmuteWithLayouts<F32x4, M128>(vgetexpss(a.asF32x4(), b.asF32x4(), Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte(), MM_FROUND_NO_EXC), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
 
 /**
  * Convert the exponent of the lower single-precision (32-bit) floating-point element in b to a single-precision (32-bit) floating-point number representing the integer exponent, store the result in the lower element of dst using writemask k (the element is copied from src when mask bit 0 is not set), and copy the upper 3 packed elements from a to the upper elements of dst. This intrinsic essentially calculates floor(log2(x)) for the lower element.
@@ -28220,7 +28220,7 @@ public fun mmMaskzGetexpSs(k: Mmask8, a: M128, b: M128): M128 = transmuteWithLay
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=mmGetexpSd&expand=2859)
  */
-public fun mmGetexpSd(a: M128d, b: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vgetexpsd(a.asF64x2(), b.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x1u, MM_FROUND_NO_EXC), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
+public fun mmGetexpSd(a: M128d, b: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vgetexpsd(a.asF64x2(), b.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte(), MM_FROUND_NO_EXC), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Convert the exponent of the lower double-precision (64-bit) floating-point element in b to a double-precision (64-bit) floating-point number representing the integer exponent, store the result in the lower element of dst using writemask k (the element is copied from src when mask bit 0 is not set), and copy the upper element from a to the upper element of dst. This intrinsic essentially calculates floor(log2(x)) for the lower element.
@@ -28261,7 +28261,7 @@ public fun mmGetmantSs(a: M128, b: M128, norm: MmMantissaNormEnum, sign: MmManti
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vgetmantss(a1, b1, sign shl 2 or norm, Simd<Float>(List(4) { 0.0f }), 0x1u, MM_FROUND_CUR_DIRECTION)
+        val r = vgetmantss(a1, b1, sign shl 2 or norm, Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte(), MM_FROUND_CUR_DIRECTION)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -28349,7 +28349,7 @@ public fun mmGetmantSd(a: M128d, b: M128d, norm: MmMantissaNormEnum, sign: MmMan
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vgetmantsd(a1, b1, sign shl 2 or norm, Simd<Double>(List(2) { 0.0 }), 0x1u, MM_FROUND_CUR_DIRECTION)
+        val r = vgetmantsd(a1, b1, sign shl 2 or norm, Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte(), MM_FROUND_CUR_DIRECTION)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -28430,7 +28430,7 @@ public fun mmRoundscaleSs(a: M128, b: M128, imm8: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vrndscaless(a1, b1, Simd<Float>(List(4) { 0.0f }), 0xFFu, imm8, MM_FROUND_CUR_DIRECTION)
+        val r = vrndscaless(a1, b1, Simd<Float>(List(4) { 0.0f }), 0xFFu.toUByte(), imm8, MM_FROUND_CUR_DIRECTION)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -28497,7 +28497,7 @@ public fun mmRoundscaleSd(a: M128d, b: M128d, imm8: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vrndscalesd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0xFFu, imm8, MM_FROUND_CUR_DIRECTION)
+        val r = vrndscalesd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0xFFu.toUByte(), imm8, MM_FROUND_CUR_DIRECTION)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -28555,7 +28555,7 @@ public fun mmScalefSs(a: M128, b: M128): M128 =
     run {
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        transmuteWithLayouts<F32x4, M128>(vscalefss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
+        transmuteWithLayouts<F32x4, M128>(vscalefss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
 /**
@@ -28583,7 +28583,7 @@ public fun mmMaskzScalefSs(k: Mmask8, a: M128, b: M128): M128 = transmuteWithLay
  *
  * [Intel's documentation](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#text=mmScalefSd&expand=4898)
  */
-public fun mmScalefSd(a: M128d, b: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vscalefsd(a.asF64x2(), b.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0xFFu, MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
+public fun mmScalefSd(a: M128d, b: M128d): M128d = transmuteWithLayouts<F64x2, M128d>(vscalefsd(a.asF64x2(), b.asF64x2(), Simd<Double>(List(2) { 0.0 }), 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION), UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
 
 /**
  * Scale the packed double-precision (64-bit) floating-point elements in a using values from b, store the result in the lower element of dst using writemask k (the element is copied from src when mask bit 0 is not set), and copy the upper element from a to the upper element of dst.
@@ -29034,7 +29034,7 @@ public fun mmAddRoundSs(a: M128, b: M128, rounding: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vaddss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u, rounding)
+        val r = vaddss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte(), rounding)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -29104,7 +29104,7 @@ public fun mmAddRoundSd(a: M128d, b: M128d, rounding: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vaddsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u, rounding)
+        val r = vaddsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte(), rounding)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -29174,7 +29174,7 @@ public fun mmSubRoundSs(a: M128, b: M128, rounding: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vsubss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u, rounding)
+        val r = vsubss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte(), rounding)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -29244,7 +29244,7 @@ public fun mmSubRoundSd(a: M128d, b: M128d, rounding: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vsubsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u, rounding)
+        val r = vsubsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte(), rounding)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -29314,7 +29314,7 @@ public fun mmMulRoundSs(a: M128, b: M128, rounding: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vmulss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u, rounding)
+        val r = vmulss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte(), rounding)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -29384,7 +29384,7 @@ public fun mmMulRoundSd(a: M128d, b: M128d, rounding: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vmulsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u, rounding)
+        val r = vmulsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte(), rounding)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -29454,7 +29454,7 @@ public fun mmDivRoundSs(a: M128, b: M128, rounding: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vdivss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u, rounding)
+        val r = vdivss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte(), rounding)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -29524,7 +29524,7 @@ public fun mmDivRoundSd(a: M128d, b: M128d, rounding: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vdivsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u, rounding)
+        val r = vdivsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte(), rounding)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -29588,7 +29588,7 @@ public fun mmMaxRoundSs(a: M128, b: M128, sae: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vmaxss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u, sae)
+        val r = vmaxss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte(), sae)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -29640,7 +29640,7 @@ public fun mmMaxRoundSd(a: M128d, b: M128d, sae: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vmaxsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u, sae)
+        val r = vmaxsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte(), sae)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -29692,7 +29692,7 @@ public fun mmMinRoundSs(a: M128, b: M128, sae: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vminss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u, sae)
+        val r = vminss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte(), sae)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -29744,7 +29744,7 @@ public fun mmMinRoundSd(a: M128d, b: M128d, sae: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vminsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u, sae)
+        val r = vminsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte(), sae)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -29800,7 +29800,7 @@ public fun mmSqrtRoundSs(a: M128, b: M128, rounding: Int): M128 =
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        vsqrtss(a, b, mmSetzeroPs(), 0x1u, rounding)
+        vsqrtss(a, b, mmSetzeroPs(), 0x1u.toUByte(), rounding)
     }
 
 /**
@@ -29860,7 +29860,7 @@ public fun mmSqrtRoundSd(a: M128d, b: M128d, rounding: Int): M128d =
         run {
             check(rounding == 4 || rounding == 8 || rounding == 9 || rounding == 10 || rounding == 11) { "Invalid IMM value" }
         }
-        vsqrtsd(a, b, mmSetzeroPd(), 0x1u, rounding)
+        vsqrtsd(a, b, mmSetzeroPd(), 0x1u.toUByte(), rounding)
     }
 
 /**
@@ -29916,7 +29916,7 @@ public fun mmGetexpRoundSs(a: M128, b: M128, sae: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vgetexpss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u, sae)
+        val r = vgetexpss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte(), sae)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -29968,7 +29968,7 @@ public fun mmGetexpRoundSd(a: M128d, b: M128d, sae: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vgetexpsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u, sae)
+        val r = vgetexpsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte(), sae)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -30035,7 +30035,7 @@ public fun mmGetmantRoundSs(a: M128, b: M128, norm: MmMantissaNormEnum, sign: Mm
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vgetmantss(a1, b1, sign shl 2 or norm, Simd<Float>(List(4) { 0.0f }), 0x1u, sae)
+        val r = vgetmantss(a1, b1, sign shl 2 or norm, Simd<Float>(List(4) { 0.0f }), 0x1u.toUByte(), sae)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -30132,7 +30132,7 @@ public fun mmGetmantRoundSd(a: M128d, b: M128d, norm: MmMantissaNormEnum, sign: 
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vgetmantsd(a1, b1, sign shl 2 or norm, Simd<Double>(List(2) { 0.0 }), 0x1u, sae)
+        val r = vgetmantsd(a1, b1, sign shl 2 or norm, Simd<Double>(List(2) { 0.0 }), 0x1u.toUByte(), sae)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -30223,7 +30223,7 @@ public fun mmRoundscaleRoundSs(a: M128, b: M128, imm8: Int, sae: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vrndscaless(a1, b1, Simd<Float>(List(4) { 0.0f }), 0xFFu, imm8, sae)
+        val r = vrndscaless(a1, b1, Simd<Float>(List(4) { 0.0f }), 0xFFu.toUByte(), imm8, sae)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -30302,7 +30302,7 @@ public fun mmRoundscaleRoundSd(a: M128d, b: M128d, imm8: Int, sae: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vrndscalesd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0xFFu, imm8, sae)
+        val r = vrndscalesd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0xFFu.toUByte(), imm8, sae)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -30378,7 +30378,7 @@ public fun mmScalefRoundSs(a: M128, b: M128, rounding: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
-        val r = vscalefss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0xFFu, rounding)
+        val r = vscalefss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0xFFu.toUByte(), rounding)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 
@@ -30448,7 +30448,7 @@ public fun mmScalefRoundSd(a: M128d, b: M128d, rounding: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
-        val r = vscalefsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0xFFu, rounding)
+        val r = vscalefsd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0xFFu.toUByte(), rounding)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -31365,7 +31365,7 @@ public fun mmFixupimmSs(a: M128, b: M128, c: M128i, imm8: Int): M128 =
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
         val c1 = c.asI32x4()
-        val r = vfixupimmss(a1, b1, c1, imm8, 0xFFu, MM_FROUND_CUR_DIRECTION)
+        val r = vfixupimmss(a1, b1, c1, imm8, 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION)
         val fixupimm: Float = run { val simdArg0 = r; val simdArg1 = 0.0f; 0.0f }
         val r1 = run { val simdArg0 = b1; val simdArg1 = 0; val simdArg2 = fixupimm; simdArg0 }
         transmuteWithLayouts<Any?, M128>(r1, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128>())
@@ -31422,7 +31422,7 @@ public fun mmFixupimmSd(a: M128d, b: M128d, c: M128i, imm8: Int): M128d =
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
         val c1 = c.asI64x2()
-        val fixupimm = vfixupimmsd(a1, b1, c1, imm8, 0xFFu, MM_FROUND_CUR_DIRECTION)
+        val fixupimm = vfixupimmsd(a1, b1, c1, imm8, 0xFFu.toUByte(), MM_FROUND_CUR_DIRECTION)
         val fixupimm1: Double = run { val simdArg0 = fixupimm; val simdArg1 = 0.0; 0.0 }
         val r = run { val simdArg0 = b1; val simdArg1 = 0; val simdArg2 = fixupimm1; simdArg0 }
         transmuteWithLayouts<Any?, M128d>(r, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128d>())
@@ -31483,7 +31483,7 @@ public fun mmFixupimmRoundSs(a: M128, b: M128, c: M128i, imm8: Int, sae: Int): M
         val a1 = a.asF32x4()
         val b1 = b.asF32x4()
         val c1 = c.asI32x4()
-        val r = vfixupimmss(a1, b1, c1, imm8, 0xFFu, sae)
+        val r = vfixupimmss(a1, b1, c1, imm8, 0xFFu.toUByte(), sae)
         val fixupimm: Float = run { val simdArg0 = r; val simdArg1 = 0.0f; 0.0f }
         val r1 = run { val simdArg0 = b1; val simdArg1 = 0; val simdArg2 = fixupimm; simdArg0 }
         transmuteWithLayouts<Any?, M128>(r1, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128>())
@@ -31552,7 +31552,7 @@ public fun mmFixupimmRoundSd(a: M128d, b: M128d, c: M128i, imm8: Int, sae: Int):
         val a1 = a.asF64x2()
         val b1 = b.asF64x2()
         val c1 = c.asI64x2()
-        val r = vfixupimmsd(a1, b1, c1, imm8, 0xFFu, sae)
+        val r = vfixupimmsd(a1, b1, c1, imm8, 0xFFu.toUByte(), sae)
         val fixupimm: Double = run { val simdArg0 = r; val simdArg1 = 0.0; 0.0 }
         val r1 = run { val simdArg0 = b1; val simdArg1 = 0; val simdArg2 = fixupimm; simdArg0 }
         transmuteWithLayouts<Any?, M128d>(r1, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128d>())
@@ -31645,7 +31645,7 @@ public fun mmCvtRoundssSd(a: M128d, b: M128, sae: Int): M128d =
         }
         val a1 = a.asF64x2()
         val b1 = b.asF32x4()
-        val r = vcvtss2sd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0xFFu, sae)
+        val r = vcvtss2sd(a1, b1, Simd<Double>(List(2) { 0.0 }), 0xFFu.toUByte(), sae)
         transmuteWithLayouts<F64x2, M128d>(r, UnresolvedTypeLayout<F64x2>(), UnresolvedTypeLayout<M128d>())
     }
 
@@ -31702,7 +31702,7 @@ public fun mmCvtRoundsdSs(a: M128, b: M128d, rounding: Int): M128 =
         }
         val a1 = a.asF32x4()
         val b1 = b.asF64x2()
-        val r = vcvtsd2ss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0xFFu, rounding)
+        val r = vcvtsd2ss(a1, b1, Simd<Float>(List(4) { 0.0f }), 0xFFu.toUByte(), rounding)
         transmuteWithLayouts<F32x4, M128>(r, UnresolvedTypeLayout<F32x4>(), UnresolvedTypeLayout<M128>())
     }
 

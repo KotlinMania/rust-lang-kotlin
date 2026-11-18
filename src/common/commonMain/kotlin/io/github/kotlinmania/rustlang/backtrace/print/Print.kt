@@ -12,7 +12,6 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.andThen
 
 public val HEX_WIDTH: Int = 2 + 2 * sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)
 

@@ -190,7 +190,7 @@ public open class SimdM<T>(
                     }
                     r.assumeInit()
                 }
-            return listOf(T.ZERO, ones)[x.toInt()]
+            return listOf(T.ZERO, ones)[(if (x) 1 else 0)]
         }
 
         public fun <T> fromArray(elements: BooleanArray, n: Int = 0): SimdM<T> {

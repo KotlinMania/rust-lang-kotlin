@@ -69,6 +69,8 @@ public interface Add<Rhs, out Output> {
      * ```
      */
     public fun add(rhs: Rhs): Output
+
+    public operator fun plus(rhs: Rhs): Output = add(rhs)
 }
 
 public fun Int.add(other: Int): Int = this + other
@@ -160,6 +162,8 @@ public interface Sub<Rhs, out Output> {
      * ```
      */
     public fun sub(rhs: Rhs): Output
+
+    public operator fun minus(rhs: Rhs): Output = sub(rhs)
 }
 
 public fun Int.sub(other: Int): Int = this - other
@@ -275,6 +279,8 @@ public interface Mul<Rhs, out Output> {
      * ```
      */
     public fun mul(rhs: Rhs): Output
+
+    public operator fun times(rhs: Rhs): Output = mul(rhs)
 }
 
 public fun Int.mul(other: Int): Int = this * other
@@ -825,6 +831,8 @@ public interface Neg<out Output> {
      * ```
      */
     public fun neg(): Output
+
+    public operator fun unaryMinus(): Output = neg()
 }
 
 public fun Int.neg(): Int = -this

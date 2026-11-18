@@ -830,7 +830,7 @@ public open class IntoStringError(
      */
     public open fun utf8Error(): Utf8Error = this.error
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "C string contained non-utf8 bytes".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("C string contained non-utf8 bytes"); Result.Ok<Unit, Error>(Unit) }
 
     public open fun source(): Any? = this.error
 }

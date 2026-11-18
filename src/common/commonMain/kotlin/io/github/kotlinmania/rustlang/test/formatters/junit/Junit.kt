@@ -42,11 +42,11 @@ public fun strToCdata(s: String): String {
     return "<![CDATA[$escapedOutput3]]>"
 }
 
-public fun <T : Write<T>> JunitFormatter<T>.writeDiscoveryStart(): Result<Unit> = RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.NotFound, message = "not yet implemented!")))
+public fun <T : Write<T>> JunitFormatter<T>.writeDiscoveryStart(): Result<Unit> = RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.NotFound, message = "not yet implemented!")))
 
-public fun <T : Write<T>> JunitFormatter<T>.writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> = RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.NotFound, message = "not yet implemented!")))
+public fun <T : Write<T>> JunitFormatter<T>.writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> = RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.NotFound, message = "not yet implemented!")))
 
-public fun <T : Write<T>> JunitFormatter<T>.writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> = RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.NotFound, message = "not yet implemented!")))
+public fun <T : Write<T>> JunitFormatter<T>.writeDiscoveryFinish(state: ConsoleTestDiscoveryState): Result<Unit> = RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.NotFound, message = "not yet implemented!")))
 
 public fun <T : Write<T>> JunitFormatter<T>.writeRunStart(testCount: Int, shuffleSeed: ULong?): Result<Unit> {
     // We write xml header on run start
@@ -55,12 +55,12 @@ public fun <T : Write<T>> JunitFormatter<T>.writeRunStart(testCount: Int, shuffl
 
 public fun <T : Write<T>> JunitFormatter<T>.writeTestStart(desc: TestDesc): Result<Unit> {
     // We do not output anything on test start.
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun <T : Write<T>> JunitFormatter<T>.writeTimeout(desc: TestDesc): Result<Unit> {
     // We do not output anything on test timeout.
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun <T : Write<T>> JunitFormatter<T>.writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, stdout: List<UByte>, state: ConsoleTestState): Result<Unit> {
@@ -69,7 +69,7 @@ public fun <T : Write<T>> JunitFormatter<T>.writeResult(desc: TestDesc, result: 
     // them to a Vec and write them all at once when run is complete.
     val duration = execTime?.let({ t -> t.first }).unwrapOrDefault()
     this.results.add(listOf(desc.clone(), result.clone(), duration, stdout.toMutableList()))
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun <T : Write<T>> JunitFormatter<T>.writeRunFinish(state: ConsoleTestState): Result<Boolean> {
@@ -129,13 +129,13 @@ public fun <T : Write<T>> JunitFormatter<T>.writeRunFinish(state: ConsoleTestSta
     when (val tryResult = this.writeMessage("</testsuite>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     when (val tryResult = this.writeMessage("</testsuites>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-    return RustResult.Ok(state.failed == 0)
+    return RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(state.failed == 0)
 }
 
 public fun <T : Write<T>> JunitFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> {
     when (val tryResult = this.writeMessage("<report total_time=\"$totalTime\" compilation_time=\"$compilationTime\"></report>")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     when (val tryResult = this.out.writeAll("\n".encodeToByteArray())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun parseClassName(desc: TestDesc): Pair<String, String> =

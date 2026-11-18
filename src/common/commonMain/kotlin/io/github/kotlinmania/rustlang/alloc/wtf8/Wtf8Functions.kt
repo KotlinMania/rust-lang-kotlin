@@ -57,7 +57,7 @@ public fun cloneInto(slice: Wtf8, buf: Wtf8Buf) {
 }
 
 public fun decodeSurrogatePair(lead: UShort, trail: UShort): Char {
-    val codePoint = 0x10000u + ((((lead - 0xD800u)) shl 10) or (trail - 0xDC00u))
+    val codePoint = 0x10000u + ((((lead - 0xD800u.toUShort()).toUInt()) shl 10) or (trail - 0xDC00u.toUShort()).toUInt())
     // SAFETY: The computed `codePoint` is in 0x10000..=0x10FFFF and is not a surrogate.
     return Char.fromU32Unchecked(codePoint)
 }

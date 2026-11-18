@@ -2,8 +2,6 @@ package io.github.kotlinmania.rustlang.test.term.terminfo
 
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
-import io.github.kotlinmania.rustlang.core.result.and
-import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.std.path.Path
 import io.github.kotlinmania.rustlang.test.term.Color
@@ -96,17 +94,17 @@ public open class TerminfoTerminal<T>(
 
     public open fun applyCap(cmd: String, params: List<Param>): Result<Boolean> =
         when (val matchVal = this.ti.strings.get(cmd)) {
-            null -> RustResult.Ok(false)
+            null -> RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(false)
             else -> {
                 val cmd1 = matchVal
                 run {
                     val matchVal1 = expand(cmd1, params, Variables.new())
                     when (matchVal1) { is RustResult.Ok<*, *> -> {
                         val s = matchVal1.okValue()
-                        this.out.writeAll(s).and(RustResult.Ok(true))
+                        this.out.writeAll(s).and(RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(true))
                     }; is RustResult.Err<*, *> -> {
                         val e = matchVal1.errValue()
-                        RustResult.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
+                        RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
                     } }
                 }
             }
@@ -141,23 +139,23 @@ public fun <T : Write<T>> TerminfoTerminal<T>.fg(color: Color): Result<Boolean> 
         // The Miri logic for this only works for the most basic 8 colors, which we just assume
         // the terminal will support. (`numColors` is always 0 in Miri, so higher colors will
         // just fail. But libtest doesn't use any higher colors anyway.)
-        return this.out.append("\u001b[3${color}m").and(RustResult.Ok(true))
+        return this.out.append("\u001b[3${color}m").and(RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(true))
     }
     if (this.numColors > color1) {
         return this.applyCap("setaf", listOf(Param.Number(color1.toInt())))
     }
-    return RustResult.Ok(false)
+    return RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(false)
 }
 
 public fun <T : Write<T>> TerminfoTerminal<T>.reset(): Result<Boolean> {
     if (false) {
-        return this.out.append("\u001b[0m").and(RustResult.Ok(true))
+        return this.out.append("\u001b[0m").and(RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(true))
     }
     // are there any terminals that have color/attrs and not sgr0?
     // Try falling back to sgr, then op
     val cmd1 =
         when (val matchVal = listOf("sgr0", "sgr", "op").iter().findMap({ cap -> this.ti.strings.get(cap) })) {
-            null -> { return RustResult.Ok(false) }
+            null -> { return RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(false) }
             else -> {
                 val op = matchVal
                 run {
@@ -167,12 +165,12 @@ public fun <T : Write<T>> TerminfoTerminal<T>.reset(): Result<Boolean> {
                         cmd
                     }; is RustResult.Err<*, *> -> {
                         val e = matchVal1.errValue()
-                        return RustResult.Err(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
+                        return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(io.github.kotlinmania.rustlang.core.io.error.Error.new(ErrorKind.InvalidData, e))
                     } }
                 }
             }
         }
-    return this.out.writeAll(cmd1).and(RustResult.Ok(true))
+    return this.out.writeAll(cmd1).and(RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(true))
 }
 
 public fun <T : Write<T>> TerminfoTerminal<T>.write(buf: List<UByte>): Result<Int> = this.out.write(buf)

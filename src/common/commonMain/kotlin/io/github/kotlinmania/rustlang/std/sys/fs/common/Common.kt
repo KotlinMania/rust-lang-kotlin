@@ -22,7 +22,7 @@ import io.github.kotlinmania.rustlang.std.sys.fs.unix.FileAttr
 import io.github.kotlinmania.rustlang.std.sys.fs.unix.OpenOptions
 import io.github.kotlinmania.rustlang.std.sys.helpers.ignoreNotfound
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

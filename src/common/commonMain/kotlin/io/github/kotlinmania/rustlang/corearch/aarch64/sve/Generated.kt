@@ -282,7 +282,7 @@ public fun svabdNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svabdU8
  * Absolute difference
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_u8]_z)
  */
-public fun svabdU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svabdU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svabdU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svabdU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Absolute difference
@@ -321,7 +321,7 @@ public fun svabdNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sva
  * Absolute difference
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svabd[_u16]_z)
  */
-public fun svabdU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svabdU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svabdU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svabdU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Absolute difference
@@ -903,7 +903,7 @@ public fun svaddNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svaddU8
  * Add
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadd[_u8]_z)
  */
-public fun svaddU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svaddU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svaddU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svaddU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Add
@@ -939,7 +939,7 @@ public fun svaddNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sva
  * Add
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svadd[_u16]_z)
  */
-public fun svaddU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svaddU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svaddU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svaddU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Add
@@ -1440,7 +1440,7 @@ public fun svandNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svandU8
  * Bitwise AND
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svand[_u8]_z)
  */
-public fun svandU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svandU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svandU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svandU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Bitwise AND
@@ -1476,7 +1476,7 @@ public fun svandNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sva
  * Bitwise AND
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svand[_u16]_z)
  */
-public fun svandU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svandU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svandU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svandU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Bitwise AND
@@ -2178,7 +2178,7 @@ public fun svbicNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svbicU8
  * Bitwise clear
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbic[_u8]_z)
  */
-public fun svbicU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svbicU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svbicU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svbicU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Bitwise clear
@@ -2214,7 +2214,7 @@ public fun svbicNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svb
  * Bitwise clear
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svbic[_u16]_z)
  */
-public fun svbicU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svbicU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svbicU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svbicU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Bitwise clear
@@ -2736,7 +2736,7 @@ public fun svclsS8X(pg: SvboolT, op: Svint8T): Svuint8T = svclsS8M(op.asUnsigned
  * Count leading sign bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcls[_s8]_z)
  */
-public fun svclsS8Z(pg: SvboolT, op: Svint8T): Svuint8T = svclsS8M(svdupNU8(0u), pg, op)
+public fun svclsS8Z(pg: SvboolT, op: Svint8T): Svuint8T = svclsS8M(svdupNU8(0u.toUByte()), pg, op)
 
 /**
  * Count leading sign bits
@@ -2757,7 +2757,7 @@ public fun svclsS16X(pg: SvboolT, op: Svint16T): Svuint16T = svclsS16M(op.asUnsi
  * Count leading sign bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcls[_s16]_z)
  */
-public fun svclsS16Z(pg: SvboolT, op: Svint16T): Svuint16T = svclsS16M(svdupNU16(0u), pg, op)
+public fun svclsS16Z(pg: SvboolT, op: Svint16T): Svuint16T = svclsS16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Count leading sign bits
@@ -2820,7 +2820,7 @@ public fun svclzS8X(pg: SvboolT, op: Svint8T): Svuint8T = svclzS8M(op.asUnsigned
  * Count leading zero bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclz[_s8]_z)
  */
-public fun svclzS8Z(pg: SvboolT, op: Svint8T): Svuint8T = svclzS8M(svdupNU8(0u), pg, op)
+public fun svclzS8Z(pg: SvboolT, op: Svint8T): Svuint8T = svclzS8M(svdupNU8(0u.toUByte()), pg, op)
 
 /**
  * Count leading zero bits
@@ -2841,7 +2841,7 @@ public fun svclzS16X(pg: SvboolT, op: Svint16T): Svuint16T = svclzS16M(op.asUnsi
  * Count leading zero bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclz[_s16]_z)
  */
-public fun svclzS16Z(pg: SvboolT, op: Svint16T): Svuint16T = svclzS16M(svdupNU16(0u), pg, op)
+public fun svclzS16Z(pg: SvboolT, op: Svint16T): Svuint16T = svclzS16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Count leading zero bits
@@ -2901,7 +2901,7 @@ public fun svclzU8X(pg: SvboolT, op: Svuint8T): Svuint8T = svclzU8M(op, pg, op)
  * Count leading zero bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclz[_u8]_z)
  */
-public fun svclzU8Z(pg: SvboolT, op: Svuint8T): Svuint8T = svclzU8M(svdupNU8(0u), pg, op)
+public fun svclzU8Z(pg: SvboolT, op: Svuint8T): Svuint8T = svclzU8M(svdupNU8(0u.toUByte()), pg, op)
 
 /**
  * Count leading zero bits
@@ -2919,7 +2919,7 @@ public fun svclzU16X(pg: SvboolT, op: Svuint16T): Svuint16T = svclzU16M(op, pg, 
  * Count leading zero bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svclz[_u16]_z)
  */
-public fun svclzU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svclzU16M(svdupNU16(0u), pg, op)
+public fun svclzU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svclzU16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Count leading zero bits
@@ -4416,7 +4416,7 @@ public fun svcnotU8X(pg: SvboolT, op: Svuint8T): Svuint8T = svcnotU8M(op, pg, op
  * Logically invert boolean condition
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnot[_u8]_z)
  */
-public fun svcnotU8Z(pg: SvboolT, op: Svuint8T): Svuint8T = svcnotU8M(svdupNU8(0u), pg, op)
+public fun svcnotU8Z(pg: SvboolT, op: Svuint8T): Svuint8T = svcnotU8M(svdupNU8(0u.toUByte()), pg, op)
 
 /**
  * Logically invert boolean condition
@@ -4434,7 +4434,7 @@ public fun svcnotU16X(pg: SvboolT, op: Svuint16T): Svuint16T = svcnotU16M(op, pg
  * Logically invert boolean condition
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnot[_u16]_z)
  */
-public fun svcnotU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svcnotU16M(svdupNU16(0u), pg, op)
+public fun svcnotU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svcnotU16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Logically invert boolean condition
@@ -4533,7 +4533,7 @@ public fun svcntS8X(pg: SvboolT, op: Svint8T): Svuint8T = svcntS8M(op.asUnsigned
  * Count nonzero bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_s8]_z)
  */
-public fun svcntS8Z(pg: SvboolT, op: Svint8T): Svuint8T = svcntS8M(svdupNU8(0u), pg, op)
+public fun svcntS8Z(pg: SvboolT, op: Svint8T): Svuint8T = svcntS8M(svdupNU8(0u.toUByte()), pg, op)
 
 /**
  * Count nonzero bits
@@ -4554,7 +4554,7 @@ public fun svcntS16X(pg: SvboolT, op: Svint16T): Svuint16T = svcntS16M(op.asUnsi
  * Count nonzero bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_s16]_z)
  */
-public fun svcntS16Z(pg: SvboolT, op: Svint16T): Svuint16T = svcntS16M(svdupNU16(0u), pg, op)
+public fun svcntS16Z(pg: SvboolT, op: Svint16T): Svuint16T = svcntS16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Count nonzero bits
@@ -4614,7 +4614,7 @@ public fun svcntU8X(pg: SvboolT, op: Svuint8T): Svuint8T = svcntU8M(op, pg, op)
  * Count nonzero bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_u8]_z)
  */
-public fun svcntU8Z(pg: SvboolT, op: Svuint8T): Svuint8T = svcntU8M(svdupNU8(0u), pg, op)
+public fun svcntU8Z(pg: SvboolT, op: Svuint8T): Svuint8T = svcntU8M(svdupNU8(0u.toUByte()), pg, op)
 
 /**
  * Count nonzero bits
@@ -4632,7 +4632,7 @@ public fun svcntU16X(pg: SvboolT, op: Svuint16T): Svuint16T = svcntU16M(op, pg, 
  * Count nonzero bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svcnt[_u16]_z)
  */
-public fun svcntU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svcntU16M(svdupNU16(0u), pg, op)
+public fun svcntU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svcntU16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Count nonzero bits
@@ -6258,13 +6258,13 @@ public fun svdupNU8M(inactive: Svuint8T, pg: SvboolT, op: UByte): Svuint8T = svd
  * Broadcast a scalar value
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_u8_x)
  */
-public fun svdupNU8X(pg: SvboolT, op: UByte): Svuint8T = svdupNU8M(svdupNU8(0u), pg, op)
+public fun svdupNU8X(pg: SvboolT, op: UByte): Svuint8T = svdupNU8M(svdupNU8(0u.toUByte()), pg, op)
 
 /**
  * Broadcast a scalar value
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_u8_z)
  */
-public fun svdupNU8Z(pg: SvboolT, op: UByte): Svuint8T = svdupNU8M(svdupNU8(0u), pg, op)
+public fun svdupNU8Z(pg: SvboolT, op: UByte): Svuint8T = svdupNU8M(svdupNU8(0u.toUByte()), pg, op)
 
 /**
  * Broadcast a scalar value
@@ -6276,13 +6276,13 @@ public fun svdupNU16M(inactive: Svuint16T, pg: SvboolT, op: UShort): Svuint16T =
  * Broadcast a scalar value
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_u16_x)
  */
-public fun svdupNU16X(pg: SvboolT, op: UShort): Svuint16T = svdupNU16M(svdupNU16(0u), pg, op)
+public fun svdupNU16X(pg: SvboolT, op: UShort): Svuint16T = svdupNU16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Broadcast a scalar value
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdup[_n]_u16_z)
  */
-public fun svdupNU16Z(pg: SvboolT, op: UShort): Svuint16T = svdupNU16M(svdupNU16(0u), pg, op)
+public fun svdupNU16Z(pg: SvboolT, op: UShort): Svuint16T = svdupNU16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Broadcast a scalar value
@@ -6403,7 +6403,7 @@ public fun svdupqLaneU64(data: Svuint64T, index: ULong): Svuint64T = svdupqLaneS
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupq[_n]_b16)
  */
 public fun svdupqNB16(x0: Boolean, x1: Boolean, x2: Boolean, x3: Boolean, x4: Boolean, x5: Boolean, x6: Boolean, x7: Boolean): SvboolT {
-    val op1 = svdupqNS16(x0.toShort(), x1.toShort(), x2.toShort(), x3.toShort(), x4.toShort(), x5.toShort(), x6.toShort(), x7.toShort())
+    val op1 = svdupqNS16((if (x0) 1 else 0).toShort(), (if (x1) 1 else 0).toShort(), (if (x2) 1 else 0).toShort(), (if (x3) 1 else 0).toShort(), (if (x4) 1 else 0).toShort(), (if (x5) 1 else 0).toShort(), (if (x6) 1 else 0).toShort(), (if (x7) 1 else 0).toShort())
     return svcmpneWideS16(svptrueB16(), op1, svdupNS64(0L))
 }
 
@@ -6412,7 +6412,7 @@ public fun svdupqNB16(x0: Boolean, x1: Boolean, x2: Boolean, x3: Boolean, x4: Bo
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupq[_n]_b32)
  */
 public fun svdupqNB32(x0: Boolean, x1: Boolean, x2: Boolean, x3: Boolean): SvboolT {
-    val op1 = svdupqNS32(x0.toInt(), x1.toInt(), x2.toInt(), x3.toInt())
+    val op1 = svdupqNS32((if (x0) 1 else 0), (if (x1) 1 else 0), (if (x2) 1 else 0), (if (x3) 1 else 0))
     return svcmpneWideS32(svptrueB32(), op1, svdupNS64(0L))
 }
 
@@ -6421,7 +6421,7 @@ public fun svdupqNB32(x0: Boolean, x1: Boolean, x2: Boolean, x3: Boolean): Svboo
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupq[_n]_b64)
  */
 public fun svdupqNB64(x0: Boolean, x1: Boolean): SvboolT {
-    val op1 = svdupqNS64(x0.toLong(), x1.toLong())
+    val op1 = svdupqNS64((if (x0) 1L else 0L), (if (x1) 1L else 0L))
     return svcmpneS64(svptrueB64(), op1, svdupNS64(0L))
 }
 
@@ -6430,7 +6430,7 @@ public fun svdupqNB64(x0: Boolean, x1: Boolean): SvboolT {
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svdupq[_n]_b8)
  */
 public fun svdupqNB8(x0: Boolean, x1: Boolean, x2: Boolean, x3: Boolean, x4: Boolean, x5: Boolean, x6: Boolean, x7: Boolean, x8: Boolean, x9: Boolean, x10: Boolean, x11: Boolean, x12: Boolean, x13: Boolean, x14: Boolean, x15: Boolean): SvboolT {
-    val op1 = svdupqNS8(x0.toByte(), x1.toByte(), x2.toByte(), x3.toByte(), x4.toByte(), x5.toByte(), x6.toByte(), x7.toByte(), x8.toByte(), x9.toByte(), x10.toByte(), x11.toByte(), x12.toByte(), x13.toByte(), x14.toByte(), x15.toByte())
+    val op1 = svdupqNS8((if (x0) 1 else 0).toByte(), (if (x1) 1 else 0).toByte(), (if (x2) 1 else 0).toByte(), (if (x3) 1 else 0).toByte(), (if (x4) 1 else 0).toByte(), (if (x5) 1 else 0).toByte(), (if (x6) 1 else 0).toByte(), (if (x7) 1 else 0).toByte(), (if (x8) 1 else 0).toByte(), (if (x9) 1 else 0).toByte(), (if (x10) 1 else 0).toByte(), (if (x11) 1 else 0).toByte(), (if (x12) 1 else 0).toByte(), (if (x13) 1 else 0).toByte(), (if (x14) 1 else 0).toByte(), (if (x15) 1 else 0).toByte())
     return svcmpneWideS8(svptrueB8(), op1, svdupNS64(0L))
 }
 
@@ -6723,7 +6723,7 @@ public fun sveorNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = sveorU8
  * Bitwise exclusive OR
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor[_u8]_z)
  */
-public fun sveorU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = sveorU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun sveorU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = sveorU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Bitwise exclusive OR
@@ -6759,7 +6759,7 @@ public fun sveorNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sve
  * Bitwise exclusive OR
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/sveor[_u16]_z)
  */
-public fun sveorU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = sveorU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun sveorU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = sveorU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Bitwise exclusive OR
@@ -7178,7 +7178,7 @@ public fun svextbU16X(pg: SvboolT, op: Svuint16T): Svuint16T = svextbU16M(op, pg
  * Zero-extend the low 8 bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svextb[_u16]_z)
  */
-public fun svextbU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svextbU16M(svdupNU16(0u), pg, op)
+public fun svextbU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svextbU16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Zero-extend the low 8 bits
@@ -14745,7 +14745,7 @@ public fun svlslNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svlslU8
  * Logical shift left
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsl[_u8]_z)
  */
-public fun svlslU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svlslU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svlslU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svlslU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Logical shift left
@@ -14781,7 +14781,7 @@ public fun svlslNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svl
  * Logical shift left
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsl[_u16]_z)
  */
-public fun svlslU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svlslU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svlslU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svlslU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Logical shift left
@@ -15006,7 +15006,7 @@ public fun svlslWideNU8X(pg: SvboolT, op1: Svuint8T, op2: ULong): Svuint8T = svl
  * Logical shift left
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlslWide[_u8]_z)
  */
-public fun svlslWideU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint64T): Svuint8T = svlslWideU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svlslWideU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint64T): Svuint8T = svlslWideU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Logical shift left
@@ -15042,7 +15042,7 @@ public fun svlslWideNU16X(pg: SvboolT, op1: Svuint16T, op2: ULong): Svuint16T = 
  * Logical shift left
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlslWide[_u16]_z)
  */
-public fun svlslWideU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint64T): Svuint16T = svlslWideU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svlslWideU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint64T): Svuint16T = svlslWideU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Logical shift left
@@ -15117,7 +15117,7 @@ public fun svlsrNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svlsrU8
  * Logical shift right
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsr[_u8]_z)
  */
-public fun svlsrU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svlsrU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svlsrU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svlsrU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Logical shift right
@@ -15156,7 +15156,7 @@ public fun svlsrNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svl
  * Logical shift right
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsr[_u16]_z)
  */
-public fun svlsrU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svlsrU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svlsrU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svlsrU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Logical shift right
@@ -15273,7 +15273,7 @@ public fun svlsrWideNU8X(pg: SvboolT, op1: Svuint8T, op2: ULong): Svuint8T = svl
  * Logical shift right
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsrWide[_u8]_z)
  */
-public fun svlsrWideU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint64T): Svuint8T = svlsrWideU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svlsrWideU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint64T): Svuint8T = svlsrWideU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Logical shift right
@@ -15312,7 +15312,7 @@ public fun svlsrWideNU16X(pg: SvboolT, op1: Svuint16T, op2: ULong): Svuint16T = 
  * Logical shift right
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svlsrWide[_u16]_z)
  */
-public fun svlsrWideU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint64T): Svuint16T = svlsrWideU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svlsrWideU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint64T): Svuint16T = svlsrWideU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Logical shift right
@@ -15621,7 +15621,7 @@ public fun svmadNU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: UByte): Svu
  * Multiply-add, multiplicand first
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmad[_u8]_z)
  */
-public fun svmadU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svmadU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2, op3)
+public fun svmadU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svmadU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2, op3)
 
 /**
  * Multiply-add, multiplicand first
@@ -15657,7 +15657,7 @@ public fun svmadNU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: UShort):
  * Multiply-add, multiplicand first
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmad[_u16]_z)
  */
-public fun svmadU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svmadU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2, op3)
+public fun svmadU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svmadU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2, op3)
 
 /**
  * Multiply-add, multiplicand first
@@ -16002,7 +16002,7 @@ public fun svmaxNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svmaxU8
  * Maximum
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_u8]_z)
  */
-public fun svmaxU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svmaxU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svmaxU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svmaxU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Maximum
@@ -16041,7 +16041,7 @@ public fun svmaxNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svm
  * Maximum
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmax[_u16]_z)
  */
-public fun svmaxU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svmaxU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svmaxU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svmaxU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Maximum
@@ -16578,7 +16578,7 @@ public fun svminNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svminU8
  * Minimum
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_u8]_z)
  */
-public fun svminU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svminU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svminU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svminU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Minimum
@@ -16617,7 +16617,7 @@ public fun svminNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svm
  * Minimum
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmin[_u16]_z)
  */
-public fun svminU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svminU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svminU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svminU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Minimum
@@ -17151,7 +17151,7 @@ public fun svmlaNU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: UByte): Svu
  * Multiply-add, addend first
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmla[_u8]_z)
  */
-public fun svmlaU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svmlaU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2, op3)
+public fun svmlaU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svmlaU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2, op3)
 
 /**
  * Multiply-add, addend first
@@ -17187,7 +17187,7 @@ public fun svmlaNU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: UShort):
  * Multiply-add, addend first
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmla[_u16]_z)
  */
-public fun svmlaU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svmlaU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2, op3)
+public fun svmlaU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svmlaU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2, op3)
 
 /**
  * Multiply-add, addend first
@@ -17553,7 +17553,7 @@ public fun svmlsNU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: UByte): Svu
  * Multiply-subtract, minuend first
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmls[_u8]_z)
  */
-public fun svmlsU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svmlsU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2, op3)
+public fun svmlsU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svmlsU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2, op3)
 
 /**
  * Multiply-subtract, minuend first
@@ -17589,7 +17589,7 @@ public fun svmlsNU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: UShort):
  * Multiply-subtract, minuend first
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmls[_u16]_z)
  */
-public fun svmlsU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svmlsU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2, op3)
+public fun svmlsU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svmlsU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2, op3)
 
 /**
  * Multiply-subtract, minuend first
@@ -17997,7 +17997,7 @@ public fun svmsbNU8X(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: UByte): Svu
  * Multiply-subtract, multiplicand first
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmsb[_u8]_z)
  */
-public fun svmsbU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svmsbU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2, op3)
+public fun svmsbU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T, op3: Svuint8T): Svuint8T = svmsbU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2, op3)
 
 /**
  * Multiply-subtract, multiplicand first
@@ -18033,7 +18033,7 @@ public fun svmsbNU16X(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: UShort):
  * Multiply-subtract, multiplicand first
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmsb[_u16]_z)
  */
-public fun svmsbU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svmsbU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2, op3)
+public fun svmsbU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T, op3: Svuint16T): Svuint16T = svmsbU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2, op3)
 
 /**
  * Multiply-subtract, multiplicand first
@@ -18375,7 +18375,7 @@ public fun svmulNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svmulU8
  * Multiply
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmul[_u8]_z)
  */
-public fun svmulU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svmulU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svmulU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svmulU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Multiply
@@ -18411,7 +18411,7 @@ public fun svmulNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svm
  * Multiply
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmul[_u16]_z)
  */
-public fun svmulU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svmulU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svmulU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svmulU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Multiply
@@ -18678,7 +18678,7 @@ public fun svmulhNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svmulh
  * Multiply, returning high-half
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulh[_u8]_z)
  */
-public fun svmulhU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svmulhU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svmulhU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svmulhU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Multiply, returning high-half
@@ -18717,7 +18717,7 @@ public fun svmulhNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sv
  * Multiply, returning high-half
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svmulh[_u16]_z)
  */
-public fun svmulhU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svmulhU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svmulhU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svmulhU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Multiply, returning high-half
@@ -19443,7 +19443,7 @@ public fun svnotU8X(pg: SvboolT, op: Svuint8T): Svuint8T = svnotU8M(op, pg, op)
  * Bitwise invert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnot[_u8]_z)
  */
-public fun svnotU8Z(pg: SvboolT, op: Svuint8T): Svuint8T = svnotU8M(svdupNU8(0u), pg, op)
+public fun svnotU8Z(pg: SvboolT, op: Svuint8T): Svuint8T = svnotU8M(svdupNU8(0u.toUByte()), pg, op)
 
 /**
  * Bitwise invert
@@ -19461,7 +19461,7 @@ public fun svnotU16X(pg: SvboolT, op: Svuint16T): Svuint16T = svnotU16M(op, pg, 
  * Bitwise invert
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svnot[_u16]_z)
  */
-public fun svnotU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svnotU16M(svdupNU16(0u), pg, op)
+public fun svnotU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svnotU16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Bitwise invert
@@ -19701,7 +19701,7 @@ public fun svorrNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svorrU8
  * Bitwise inclusive OR
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svorr[_u8]_z)
  */
-public fun svorrU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svorrU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svorrU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svorrU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Bitwise inclusive OR
@@ -19737,7 +19737,7 @@ public fun svorrNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svo
  * Bitwise inclusive OR
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svorr[_u16]_z)
  */
-public fun svorrU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svorrU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svorrU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svorrU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Bitwise inclusive OR
@@ -21991,7 +21991,7 @@ public fun svrbitU8X(pg: SvboolT, op: Svuint8T): Svuint8T = svrbitU8M(op, pg, op
  * Reverse bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrbit[_u8]_z)
  */
-public fun svrbitU8Z(pg: SvboolT, op: Svuint8T): Svuint8T = svrbitU8M(svdupNU8(0u), pg, op)
+public fun svrbitU8Z(pg: SvboolT, op: Svuint8T): Svuint8T = svrbitU8M(svdupNU8(0u.toUByte()), pg, op)
 
 /**
  * Reverse bits
@@ -22009,7 +22009,7 @@ public fun svrbitU16X(pg: SvboolT, op: Svuint16T): Svuint16T = svrbitU16M(op, pg
  * Reverse bits
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrbit[_u16]_z)
  */
-public fun svrbitU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svrbitU16M(svdupNU16(0u), pg, op)
+public fun svrbitU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svrbitU16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Reverse bits
@@ -22933,7 +22933,7 @@ public fun svrevbU16X(pg: SvboolT, op: Svuint16T): Svuint16T = svrevbU16M(op, pg
  * Reverse bytes within elements
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svrevb[_u16]_z)
  */
-public fun svrevbU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svrevbU16M(svdupNU16(0u), pg, op)
+public fun svrevbU16Z(pg: SvboolT, op: Svuint16T): Svuint16T = svrevbU16M(svdupNU16(0u.toUShort()), pg, op)
 
 /**
  * Reverse bytes within elements
@@ -26879,7 +26879,7 @@ public fun svsubNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svsubU8
  * Subtract
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsub[_u8]_z)
  */
-public fun svsubU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svsubU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svsubU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svsubU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Subtract
@@ -26915,7 +26915,7 @@ public fun svsubNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = svs
  * Subtract
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsub[_u16]_z)
  */
-public fun svsubU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svsubU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svsubU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svsubU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Subtract
@@ -27257,7 +27257,7 @@ public fun svsubrNU8X(pg: SvboolT, op1: Svuint8T, op2: UByte): Svuint8T = svsubr
  * Subtract reversed
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubr[_u8]_z)
  */
-public fun svsubrU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svsubrU8M(pg, svselU8(pg, op1, svdupNU8(0u)), op2)
+public fun svsubrU8Z(pg: SvboolT, op1: Svuint8T, op2: Svuint8T): Svuint8T = svsubrU8M(pg, svselU8(pg, op1, svdupNU8(0u.toUByte())), op2)
 
 /**
  * Subtract reversed
@@ -27293,7 +27293,7 @@ public fun svsubrNU16X(pg: SvboolT, op1: Svuint16T, op2: UShort): Svuint16T = sv
  * Subtract reversed
  * [Arm's documentation](https://developer.arm.com/architectures/instruction-sets/intrinsics/svsubr[_u16]_z)
  */
-public fun svsubrU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svsubrU16M(pg, svselU16(pg, op1, svdupNU16(0u)), op2)
+public fun svsubrU16Z(pg: SvboolT, op1: Svuint16T, op2: Svuint16T): Svuint16T = svsubrU16M(pg, svselU16(pg, op1, svdupNU16(0u.toUShort())), op2)
 
 /**
  * Subtract reversed
@@ -27973,7 +27973,7 @@ public fun svundef2S64(): Svint64x2T = svcreate2S64(svdupNS64(0L), svdupNS64(0L)
  * ## Safety
  *  * This creates an uninitialized value, and may be unsound (like [core.mem.uninitialized]).
  */
-public fun svundef2U8(): Svuint8x2T = svcreate2U8(svdupNU8(0u), svdupNU8(0u))
+public fun svundef2U8(): Svuint8x2T = svcreate2U8(svdupNU8(0u.toUByte()), svdupNU8(0u.toUByte()))
 
 /**
  * Create an uninitialized tuple of two vectors
@@ -27981,7 +27981,7 @@ public fun svundef2U8(): Svuint8x2T = svcreate2U8(svdupNU8(0u), svdupNU8(0u))
  * ## Safety
  *  * This creates an uninitialized value, and may be unsound (like [core.mem.uninitialized]).
  */
-public fun svundef2U16(): Svuint16x2T = svcreate2U16(svdupNU16(0u), svdupNU16(0u))
+public fun svundef2U16(): Svuint16x2T = svcreate2U16(svdupNU16(0u.toUShort()), svdupNU16(0u.toUShort()))
 
 /**
  * Create an uninitialized tuple of two vectors
@@ -28053,7 +28053,7 @@ public fun svundef3S64(): Svint64x3T = svcreate3S64(svdupNS64(0L), svdupNS64(0L)
  * ## Safety
  *  * This creates an uninitialized value, and may be unsound (like [core.mem.uninitialized]).
  */
-public fun svundef3U8(): Svuint8x3T = svcreate3U8(svdupNU8(0u), svdupNU8(0u), svdupNU8(0u))
+public fun svundef3U8(): Svuint8x3T = svcreate3U8(svdupNU8(0u.toUByte()), svdupNU8(0u.toUByte()), svdupNU8(0u.toUByte()))
 
 /**
  * Create an uninitialized tuple of three vectors
@@ -28061,7 +28061,7 @@ public fun svundef3U8(): Svuint8x3T = svcreate3U8(svdupNU8(0u), svdupNU8(0u), sv
  * ## Safety
  *  * This creates an uninitialized value, and may be unsound (like [core.mem.uninitialized]).
  */
-public fun svundef3U16(): Svuint16x3T = svcreate3U16(svdupNU16(0u), svdupNU16(0u), svdupNU16(0u))
+public fun svundef3U16(): Svuint16x3T = svcreate3U16(svdupNU16(0u.toUShort()), svdupNU16(0u.toUShort()), svdupNU16(0u.toUShort()))
 
 /**
  * Create an uninitialized tuple of three vectors
@@ -28133,7 +28133,7 @@ public fun svundef4S64(): Svint64x4T = svcreate4S64(svdupNS64(0L), svdupNS64(0L)
  * ## Safety
  *  * This creates an uninitialized value, and may be unsound (like [core.mem.uninitialized]).
  */
-public fun svundef4U8(): Svuint8x4T = svcreate4U8(svdupNU8(0u), svdupNU8(0u), svdupNU8(0u), svdupNU8(0u))
+public fun svundef4U8(): Svuint8x4T = svcreate4U8(svdupNU8(0u.toUByte()), svdupNU8(0u.toUByte()), svdupNU8(0u.toUByte()), svdupNU8(0u.toUByte()))
 
 /**
  * Create an uninitialized tuple of four vectors
@@ -28141,7 +28141,7 @@ public fun svundef4U8(): Svuint8x4T = svcreate4U8(svdupNU8(0u), svdupNU8(0u), sv
  * ## Safety
  *  * This creates an uninitialized value, and may be unsound (like [core.mem.uninitialized]).
  */
-public fun svundef4U16(): Svuint16x4T = svcreate4U16(svdupNU16(0u), svdupNU16(0u), svdupNU16(0u), svdupNU16(0u))
+public fun svundef4U16(): Svuint16x4T = svcreate4U16(svdupNU16(0u.toUShort()), svdupNU16(0u.toUShort()), svdupNU16(0u.toUShort()), svdupNU16(0u.toUShort()))
 
 /**
  * Create an uninitialized tuple of four vectors
@@ -28213,7 +28213,7 @@ public fun svundefS64(): Svint64T = svdupNS64(0L)
  * ## Safety
  *  * This creates an uninitialized value, and may be unsound (like [core.mem.uninitialized]).
  */
-public fun svundefU8(): Svuint8T = svdupNU8(0u)
+public fun svundefU8(): Svuint8T = svdupNU8(0u.toUByte())
 
 /**
  * Create an uninitialized vector
@@ -28221,7 +28221,7 @@ public fun svundefU8(): Svuint8T = svdupNU8(0u)
  * ## Safety
  *  * This creates an uninitialized value, and may be unsound (like [core.mem.uninitialized]).
  */
-public fun svundefU16(): Svuint16T = svdupNU16(0u)
+public fun svundefU16(): Svuint16T = svdupNU16(0u.toUShort())
 
 /**
  * Create an uninitialized vector

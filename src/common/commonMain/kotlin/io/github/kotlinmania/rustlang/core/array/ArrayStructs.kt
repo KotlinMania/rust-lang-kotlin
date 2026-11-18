@@ -22,7 +22,7 @@ public open class TryFromSliceError(
 
     public open fun clone(): TryFromSliceError = TryFromSliceError(value)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = "could not convert slice to array".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("could not convert slice to array"); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<TryFromSliceError> =

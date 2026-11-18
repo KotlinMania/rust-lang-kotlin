@@ -15,7 +15,7 @@ public fun init(argc: Int, argv: ConstPtr, sigpipe: UByte) {}
 // NOTE: this is not guaranteed to run, for example when the program aborts.
 public fun cleanup() {}
 
-public fun <T> unsupported(): Result<T> = RustResult.Err(unsupportedErr())
+public fun <T> unsupported(): Result<T> = RustResult.Err<T, io.github.kotlinmania.rustlang.core.io.error.Error>(unsupportedErr())
 
 public fun unsupportedErr(): Error = Error.UNSUPPORTED_PLATFORM
 

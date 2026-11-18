@@ -102,7 +102,7 @@ public open class Buffer internal constructor(
         when (val tryResult = reader.readBuf(buf.unfilled())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         this.filled += buf.len()
         this.initialized = buf.isInit()
-        return RustResult.Ok(buf.len())
+        return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(buf.len())
     }
 
     /**
@@ -134,7 +134,7 @@ public open class Buffer internal constructor(
             this.initialized = buf.isInit()
             when (val tryResult = result) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<List<UByte>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
-        return RustResult.Ok(this.buffer())
+        return RustResult.Ok<List<UByte>, io.github.kotlinmania.rustlang.core.io.error.Error>(this.buffer())
     }
 
     public companion object {
@@ -160,9 +160,9 @@ public open class Buffer internal constructor(
                 val matchVal = Box.tryNewUninitSlice(capacity)
                 when (matchVal) { is RustResult.Ok<*, *> -> {
                     val buf = matchVal.okValue()
-                    RustResult.Ok(Buffer(buf = buf, pos = 0, filled = 0, initialized = false))
+                    RustResult.Ok<Buffer, io.github.kotlinmania.rustlang.core.io.error.Error>(Buffer(buf = buf, pos = 0, filled = 0, initialized = false))
                 }; is RustResult.Err<*, *> -> {
-                    RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.OutOfMemory, message = "failed to allocate read buffer")))
+                    RustResult.Err<Buffer, io.github.kotlinmania.rustlang.core.io.error.Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.OutOfMemory, message = "failed to allocate read buffer")))
                 } }
             }
     }

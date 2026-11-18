@@ -23,7 +23,7 @@ import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnv
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandEnvs
 import io.github.kotlinmania.rustlang.std.sys.process.env.CommandResolvedEnvs
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -122,7 +122,7 @@ public open class Command(
             if (this.stderr != null) {
                 debugCommand.field("stderr", this.stderr)
             }
-            debugCommand.finish()
+            run { debugCommand.finish(); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
         } else {
             when (val matchVal = this.cwd) {
                 null -> {}

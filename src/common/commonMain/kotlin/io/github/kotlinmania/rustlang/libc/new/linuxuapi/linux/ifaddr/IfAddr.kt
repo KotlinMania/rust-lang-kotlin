@@ -57,23 +57,23 @@ public open class Ifaddrmsg(
     }
 }
 
-public val IFA_UNSPEC: CUshort = 0u
+public val IFA_UNSPEC: CUshort = 0u.toUShort()
 
-public val IFA_ADDRESS: CUshort = 1u
+public val IFA_ADDRESS: CUshort = 1u.toUShort()
 
-public val IFA_LOCAL: CUshort = 2u
+public val IFA_LOCAL: CUshort = 2u.toUShort()
 
-public val IFA_LABEL: CUshort = 3u
+public val IFA_LABEL: CUshort = 3u.toUShort()
 
-public val IFA_BROADCAST: CUshort = 4u
+public val IFA_BROADCAST: CUshort = 4u.toUShort()
 
-public val IFA_ANYCAST: CUshort = 5u
+public val IFA_ANYCAST: CUshort = 5u.toUShort()
 
-public val IFA_CACHEINFO: CUshort = 6u
+public val IFA_CACHEINFO: CUshort = 6u.toUShort()
 
-public val IFA_MULTICAST: CUshort = 7u
+public val IFA_MULTICAST: CUshort = 7u.toUShort()
 
-public val IFA_FLAGS: CUshort = 8u
+public val IFA_FLAGS: CUshort = 8u.toUShort()
 
 public val IFA_F_SECONDARY: UInt = 0x01u
 

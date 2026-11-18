@@ -2,12 +2,12 @@
 
 package io.github.kotlinmania.rustlang.std.sys.fs.unix
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CSizeT
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CSsizeT
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.load
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 
 private object SysFsUnixJniBridge {
     init {

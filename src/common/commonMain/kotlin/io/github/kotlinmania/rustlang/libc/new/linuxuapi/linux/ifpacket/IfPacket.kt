@@ -60,21 +60,21 @@ public open class SockaddrPkt(
     }
 }
 
-public val PACKET_HOST: CUchar = 0u
+public val PACKET_HOST: CUchar = 0u.toUByte()
 
-public val PACKET_BROADCAST: CUchar = 1u
+public val PACKET_BROADCAST: CUchar = 1u.toUByte()
 
-public val PACKET_MULTICAST: CUchar = 2u
+public val PACKET_MULTICAST: CUchar = 2u.toUByte()
 
-public val PACKET_OTHERHOST: CUchar = 3u
+public val PACKET_OTHERHOST: CUchar = 3u.toUByte()
 
-public val PACKET_OUTGOING: CUchar = 4u
+public val PACKET_OUTGOING: CUchar = 4u.toUByte()
 
-public val PACKET_LOOPBACK: CUchar = 5u
+public val PACKET_LOOPBACK: CUchar = 5u.toUByte()
 
-public val PACKET_USER: CUchar = 6u
+public val PACKET_USER: CUchar = 6u.toUByte()
 
-public val PACKET_KERNEL: CUchar = 7u
+public val PACKET_KERNEL: CUchar = 7u.toUByte()
 
 public val PACKET_ADD_MEMBERSHIP: CInt = 1
 

@@ -24,7 +24,7 @@ public fun roundUp(d: MutableList<UByte>): UByte? =
             matchVal != null -> {
                 val i = matchVal
                 // d[i+1..n] is all nines
-                d[i] += 1u
+                d[i] += 1u.toUByte()
                 ((d).subList(i + 1, (d).size)).fill(48u.toUByte())
                 null
             }

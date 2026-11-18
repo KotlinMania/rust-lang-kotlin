@@ -1,8 +1,8 @@
 // port-lint: source int/trailing_zeros.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.trailingzeros.implementation
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 /**
  * Returns number of trailing binary zeros in `x`.
@@ -12,21 +12,21 @@ public fun <I : Int> trailingZeros(x: I): Int {
     var x2 = x1
     var r: UInt = 0u
     var t: UInt
-    check(I.BITS <= 64)
-    if (I.BITS >= 64) {
+    check(x.BITS <= 64)
+    if (x.BITS >= 64) {
         r += ((if (UInt.castFromLossy(x2) == 0) 1u else 0u)) shl 5
         // if (x has no 32 small bits) t = 32 else 0
         x2 = x2 shr r.toInt()
         // remove 32 zero bits
     }
-    if (I.BITS >= 32) {
+    if (x.BITS >= 32) {
         t = ((if (UShort.castFromLossy(x2) == 0) 1u else 0u)) shl 4
         // if (x has no 16 small bits) t = 16 else 0
         r += t
         x2 = x2 shr t.toInt()
         // x = [0 - 0xFFFF] + higher garbage bits
     }
-    check(I.BITS >= 16)
+    check(x.BITS >= 16)
     t = ((if (UByte.castFromLossy(x2) == 0) 1u else 0u)) shl 3
     x2 = x2 shr t.toInt()
     // x = [0 - 0xFF] + higher garbage bits

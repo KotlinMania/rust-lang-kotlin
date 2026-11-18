@@ -7,8 +7,6 @@ import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Acquire
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Relaxed
@@ -22,12 +20,9 @@ import io.github.kotlinmania.rustlang.core.sync.atomic.load
 // This is used to implement synchronization primitives that need allocation,
 // like the pthread versions.
 
-public open class OnceBox<T> internal constructor(
-    ptrCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
+public open class OnceBox<T>(
+    public var ptr: AtomicPtr,
 ) {
-    public var ptr: Atomic<MutPtr, Align8<MutPtr>> = ptrCtorArg
-        internal set
-
     /**
      * Gets access to the value, assuming it is already initialized and this
      * initialization has been observed by the current thread.
@@ -90,12 +85,6 @@ public open class OnceBox<T> internal constructor(
     }
 
     public companion object {
-        public operator fun <T> invoke(
-            ptr: Atomic<MutPtr, Align8<MutPtr>>,
-        ): OnceBox<T> = OnceBox<T>(
-            ptrCtorArg = ptr,
-        )
-
         public fun <T> new(): OnceBox<T> = OnceBox(ptr = AtomicPtr.new(MutPtr(0L)))
     }
 }

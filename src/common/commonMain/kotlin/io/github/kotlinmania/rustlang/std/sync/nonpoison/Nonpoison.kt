@@ -21,9 +21,9 @@ public typealias TryLockResult<Guard> = Result<Guard, WouldBlock>
  * A lock could not be acquired at this time because the operation would otherwise block.
  */
 public open class WouldBlock {
-    public open fun fmt(f: StringBuilder): Result<Unit, Error> = "WouldBlock".fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append("WouldBlock"); Result.Ok<Unit, Error>(Unit) }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = "try_lock failed because the operation would block".fmt(f)
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Error> = run { f.append("try_lock failed because the operation would block"); Result.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<WouldBlock> =

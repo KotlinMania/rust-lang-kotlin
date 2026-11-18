@@ -12,17 +12,17 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> truncStatus(x: F, from
     val xi: Int = x.toBits().toInt()
     val e: kotlin.Int = x.expUnbiased()
     // The represented value has no fractional part, so no truncation is needed
-    if ((kmCompareValues(e, ((F.SIG_BITS as Any?) as kotlin.Int)) >= 0)) {
+    if ((kmCompareValues(e, ((x.SIG_BITS as Any?) as kotlin.Int)) >= 0)) {
         return FpResult.ok(x)
     }
     val clearMask =
         if ((kmCompareValues(e, 0) < 0)) {
             // If the exponent is negative, the result will be zero so we clear everything
             // except the sign.
-            F.SIGN_MASK.inv()
+            x.SIGN_MASK.inv()
         } else {
             // Otherwise, we keep `e` fractional bits and clear the rest.
-            F.SIG_MASK shr e.unsigned().toInt()
+            x.SIG_MASK shr e.unsigned().toInt()
         }
     val cleared = xi and clearMask
     val status =

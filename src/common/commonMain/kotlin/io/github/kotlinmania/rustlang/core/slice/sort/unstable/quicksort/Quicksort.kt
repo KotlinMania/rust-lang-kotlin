@@ -245,7 +245,7 @@ public fun <T> partitionLomutoBranchlessCyclic(v: MutableList<T>, pivot: T, isLe
                 copy((left).asConstPtr(), state.gap.pos, 1, typeLayoutT = typeLayoutT)
                 copyNonoverlapping(state.right, left, 1)
                 state.gap.pos = state.right
-                state.numLt += rightIsLt.toInt()
+                state.numLt += (if (rightIsLt) 1 else 0)
                 state.right = state.right.add(1)
             }
         // Ideally we could just use GapGuard in PartitionState, but the reference that is
@@ -300,7 +300,7 @@ public fun <T> partitionLomutoBranchlessSimple(v: MutableList<T>, pivot: T, isLe
         run {
             val rightIsLt = isLess(v.getUnchecked(right), pivot)
             v.swapUnchecked(left, right)
-            left += rightIsLt.toInt()
+            left += (if (rightIsLt) 1 else 0)
         }
     }
     return left

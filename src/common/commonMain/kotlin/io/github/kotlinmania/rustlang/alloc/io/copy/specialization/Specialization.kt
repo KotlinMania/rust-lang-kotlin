@@ -17,7 +17,7 @@ public interface SpecCopyInner {
     public fun <W : Write<W>> copy(writer: W): Result<CopyState>
 }
 
-public fun <R : Read<R>, W : Write<W>> R.copy(writer: W): Result<CopyState> = RustResult.Ok(CopyState.Fallback(0))
+public fun <R : Read<R>, W : Write<W>> R.copy(writer: W): Result<CopyState> = RustResult.Ok<CopyState, io.github.kotlinmania.rustlang.core.io.error.Error>(CopyState.Fallback(0))
 
 public fun <R : SpecCopy<R>, W : Write<W>> R.copy(writer: W, copyRFn: (R, W) -> Result<CopyState>): Result<CopyState> = copyRFn(this, writer)
 

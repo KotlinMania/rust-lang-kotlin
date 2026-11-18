@@ -34,7 +34,7 @@ import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.pal.unix.cvt
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -110,7 +110,7 @@ public open class UnixListener(
             }
             else -> {}
         }
-        return builder.finish()
+        return run { builder.finish(); Result.Ok<Unit, Error>(Unit) }
     }
 
     /**

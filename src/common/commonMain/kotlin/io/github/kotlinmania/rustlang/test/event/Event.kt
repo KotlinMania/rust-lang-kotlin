@@ -1,10 +1,10 @@
 // port-lint: source event.rs
 package io.github.kotlinmania.rustlang.test.event
 
-import io.github.kotlinmania.rustlang.test.testresult.TestResult
-import io.github.kotlinmania.rustlang.test.time.TestExecTime
-import io.github.kotlinmania.rustlang.test.types.TestDesc
-import io.github.kotlinmania.rustlang.test.types.TestId
+import io.github.kotlinmania.rustlang.test.TestDesc
+import io.github.kotlinmania.rustlang.test.TestExecTime
+import io.github.kotlinmania.rustlang.test.TestId
+import io.github.kotlinmania.rustlang.test.TestResult
 
 // Module containing different events that can occur
 // during tests execution process.

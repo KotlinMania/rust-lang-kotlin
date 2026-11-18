@@ -23,7 +23,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 //
 // Better known as "varargs".
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {

@@ -80,7 +80,7 @@ import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 public open class Error : Display {
     public open fun clone(): Error = Error()
 
-    public override fun fmt(f: Formatter): Result = f.append(("an error occurred when formatting an argument").toString())
+    public override fun fmt(f: Formatter): Result = run { f.append(("an error occurred when formatting an argument").toString()); RustResult.Ok<Unit, Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<Error> =
@@ -203,7 +203,7 @@ public open class FormattingOptions(
      * printed around it.
      */
     public open fun fill(fill: Char): FormattingOptions {
-        this.flags = this.flags and (UInt.MAX_VALUE shl 21) or fill.toUInt()
+        this.flags = this.flags and (UInt.MAX_VALUE shl 21) or fill.code.toUInt()
         return this
     }
 
@@ -240,7 +240,7 @@ public open class FormattingOptions(
             this.width = width1
         } else {
             this.flags = this.flags and WIDTH_FLAG.inv()
-            this.width = 0u
+            this.width = 0u.toUShort()
         }
         return this
     }
@@ -263,7 +263,7 @@ public open class FormattingOptions(
             this.precision = precision1
         } else {
             this.flags = this.flags and PRECISION_FLAG.inv()
-            this.precision = 0u
+            this.precision = 0u.toUShort()
         }
         return this
     }
@@ -402,7 +402,7 @@ public open class FormattingOptions(
          * - no precision, and
          * - no [DebugAsHex] output mode.
          */
-        public fun new(): FormattingOptions = FormattingOptions(flags = (' ').code.toUInt() or ALIGN_UNKNOWN, width = 0u, precision = 0u)
+        public fun new(): FormattingOptions = FormattingOptions(flags = (' ').code.toUInt() or ALIGN_UNKNOWN, width = 0u.toUShort(), precision = 0u.toUShort())
 
         /**
          * Same as [FormattingOptions.new].
@@ -488,7 +488,7 @@ public open class Formatter(
                 val prefix2 = prefix1
                 f.buf.append(prefix2)
             } else {
-                RustResult.Ok(Unit)
+                RustResult.Ok<Unit, Error>(Unit)
             }
         }
         var width = buf.length
@@ -523,7 +523,7 @@ public open class Formatter(
             this.buf.append(buf)
             when (val tryResult = postPadding.write(this)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
             this.options = oldOptions
-            RustResult.Ok(Unit)
+            RustResult.Ok<Unit, Error>(Unit)
         } else {
             // Otherwise, the sign and prefix goes after the padding
             val postPadding1 = when (val tryResult = this.padding(min - width.toUShort(), Alignment.Right)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, Error>(tryResult.errValue()) }
@@ -620,7 +620,7 @@ public open class Formatter(
             when (align) {
                 Alignment.Left -> 0
                 Alignment.Right -> padding
-                Alignment.Center -> padding / 2u
+                Alignment.Center -> padding / 2u.toUShort()
             }
         for (unused in 0 until paddingLeft) {
             this.buf.append(fill)
@@ -701,7 +701,7 @@ public open class Formatter(
             // It's safe to use for `numfmt.Part.Num` since every char `c` is between
             // `b'0'` and `b'9'`, which means `s` is valid UTF-8. It's safe to use for
             // `numfmt.Part.Copy` due to this function's precondition.
-            return buf.append(String.fromUtf8Unchecked(s))
+            return run { buf.append(String.fromUtf8Unchecked(s)); RustResult.Ok<Unit, Error>(Unit) }
         }
         if (!formatted.sign.isEmpty()) {
             this.buf.append(formatted.sign)
@@ -741,7 +741,7 @@ public open class Formatter(
                 }
             }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, Error>(Unit)
     }
 
     /**
@@ -764,7 +764,7 @@ public open class Formatter(
      * check("$foo" == "Foo")
      * ```
      */
-    public override fun writeStr(data: String): Result = this.buf.append(data)
+    public override fun writeStr(data: String): Result = run { this.buf.append(data); RustResult.Ok<Unit, Error>(Unit) }
 
     /**
      * Glue for usage of the [write] macro with implementors of this trait.
@@ -1225,7 +1225,7 @@ public open class Formatter(
     public open fun debugCLikeEnumWriteStr(names: String, startIndex: Int): Result {
         // we use `get().unwrap()` instead of indexing to avoid binary size
         // bloat from the error path (`sliceErrorFailRt`)
-        return this.append(splitStrBySpace(names.get(startIndex until Int.MAX_VALUE)!!).next()!!)
+        return run { this.append(splitStrBySpace(names.get(startIndex until Int.MAX_VALUE)!!).next()!!); RustResult.Ok<Unit, Error>(Unit) }
     }
 
     /**
@@ -1386,9 +1386,9 @@ public open class Formatter(
      */
     public open fun options(): FormattingOptions = this.options
 
-    public override fun writeStrWrite(s: String): Result = this.buf.append(s)
+    public override fun writeStrWrite(s: String): Result = run { this.buf.append(s); RustResult.Ok<Unit, Error>(Unit) }
 
-    public override fun writeChar(c: Char): Result = this.buf.append(c)
+    public override fun writeChar(c: Char): Result = run { this.buf.append(c); RustResult.Ok<Unit, Error>(Unit) }
 
     public override fun writeFmtWrite(args: Arguments): Result =
         when (val matchVal = args.asStaticallyKnownStr()) {
@@ -1693,7 +1693,7 @@ public open class Arguments internal constructor(
 
     // Manually implementing these results in better error messages.
 
-    public override fun fmt(fmt: Formatter): Result = fmt.append((this).toString())
+    public override fun fmt(fmt: Formatter): Result = run { fmt.append((this).toString()); RustResult.Ok<Unit, Error>(Unit) }
 
     public open fun fmtDisplay(fmt: Formatter): Result = write(fmt.buf, this)
 
@@ -1747,7 +1747,7 @@ public open class PostPadding(
         for (unused in 0 until this.padding) {
             f.buf.append(this.fill)
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, Error>(Unit)
     }
 
     public companion object {

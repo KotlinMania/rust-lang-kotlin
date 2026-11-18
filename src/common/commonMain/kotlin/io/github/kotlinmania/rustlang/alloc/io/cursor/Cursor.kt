@@ -38,14 +38,14 @@ import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 public fun Cursor<T>.read(buf: MutableList<UByte>): Result<Int> {
     val n = when (val tryResult = (Cursor.split(this).second).read(buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.setPosition(this.position() + n.toULong())
-    return RustResult.Ok(n)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(n)
 }
 
 public fun Cursor<T>.readBuf(cursor: BorrowedCursor<UByte>): Result<Unit> {
     val prevWritten = cursor.written()
     when (val tryResult = (Cursor.split(this).second).readBuf(cursor.reborrow())) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.setPosition(this.position() + (cursor.written() - prevWritten).toULong())
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun Cursor<T>.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
@@ -57,7 +57,7 @@ public fun Cursor<T>.readVectored(bufs: MutableList<IoSliceMut>): Result<Int> {
             break
         }
     }
-    return RustResult.Ok(nread)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(nread)
 }
 
 public fun Cursor<T>.isReadVectored(): Boolean = true
@@ -85,7 +85,7 @@ public fun Cursor<T>.readToEnd(buf: MutableList<UByte>): Result<Int> {
     when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     when (val tryResult = buf.tryExtendFromSliceOfBytes(content)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.setPosition(this.position() + len.toULong())
-    return RustResult.Ok(len)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(len)
 }
 
 public fun Cursor<T>.readToString(buf: String): Result<Int> {
@@ -94,10 +94,10 @@ public fun Cursor<T>.readToString(buf: String): Result<Int> {
     when (val tryResult = buf.tryReserve(len)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     when (val tryResult = buf.tryPushStr(content)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.setPosition(this.position() + len.toULong())
-    return RustResult.Ok(len)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(len)
 }
 
-public fun Cursor<T>.fillBuf(): Result<List<UByte>> = RustResult.Ok(Cursor.split(this).second)
+public fun Cursor<T>.fillBuf(): Result<List<UByte>> = RustResult.Ok<List<UByte>, io.github.kotlinmania.rustlang.core.io.error.Error>(Cursor.split(this).second)
 
 public fun Cursor<T>.consume(amt: Int) {
     this.setPosition(this.position() + amt.toULong())
@@ -132,7 +132,7 @@ public fun <A : Allocator> reserveAndPad(posMut: RustMutableReference<ULong>, ve
             vec.setLen(pos)
         }
     }
-    return RustResult.Ok(pos)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(pos)
 }
 
 /**
@@ -175,7 +175,7 @@ public fun <A> vecWriteAll(posMut: RustMutableReference<ULong>, vec: MutableList
     }
     // Bump us forward
     (posMut1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (bufLen.toULong()); targetPlace.write(currentValue) }
-    return RustResult.Ok(bufLen)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(bufLen)
 }
 
 /**
@@ -208,7 +208,7 @@ public fun <A> vecWriteAllVectored(posMut: RustMutableReference<ULong>, vec: Mut
     }
     // Bump us forward
     (posMut1).let { targetPlace -> var currentValue = targetPlace.read(); currentValue += (bufLen.toULong()); targetPlace.write(currentValue) }
-    return RustResult.Ok(bufLen)
+    return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(bufLen)
 }
 
 public fun <A> writeThroughCursorWriteVecUByteA(thisRef: Cursor<MutableList<UByte>>, buf: List<UByte>): Result<Int> where A : Allocator {
@@ -226,16 +226,16 @@ public fun <A> writeThroughCursorIsWriteVectoredVecUByteA(thisRef: Cursor<Mutabl
 public fun <A> writeThroughCursorWriteAllVecUByteA(thisRef: Cursor<MutableList<UByte>>, buf: List<UByte>): Result<Unit> where A : Allocator {
     val (pos, inner) = thisRef.intoPartsMut()
     when (val tryResult = vecWriteAll(pos, inner, buf)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun <A> writeThroughCursorWriteAllVectoredVecUByteA(thisRef: Cursor<MutableList<UByte>>, bufs: MutableList<IoSlice>): Result<Unit> where A : Allocator {
     val (pos, inner) = thisRef.intoPartsMut()
     when (val tryResult = vecWriteAllVectored(pos, inner, bufs)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
-public fun <A> writeThroughCursorFlushVecUByteA(thisRef: Cursor<MutableList<UByte>>): Result<Unit> where A : Allocator = RustResult.Ok(Unit)
+public fun <A> writeThroughCursorFlushVecUByteA(thisRef: Cursor<MutableList<UByte>>): Result<Unit> where A : Allocator = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
 public fun <A> writeThroughCursorWriteBoxUByteSliceA(thisRef: Cursor<List<UByte>>, buf: List<UByte>): Result<Int> where A : Allocator {
     val (pos, inner) = thisRef.intoPartsMut()
@@ -259,4 +259,4 @@ public fun <A> writeThroughCursorWriteAllVectoredBoxUByteSliceA(thisRef: Cursor<
     return sliceWriteAllVectored(pos, inner, bufs)
 }
 
-public fun <A> writeThroughCursorFlushBoxUByteSliceA(thisRef: Cursor<List<UByte>>): Result<Unit> where A : Allocator = RustResult.Ok(Unit)
+public fun <A> writeThroughCursorFlushBoxUByteSliceA(thisRef: Cursor<List<UByte>>): Result<Unit> where A : Allocator = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)

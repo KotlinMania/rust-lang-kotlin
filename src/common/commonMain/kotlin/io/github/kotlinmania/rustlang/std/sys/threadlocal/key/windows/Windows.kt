@@ -14,7 +14,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU32
@@ -73,7 +72,7 @@ public fun interface Dtor {
 public open class LazyKey internal constructor(
     keyCtorArg: Atomic<Key>,
     public var dtor: Dtor?,
-    nextCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
+    public var next: AtomicPtr,
     onceCtorArg: UnsafeCell<InitOnce>,
 ) {
     /**
@@ -82,9 +81,6 @@ public open class LazyKey internal constructor(
      * without risking overflow.
      */
     public var key: Atomic<Key> = keyCtorArg
-        internal set
-
-    public var next: Atomic<MutPtr, Align8<MutPtr>> = nextCtorArg
         internal set
 
     /**
@@ -195,16 +191,16 @@ public open class LazyKey internal constructor(
         public operator fun invoke(
             key: Atomic<Key>,
             dtor: Dtor?,
-            next: Atomic<MutPtr, Align8<MutPtr>>,
+            next: AtomicPtr,
             once: UnsafeCell<InitOnce>,
         ): LazyKey = LazyKey(
             keyCtorArg = key,
             dtor = dtor,
-            nextCtorArg = next,
+            next = next,
             onceCtorArg = once,
         )
 
-        public fun new(dtor: Dtor?): LazyKey = LazyKey(key = AtomicU32.new(0), dtor = dtor, next = AtomicPtr.new(MutPtr(0L)), once = UnsafeCell.new(INIT_ONCE_STATIC_INIT))
+        public fun new(dtor: Dtor?): LazyKey = LazyKey(key = AtomicU32.new(0u), dtor = dtor, next = AtomicPtr.new(MutPtr(0L)), once = UnsafeCell.new(INIT_ONCE_STATIC_INIT))
     }
 }
 
@@ -233,7 +229,7 @@ public fun set(key: Key, value: MutPtr) {
 
 public fun get(key: Key): MutPtr = MutPtr((tlsGetValue(key)).rawAddress)
 
-public var DTORS: Atomic<MutPtr, Align8<MutPtr>> = AtomicPtr.new(MutPtr(0L))
+public var DTORS: AtomicPtr = AtomicPtr.new(MutPtr(0L))
 
 /**
  * Should only be called once per key, otherwise loops or breaks may occur in

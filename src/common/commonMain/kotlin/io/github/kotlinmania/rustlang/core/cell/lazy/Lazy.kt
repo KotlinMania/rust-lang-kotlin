@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -96,7 +96,7 @@ public open class LazyCell<T, F> internal constructor(
                 d.field(data)
             }
         }
-        return d.finish()
+        return run { d.finish(); Result.Ok<Unit, Unit>(Unit) }
     }
 
     public companion object {

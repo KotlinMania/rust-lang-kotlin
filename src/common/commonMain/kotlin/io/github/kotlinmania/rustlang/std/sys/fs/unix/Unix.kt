@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sys.fs.unix
 import io.github.kotlinmania.rustlang.alloc.ffi.cstr.CString
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CSizeT
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CSsizeT
 import io.github.kotlinmania.rustlang.core.fmt.Write
@@ -37,11 +38,8 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.core.result.andThen
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicU8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
@@ -159,7 +157,6 @@ import io.github.kotlinmania.rustlang.std.os.fd.asFd
 import io.github.kotlinmania.rustlang.std.os.fd.asRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.fromRawFd
 import io.github.kotlinmania.rustlang.std.os.fd.intoRawFd
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.asBytes
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromBytes
 import io.github.kotlinmania.rustlang.std.os.unix.ffi.osstr.fromVec
@@ -492,7 +489,7 @@ public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): RustResul
     sealed class StatxState(
         public val value: UByte,
     ) {
-        public data object Unknown : StatxState(0u)
+        public data object Unknown : StatxState(0u.toUByte())
         public data object Present : StatxState((Unknown.value + 1u).toUByte())
         public data object Unavailable : StatxState((Present.value + 1u).toUByte())
 
@@ -512,7 +509,7 @@ public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): RustResul
 
         public fun toULong(): ULong = value.toULong()
     }
-    val STATX_SAVED_STATE: Atomic<UByte, Align1<UByte>>  = AtomicU8.new(StatxState.Unknown.value.toUByte())
+    val STATX_SAVED_STATE: AtomicU8  = AtomicU8.new(StatxState.Unknown.value.toUByte())
     syscall(statx, fd, cInt, pathname, cChar, flags, cInt, mask, libc, cUint, statxbuf, libc, statx, cInt)
     val statxAvailability = STATX_SAVED_STATE.load(Ordering.Relaxed)
     if (statxAvailability == StatxState.Unavailable.value.toUByte()) {
@@ -524,7 +521,7 @@ public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): RustResul
         is RustResult.Err<*, *> -> {
             val err = matchVal.errValue()
             if (STATX_SAVED_STATE.load(Ordering.Relaxed) == StatxState.Present.value.toUByte()) {
-                return RustResult.Err(err)
+                return RustResult.Err<FileAttr, Error, io.github.kotlinmania.rustlang.core.io.error.Error>(err)
             }
             // We're not yet entirely sure whether `statx` is usable on this kernel
             // or not. Syscalls can return errors from things other than the kernel
@@ -540,7 +537,7 @@ public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): RustResul
             val err2 = cvt(Statx(0, ConstPtr(0L), 0, STATX_BASIC_STATS or STATX_BTIME, MutPtr(0L))).err().andThen({ e -> e.rawOsError() })
             if (err2 == EFAULT) {
                 STATX_SAVED_STATE.store(StatxState.Present.value.toUByte(), Ordering.Relaxed)
-                return RustResult.Err(err)
+                return RustResult.Err<FileAttr, Error, io.github.kotlinmania.rustlang.core.io.error.Error>(err)
             } else {
                 STATX_SAVED_STATE.store(StatxState.Unavailable.value.toUByte(), Ordering.Relaxed)
                 return null
@@ -572,7 +569,7 @@ public fun tryStatx(fd: CInt, path: ConstPtr, flags: Int, mask: UInt): RustResul
     stat.stCtime = buf.stxCtime.tvSec.toLong()
     stat.stCtimeNsec = buf.stxCtime.tvNsec
     val extra = StatxExtraFields(stxMask = buf.stxMask, stxBtime = buf.stxBtime, stxAtime = buf.stxAtime, stxCtime = buf.stxCtime, stxMtime = buf.stxMtime)
-    return RustResult.Ok(FileAttr(stat = stat, statxExtraFields = extra))
+    return RustResult.Ok<FileAttr, Error, io.github.kotlinmania.rustlang.core.io.error.Error>(FileAttr(stat = stat, statxExtraFields = extra))
 }
 
 // all DirEntry's will have a reference to this struct
@@ -623,7 +620,7 @@ public open class ReadDir(
                     0 -> null
                     else -> {
                         val e = matchVal
-                        RustResult.Err(Error.fromRawOsError(e))
+                        RustResult.Err<DirEntry, Error, io.github.kotlinmania.rustlang.core.io.error.Error>(Error.fromRawOsError(e))
                     }
                 }
             }
@@ -654,7 +651,7 @@ public open class ReadDir(
             // a value expression will do the right thing: `byteOffset` to the field and then
             // only access those bytes.
             val entry = Dirent64Min(dIno = (UnresolvedTypeLayout<Dirent64>()).readNative((entryPtr).rawAddress).dFileno, dType = ((UnresolvedTypeLayout<Dirent64>()).readNative((entryPtr).rawAddress).dType).toUByte())
-            return RustResult.Ok(DirEntry(entry = entry, name = name.toOwned(), dir = this.inner))
+            return RustResult.Ok<DirEntry, Error, io.github.kotlinmania.rustlang.core.io.error.Error>(DirEntry(entry = entry, name = name.toOwned(), dir = this.inner))
         }
     }
 

@@ -1,9 +1,9 @@
 // port-lint: source sys/pal/windows/winsock.rs
 package io.github.kotlinmania.rustlang.std.sys.pal.windows.winsock
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sync.once.Once
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.Wsadata
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.c.windowssys.wSAGetLastError
@@ -24,7 +24,7 @@ public fun startup() {
 public fun wsaStartup() {
     run {
         val data: Wsadata  = Wsadata()
-        val ret = wSAStartup(0x202u, data)
+        val ret = wSAStartup(0x202u.toUShort(), data)
         check(ret == 0)
     }
 }

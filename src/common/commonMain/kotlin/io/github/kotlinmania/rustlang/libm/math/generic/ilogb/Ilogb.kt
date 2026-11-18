@@ -12,26 +12,26 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> ilogb(x: F): kotlin.In
     var i = x.toBits()
     val e = ((x.ex() as Any?) as kotlin.Int)
     return if (e == 0) {
-        i = i shl ((F.EXP_BITS + 1).toInt())
+        i = i shl ((x.EXP_BITS + 1).toInt())
         if (i == F.Int.ZERO) {
             readVolatile(0.0 / 0.0)
             return FP_ILOGB0
         }
         // subnormal x
-        var e1 = -(((F.EXP_BIAS as Any?) as kotlin.Int))
-        while (i shr (F.BITS - 1).toInt() == zero) {
+        var e1 = -(((x.EXP_BIAS as Any?) as kotlin.Int))
+        while (i shr (x.BITS - 1).toInt() == zero) {
             e1 -= 1
             i = i shl 1
         }
         e1
-    } else if (e == ((F.EXP_SAT as Any?) as kotlin.Int)) {
+    } else if (e == ((x.EXP_SAT as Any?) as kotlin.Int)) {
         readVolatile(0.0 / 0.0)
-        if (i shl (F.EXP_BITS + 1).toInt() != zero) {
+        if (i shl (x.EXP_BITS + 1).toInt() != zero) {
             FP_ILOGBNAN
         } else {
             Int.MAX_VALUE
         }
     } else {
-        e - ((F.EXP_BIAS as Any?) as kotlin.Int)
+        e - ((x.EXP_BIAS as Any?) as kotlin.Int)
     }
 }

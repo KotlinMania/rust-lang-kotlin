@@ -344,7 +344,7 @@ public open class Handle(
     public companion object {
         public fun newEvent(manual: Boolean, init: Boolean): Result<Handle, Error> =
             run {
-                val event = createEventW(MutPtr(0L), manual.toInt(), init.toInt(), ConstPtr(0L))
+                val event = createEventW(MutPtr(0L), (if (manual) 1 else 0), (if (init) 1 else 0), ConstPtr(0L))
                 if (event.isNull()) {
                     Result.Err<Handle, Error>(Error.lastOsError())
                 } else {

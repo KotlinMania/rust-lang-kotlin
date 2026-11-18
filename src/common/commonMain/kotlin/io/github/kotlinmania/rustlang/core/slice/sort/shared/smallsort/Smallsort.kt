@@ -555,9 +555,9 @@ public fun <T> sort4Stable(vBase: ConstPtr, dst: MutPtr, isLess: (T, T) -> Boole
         // Stably create two pairs a <= b and c <= d.
         val c1 = isLess((typeLayoutT).readNative((ConstPtr((vBase).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))).rawAddress), (typeLayoutT).readNative((vBase).rawAddress))
         val c2 = isLess((typeLayoutT).readNative((ConstPtr((vBase).rawAddress + ((3).toLong() * (typeLayoutT).strideBytes))).rawAddress), (typeLayoutT).readNative((ConstPtr((vBase).rawAddress + ((2).toLong() * (typeLayoutT).strideBytes))).rawAddress))
-        val a = ConstPtr((vBase).rawAddress + ((c1.toInt()).toLong() * (typeLayoutT).strideBytes))
+        val a = ConstPtr((vBase).rawAddress + (((if (c1) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
         val b = ConstPtr((vBase).rawAddress + (((if (!c1) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
-        val c = ConstPtr((vBase).rawAddress + ((2 + c2.toInt()).toLong() * (typeLayoutT).strideBytes))
+        val c = ConstPtr((vBase).rawAddress + ((2 + (if (c2) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
         val d = ConstPtr((vBase).rawAddress + ((2 + ((if (!c2) 1 else 0))).toLong() * (typeLayoutT).strideBytes))
         // Compare (a, c) and (b, d) to identify max/min. We're left with two
         // unknown elements, but because we are a stable sort we must know which
@@ -629,7 +629,7 @@ public fun <T> mergeUp(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isLes
             }
         copyNonoverlapping(src, dst1, 1)
         rightSrc1 = ConstPtr((rightSrc1).rawAddress + (((if (!isL) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
-        leftSrc1 = ConstPtr((leftSrc1).rawAddress + ((isL.toInt()).toLong() * (typeLayoutT).strideBytes))
+        leftSrc1 = ConstPtr((leftSrc1).rawAddress + (((if (isL) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
         dst1 = MutPtr((dst1).rawAddress + ((1).toLong() * (typeLayoutT).strideBytes))
     }
     return Triple(leftSrc1, rightSrc1, dst1)
@@ -661,7 +661,7 @@ public fun <T> mergeDown(leftSrc: ConstPtr, rightSrc: ConstPtr, dst: MutPtr, isL
                 leftSrc1
             }
         copyNonoverlapping(src, dst1, 1)
-        rightSrc1 = ConstPtr((rightSrc1).rawAddress - ((isL.toInt()).toLong() * (typeLayoutT).strideBytes))
+        rightSrc1 = ConstPtr((rightSrc1).rawAddress - (((if (isL) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
         leftSrc1 = ConstPtr((leftSrc1).rawAddress - (((if (!isL) 1 else 0)).toLong() * (typeLayoutT).strideBytes))
         dst1 = MutPtr((dst1).rawAddress - ((1).toLong() * (typeLayoutT).strideBytes))
     }

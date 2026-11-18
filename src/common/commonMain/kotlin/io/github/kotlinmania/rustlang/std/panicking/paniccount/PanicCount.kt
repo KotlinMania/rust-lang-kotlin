@@ -1,8 +1,6 @@
 // port-lint: source panicking.rs
 package io.github.kotlinmania.rustlang.std.panicking.paniccount
 
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.fetchAdd
@@ -69,7 +67,7 @@ public sealed class MustAbort {
 //
 // Stealing a bit is fine because it just amounts to assuming that each
 // panicking thread consumes at least 2 bytes of address space.
-public var GLOBAL_PANIC_COUNT: Atomic<Int, Align8<Int>> = AtomicUsize.new(0)
+public var GLOBAL_PANIC_COUNT: AtomicUsize = AtomicUsize.new(0)
 
 // Increases the global and local panic count, and returns whether an
 // immediate abort is required.

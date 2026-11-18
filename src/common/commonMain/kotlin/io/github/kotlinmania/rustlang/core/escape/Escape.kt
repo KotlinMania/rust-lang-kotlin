@@ -88,7 +88,7 @@ public fun escapeAscii(byte: UByte, n: Int = 0): Pair<List<io.github.kotlinmania
  */
 public fun escapeUnicode(c: Char, n: Int = 0): Pair<List<io.github.kotlinmania.rustlang.core.ascii.Char>, Range<UByte>> {
     check(n >= 10 && n < UByte.MAX_VALUE.toInt())
-    val c1 = c.toUInt()
+    val c1 = c.code.toUInt()
     // OR-ing `1` ensures that for `c == 0` the code computes that
     // one digit should be printed.
     val start = (c1 or 1u).leadingZeros().toInt() / 4 - 2
@@ -195,7 +195,7 @@ public open class EscapeIterInner<Escaping> internal constructor(
     }
 }
 
-public val LITERAL_ESCAPE_START: UByte = 128u
+public val LITERAL_ESCAPE_START: UByte = 128u.toUByte()
 
 /**
  * # Safety

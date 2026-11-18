@@ -4,6 +4,10 @@
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket.windows
 
 import io.github.kotlinmania.rustlang.alloc.io.read.Read
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUint
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUlong
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CUshort
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedBuf
 import io.github.kotlinmania.rustlang.core.io.borrowedbuf.BorrowedCursor
 import io.github.kotlinmania.rustlang.core.io.error.Error
@@ -39,10 +43,6 @@ import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.time.Duration
 import io.github.kotlinmania.rustlang.std.net.Shutdown
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
-import io.github.kotlinmania.rustlang.std.os.raw.CUint
-import io.github.kotlinmania.rustlang.std.os.raw.CUlong
-import io.github.kotlinmania.rustlang.std.os.raw.CUshort
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsRawSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.AsSocket
 import io.github.kotlinmania.rustlang.std.os.windows.io.BorrowedSocket
@@ -522,7 +522,7 @@ public open class Socket(
     }
 
     public open fun setNonblocking(nonblocking: Boolean): Result<Unit, Error> {
-        val nonblocking1 = nonblocking.toULong()
+        val nonblocking1 = (if (nonblocking) 1uL else 0uL)
         val result = ioctlsocket(this.asRaw(), FIONBIO.toInt(), nonblocking1)
         return cvt(result).map({ drop(it) })
     }
@@ -537,14 +537,14 @@ public open class Socket(
         return Result.Ok<Duration?, Error>((value.lOnoff != 0u.toUShort()).then({ Duration.fromSecs(value.lLinger.toULong()) }))
     }
 
-    public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_KEEPALIVE, keepalive.toInt())
+    public open fun setKeepalive(keepalive: Boolean): Result<Unit, Error> = setsockopt(this, SOL_SOCKET, SO_KEEPALIVE, (if (keepalive) 1 else 0))
 
     public open fun keepalive(): Result<Boolean, Error> {
         val raw: Bool = when (val tryResult = getsockopt(this, SOL_SOCKET, SO_KEEPALIVE)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }
         return Result.Ok<Boolean, Error>((raw != 0).toUByte())
     }
 
-    public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = setsockopt(this, IPPROTO_TCP, TCP_NODELAY, nodelay.toInt())
+    public open fun setNodelay(nodelay: Boolean): Result<Unit, Error> = setsockopt(this, IPPROTO_TCP, TCP_NODELAY, (if (nodelay) 1 else 0))
 
     public open fun nodelay(): Result<Boolean, Error> {
         val raw: Bool = when (val tryResult = getsockopt(this, IPPROTO_TCP, TCP_NODELAY)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Boolean, Error>(tryResult.errValue()) }

@@ -15,17 +15,17 @@ import io.github.kotlinmania.rustlang.libc.types.u32CastInt
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.iow
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.iowr
 
-public val NDTA_PAD: CUshort = 9u
+public val NDTA_PAD: CUshort = 9u.toUShort()
 
-public val FDB_NOTIFY_BIT: UShort = 0x01u
+public val FDB_NOTIFY_BIT: UShort = 0x01u.toUShort()
 
-public val FDB_NOTIFY_INACTIVE_BIT: UShort = 0x02u
+public val FDB_NOTIFY_INACTIVE_BIT: UShort = 0x02u.toUShort()
 
-public val NFEA_UNSPEC: CUshort = 0u
+public val NFEA_UNSPEC: CUshort = 0u.toUShort()
 
-public val NFEA_ACTIVITY_NOTIFY: CUshort = 1u
+public val NFEA_ACTIVITY_NOTIFY: CUshort = 1u.toUShort()
 
-public val NFEA_DONT_REFRESH: CUshort = 2u
+public val NFEA_DONT_REFRESH: CUshort = 2u.toUShort()
 
 // end android/platform/bionic/libc/kernel/uapi/linux/neighbour.h
 public val SIOCADDRT: CUlong = 0x0000890BuL
@@ -359,15 +359,15 @@ public val FUTEX_32: CInt = FUTEX2_SIZE_U32
 public val FUTEX_WAITV_MAX: CInt = 128
 
 // linux/errqueue.h
-public val SO_EE_ORIGIN_NONE: UByte = 0u
+public val SO_EE_ORIGIN_NONE: UByte = 0u.toUByte()
 
-public val SO_EE_ORIGIN_LOCAL: UByte = 1u
+public val SO_EE_ORIGIN_LOCAL: UByte = 1u.toUByte()
 
-public val SO_EE_ORIGIN_ICMP: UByte = 2u
+public val SO_EE_ORIGIN_ICMP: UByte = 2u.toUByte()
 
-public val SO_EE_ORIGIN_ICMP6: UByte = 3u
+public val SO_EE_ORIGIN_ICMP6: UByte = 3u.toUByte()
 
-public val SO_EE_ORIGIN_TXSTATUS: UByte = 4u
+public val SO_EE_ORIGIN_TXSTATUS: UByte = 4u.toUByte()
 
 public val SO_EE_ORIGIN_TIMESTAMPING: UByte = SO_EE_ORIGIN_TXSTATUS
 
@@ -868,21 +868,21 @@ public val PR_RISCV_V_VSTATE_CTRL_NEXT_MASK: CInt = 0xc
 public val PR_RISCV_V_VSTATE_CTRL_MASK: CInt = 0x1f
 
 // linux/ifAddr.h
-public val IFA_UNSPEC: CUshort = 0u
+public val IFA_UNSPEC: CUshort = 0u.toUShort()
 
-public val IFA_ADDRESS: CUshort = 1u
+public val IFA_ADDRESS: CUshort = 1u.toUShort()
 
-public val IFA_LOCAL: CUshort = 2u
+public val IFA_LOCAL: CUshort = 2u.toUShort()
 
-public val IFA_LABEL: CUshort = 3u
+public val IFA_LABEL: CUshort = 3u.toUShort()
 
-public val IFA_BROADCAST: CUshort = 4u
+public val IFA_BROADCAST: CUshort = 4u.toUShort()
 
-public val IFA_ANYCAST: CUshort = 5u
+public val IFA_ANYCAST: CUshort = 5u.toUShort()
 
-public val IFA_CACHEINFO: CUshort = 6u
+public val IFA_CACHEINFO: CUshort = 6u.toUShort()
 
-public val IFA_MULTICAST: CUshort = 7u
+public val IFA_MULTICAST: CUshort = 7u.toUShort()
 
 public val IFA_F_SECONDARY: UInt = 0x01u
 
@@ -903,264 +903,264 @@ public val IFA_F_TENTATIVE: UInt = 0x40u
 public val IFA_F_PERMANENT: UInt = 0x80u
 
 // linux/ifLink.h
-public val IFLA_UNSPEC: CUshort = 0u
+public val IFLA_UNSPEC: CUshort = 0u.toUShort()
 
-public val IFLA_ADDRESS: CUshort = 1u
+public val IFLA_ADDRESS: CUshort = 1u.toUShort()
 
-public val IFLA_BROADCAST: CUshort = 2u
+public val IFLA_BROADCAST: CUshort = 2u.toUShort()
 
-public val IFLA_IFNAME: CUshort = 3u
+public val IFLA_IFNAME: CUshort = 3u.toUShort()
 
-public val IFLA_MTU: CUshort = 4u
+public val IFLA_MTU: CUshort = 4u.toUShort()
 
-public val IFLA_LINK: CUshort = 5u
+public val IFLA_LINK: CUshort = 5u.toUShort()
 
-public val IFLA_QDISC: CUshort = 6u
+public val IFLA_QDISC: CUshort = 6u.toUShort()
 
-public val IFLA_STATS: CUshort = 7u
+public val IFLA_STATS: CUshort = 7u.toUShort()
 
-public val IFLA_COST: CUshort = 8u
+public val IFLA_COST: CUshort = 8u.toUShort()
 
-public val IFLA_PRIORITY: CUshort = 9u
+public val IFLA_PRIORITY: CUshort = 9u.toUShort()
 
-public val IFLA_MASTER: CUshort = 10u
+public val IFLA_MASTER: CUshort = 10u.toUShort()
 
-public val IFLA_WIRELESS: CUshort = 11u
+public val IFLA_WIRELESS: CUshort = 11u.toUShort()
 
-public val IFLA_PROTINFO: CUshort = 12u
+public val IFLA_PROTINFO: CUshort = 12u.toUShort()
 
-public val IFLA_TXQLEN: CUshort = 13u
+public val IFLA_TXQLEN: CUshort = 13u.toUShort()
 
-public val IFLA_MAP: CUshort = 14u
+public val IFLA_MAP: CUshort = 14u.toUShort()
 
-public val IFLA_WEIGHT: CUshort = 15u
+public val IFLA_WEIGHT: CUshort = 15u.toUShort()
 
-public val IFLA_OPERSTATE: CUshort = 16u
+public val IFLA_OPERSTATE: CUshort = 16u.toUShort()
 
-public val IFLA_LINKMODE: CUshort = 17u
+public val IFLA_LINKMODE: CUshort = 17u.toUShort()
 
-public val IFLA_LINKINFO: CUshort = 18u
+public val IFLA_LINKINFO: CUshort = 18u.toUShort()
 
-public val IFLA_NET_NS_PID: CUshort = 19u
+public val IFLA_NET_NS_PID: CUshort = 19u.toUShort()
 
-public val IFLA_IFALIAS: CUshort = 20u
+public val IFLA_IFALIAS: CUshort = 20u.toUShort()
 
-public val IFLA_NUM_VF: CUshort = 21u
+public val IFLA_NUM_VF: CUshort = 21u.toUShort()
 
-public val IFLA_VFINFO_LIST: CUshort = 22u
+public val IFLA_VFINFO_LIST: CUshort = 22u.toUShort()
 
-public val IFLA_STATS64: CUshort = 23u
+public val IFLA_STATS64: CUshort = 23u.toUShort()
 
-public val IFLA_VF_PORTS: CUshort = 24u
+public val IFLA_VF_PORTS: CUshort = 24u.toUShort()
 
-public val IFLA_PORT_SELF: CUshort = 25u
+public val IFLA_PORT_SELF: CUshort = 25u.toUShort()
 
-public val IFLA_AF_SPEC: CUshort = 26u
+public val IFLA_AF_SPEC: CUshort = 26u.toUShort()
 
-public val IFLA_GROUP: CUshort = 27u
+public val IFLA_GROUP: CUshort = 27u.toUShort()
 
-public val IFLA_NET_NS_FD: CUshort = 28u
+public val IFLA_NET_NS_FD: CUshort = 28u.toUShort()
 
-public val IFLA_EXT_MASK: CUshort = 29u
+public val IFLA_EXT_MASK: CUshort = 29u.toUShort()
 
-public val IFLA_PROMISCUITY: CUshort = 30u
+public val IFLA_PROMISCUITY: CUshort = 30u.toUShort()
 
-public val IFLA_NUM_TX_QUEUES: CUshort = 31u
+public val IFLA_NUM_TX_QUEUES: CUshort = 31u.toUShort()
 
-public val IFLA_NUM_RX_QUEUES: CUshort = 32u
+public val IFLA_NUM_RX_QUEUES: CUshort = 32u.toUShort()
 
-public val IFLA_CARRIER: CUshort = 33u
+public val IFLA_CARRIER: CUshort = 33u.toUShort()
 
-public val IFLA_PHYS_PORT_ID: CUshort = 34u
+public val IFLA_PHYS_PORT_ID: CUshort = 34u.toUShort()
 
-public val IFLA_CARRIER_CHANGES: CUshort = 35u
+public val IFLA_CARRIER_CHANGES: CUshort = 35u.toUShort()
 
-public val IFLA_PHYS_SWITCH_ID: CUshort = 36u
+public val IFLA_PHYS_SWITCH_ID: CUshort = 36u.toUShort()
 
-public val IFLA_LINK_NETNSID: CUshort = 37u
+public val IFLA_LINK_NETNSID: CUshort = 37u.toUShort()
 
-public val IFLA_PHYS_PORT_NAME: CUshort = 38u
+public val IFLA_PHYS_PORT_NAME: CUshort = 38u.toUShort()
 
-public val IFLA_PROTO_DOWN: CUshort = 39u
+public val IFLA_PROTO_DOWN: CUshort = 39u.toUShort()
 
-public val IFLA_GSO_MAX_SEGS: CUshort = 40u
+public val IFLA_GSO_MAX_SEGS: CUshort = 40u.toUShort()
 
-public val IFLA_GSO_MAX_SIZE: CUshort = 41u
+public val IFLA_GSO_MAX_SIZE: CUshort = 41u.toUShort()
 
-public val IFLA_PAD: CUshort = 42u
+public val IFLA_PAD: CUshort = 42u.toUShort()
 
-public val IFLA_XDP: CUshort = 43u
+public val IFLA_XDP: CUshort = 43u.toUShort()
 
-public val IFLA_EVENT: CUshort = 44u
+public val IFLA_EVENT: CUshort = 44u.toUShort()
 
-public val IFLA_NEW_NETNSID: CUshort = 45u
+public val IFLA_NEW_NETNSID: CUshort = 45u.toUShort()
 
-public val IFLA_IF_NETNSID: CUshort = 46u
+public val IFLA_IF_NETNSID: CUshort = 46u.toUShort()
 
 public val IFLA_TARGET_NETNSID: CUshort = IFLA_IF_NETNSID
 
-public val IFLA_CARRIER_UP_COUNT: CUshort = 47u
+public val IFLA_CARRIER_UP_COUNT: CUshort = 47u.toUShort()
 
-public val IFLA_CARRIER_DOWN_COUNT: CUshort = 48u
+public val IFLA_CARRIER_DOWN_COUNT: CUshort = 48u.toUShort()
 
-public val IFLA_NEW_IFINDEX: CUshort = 49u
+public val IFLA_NEW_IFINDEX: CUshort = 49u.toUShort()
 
-public val IFLA_MIN_MTU: CUshort = 50u
+public val IFLA_MIN_MTU: CUshort = 50u.toUShort()
 
-public val IFLA_MAX_MTU: CUshort = 51u
+public val IFLA_MAX_MTU: CUshort = 51u.toUShort()
 
-public val IFLA_PROP_LIST: CUshort = 52u
+public val IFLA_PROP_LIST: CUshort = 52u.toUShort()
 
-public val IFLA_ALT_IFNAME: CUshort = 53u
+public val IFLA_ALT_IFNAME: CUshort = 53u.toUShort()
 
-public val IFLA_PERM_ADDRESS: CUshort = 54u
+public val IFLA_PERM_ADDRESS: CUshort = 54u.toUShort()
 
-public val IFLA_PROTO_DOWN_REASON: CUshort = 55u
+public val IFLA_PROTO_DOWN_REASON: CUshort = 55u.toUShort()
 
-public val IFLA_PARENT_DEV_NAME: CUshort = 56u
+public val IFLA_PARENT_DEV_NAME: CUshort = 56u.toUShort()
 
-public val IFLA_PARENT_DEV_BUS_NAME: CUshort = 57u
+public val IFLA_PARENT_DEV_BUS_NAME: CUshort = 57u.toUShort()
 
-public val IFLA_GRO_MAX_SIZE: CUshort = 58u
+public val IFLA_GRO_MAX_SIZE: CUshort = 58u.toUShort()
 
-public val IFLA_TSO_MAX_SIZE: CUshort = 59u
+public val IFLA_TSO_MAX_SIZE: CUshort = 59u.toUShort()
 
-public val IFLA_TSO_MAX_SEGS: CUshort = 60u
+public val IFLA_TSO_MAX_SEGS: CUshort = 60u.toUShort()
 
-public val IFLA_ALLMULTI: CUshort = 61u
+public val IFLA_ALLMULTI: CUshort = 61u.toUShort()
 
-public val IFLA_DEVLINK_PORT: CUshort = 62u
+public val IFLA_DEVLINK_PORT: CUshort = 62u.toUShort()
 
-public val IFLA_GSO_IPV4_MAX_SIZE: CUshort = 63u
+public val IFLA_GSO_IPV4_MAX_SIZE: CUshort = 63u.toUShort()
 
-public val IFLA_GRO_IPV4_MAX_SIZE: CUshort = 64u
+public val IFLA_GRO_IPV4_MAX_SIZE: CUshort = 64u.toUShort()
 
-public val IFLA_INFO_UNSPEC: CUshort = 0u
+public val IFLA_INFO_UNSPEC: CUshort = 0u.toUShort()
 
-public val IFLA_INFO_KIND: CUshort = 1u
+public val IFLA_INFO_KIND: CUshort = 1u.toUShort()
 
-public val IFLA_INFO_DATA: CUshort = 2u
+public val IFLA_INFO_DATA: CUshort = 2u.toUShort()
 
-public val IFLA_INFO_XSTATS: CUshort = 3u
+public val IFLA_INFO_XSTATS: CUshort = 3u.toUShort()
 
-public val IFLA_INFO_SLAVE_KIND: CUshort = 4u
+public val IFLA_INFO_SLAVE_KIND: CUshort = 4u.toUShort()
 
-public val IFLA_INFO_SLAVE_DATA: CUshort = 5u
+public val IFLA_INFO_SLAVE_DATA: CUshort = 5u.toUShort()
 
 // linux/rtnetlink.h
-public val TCA_UNSPEC: CUshort = 0u
+public val TCA_UNSPEC: CUshort = 0u.toUShort()
 
-public val TCA_KIND: CUshort = 1u
+public val TCA_KIND: CUshort = 1u.toUShort()
 
-public val TCA_OPTIONS: CUshort = 2u
+public val TCA_OPTIONS: CUshort = 2u.toUShort()
 
-public val TCA_STATS: CUshort = 3u
+public val TCA_STATS: CUshort = 3u.toUShort()
 
-public val TCA_XSTATS: CUshort = 4u
+public val TCA_XSTATS: CUshort = 4u.toUShort()
 
-public val TCA_RATE: CUshort = 5u
+public val TCA_RATE: CUshort = 5u.toUShort()
 
-public val TCA_FCNT: CUshort = 6u
+public val TCA_FCNT: CUshort = 6u.toUShort()
 
-public val TCA_STATS2: CUshort = 7u
+public val TCA_STATS2: CUshort = 7u.toUShort()
 
-public val TCA_STAB: CUshort = 8u
+public val TCA_STAB: CUshort = 8u.toUShort()
 
-public val RTM_NEWLINK: UShort = 16u
+public val RTM_NEWLINK: UShort = 16u.toUShort()
 
-public val RTM_DELLINK: UShort = 17u
+public val RTM_DELLINK: UShort = 17u.toUShort()
 
-public val RTM_GETLINK: UShort = 18u
+public val RTM_GETLINK: UShort = 18u.toUShort()
 
-public val RTM_SETLINK: UShort = 19u
+public val RTM_SETLINK: UShort = 19u.toUShort()
 
-public val RTM_NEWADDR: UShort = 20u
+public val RTM_NEWADDR: UShort = 20u.toUShort()
 
-public val RTM_DELADDR: UShort = 21u
+public val RTM_DELADDR: UShort = 21u.toUShort()
 
-public val RTM_GETADDR: UShort = 22u
+public val RTM_GETADDR: UShort = 22u.toUShort()
 
-public val RTM_NEWROUTE: UShort = 24u
+public val RTM_NEWROUTE: UShort = 24u.toUShort()
 
-public val RTM_DELROUTE: UShort = 25u
+public val RTM_DELROUTE: UShort = 25u.toUShort()
 
-public val RTM_GETROUTE: UShort = 26u
+public val RTM_GETROUTE: UShort = 26u.toUShort()
 
-public val RTM_NEWNEIGH: UShort = 28u
+public val RTM_NEWNEIGH: UShort = 28u.toUShort()
 
-public val RTM_DELNEIGH: UShort = 29u
+public val RTM_DELNEIGH: UShort = 29u.toUShort()
 
-public val RTM_GETNEIGH: UShort = 30u
+public val RTM_GETNEIGH: UShort = 30u.toUShort()
 
-public val RTM_NEWRULE: UShort = 32u
+public val RTM_NEWRULE: UShort = 32u.toUShort()
 
-public val RTM_DELRULE: UShort = 33u
+public val RTM_DELRULE: UShort = 33u.toUShort()
 
-public val RTM_GETRULE: UShort = 34u
+public val RTM_GETRULE: UShort = 34u.toUShort()
 
-public val RTM_NEWQDISC: UShort = 36u
+public val RTM_NEWQDISC: UShort = 36u.toUShort()
 
-public val RTM_DELQDISC: UShort = 37u
+public val RTM_DELQDISC: UShort = 37u.toUShort()
 
-public val RTM_GETQDISC: UShort = 38u
+public val RTM_GETQDISC: UShort = 38u.toUShort()
 
-public val RTM_NEWTCLASS: UShort = 40u
+public val RTM_NEWTCLASS: UShort = 40u.toUShort()
 
-public val RTM_DELTCLASS: UShort = 41u
+public val RTM_DELTCLASS: UShort = 41u.toUShort()
 
-public val RTM_GETTCLASS: UShort = 42u
+public val RTM_GETTCLASS: UShort = 42u.toUShort()
 
-public val RTM_NEWTFILTER: UShort = 44u
+public val RTM_NEWTFILTER: UShort = 44u.toUShort()
 
-public val RTM_DELTFILTER: UShort = 45u
+public val RTM_DELTFILTER: UShort = 45u.toUShort()
 
-public val RTM_GETTFILTER: UShort = 46u
+public val RTM_GETTFILTER: UShort = 46u.toUShort()
 
-public val RTM_NEWACTION: UShort = 48u
+public val RTM_NEWACTION: UShort = 48u.toUShort()
 
-public val RTM_DELACTION: UShort = 49u
+public val RTM_DELACTION: UShort = 49u.toUShort()
 
-public val RTM_GETACTION: UShort = 50u
+public val RTM_GETACTION: UShort = 50u.toUShort()
 
-public val RTM_NEWPREFIX: UShort = 52u
+public val RTM_NEWPREFIX: UShort = 52u.toUShort()
 
-public val RTM_GETMULTICAST: UShort = 58u
+public val RTM_GETMULTICAST: UShort = 58u.toUShort()
 
-public val RTM_GETANYCAST: UShort = 62u
+public val RTM_GETANYCAST: UShort = 62u.toUShort()
 
-public val RTM_NEWNEIGHTBL: UShort = 64u
+public val RTM_NEWNEIGHTBL: UShort = 64u.toUShort()
 
-public val RTM_GETNEIGHTBL: UShort = 66u
+public val RTM_GETNEIGHTBL: UShort = 66u.toUShort()
 
-public val RTM_SETNEIGHTBL: UShort = 67u
+public val RTM_SETNEIGHTBL: UShort = 67u.toUShort()
 
-public val RTM_NEWNDUSEROPT: UShort = 68u
+public val RTM_NEWNDUSEROPT: UShort = 68u.toUShort()
 
-public val RTM_NEWADDRLABEL: UShort = 72u
+public val RTM_NEWADDRLABEL: UShort = 72u.toUShort()
 
-public val RTM_DELADDRLABEL: UShort = 73u
+public val RTM_DELADDRLABEL: UShort = 73u.toUShort()
 
-public val RTM_GETADDRLABEL: UShort = 74u
+public val RTM_GETADDRLABEL: UShort = 74u.toUShort()
 
-public val RTM_GETDCB: UShort = 78u
+public val RTM_GETDCB: UShort = 78u.toUShort()
 
-public val RTM_SETDCB: UShort = 79u
+public val RTM_SETDCB: UShort = 79u.toUShort()
 
-public val RTM_NEWNETCONF: UShort = 80u
+public val RTM_NEWNETCONF: UShort = 80u.toUShort()
 
-public val RTM_GETNETCONF: UShort = 82u
+public val RTM_GETNETCONF: UShort = 82u.toUShort()
 
-public val RTM_NEWMDB: UShort = 84u
+public val RTM_NEWMDB: UShort = 84u.toUShort()
 
-public val RTM_DELMDB: UShort = 85u
+public val RTM_DELMDB: UShort = 85u.toUShort()
 
-public val RTM_GETMDB: UShort = 86u
+public val RTM_GETMDB: UShort = 86u.toUShort()
 
-public val RTM_NEWNSID: UShort = 88u
+public val RTM_NEWNSID: UShort = 88u.toUShort()
 
-public val RTM_DELNSID: UShort = 89u
+public val RTM_DELNSID: UShort = 89u.toUShort()
 
-public val RTM_GETNSID: UShort = 90u
+public val RTM_GETNSID: UShort = 90u.toUShort()
 
 public val RTM_F_NOTIFY: CUint = 0x100u
 
@@ -1170,98 +1170,98 @@ public val RTM_F_EQUALIZE: CUint = 0x400u
 
 public val RTM_F_PREFIX: CUint = 0x800u
 
-public val RTA_UNSPEC: CUshort = 0u
+public val RTA_UNSPEC: CUshort = 0u.toUShort()
 
-public val RTA_DST: CUshort = 1u
+public val RTA_DST: CUshort = 1u.toUShort()
 
-public val RTA_SRC: CUshort = 2u
+public val RTA_SRC: CUshort = 2u.toUShort()
 
-public val RTA_IIF: CUshort = 3u
+public val RTA_IIF: CUshort = 3u.toUShort()
 
-public val RTA_OIF: CUshort = 4u
+public val RTA_OIF: CUshort = 4u.toUShort()
 
-public val RTA_GATEWAY: CUshort = 5u
+public val RTA_GATEWAY: CUshort = 5u.toUShort()
 
-public val RTA_PRIORITY: CUshort = 6u
+public val RTA_PRIORITY: CUshort = 6u.toUShort()
 
-public val RTA_PREFSRC: CUshort = 7u
+public val RTA_PREFSRC: CUshort = 7u.toUShort()
 
-public val RTA_METRICS: CUshort = 8u
+public val RTA_METRICS: CUshort = 8u.toUShort()
 
-public val RTA_MULTIPATH: CUshort = 9u
+public val RTA_MULTIPATH: CUshort = 9u.toUShort()
 
-public val RTA_PROTOINFO: CUshort = 10u
-
-// No longer used
-public val RTA_FLOW: CUshort = 11u
-
-public val RTA_CACHEINFO: CUshort = 12u
-
-public val RTA_SESSION: CUshort = 13u
+public val RTA_PROTOINFO: CUshort = 10u.toUShort()
 
 // No longer used
-public val RTA_MP_ALGO: CUshort = 14u
+public val RTA_FLOW: CUshort = 11u.toUShort()
+
+public val RTA_CACHEINFO: CUshort = 12u.toUShort()
+
+public val RTA_SESSION: CUshort = 13u.toUShort()
 
 // No longer used
-public val RTA_TABLE: CUshort = 15u
+public val RTA_MP_ALGO: CUshort = 14u.toUShort()
 
-public val RTA_MARK: CUshort = 16u
+// No longer used
+public val RTA_TABLE: CUshort = 15u.toUShort()
 
-public val RTA_MFC_STATS: CUshort = 17u
+public val RTA_MARK: CUshort = 16u.toUShort()
 
-public val RTN_UNSPEC: CUchar = 0u
+public val RTA_MFC_STATS: CUshort = 17u.toUShort()
 
-public val RTN_UNICAST: CUchar = 1u
+public val RTN_UNSPEC: CUchar = 0u.toUByte()
 
-public val RTN_LOCAL: CUchar = 2u
+public val RTN_UNICAST: CUchar = 1u.toUByte()
 
-public val RTN_BROADCAST: CUchar = 3u
+public val RTN_LOCAL: CUchar = 2u.toUByte()
 
-public val RTN_ANYCAST: CUchar = 4u
+public val RTN_BROADCAST: CUchar = 3u.toUByte()
 
-public val RTN_MULTICAST: CUchar = 5u
+public val RTN_ANYCAST: CUchar = 4u.toUByte()
 
-public val RTN_BLACKHOLE: CUchar = 6u
+public val RTN_MULTICAST: CUchar = 5u.toUByte()
 
-public val RTN_UNREACHABLE: CUchar = 7u
+public val RTN_BLACKHOLE: CUchar = 6u.toUByte()
 
-public val RTN_PROHIBIT: CUchar = 8u
+public val RTN_UNREACHABLE: CUchar = 7u.toUByte()
 
-public val RTN_THROW: CUchar = 9u
+public val RTN_PROHIBIT: CUchar = 8u.toUByte()
 
-public val RTN_NAT: CUchar = 10u
+public val RTN_THROW: CUchar = 9u.toUByte()
 
-public val RTN_XRESOLVE: CUchar = 11u
+public val RTN_NAT: CUchar = 10u.toUByte()
 
-public val RTPROT_UNSPEC: CUchar = 0u
+public val RTN_XRESOLVE: CUchar = 11u.toUByte()
 
-public val RTPROT_REDIRECT: CUchar = 1u
+public val RTPROT_UNSPEC: CUchar = 0u.toUByte()
 
-public val RTPROT_KERNEL: CUchar = 2u
+public val RTPROT_REDIRECT: CUchar = 1u.toUByte()
 
-public val RTPROT_BOOT: CUchar = 3u
+public val RTPROT_KERNEL: CUchar = 2u.toUByte()
 
-public val RTPROT_STATIC: CUchar = 4u
+public val RTPROT_BOOT: CUchar = 3u.toUByte()
 
-public val RT_SCOPE_UNIVERSE: CUchar = 0u
+public val RTPROT_STATIC: CUchar = 4u.toUByte()
 
-public val RT_SCOPE_SITE: CUchar = 200u
+public val RT_SCOPE_UNIVERSE: CUchar = 0u.toUByte()
 
-public val RT_SCOPE_LINK: CUchar = 253u
+public val RT_SCOPE_SITE: CUchar = 200u.toUByte()
 
-public val RT_SCOPE_HOST: CUchar = 254u
+public val RT_SCOPE_LINK: CUchar = 253u.toUByte()
 
-public val RT_SCOPE_NOWHERE: CUchar = 255u
+public val RT_SCOPE_HOST: CUchar = 254u.toUByte()
 
-public val RT_TABLE_UNSPEC: CUchar = 0u
+public val RT_SCOPE_NOWHERE: CUchar = 255u.toUByte()
 
-public val RT_TABLE_COMPAT: CUchar = 252u
+public val RT_TABLE_UNSPEC: CUchar = 0u.toUByte()
 
-public val RT_TABLE_DEFAULT: CUchar = 253u
+public val RT_TABLE_COMPAT: CUchar = 252u.toUByte()
 
-public val RT_TABLE_MAIN: CUchar = 254u
+public val RT_TABLE_DEFAULT: CUchar = 253u.toUByte()
 
-public val RT_TABLE_LOCAL: CUchar = 255u
+public val RT_TABLE_MAIN: CUchar = 254u.toUByte()
+
+public val RT_TABLE_LOCAL: CUchar = 255u.toUByte()
 
 public val RTMSG_NEWDEVICE: UInt = 0x11u
 

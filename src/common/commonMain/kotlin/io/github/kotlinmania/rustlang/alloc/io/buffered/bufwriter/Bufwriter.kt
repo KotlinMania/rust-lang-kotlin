@@ -31,7 +31,7 @@ import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -268,7 +268,7 @@ public open class BufWriter<W : Write<W>>(
             when {
                 r is RustResult.Ok<*, *> && r.okValue() == 0 -> {
                     val okValueVal = r.okValue()
-                    return RustResult.Err(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.WriteZero, message = "failed to write the buffered data")))
+                    return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.WriteZero, message = "failed to write the buffered data")))
                 }
                 r is RustResult.Ok<*, *> -> {
                     val n = r.okValue()
@@ -279,11 +279,11 @@ public open class BufWriter<W : Write<W>>(
                 }
                 else -> {
                     val e1 = r.errValue()
-                    return RustResult.Err(e1)
+                    return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(e1)
                 }
             }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     /**
@@ -413,7 +413,7 @@ public open class BufWriter<W : Write<W>>(
             run {
                 this.writeToBufferUnchecked(buf)
             }
-            RustResult.Ok(buf.size)
+            RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(buf.size)
         }
     }
 
@@ -449,7 +449,7 @@ public open class BufWriter<W : Write<W>>(
             run {
                 this.writeToBufferUnchecked(buf)
             }
-            RustResult.Ok(Unit)
+            RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
         }
     }
 
@@ -478,7 +478,7 @@ public open class BufWriter<W : Write<W>>(
             run {
                 this.writeToBufferUnchecked(buf)
             }
-            RustResult.Ok(buf.size)
+            RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(buf.size)
         } else {
             this.writeCold(buf)
         }
@@ -492,7 +492,7 @@ public open class BufWriter<W : Write<W>>(
             run {
                 this.writeToBufferUnchecked(buf)
             }
-            RustResult.Ok(Unit)
+            RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
         } else {
             this.writeAllCold(buf)
         }
@@ -532,13 +532,13 @@ public open class BufWriter<W : Write<W>>(
             run {
                 bufs.forEach({ b -> this.writeToBufferUnchecked(b) })
             }
-            RustResult.Ok(saturatedTotalLen)
+            RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(saturatedTotalLen)
         } else {
             val iter = bufs.iter()
             var totalWritten =
                 when (val matchVal = iter.byRef().indexOf({ buf1 -> !buf1.isEmpty() }).takeIf { it >= 0 }) {
                     null -> {
-                        return RustResult.Ok(0)
+                        return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(0)
                     }
                     else -> {
                         val buf1 = matchVal
@@ -580,7 +580,7 @@ public open class BufWriter<W : Write<W>>(
                     break
                 }
             }
-            RustResult.Ok(totalWritten)
+            RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(totalWritten)
         }
     }
 
@@ -635,7 +635,7 @@ public open class BufWriter<W : Write<W>>(
                     Error.fromStaticMessage(SimpleMessage(kind = ErrorKind.OutOfMemory, message = "failed to allocate write buffer"))
                 })) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufWriter<W>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             val inner = when (val tryResult = f()) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<BufWriter<W>, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-            return RustResult.Ok(BufWriter(inner = inner, buf = buf, panicked = false))
+            return RustResult.Ok<BufWriter<W>, io.github.kotlinmania.rustlang.core.io.error.Error>(BufWriter(inner = inner, buf = buf, panicked = false))
         }
 
         /**
@@ -701,7 +701,7 @@ public open class WriterPanicked(
      */
     public open fun intoInner(): List<UByte> = this.buf
 
-    public open fun fmt(f: StringBuilder): RustResult<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = "BufWriter inner writer panicked, what data remains unwritten is not known".fmt(f)
+    public open fun fmt(f: StringBuilder): RustResult<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { f.append("BufWriter inner writer panicked, what data remains unwritten is not known"); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public open fun fmtDebug(f: StringBuilder): RustResult<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { DebugStruct(f, "WriterPanicked").field("buffer", "${this.buf.size}/${this.buf.capacity()}").finish(); RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 }

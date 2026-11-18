@@ -351,7 +351,7 @@ public open class Command(
         if (this.detach) {
             flags = flags or (DETACHED_PROCESS or CREATE_NEW_PROCESS_GROUP)
         }
-        val inheritHandles = this.inheritHandles.toInt()
+        val inheritHandles = (if (this.inheritHandles) 1 else 0)
         val (envp, data) = when (val tryResult = makeEnvp(maybeEnv)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
         val (dirp, data1) = when (val tryResult = makeDirp(this.cwd)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Process, StdioPipes>, Error>(tryResult.errValue()) }
         val pi = zeroedProcessInformation()
@@ -967,7 +967,7 @@ public open class ExitCode(
     }
 }
 
-public fun zeroedStartupinfo(): Startupinfow = Startupinfow(cb = 0u, lpReserved = MutPtr(0L), lpDesktop = MutPtr(0L), lpTitle = MutPtr(0L), dwX = 0u, dwY = 0u, dwXSize = 0u, dwYSize = 0u, dwXCountChars = 0u, dwYCountChars = 0u, dwFillAttribute = 0u, dwFlags = 0u, wShowWindow = 0u, cbReserved2 = 0u, lpReserved2 = MutPtr(0L), hStdInput = MutPtr(0L), hStdOutput = MutPtr(0L), hStdError = MutPtr(0L))
+public fun zeroedStartupinfo(): Startupinfow = Startupinfow(cb = 0u, lpReserved = MutPtr(0L), lpDesktop = MutPtr(0L), lpTitle = MutPtr(0L), dwX = 0u, dwY = 0u, dwXSize = 0u, dwYSize = 0u, dwXCountChars = 0u, dwYCountChars = 0u, dwFillAttribute = 0u, dwFlags = 0u, wShowWindow = 0u.toUShort(), cbReserved2 = 0u.toUShort(), lpReserved2 = MutPtr(0L), hStdInput = MutPtr(0L), hStdOutput = MutPtr(0L), hStdError = MutPtr(0L))
 
 public fun zeroedProcessInformation(): ProcessInformation = ProcessInformation(hProcess = MutPtr(0L), hThread = MutPtr(0L), dwProcessId = 0u, dwThreadId = 0u)
 

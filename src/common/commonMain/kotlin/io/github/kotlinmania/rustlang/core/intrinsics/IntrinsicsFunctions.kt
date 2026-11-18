@@ -1157,7 +1157,7 @@ public fun maximumf128(x: F128, y: F128): F128 =
  * The stabilized versions of this intrinsic are available on the float
  * primitives via the `abs` method. For example, [f32.abs].
  */
-public fun <UInt, T : FloatPrimitive<T, UInt>> fabs(x: T, fromBitsTFn: (UInt) -> T): T = fromBitsTFn(x.toBits() and T.SIGN_MASK.inv())
+public fun <UInt, T : FloatPrimitive<T, UInt>> fabs(x: T, fromBitsTFn: (UInt) -> T): T = fromBitsTFn(x.toBits() and x.SIGN_MASK.inv())
 
 /**
  * Copies the sign from `y` to `x` for `f16` values.

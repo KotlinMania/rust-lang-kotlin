@@ -48,7 +48,6 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.offset
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
 import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
@@ -103,7 +102,7 @@ import kotlin.experimental.or
 // check(bytes == listOf(240, 159, 146, 150))
 // ```
 
-public class DebugTuple(
+private class DebugTuple(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -767,7 +766,7 @@ public open class RustAllocString(
         this.reserve(chLen)
         // SAFETY: Just reserved capacity for at least the length needed to encode `ch`.
         run {
-            Char.encodeUtf8RawUnchecked(ch.toUInt(), this.vec.asMutPtr().add(len))
+            Char.encodeUtf8RawUnchecked(ch.code.toUInt(), this.vec.asMutPtr().add(len))
             this.vec.setLen(len + chLen)
         }
     }
@@ -1080,7 +1079,7 @@ public open class RustAllocString(
         // SAFETY: Encode the character into the vacated region if `idx != len`,
         // or into the uninitialized spare capacity otherwise.
         run {
-            Char.encodeUtf8RawUnchecked(ch.toUInt(), this.vec.asMutPtr().add(idx))
+            Char.encodeUtf8RawUnchecked(ch.code.toUInt(), this.vec.asMutPtr().add(idx))
         }
         // SAFETY: Update the length to include the newly added bytes.
         run {
@@ -2906,7 +2905,7 @@ public fun EscapeDefault.specToString(): String {
 // adapted from core.escape.escapeUnicode, but it's left-aligned instead of right-aligned.
 public fun escapeUnicodeInto(output: List<MaybeUninit<Char>>, c: Char): Int {
     val HEX_DIGITS: List<Char> = "0123456789abcdef".encodeToByteArray().asAscii().unwrap()
-    val c1 = c.toUInt()
+    val c1 = c.code.toUInt()
     // OR-ing `1` ensures that for `c == 0` the code computes that
     // one digit should be printed.
     val prefixSkip = (c1 or 1u).leadingZeros().toInt() / 4 - 2

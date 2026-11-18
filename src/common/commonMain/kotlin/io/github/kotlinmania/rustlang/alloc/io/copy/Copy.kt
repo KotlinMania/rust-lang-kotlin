@@ -77,7 +77,7 @@ public fun <R, W> copy(reader: R, writer: W): Result<ULong> where R : Read<R>, W
     return when (val matchVal = when (val tryResult = reader.copy(writer)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }) {
         is CopyState.Ended -> {
             val (copied) = matchVal
-            RustResult.Ok(copied)
+            RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(copied)
         }
         is CopyState.Fallback -> {
             val (copied1) = matchVal

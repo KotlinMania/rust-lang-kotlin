@@ -94,7 +94,7 @@ public open class PrettyFormatter<T>(
                 }
             }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     public open fun writeResults(inputs: List<Pair<TestDesc, List<UByte>>>, resultsType: String): Result<Unit> {
@@ -120,7 +120,7 @@ public open class PrettyFormatter<T>(
         for (name in results) {
             when (val tryResult = this.writePlain("    $name\n")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     public open fun writeSuccesses(state: ConsoleTestState): Result<Unit> = this.writeResults(state.notFailures, "successes")
@@ -140,7 +140,7 @@ public open class PrettyFormatter<T>(
                 when (val tryResult = this.writePlain("test $name - $testMode ... ")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
             }
         }
-        return RustResult.Ok(Unit)
+        return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
     }
 
     public companion object {
@@ -148,7 +148,7 @@ public open class PrettyFormatter<T>(
     }
 }
 
-public fun <T : Write<T>> PrettyFormatter<T>.writeDiscoveryStart(): Result<Unit> = RustResult.Ok(Unit)
+public fun <T : Write<T>> PrettyFormatter<T>.writeDiscoveryStart(): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
 public fun <T : Write<T>> PrettyFormatter<T>.writeTestDiscovered(desc: TestDesc, testType: String): Result<Unit> = this.writePlain("${desc.name}: $testType\n")
 
@@ -191,7 +191,7 @@ public fun <T : Write<T>> PrettyFormatter<T>.writeTestStart(desc: TestDesc): Res
     if (!this.isMultithreaded) {
         when (val tryResult = this.writeTestName(desc)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     }
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun <T : Write<T>> PrettyFormatter<T>.writeResult(desc: TestDesc, result: TestResult, execTime: TestExecTime?, arg3: List<UByte>, arg4: ConsoleTestState): Result<Unit> {
@@ -247,7 +247,7 @@ public fun <T : Write<T>> PrettyFormatter<T>.writeRunFinish(state: ConsoleTestSt
         }
     }
     when (val tryResult = this.writePlain("\n\n")) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
-    return RustResult.Ok(success)
+    return RustResult.Ok<Boolean, io.github.kotlinmania.rustlang.core.io.error.Error>(success)
 }
 
 public fun <T : Write<T>> PrettyFormatter<T>.writeMergedDoctestsTimes(totalTime: Double, compilationTime: Double): Result<Unit> = this.writePlain("all doctests ran in ${totalTime}s; merged doctests compilation took ${compilationTime}s\n")

@@ -1,11 +1,6 @@
 // port-lint: source float/div.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.div
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.CastInto
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.HInt
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.HalfRep
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.convert.num.from
@@ -21,6 +16,11 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingSub
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.HalfRep
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastInto
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.HInt
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 // Floating point division routines.
 //
@@ -108,23 +108,23 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F> = UnresolvedTy
     val zero = F.Int.ZERO
     val oneHw = HalfRep.ONE
     val zeroHw = HalfRep.ZERO
-    val hw = F.BITS / 2
+    val hw = a.BITS / 2
     val loMask = F.Int.MAX shr hw.toInt()
-    val significandBits = F.SIG_BITS
+    val significandBits = a.SIG_BITS
     // Saturated exponent, representing infinity
-    val exponentSat: Int = F.EXP_SAT.cast()
-    val exponentBias = F.EXP_BIAS
-    val implicitBit = F.IMPLICIT_BIT
-    val significandMask = F.SIG_MASK
-    val signBit = F.SIGN_MASK
+    val exponentSat: Int = a.EXP_SAT.cast()
+    val exponentBias = a.EXP_BIAS
+    val implicitBit = a.IMPLICIT_BIT
+    val significandMask = a.SIG_MASK
+    val signBit = a.SIGN_MASK
     val absMask = signBit - one
-    val exponentMask = F.EXP_MASK
+    val exponentMask = a.EXP_MASK
     val infRep = exponentMask
     val quietBit = implicitBit shr 1
     val qnanRep = exponentMask or quietBit
     var (halfIterations, fullIterations) = getIterations<F>(typeLayoutF = typeLayoutF)
     val recipPrecision = reciprocalPrecision<F>(typeLayoutF = typeLayoutF)
-    if (F.BITS == 128) {
+    if (a.BITS == 128) {
         // Note(tgross35): f128 seems to require one more half iteration than expected
         halfIterations += 1
     }
@@ -198,7 +198,7 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F> = UnresolvedTy
     bSignificand = bSignificand or implicitBit
     // Transform to a fixed-point representation by shifting the significand to the high bits. We
     // know this is in the range [1.0, 2.0] since the implicit bit is set to 1 above.
-    val bUq1 = bSignificand shl (F.BITS - significandBits - 1).toInt()
+    val bUq1 = bSignificand shl (a.BITS - significandBits - 1).toInt()
     // Align the significand of b as a UQ1.(n-1) fixed-point number in the range
     // [1.0, 2.0) and get a UQ0.n approximate reciprocal using a small minimax
     // polynomial approximation: x0 = 3/4 + 1/sqrt(2) - b/2.
@@ -358,7 +358,7 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F> = UnresolvedTy
             xUq0
         } else {
             // C is (3/4 + 1/sqrt(2)) - 1 truncated to 64 fractional bits as UQ0.n
-            val c: Int = F.Int.from(0x7504F333u) shl (F.BITS - 32).toInt()
+            val c: Int = F.Int.from(0x7504F333u) shl (a.BITS - 32).toInt()
             var xUq01: Int = (c - (bUq1.toInt()))
             // E_0 <= 3/4 - 1/sqrt(2) + 2 * 2^-64
             // xUq0
@@ -442,11 +442,11 @@ public fun <F : Float> div(a: F, b: F, typeLayoutF: TypeLayout<F> = UnresolvedTy
     // tie to even
     // conditionally turns the below LT comparison into LTE
     absResult += UByte.from(residualLo1 > bSignificand).into()
-    if (F.BITS == 128 || (F.BITS == 32 && halfIterations > 0)) {
+    if (a.BITS == 128 || (a.BITS == 32 && halfIterations > 0)) {
         // Do not round Infinity to NaN
         absResult += UByte.from(absResult < infRep && residualLo1 > (2uL + 1uL).cast() * bSignificand).into()
     }
-    if (F.BITS == 128) {
+    if (a.BITS == 128) {
         absResult += UByte.from(absResult < infRep && residualLo1 > (4uL + 1uL).cast() * bSignificand).into()
     }
     return fromBitsFFn(absResult or quotientSign.toInt())
@@ -511,11 +511,11 @@ public fun <F : Float> reciprocalPrecision(typeLayoutF: TypeLayout<F> = Unresolv
     return if (F.BITS == 32 && halfIterations == 2 && fullIterations == 1) {
         74u.toUShort()
     } else if (F.BITS == 32 && halfIterations == 0 && fullIterations == 3) {
-        10u
+        10u.toUShort()
     } else if (F.BITS == 64 && halfIterations == 3 && fullIterations == 1) {
-        220u
+        220u.toUShort()
     } else if (F.BITS == 128 && halfIterations == 4 && fullIterations == 1) {
-        13922u
+        13922u.toUShort()
     } else {
         error("Invalid number of iterations")
     }
@@ -544,9 +544,9 @@ public fun <I> nextGuess(xUq0: I, bUq1: I): I where I : Int, I : HInt {
     // `corr = 2 - b * xN`
     //
     // This looks like `0 - b * xN`. However, this works - in `UQ1`, `0.0 - x = 2.0 - x`.
-    val corrUq1: I = I.ZERO.wrappingSub(xUq0.widenMul(bUq1).hi())
+    val corrUq1: I = xUq0.ZERO.wrappingSub(xUq0.widenMul(bUq1).hi())
     // `xN * corr = xN * (2 - b * xN)`
-    return (xUq0.widenMul(corrUq1) shr (I.BITS - 1).toInt()).lo()
+    return (xUq0.widenMul(corrUq1) shr (xUq0.BITS - 1).toInt()).lo()
 }
 
 public fun divsf3(a: Float, b: Float): Float = div(a, b, typeLayoutF = PrimitiveLayouts.F32)

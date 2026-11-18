@@ -1,12 +1,12 @@
 // port-lint: source float/add.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.add
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.MinInt
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.MinInt
 
 /**
  * Returns `a + b`
@@ -14,14 +14,14 @@ import io.github.kotlinmania.rustlang.core.num.leadingZeros
 public fun <F : Float> add(a: F, b: F, fromBitsFFn: (ULong) -> F, normalizeFFn: (ULong) -> Any?): F {
     val one = F.Int.ONE
     val zero = F.Int.ZERO
-    val bits: Int = F.BITS.cast()
-    val significandBits = F.SIG_BITS
-    val maxExponent = F.EXP_SAT
-    val implicitBit = F.IMPLICIT_BIT
-    val significandMask = F.SIG_MASK
-    val signBit = F.SIGN_MASK.toInt()
+    val bits: Int = a.BITS.cast()
+    val significandBits = a.SIG_BITS
+    val maxExponent = a.EXP_SAT
+    val implicitBit = a.IMPLICIT_BIT
+    val significandMask = a.SIG_MASK
+    val signBit = a.SIGN_MASK.toInt()
     val absMask = signBit - one
-    val exponentMask = F.EXP_MASK
+    val exponentMask = a.EXP_MASK
     val infRep = exponentMask
     val quietBit = implicitBit shr 1
     val qnanRep = exponentMask or quietBit

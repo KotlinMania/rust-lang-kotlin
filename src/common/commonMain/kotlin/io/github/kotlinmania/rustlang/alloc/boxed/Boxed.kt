@@ -75,14 +75,14 @@ import io.github.kotlinmania.rustlang.core.task.wake.Context
 // Move a value from the stack to the heap by creating a [Box]:
 //
 // ```kotlin
-// val value: UByte = 5u
+// val value: UByte = 5u.toUByte()
 // val boxed: UByte = value
 // ```
 //
 // Move a value from a [Box] back to the stack by [dereferencing]:
 //
 // ```kotlin
-// val boxed: UByte = 5u
+// val boxed: UByte = 5u.toUByte()
 // val value: UByte = boxed
 // ```
 //

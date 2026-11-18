@@ -199,7 +199,7 @@ public fun <T> fillUtf16Buf(f1: (MutPtr, UInt) -> UInt, f2: (List<UShort>) -> T)
 public fun os2path(s: List<UShort>): PathBuf = PathBuf.from(OsString.fromWide(s))
 
 public fun truncateUtf16AtNul(v: List<UShort>): List<UShort> =
-    when (val matchVal = unrolledFindU16s(0u, v)) {
+    when (val matchVal = unrolledFindU16s(0u.toUShort(), v)) {
         null -> v
         // don't include the 0
         else -> {

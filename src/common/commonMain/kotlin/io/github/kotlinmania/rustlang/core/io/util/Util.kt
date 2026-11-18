@@ -22,7 +22,7 @@ import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -61,28 +61,28 @@ public open class Empty : SizeHint, Write<Empty>, Seek {
 
     public override fun upperBound(): Int? = 0
 
-    public override fun write(buf: List<UByte>): Result<Int> = RustResult.Ok(buf.size)
+    public override fun write(buf: List<UByte>): Result<Int> = RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(buf.size)
 
     public override fun writeVectored(bufs: List<IoSlice>): Result<Int> {
         val totalLen = bufs.map({ b -> b.len() }).sum()
-        return RustResult.Ok(totalLen)
+        return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(totalLen)
     }
 
     public override fun isWriteVectored(): Boolean = true
 
-    public override fun writeAll(buf: List<UByte>): Result<Unit> = RustResult.Ok(Unit)
+    public override fun writeAll(buf: List<UByte>): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
-    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = RustResult.Ok(Unit)
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
-    public override fun writeFmt(args: Arguments): Result<Unit> = RustResult.Ok(Unit)
+    public override fun writeFmt(args: Arguments): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
-    public override fun flush(): Result<Unit> = RustResult.Ok(Unit)
+    public override fun flush(): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
-    public override fun seek(pos: SeekFrom): Result<ULong> = RustResult.Ok(0)
+    public override fun seek(pos: SeekFrom): Result<ULong> = RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(0uL)
 
-    public override fun streamLen(): Result<ULong> = RustResult.Ok(0)
+    public override fun streamLen(): Result<ULong> = RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(0uL)
 
-    public override fun streamPosition(): Result<ULong> = RustResult.Ok(0)
+    public override fun streamPosition(): Result<ULong> = RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(0uL)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Empty> =
@@ -199,22 +199,22 @@ public fun repeat(byte: UByte): Repeat = Repeat(byte = byte)
 public open class Sink : Write<Sink> {
     public open fun clone(): Sink = Sink()
 
-    public override fun write(buf: List<UByte>): Result<Int> = RustResult.Ok(buf.size)
+    public override fun write(buf: List<UByte>): Result<Int> = RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(buf.size)
 
     public override fun writeVectored(bufs: List<IoSlice>): Result<Int> {
         val totalLen = bufs.map({ b -> b.len() }).sum()
-        return RustResult.Ok(totalLen)
+        return RustResult.Ok<Int, io.github.kotlinmania.rustlang.core.io.error.Error>(totalLen)
     }
 
     public override fun isWriteVectored(): Boolean = true
 
-    public override fun writeAll(buf: List<UByte>): Result<Unit> = RustResult.Ok(Unit)
+    public override fun writeAll(buf: List<UByte>): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
-    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = RustResult.Ok(Unit)
+    public override fun writeAllVectored(bufs: MutableList<IoSlice>): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
-    public override fun writeFmt(args: Arguments): Result<Unit> = RustResult.Ok(Unit)
+    public override fun writeFmt(args: Arguments): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
-    public override fun flush(): Result<Unit> = RustResult.Ok(Unit)
+    public override fun flush(): Result<Unit> = RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Sink> =
@@ -604,7 +604,7 @@ public fun <T : Seek> Take<T>.seek(pos: SeekFrom): Result<ULong> {
                 val v3 = newPosition
                 v3
             }
-            else -> { return RustResult.Err(ErrorKind.InvalidInput.into()) }
+            else -> { return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(ErrorKind.InvalidInput.into()) }
         }
     while (newPosition1 != this.position()) {
         when (val matchVal = newPosition1.checkedSignedDiff(this.position())) {
@@ -625,20 +625,20 @@ public fun <T : Seek> Take<T>.seek(pos: SeekFrom): Result<ULong> {
         when (val tryResult = this.inner.seekRelative(offset1)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
         this.limit = (this.limit - (offset1.toULong()))
     }
-    return RustResult.Ok(newPosition1)
+    return RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(newPosition1)
 }
 
-public fun <T : Seek> Take<T>.streamLen(): Result<ULong> = RustResult.Ok(this.len)
+public fun <T : Seek> Take<T>.streamLen(): Result<ULong> = RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(this.len)
 
-public fun <T : Seek> Take<T>.streamPosition(): Result<ULong> = RustResult.Ok(this.position())
+public fun <T : Seek> Take<T>.streamPosition(): Result<ULong> = RustResult.Ok<ULong, io.github.kotlinmania.rustlang.core.io.error.Error>(this.position())
 
 public fun <T : Seek> Take<T>.seekRelative(offset: Long): Result<Unit> {
     if (!this.position().checkedAddSigned(offset).isSomeAnd({ p -> p <= this.len })) {
-        return RustResult.Err(ErrorKind.InvalidInput.into())
+        return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(ErrorKind.InvalidInput.into())
     }
     when (val tryResult = this.inner.seekRelative(offset)) { is RustResult.Ok<*, *> -> tryResult.okValue(); is RustResult.Err<*, *> -> return RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(tryResult.errValue()) }
     this.limit = (this.limit - (offset.toULong()))
-    return RustResult.Ok(Unit)
+    return RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.io.error.Error>(Unit)
 }
 
 public fun <T> take(inner: T, limit: ULong): Take<T> = Take(inner = inner, limit = limit, len = limit)

@@ -13,8 +13,6 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.read
 import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingAdd
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicUsize
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.compareExchangeWeak
@@ -49,15 +47,12 @@ import io.github.kotlinmania.rustlang.std.time.Instant
  * A slot in a channel.
  */
 public open class Slot<T> internal constructor(
-    stampCtorArg: Atomic<Int, Align8<Int>>,
-    msgCtorArg: UnsafeCell<MaybeUninit<T>>,
-) {
     /**
      * The current stamp.
      */
-    public var stamp: Atomic<Int, Align8<Int>> = stampCtorArg
-        internal set
-
+    public var stamp: AtomicUsize,
+    msgCtorArg: UnsafeCell<MaybeUninit<T>>,
+) {
     /**
      * The message in this slot. Either read out in `read` or dropped through
      * `discardAllMessages`.
@@ -67,10 +62,10 @@ public open class Slot<T> internal constructor(
 
     public companion object {
         public operator fun <T> invoke(
-            stamp: Atomic<Int, Align8<Int>>,
+            stamp: AtomicUsize,
             msg: UnsafeCell<MaybeUninit<T>>,
         ): Slot<T> = Slot<T>(
-            stampCtorArg = stamp,
+            stamp = stamp,
             msgCtorArg = msg,
         )
     }
@@ -133,8 +128,8 @@ public open class ArrayToken internal constructor(
  * Bounded channel based on a preallocated array.
  */
 public open class Channel<T> internal constructor(
-    headCtorArg: CachePadded<Atomic<Int, Align8<Int>>>,
-    tailCtorArg: CachePadded<Atomic<Int, Align8<Int>>>,
+    headCtorArg: CachePadded<AtomicUsize>,
+    tailCtorArg: CachePadded<AtomicUsize>,
     /**
      * The buffer holding slots.
      */
@@ -169,7 +164,7 @@ public open class Channel<T> internal constructor(
      *
      * Messages are popped from the head of the channel.
      */
-    public var head: CachePadded<Atomic<Int, Align8<Int>>> = headCtorArg
+    public var head: CachePadded<AtomicUsize> = headCtorArg
         internal set
 
     /**
@@ -181,7 +176,7 @@ public open class Channel<T> internal constructor(
      *
      * Messages are pushed into the tail of the channel.
      */
-    public var tail: CachePadded<Atomic<Int, Align8<Int>>> = tailCtorArg
+    public var tail: CachePadded<AtomicUsize> = tailCtorArg
         internal set
 
     /**
@@ -614,8 +609,8 @@ public open class Channel<T> internal constructor(
 
     public companion object {
         public operator fun <T> invoke(
-            head: CachePadded<Atomic<Int, Align8<Int>>>,
-            tail: CachePadded<Atomic<Int, Align8<Int>>>,
+            head: CachePadded<AtomicUsize>,
+            tail: CachePadded<AtomicUsize>,
             buffer: List<Slot<T>>,
             cap: Int,
             oneLap: Int,

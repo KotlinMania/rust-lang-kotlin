@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.condvar.Condvar
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

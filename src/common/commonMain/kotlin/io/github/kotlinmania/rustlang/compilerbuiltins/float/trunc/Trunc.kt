@@ -1,25 +1,25 @@
 // port-lint: source float/trunc.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.float.trunc
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Float
-import io.github.kotlinmania.rustlang.compilerbuiltins.support.Int
 import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.num.wrappingShr
+import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
+import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 
 public fun <F : Float, R : Float> trunc(a: F, fromBitsRFn: (Int) -> R): R {
     val srcZero = F.Int.ZERO
     val srcOne = F.Int.ONE
-    val srcBits = F.BITS
-    val srcExpBias = F.EXP_BIAS
-    val srcMinNormal = F.IMPLICIT_BIT
-    val srcSigMask = F.SIG_MASK
-    val srcInfinity = F.EXP_MASK
-    val srcSignMask = F.SIGN_MASK
+    val srcBits = a.BITS
+    val srcExpBias = a.EXP_BIAS
+    val srcMinNormal = a.IMPLICIT_BIT
+    val srcSigMask = a.SIG_MASK
+    val srcInfinity = a.EXP_MASK
+    val srcSignMask = a.SIGN_MASK
     val srcAbsMask = srcSignMask - srcOne
-    val roundMask = (srcOne shl (F.SIG_BITS - R.SIG_BITS).toInt()) - srcOne
-    val halfway = srcOne shl (F.SIG_BITS - R.SIG_BITS - 1).toInt()
-    val srcQnan = srcOne shl (F.SIG_BITS - 1).toInt()
+    val roundMask = (srcOne shl (a.SIG_BITS - R.SIG_BITS).toInt()) - srcOne
+    val halfway = srcOne shl (a.SIG_BITS - R.SIG_BITS - 1).toInt()
+    val srcQnan = srcOne shl (a.SIG_BITS - 1).toInt()
     val srcNanCode = srcQnan - srcOne
     val dstZero = R.Int.ZERO
     val dstOne = R.Int.ONE
@@ -28,11 +28,11 @@ public fun <F : Float, R : Float> trunc(a: F, fromBitsRFn: (Int) -> R): R {
     val dstExpBias = R.EXP_BIAS
     val underflowExponent: Int = (srcExpBias + 1 - dstExpBias).cast()
     val overflowExponent: Int = (srcExpBias + dstInfExp - dstExpBias).cast()
-    val underflow: Int = underflowExponent shl F.SIG_BITS.toInt()
-    val overflow: Int = overflowExponent shl F.SIG_BITS.toInt()
+    val underflow: Int = underflowExponent shl a.SIG_BITS.toInt()
+    val overflow: Int = overflowExponent shl a.SIG_BITS.toInt()
     val dstQnan = R.Int.ONE shl (R.SIG_BITS - 1).toInt()
     val dstNanCode = dstQnan - dstOne
-    val sigBitsDelta = F.SIG_BITS - R.SIG_BITS
+    val sigBitsDelta = a.SIG_BITS - R.SIG_BITS
     // Break a into a sign and representation of the absolute value.
     val aAbs = a.toBits() and srcAbsMask
     val sign = a.toBits() and srcSignMask
@@ -62,7 +62,7 @@ public fun <F : Float, R : Float> trunc(a: F, fromBitsRFn: (Int) -> R): R {
         val dstInfExp1: Int = dstInfExp.cast()
         absResult = dstInfExp1 shl R.SIG_BITS.toInt()
         absResult = absResult or dstQnan
-        absResult = absResult or (dstNanCode and ((aAbs and srcNanCode) shr (F.SIG_BITS - R.SIG_BITS).toInt()).cast())
+        absResult = absResult or (dstNanCode and ((aAbs and srcNanCode) shr (a.SIG_BITS - R.SIG_BITS).toInt()).cast())
     } else if (aAbs >= overflow.toULong()) {
         // a overflows to infinity.
         // Cast before shifting to prevent overflow.
@@ -72,11 +72,11 @@ public fun <F : Float, R : Float> trunc(a: F, fromBitsRFn: (Int) -> R): R {
         // a underflows on conversion to the destination type or is an exact
         // zero.  The result may be a denormal or zero.  Extract the exponent
         // to get the shift amount for the denormalization.
-        val aExp: UInt = (aAbs shr F.SIG_BITS.toInt()).cast()
+        val aExp: UInt = (aAbs shr a.SIG_BITS.toInt()).cast()
         val shift = srcExpBias - dstExpBias - aExp + 1u
         val significand = (a.toBits() and srcSigMask) or srcMinNormal
         // Right shift by the denormalization amount with sticky.
-        if (shift > F.SIG_BITS) {
+        if (shift > a.SIG_BITS) {
             absResult = dstZero
         } else {
             val sticky =
@@ -86,7 +86,7 @@ public fun <F : Float, R : Float> trunc(a: F, fromBitsRFn: (Int) -> R): R {
                     srcZero
                 }
             val denormalizedSignificand: Int = (significand shr shift.toInt()) or sticky
-            absResult = (denormalizedSignificand shr (F.SIG_BITS - R.SIG_BITS).toInt()).cast()
+            absResult = (denormalizedSignificand shr (a.SIG_BITS - R.SIG_BITS).toInt()).cast()
             val roundBits1 = denormalizedSignificand and roundMask
             // Round to nearest
             if (roundBits1 > halfway) {

@@ -6,8 +6,6 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering
 import io.github.kotlinmania.rustlang.core.sync.atomic.asPtr
@@ -31,7 +29,7 @@ public fun interface F {
  * If it succeeds, `PTR` is set to the address of that symbol.
  * If it fails, then `PTR` is set to `fallback`.
  */
-public var PTR: Atomic<MutPtr, Align8<MutPtr>> = AtomicPtr.new(mutPtrFromRustCast(((::load as Any?) as F)))
+public var PTR: AtomicPtr = AtomicPtr.new(mutPtrFromRustCast(((::load as Any?) as F)))
 
 public fun load(bufferlength: UInt, buffer: Pwstr): UInt =
     run {
@@ -59,6 +57,6 @@ public fun fallback(bufferlength: UInt, buffer: Pwstr): UInt = GetTempPathW(buff
 
 public fun call(bufferlength: UInt, buffer: Pwstr): UInt =
     run {
-        val func: F = transmuteWithLayouts<Any?, F>(PTR.load(Ordering.Relaxed), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<F>())
+        val func: F = transmuteWithLayouts<MutPtr, F>(PTR.load(Ordering.Relaxed), UnresolvedTypeLayout<MutPtr>(), UnresolvedTypeLayout<F>())
         func(bufferlength, buffer)
     }

@@ -2,6 +2,7 @@
 
 package io.github.kotlinmania.rustlang.std.sys.net.connection.socket
 
+import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.SimpleMessage
@@ -36,7 +37,6 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.Addrinfo
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.InAddr
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SockaddrIn
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.SockaddrStorage
-import io.github.kotlinmania.rustlang.std.os.raw.CInt
 import io.github.kotlinmania.rustlang.std.sys.helpers.smallcstring.runWithCstr
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.Socket
 import io.github.kotlinmania.rustlang.std.sys.net.connection.socket.unix.cvtGai

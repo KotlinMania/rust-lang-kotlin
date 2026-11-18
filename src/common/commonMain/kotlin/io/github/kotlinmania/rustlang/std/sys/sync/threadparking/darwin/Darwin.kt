@@ -5,9 +5,6 @@ import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
-import io.github.kotlinmania.rustlang.core.result.unwrapOr
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicI8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Acquire
 import io.github.kotlinmania.rustlang.core.sync.atomic.Ordering.Release
@@ -55,12 +52,9 @@ public val PARKED: Byte = (-1).toByte()
 
 public open class Parker internal constructor(
     semaphoreCtorArg: DispatchSemaphoreT,
-    stateCtorArg: Atomic<Byte, Align1<Byte>>,
+    public var state: AtomicI8,
 ) {
     public var semaphore: DispatchSemaphoreT = semaphoreCtorArg
-        internal set
-
-    public var state: Atomic<Byte, Align1<Byte>> = stateCtorArg
         internal set
 
     // Does not need `Pin`, but other implementation do.
@@ -94,7 +88,7 @@ public open class Parker internal constructor(
         val timeout = dispatchTime(DISPATCH_TIME_NOW, nanos)
         val timeout1 = dispatchSemaphoreWait(this.semaphore, timeout) != 0L
         val state = this.state.swap(EMPTY, Acquire)
-        if (state == NOTIFIED.toInt() && timeout1) {
+        if (state == NOTIFIED && timeout1) {
             // If the state was NOTIFIED but semaphoreWait returned without
             // decrementing the count because of a timeout, it means another
             // thread is about to call semaphoreSignal. We must wait for that
@@ -111,7 +105,7 @@ public open class Parker internal constructor(
     // Does not need `Pin`, but other implementation do.
     public open fun unpark() {
         val state = this.state.swap(NOTIFIED, Release)
-        if (state == PARKED.toInt()) {
+        if (state == PARKED) {
             run {
                 dispatchSemaphoreSignal(this.semaphore)
             }
@@ -130,10 +124,10 @@ public open class Parker internal constructor(
     public companion object {
         public operator fun invoke(
             semaphore: DispatchSemaphoreT,
-            state: Atomic<Byte, Align1<Byte>>,
+            state: AtomicI8,
         ): Parker = Parker(
             semaphoreCtorArg = semaphore,
-            stateCtorArg = state,
+            state = state,
         )
 
         public fun newInPlace(parker: MutPtr) {

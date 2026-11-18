@@ -535,7 +535,7 @@ public open class TryFromCharError(
 
     public open fun clone(): TryFromCharError = TryFromCharError(value)
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = "unicode code point out of range".fmt(fmt)
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append("unicode code point out of range"); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<TryFromCharError> =

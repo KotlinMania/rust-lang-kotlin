@@ -23,8 +23,6 @@ import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.withoutProvenanceMut
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
-import io.github.kotlinmania.rustlang.core.sync.atomic.Align8
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicPtr
@@ -234,12 +232,9 @@ public open class Node internal constructor(
     public var tail: AtomicLink,
     public var write: Boolean,
     threadCtorArg: OnceCell<Thread>,
-    completedCtorArg: Atomic<Boolean, Align1<UByte>>,
+    public var completed: AtomicBool,
 ) {
     public var thread: OnceCell<Thread> = threadCtorArg
-        internal set
-
-    public var completed: Atomic<Boolean, Align1<UByte>> = completedCtorArg
         internal set
 
     /**
@@ -273,14 +268,14 @@ public open class Node internal constructor(
             tail: AtomicLink,
             write: Boolean,
             thread: OnceCell<Thread>,
-            completed: Atomic<Boolean, Align1<UByte>>,
+            completed: AtomicBool,
         ): Node = Node(
             next = next,
             prev = prev,
             tail = tail,
             write = write,
             threadCtorArg = thread,
-            completedCtorArg = completed,
+            completed = completed,
         )
 
         /**
@@ -310,13 +305,10 @@ public open class Node internal constructor(
 /**
  * An atomic node pointer with relaxed operations.
  */
-public open class AtomicLink internal constructor(
-    valueCtorArg: Atomic<MutPtr, Align8<MutPtr>>,
+public open class AtomicLink(
+    public var value: AtomicPtr,
 ) {
-    public var value: Atomic<MutPtr, Align8<MutPtr>> = valueCtorArg
-        internal set
-
-    public var field0: Atomic<MutPtr, Align8<MutPtr>>
+    public var field0: AtomicPtr
         get() = value
         set(v) {
             value = v
@@ -329,12 +321,6 @@ public open class AtomicLink internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(
-            value: Atomic<MutPtr, Align8<MutPtr>>,
-        ): AtomicLink = AtomicLink(
-            valueCtorArg = value,
-        )
-
         public fun new(v: NonNull?): AtomicLink = AtomicLink(AtomicPtr.new((v?.let(NonNull::asPtr) ?: MutPtr(0L))))
     }
 }

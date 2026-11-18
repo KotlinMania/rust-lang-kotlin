@@ -13,11 +13,11 @@ import io.github.kotlinmania.rustlang.libc.new.linuxuapi.linux.can.SOL_CAN_BASE
 
 // `linux / can / j1939.h`
 
-public val J1939_MAX_UNICAST_ADDR: CUchar = 0xfdu
+public val J1939_MAX_UNICAST_ADDR: CUchar = 0xfdu.toUByte()
 
-public val J1939_IDLE_ADDR: CUchar = 0xfeu
+public val J1939_IDLE_ADDR: CUchar = 0xfeu.toUByte()
 
-public val J1939_NO_ADDR: CUchar = 0xffu
+public val J1939_NO_ADDR: CUchar = 0xffu.toUByte()
 
 public val J1939_NO_NAME: CUlong = 0uL
 

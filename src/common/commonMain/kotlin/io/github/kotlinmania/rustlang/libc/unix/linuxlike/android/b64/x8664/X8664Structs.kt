@@ -31,7 +31,7 @@ import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Off64T
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.Sigset64T
 import io.github.kotlinmania.rustlang.libc.unix.linuxlike.android.b64.SigsetT
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {

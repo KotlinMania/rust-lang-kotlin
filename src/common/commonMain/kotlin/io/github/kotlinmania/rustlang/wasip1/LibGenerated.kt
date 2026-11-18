@@ -23,7 +23,7 @@ import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.asPtr
 import io.github.kotlinmania.rustlang.core.str.len
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -469,49 +469,49 @@ public val RIGHTS_SOCK_ACCEPT: Rights = 1uL shl 29
 /**
  * Append mode: Data written to the file is always appended to the file's end.
  */
-public val FDFLAGS_APPEND: Fdflags = (1u.toUInt() shl 0).toUShort()
+public val FDFLAGS_APPEND: Fdflags = ((1u.toUShort()).toUInt() shl 0).toUShort()
 
 /**
  * Write according to synchronized I/O data integrity completion. Only the data stored in the file is synchronized.
  */
-public val FDFLAGS_DSYNC: Fdflags = (1u.toUInt() shl 1).toUShort()
+public val FDFLAGS_DSYNC: Fdflags = ((1u.toUShort()).toUInt() shl 1).toUShort()
 
 /**
  * Non-blocking mode.
  */
-public val FDFLAGS_NONBLOCK: Fdflags = (1u.toUInt() shl 2).toUShort()
+public val FDFLAGS_NONBLOCK: Fdflags = ((1u.toUShort()).toUInt() shl 2).toUShort()
 
 /**
  * Synchronized read I/O operations.
  */
-public val FDFLAGS_RSYNC: Fdflags = (1u.toUInt() shl 3).toUShort()
+public val FDFLAGS_RSYNC: Fdflags = ((1u.toUShort()).toUInt() shl 3).toUShort()
 
 /**
  * Write according to synchronized I/O file integrity completion. In
  * addition to synchronizing the data stored in the file, the implementation
  * may also synchronously update the file's metadata.
  */
-public val FDFLAGS_SYNC: Fdflags = (1u.toUInt() shl 4).toUShort()
+public val FDFLAGS_SYNC: Fdflags = ((1u.toUShort()).toUInt() shl 4).toUShort()
 
 /**
  * Adjust the last data access timestamp to the value stored in `filestat.atim`.
  */
-public val FSTFLAGS_ATIM: Fstflags = (1u.toUInt() shl 0).toUShort()
+public val FSTFLAGS_ATIM: Fstflags = ((1u.toUShort()).toUInt() shl 0).toUShort()
 
 /**
  * Adjust the last data access timestamp to the time of clock `clockid.realtime`.
  */
-public val FSTFLAGS_ATIM_NOW: Fstflags = (1u.toUInt() shl 1).toUShort()
+public val FSTFLAGS_ATIM_NOW: Fstflags = ((1u.toUShort()).toUInt() shl 1).toUShort()
 
 /**
  * Adjust the last data modification timestamp to the value stored in `filestat.mtim`.
  */
-public val FSTFLAGS_MTIM: Fstflags = (1u.toUInt() shl 2).toUShort()
+public val FSTFLAGS_MTIM: Fstflags = ((1u.toUShort()).toUInt() shl 2).toUShort()
 
 /**
  * Adjust the last data modification timestamp to the time of clock `clockid.realtime`.
  */
-public val FSTFLAGS_MTIM_NOW: Fstflags = (1u.toUInt() shl 3).toUShort()
+public val FSTFLAGS_MTIM_NOW: Fstflags = ((1u.toUShort()).toUInt() shl 3).toUShort()
 
 /**
  * As long as the resolved path corresponds to a symbolic link, it is expanded.
@@ -521,27 +521,27 @@ public val LOOKUPFLAGS_SYMLINK_FOLLOW: Lookupflags = 1u shl 0
 /**
  * Create file if it does not exist.
  */
-public val OFLAGS_CREAT: Oflags = (1u.toUInt() shl 0).toUShort()
+public val OFLAGS_CREAT: Oflags = ((1u.toUShort()).toUInt() shl 0).toUShort()
 
 /**
  * Fail if not a directory.
  */
-public val OFLAGS_DIRECTORY: Oflags = (1u.toUInt() shl 1).toUShort()
+public val OFLAGS_DIRECTORY: Oflags = ((1u.toUShort()).toUInt() shl 1).toUShort()
 
 /**
  * Fail if file already exists.
  */
-public val OFLAGS_EXCL: Oflags = (1u.toUInt() shl 2).toUShort()
+public val OFLAGS_EXCL: Oflags = ((1u.toUShort()).toUInt() shl 2).toUShort()
 
 /**
  * Truncate file to size 0.
  */
-public val OFLAGS_TRUNC: Oflags = (1u.toUInt() shl 3).toUShort()
+public val OFLAGS_TRUNC: Oflags = ((1u.toUShort()).toUInt() shl 3).toUShort()
 
 /**
  * The peer of this socket has closed or disconnected.
  */
-public val EVENTRWFLAGS_FD_READWRITE_HANGUP: Eventrwflags = (1u.toUInt() shl 0).toUShort()
+public val EVENTRWFLAGS_FD_READWRITE_HANGUP: Eventrwflags = ((1u.toUShort()).toUInt() shl 0).toUShort()
 
 /**
  * If set, treat the timestamp provided in
@@ -550,32 +550,32 @@ public val EVENTRWFLAGS_FD_READWRITE_HANGUP: Eventrwflags = (1u.toUInt() shl 0).
  * provided in `subscriptionClock.timeout` relative to the
  * current time value of clock `subscriptionClock.id`.
  */
-public val SUBCLOCKFLAGS_SUBSCRIPTION_CLOCK_ABSTIME: Subclockflags = (1u.toUInt() shl 0).toUShort()
+public val SUBCLOCKFLAGS_SUBSCRIPTION_CLOCK_ABSTIME: Subclockflags = ((1u.toUShort()).toUInt() shl 0).toUShort()
 
 /**
  * Returns the message without removing it from the socket's receive queue.
  */
-public val RIFLAGS_RECV_PEEK: Riflags = (1u.toUInt() shl 0).toUShort()
+public val RIFLAGS_RECV_PEEK: Riflags = ((1u.toUShort()).toUInt() shl 0).toUShort()
 
 /**
  * On byte-stream sockets, block until the full amount of data can be returned.
  */
-public val RIFLAGS_RECV_WAITALL: Riflags = (1u.toUInt() shl 1).toUShort()
+public val RIFLAGS_RECV_WAITALL: Riflags = ((1u.toUShort()).toUInt() shl 1).toUShort()
 
 /**
  * Returned by `sockRecv`: Message data has been truncated.
  */
-public val ROFLAGS_RECV_DATA_TRUNCATED: Roflags = (1u.toUInt() shl 0).toUShort()
+public val ROFLAGS_RECV_DATA_TRUNCATED: Roflags = ((1u.toUShort()).toUInt() shl 0).toUShort()
 
 /**
  * Disables further receive operations.
  */
-public val SDFLAGS_RD: Sdflags = (1u.toUInt() shl 0).toUByte()
+public val SDFLAGS_RD: Sdflags = ((1u.toUByte()).toUInt() shl 0).toUByte()
 
 /**
  * Disables further send operations.
  */
-public val SDFLAGS_WR: Sdflags = (1u.toUInt() shl 1).toUByte()
+public val SDFLAGS_WR: Sdflags = ((1u.toUByte()).toUInt() shl 1).toUByte()
 
 /**
  * The clock measuring real time. Time value zero corresponds with

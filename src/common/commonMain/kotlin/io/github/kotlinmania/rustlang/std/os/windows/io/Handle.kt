@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.std.os.windows.io
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
+import io.github.kotlinmania.rustlang.alloc.rcs.arc.Arc
 import io.github.kotlinmania.rustlang.alloc.rcs.rc.Rc
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -36,7 +37,6 @@ import io.github.kotlinmania.rustlang.std.os.windows.raw.RawHandle
 import io.github.kotlinmania.rustlang.std.process.ChildStderr
 import io.github.kotlinmania.rustlang.std.process.ChildStdin
 import io.github.kotlinmania.rustlang.std.process.ChildStdout
-import io.github.kotlinmania.rustlang.std.sync.Arc
 import io.github.kotlinmania.rustlang.std.sys.FromInner
 import io.github.kotlinmania.rustlang.std.sys.fromInner
 import io.github.kotlinmania.rustlang.std.sys.pal.windows.cvt
@@ -44,7 +44,7 @@ import io.github.kotlinmania.rustlang.std.thread.joinhandle.JoinHandle
 
 // Owned and borrowed OS handles.
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
@@ -136,7 +136,7 @@ public open class BorrowedHandle internal constructor(
         val ret = MutPtr(0L)
         when (val tryResult = cvt(run {
             val curProc = C.GetCurrentProcess()
-            C.DuplicateHandle(curProc, handle, curProc, ret, access, inherit.toInt(), options)
+            C.DuplicateHandle(curProc, handle, curProc, ret, access, (if (inherit) 1 else 0), options)
         })) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<OwnedHandle, Error>(tryResult.errValue()) }
         return Result.Ok<OwnedHandle, Error>(OwnedHandle.fromRawHandle(ret, fieldLayout = UnresolvedTypeLayout<RawHandle>()))
     }
@@ -488,7 +488,7 @@ public open class NullHandleError(
 
     public open fun clone(): NullHandleError = NullHandleError(value)
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = "A HandleOrNull could not be converted to a handle because it was null".fmt(fmt)
+    public open fun fmt(fmt: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { fmt.append("A HandleOrNull could not be converted to a handle because it was null"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<NullHandleError> =
@@ -531,7 +531,7 @@ public open class InvalidHandleError(
 
     public open fun clone(): InvalidHandleError = InvalidHandleError(value)
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = "A HandleOrInvalid could not be converted to a handle because it was INVALID_HANDLE_VALUE".fmt(fmt)
+    public open fun fmt(fmt: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> = run { fmt.append("A HandleOrInvalid could not be converted to a handle because it was INVALID_HANDLE_VALUE"); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<InvalidHandleError> =
@@ -587,7 +587,7 @@ public interface AsHandle {
  */
 public fun <T : AsHandle> Arc<T, Global>.asHandle(): BorrowedHandle = this.asHandle()
 
-public fun <T : AsHandle> Rc.Rc<T, Global>.asHandle(): BorrowedHandle = this.asHandle()
+public fun <T : AsHandle> Rc<T, Global>.asHandle(): BorrowedHandle = this.asHandle()
 
 public fun <T : AsHandle> Rc.UniqueRc<T>.asHandle(): BorrowedHandle = this.asHandle()
 

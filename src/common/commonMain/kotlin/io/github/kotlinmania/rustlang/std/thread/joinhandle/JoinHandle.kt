@@ -11,7 +11,7 @@ import io.github.kotlinmania.rustlang.std.thread.lifecycle.JoinInner
 import io.github.kotlinmania.rustlang.std.thread.thread.Thread
 import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
-public class DebugStruct(
+private class DebugStruct(
     private val out: StringBuilder,
     private val name: String,
 ) {
