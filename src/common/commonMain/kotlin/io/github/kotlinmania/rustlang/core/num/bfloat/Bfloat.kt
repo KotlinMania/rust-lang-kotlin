@@ -147,4 +147,4 @@ public open class F16b internal constructor(
 // with this implementation constituting the fallback.
 public fun widen(value: F16b): kotlin.Float = kotlin.Float.fromBits(((value.toBits().toUInt()) shl 16).toInt())
 
-public fun fromFloat(value: F16b): kotlin.Float = widen(value)
+public fun kotlin.Float.Companion.from(value: F16b): kotlin.Float = widen(value)

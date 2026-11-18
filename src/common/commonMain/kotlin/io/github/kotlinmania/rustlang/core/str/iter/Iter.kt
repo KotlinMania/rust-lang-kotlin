@@ -341,7 +341,7 @@ public open class CharIndices(
  */
 public open class Bytes internal constructor(
     valueCtorArg: Copied<ArrayDeque<UByte>>,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<UByte> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<UByte> {
     public var value: Copied<ArrayDeque<UByte>> = valueCtorArg
         internal set
 

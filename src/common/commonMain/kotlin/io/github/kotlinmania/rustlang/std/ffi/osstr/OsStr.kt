@@ -1404,7 +1404,7 @@ public fun fromCowOsStr(s: OsStr): OsStr = s
  * check(asStr == "foo")
  * ```
  */
-public fun tryFromString(value: OsStr): Result<String, Utf8Error> = value.inner.toStr()
+public fun String.Companion.tryFrom(value: OsStr): Result<String, Utf8Error> = value.inner.toStr()
 
 public fun String.eq(other: OsStr): Boolean = (other == OsStr.new(this)).toUByte()
 

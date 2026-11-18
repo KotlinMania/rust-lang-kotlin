@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.std.sync.mpmc.waker
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.sync.atomic.Align1
 import io.github.kotlinmania.rustlang.core.sync.atomic.Atomic
 import io.github.kotlinmania.rustlang.core.sync.atomic.AtomicBool
@@ -12,7 +13,7 @@ import io.github.kotlinmania.rustlang.std.sync.mpmc.context.Context
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
 import io.github.kotlinmania.rustlang.std.sync.mpmc.select.Selected
 import io.github.kotlinmania.rustlang.std.sync.nonpoison.mutex.Mutex
-import io.github.kotlinmania.rustlang.std.thread.LocalKey
+import io.github.kotlinmania.rustlang.std.thread.local.LocalKey
 import io.github.kotlinmania.rustlang.std.thread.localimpl.threadLocalInner
 
 // Waking mechanism for threads blocked on channel operations.

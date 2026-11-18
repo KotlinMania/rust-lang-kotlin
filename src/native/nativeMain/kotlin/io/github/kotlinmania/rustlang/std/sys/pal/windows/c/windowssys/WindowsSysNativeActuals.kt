@@ -172,7 +172,7 @@ public actual fun acquireSRWLockShared(srwlock: MutPtr) {
     stdSysPalWindowsCWindowssysWindowsSysAcquireSRWLockShared(srwlock.rawAddress.toCPointer<ByteVar>())
 }
 
-public actual fun addVectoredExceptionHandler(first: UInt, handler: PvectoredExceptionHandler): MutPtr =
+public actual fun addVectoredExceptionHandler(first: kotlin.UInt, handler: PvectoredExceptionHandler): MutPtr =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysAddVectoredExceptionHandler(first, 0L.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun cancelIo(hfile: Handle): Bool =
@@ -184,7 +184,7 @@ public actual fun closeHandle(hobject: Handle): Bool =
 public actual fun compareStringOrdinal(lpstring1: ConstPtr, cchcount1: Int, lpstring2: ConstPtr, cchcount2: Int, bignorecase: Bool): Int =
     stdSysPalWindowsCWindowssysWindowsSysCompareStringOrdinal(lpstring1.rawAddress.toCPointer<ByteVar>(), cchcount1, lpstring2.rawAddress.toCPointer<ByteVar>(), cchcount2, bignorecase)
 
-public actual fun copyFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, lpprogressroutine: LpprogressRoutine, lpdata: ConstPtr, pbcancel: MutPtr, dwcopyflags: UInt): Bool =
+public actual fun copyFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, lpprogressroutine: LpprogressRoutine, lpdata: ConstPtr, pbcancel: MutPtr, dwcopyflags: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysCopyFileExW(lpexistingfilename.rawAddress.toCPointer<ByteVar>(), lpnewfilename.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>(), lpdata.rawAddress.toCPointer<ByteVar>(), pbcancel.rawAddress.toCPointer<ByteVar>(), dwcopyflags)
 
 public actual fun createDirectoryW(lppathname: Pcwstr, lpsecurityattributes: ConstPtr): Bool =
@@ -193,28 +193,28 @@ public actual fun createDirectoryW(lppathname: Pcwstr, lpsecurityattributes: Con
 public actual fun createEventW(lpeventattributes: ConstPtr, bmanualreset: Bool, binitialstate: Bool, lpname: Pcwstr): Handle =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysCreateEventW(lpeventattributes.rawAddress.toCPointer<ByteVar>(), bmanualreset, binitialstate, lpname.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun createFileW(lpfilename: Pcwstr, dwdesiredaccess: UInt, dwsharemode: UInt, lpsecurityattributes: ConstPtr, dwcreationdisposition: UInt, dwflagsandattributes: UInt, htemplatefile: Handle): Handle =
+public actual fun createFileW(lpfilename: Pcwstr, dwdesiredaccess: kotlin.UInt, dwsharemode: kotlin.UInt, lpsecurityattributes: ConstPtr, dwcreationdisposition: kotlin.UInt, dwflagsandattributes: kotlin.UInt, htemplatefile: Handle): Handle =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysCreateFileW(lpfilename.rawAddress.toCPointer<ByteVar>(), dwdesiredaccess, dwsharemode, lpsecurityattributes.rawAddress.toCPointer<ByteVar>(), dwcreationdisposition, dwflagsandattributes, htemplatefile.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
 public actual fun createHardLinkW(lpfilename: Pcwstr, lpexistingfilename: Pcwstr, lpsecurityattributes: ConstPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysCreateHardLinkW(lpfilename.rawAddress.toCPointer<ByteVar>(), lpexistingfilename.rawAddress.toCPointer<ByteVar>(), lpsecurityattributes.rawAddress.toCPointer<ByteVar>())
 
-public actual fun createNamedPipeW(lpname: Pcwstr, dwopenmode: UInt, dwpipemode: UInt, nmaxinstances: UInt, noutbuffersize: UInt, ninbuffersize: UInt, ndefaulttimeout: UInt, lpsecurityattributes: ConstPtr): Handle =
+public actual fun createNamedPipeW(lpname: Pcwstr, dwopenmode: kotlin.UInt, dwpipemode: kotlin.UInt, nmaxinstances: kotlin.UInt, noutbuffersize: kotlin.UInt, ninbuffersize: kotlin.UInt, ndefaulttimeout: kotlin.UInt, lpsecurityattributes: ConstPtr): Handle =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysCreateNamedPipeW(lpname.rawAddress.toCPointer<ByteVar>(), dwopenmode, dwpipemode, nmaxinstances, noutbuffersize, ninbuffersize, ndefaulttimeout, lpsecurityattributes.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun createPipe(hreadpipe: MutPtr, hwritepipe: MutPtr, lppipeattributes: ConstPtr, nsize: UInt): Bool =
+public actual fun createPipe(hreadpipe: MutPtr, hwritepipe: MutPtr, lppipeattributes: ConstPtr, nsize: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysCreatePipe(hreadpipe.rawAddress.toCPointer<ByteVar>(), hwritepipe.rawAddress.toCPointer<ByteVar>(), lppipeattributes.rawAddress.toCPointer<ByteVar>(), nsize)
 
-public actual fun createProcessW(lpapplicationname: Pcwstr, lpcommandline: Pwstr, lpprocessattributes: ConstPtr, lpthreadattributes: ConstPtr, binherithandles: Bool, dwcreationflags: UInt, lpenvironment: ConstPtr, lpcurrentdirectory: Pcwstr, lpstartupinfo: ConstPtr, lpprocessinformation: MutPtr): Bool =
+public actual fun createProcessW(lpapplicationname: Pcwstr, lpcommandline: Pwstr, lpprocessattributes: ConstPtr, lpthreadattributes: ConstPtr, binherithandles: Bool, dwcreationflags: kotlin.UInt, lpenvironment: ConstPtr, lpcurrentdirectory: Pcwstr, lpstartupinfo: ConstPtr, lpprocessinformation: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysCreateProcessW(lpapplicationname.rawAddress.toCPointer<ByteVar>(), lpcommandline.rawAddress.toCPointer<ByteVar>(), lpprocessattributes.rawAddress.toCPointer<ByteVar>(), lpthreadattributes.rawAddress.toCPointer<ByteVar>(), binherithandles, dwcreationflags, lpenvironment.rawAddress.toCPointer<ByteVar>(), lpcurrentdirectory.rawAddress.toCPointer<ByteVar>(), lpstartupinfo.rawAddress.toCPointer<ByteVar>(), lpprocessinformation.rawAddress.toCPointer<ByteVar>())
 
-public actual fun createSymbolicLinkW(lpsymlinkfilename: Pcwstr, lptargetfilename: Pcwstr, dwflags: UInt): Boolean =
+public actual fun createSymbolicLinkW(lpsymlinkfilename: Pcwstr, lptargetfilename: Pcwstr, dwflags: kotlin.UInt): Boolean =
     stdSysPalWindowsCWindowssysWindowsSysCreateSymbolicLinkW(lpsymlinkfilename.rawAddress.toCPointer<ByteVar>(), lptargetfilename.rawAddress.toCPointer<ByteVar>(), dwflags)
 
-public actual fun createThread(lpthreadattributes: ConstPtr, dwstacksize: ULong, lpstartaddress: LpthreadStartRoutine, lpparameter: ConstPtr, dwcreationflags: UInt, lpthreadid: MutPtr): Handle =
+public actual fun createThread(lpthreadattributes: ConstPtr, dwstacksize: ULong, lpstartaddress: LpthreadStartRoutine, lpparameter: ConstPtr, dwcreationflags: kotlin.UInt, lpthreadid: MutPtr): Handle =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysCreateThread(lpthreadattributes.rawAddress.toCPointer<ByteVar>(), dwstacksize, 0L.toCPointer<ByteVar>(), lpparameter.rawAddress.toCPointer<ByteVar>(), dwcreationflags, lpthreadid.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun createWaitableTimerExW(lptimerattributes: ConstPtr, lptimername: Pcwstr, dwflags: UInt, dwdesiredaccess: UInt): Handle =
+public actual fun createWaitableTimerExW(lptimerattributes: ConstPtr, lptimername: Pcwstr, dwflags: kotlin.UInt, dwdesiredaccess: kotlin.UInt): Handle =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysCreateWaitableTimerExW(lptimerattributes.rawAddress.toCPointer<ByteVar>(), lptimername.rawAddress.toCPointer<ByteVar>(), dwflags, dwdesiredaccess)?.toLong() ?: 0L)
 
 public actual fun deleteFileW(lpfilename: Pcwstr): Bool =
@@ -224,13 +224,13 @@ public actual fun deleteProcThreadAttributeList(lpattributelist: MutPtr) {
     stdSysPalWindowsCWindowssysWindowsSysDeleteProcThreadAttributeList(lpattributelist.rawAddress.toCPointer<ByteVar>())
 }
 
-public actual fun deviceIoControl(hdevice: Handle, dwiocontrolcode: UInt, lpinbuffer: ConstPtr, ninbuffersize: UInt, lpoutbuffer: MutPtr, noutbuffersize: UInt, lpbytesreturned: MutPtr, lpoverlapped: MutPtr): Bool =
+public actual fun deviceIoControl(hdevice: Handle, dwiocontrolcode: kotlin.UInt, lpinbuffer: ConstPtr, ninbuffersize: kotlin.UInt, lpoutbuffer: MutPtr, noutbuffersize: kotlin.UInt, lpbytesreturned: MutPtr, lpoverlapped: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysDeviceIoControl(hdevice.rawAddress.toCPointer<ByteVar>(), dwiocontrolcode, lpinbuffer.rawAddress.toCPointer<ByteVar>(), ninbuffersize, lpoutbuffer.rawAddress.toCPointer<ByteVar>(), noutbuffersize, lpbytesreturned.rawAddress.toCPointer<ByteVar>(), lpoverlapped.rawAddress.toCPointer<ByteVar>())
 
-public actual fun duplicateHandle(hsourceprocesshandle: Handle, hsourcehandle: Handle, htargetprocesshandle: Handle, lptargethandle: MutPtr, dwdesiredaccess: UInt, binherithandle: Bool, dwoptions: UInt): Bool =
+public actual fun duplicateHandle(hsourceprocesshandle: Handle, hsourcehandle: Handle, htargetprocesshandle: Handle, lptargethandle: MutPtr, dwdesiredaccess: kotlin.UInt, binherithandle: Bool, dwoptions: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysDuplicateHandle(hsourceprocesshandle.rawAddress.toCPointer<ByteVar>(), hsourcehandle.rawAddress.toCPointer<ByteVar>(), htargetprocesshandle.rawAddress.toCPointer<ByteVar>(), lptargethandle.rawAddress.toCPointer<ByteVar>(), dwdesiredaccess, binherithandle, dwoptions)
 
-public actual fun exitProcess(uexitcode: UInt): Nothing {
+public actual fun exitProcess(uexitcode: kotlin.UInt): Nothing {
     stdSysPalWindowsCWindowssysWindowsSysExitProcess(uexitcode)
     error("Unreachable noreturn C function exitProcess")
 }
@@ -238,34 +238,34 @@ public actual fun exitProcess(uexitcode: UInt): Nothing {
 public actual fun findClose(hfindfile: Handle): Bool =
     stdSysPalWindowsCWindowssysWindowsSysFindClose(hfindfile.rawAddress.toCPointer<ByteVar>())
 
-public actual fun findFirstFileExW(lpfilename: Pcwstr, finfolevelid: FindexInfoLevels, lpfindfiledata: MutPtr, fsearchop: FindexSearchOps, lpsearchfilter: ConstPtr, dwadditionalflags: UInt): Handle =
+public actual fun findFirstFileExW(lpfilename: Pcwstr, finfolevelid: FindexInfoLevels, lpfindfiledata: MutPtr, fsearchop: FindexSearchOps, lpsearchfilter: ConstPtr, dwadditionalflags: kotlin.UInt): Handle =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysFindFirstFileExW(lpfilename.rawAddress.toCPointer<ByteVar>(), finfolevelid, lpfindfiledata.rawAddress.toCPointer<ByteVar>(), fsearchop, lpsearchfilter.rawAddress.toCPointer<ByteVar>(), dwadditionalflags)?.toLong() ?: 0L)
 
 public actual fun findNextFileW(hfindfile: Handle, lpfindfiledata: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysFindNextFileW(hfindfile.rawAddress.toCPointer<ByteVar>(), lpfindfiledata.rawAddress.toCPointer<ByteVar>())
 
-public actual fun flsAlloc(lpcallback: PflsCallbackFunction): UInt =
+public actual fun flsAlloc(lpcallback: PflsCallbackFunction): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysFlsAlloc(0L.toCPointer<ByteVar>())
 
-public actual fun flsFree(dwflsindex: UInt): Bool =
+public actual fun flsFree(dwflsindex: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysFlsFree(dwflsindex)
 
-public actual fun flsGetValue(dwflsindex: UInt): MutPtr =
+public actual fun flsGetValue(dwflsindex: kotlin.UInt): MutPtr =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysFlsGetValue(dwflsindex)?.toLong() ?: 0L)
 
-public actual fun flsSetValue(dwflsindex: UInt, lpflsdata: ConstPtr): Bool =
+public actual fun flsSetValue(dwflsindex: kotlin.UInt, lpflsdata: ConstPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysFlsSetValue(dwflsindex, lpflsdata.rawAddress.toCPointer<ByteVar>())
 
 public actual fun flushFileBuffers(hfile: Handle): Bool =
     stdSysPalWindowsCWindowssysWindowsSysFlushFileBuffers(hfile.rawAddress.toCPointer<ByteVar>())
 
-public actual fun formatMessageW(dwflags: UInt, lpsource: ConstPtr, dwmessageid: UInt, dwlanguageid: UInt, lpbuffer: Pcwstr, nsize: UInt, arguments: ConstPtr): UInt =
+public actual fun formatMessageW(dwflags: kotlin.UInt, lpsource: ConstPtr, dwmessageid: kotlin.UInt, dwlanguageid: kotlin.UInt, lpbuffer: Pcwstr, nsize: kotlin.UInt, arguments: ConstPtr): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysFormatMessageW(dwflags, lpsource.rawAddress.toCPointer<ByteVar>(), dwmessageid, dwlanguageid, lpbuffer.rawAddress.toCPointer<ByteVar>(), nsize, arguments.rawAddress.toCPointer<ByteVar>())
 
 public actual fun freeEnvironmentStringsW(penv: ConstPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysFreeEnvironmentStringsW(penv.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getActiveProcessorCount(groupnumber: UShort): UInt =
+public actual fun getActiveProcessorCount(groupnumber: kotlin.UShort): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetActiveProcessorCount(groupnumber)
 
 public actual fun getCommandLineW(): Pwstr =
@@ -274,70 +274,70 @@ public actual fun getCommandLineW(): Pwstr =
 public actual fun getConsoleMode(hconsolehandle: Handle, lpmode: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysGetConsoleMode(hconsolehandle.rawAddress.toCPointer<ByteVar>(), lpmode.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getConsoleOutputCP(): UInt =
+public actual fun getConsoleOutputCP(): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetConsoleOutputCP()
 
-public actual fun getCurrentDirectoryW(nbufferlength: UInt, lpbuffer: Pwstr): UInt =
+public actual fun getCurrentDirectoryW(nbufferlength: kotlin.UInt, lpbuffer: Pwstr): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetCurrentDirectoryW(nbufferlength, lpbuffer.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getCurrentProcess(): Handle =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcess()?.toLong() ?: 0L)
 
-public actual fun getCurrentProcessId(): UInt =
+public actual fun getCurrentProcessId(): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetCurrentProcessId()
 
 public actual fun getCurrentThread(): Handle =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysGetCurrentThread()?.toLong() ?: 0L)
 
-public actual fun getCurrentThreadId(): UInt =
+public actual fun getCurrentThreadId(): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetCurrentThreadId()
 
 public actual fun getEnvironmentStringsW(): Lpwch =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentStringsW()?.toLong() ?: 0L)
 
-public actual fun getEnvironmentVariableW(lpname: Pcwstr, lpbuffer: Pwstr, nsize: UInt): UInt =
+public actual fun getEnvironmentVariableW(lpname: Pcwstr, lpbuffer: Pwstr, nsize: kotlin.UInt): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetEnvironmentVariableW(lpname.rawAddress.toCPointer<ByteVar>(), lpbuffer.rawAddress.toCPointer<ByteVar>(), nsize)
 
 public actual fun getExitCodeProcess(hprocess: Handle, lpexitcode: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysGetExitCodeProcess(hprocess.rawAddress.toCPointer<ByteVar>(), lpexitcode.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getFileAttributesW(lpfilename: Pcwstr): UInt =
+public actual fun getFileAttributesW(lpfilename: Pcwstr): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetFileAttributesW(lpfilename.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getFileInformationByHandle(hfile: Handle, lpfileinformation: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandle(hfile.rawAddress.toCPointer<ByteVar>(), lpfileinformation.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getFileInformationByHandleEx(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: MutPtr, dwbuffersize: UInt): Bool =
+public actual fun getFileInformationByHandleEx(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: MutPtr, dwbuffersize: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysGetFileInformationByHandleEx(hfile.rawAddress.toCPointer<ByteVar>(), fileinformationclass, lpfileinformation.rawAddress.toCPointer<ByteVar>(), dwbuffersize)
 
 public actual fun getFileSizeEx(hfile: Handle, lpfilesize: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysGetFileSizeEx(hfile.rawAddress.toCPointer<ByteVar>(), lpfilesize.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getFileType(hfile: Handle): UInt =
+public actual fun getFileType(hfile: Handle): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetFileType(hfile.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getFinalPathNameByHandleW(hfile: Handle, lpszfilepath: Pwstr, cchfilepath: UInt, dwflags: UInt): UInt =
+public actual fun getFinalPathNameByHandleW(hfile: Handle, lpszfilepath: Pwstr, cchfilepath: kotlin.UInt, dwflags: kotlin.UInt): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetFinalPathNameByHandleW(hfile.rawAddress.toCPointer<ByteVar>(), lpszfilepath.rawAddress.toCPointer<ByteVar>(), cchfilepath, dwflags)
 
-public actual fun getFullPathNameW(lpfilename: Pcwstr, nbufferlength: UInt, lpbuffer: Pwstr, lpfilepart: MutPtr): UInt =
+public actual fun getFullPathNameW(lpfilename: Pcwstr, nbufferlength: kotlin.UInt, lpbuffer: Pwstr, lpfilepart: MutPtr): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetFullPathNameW(lpfilename.rawAddress.toCPointer<ByteVar>(), nbufferlength, lpbuffer.rawAddress.toCPointer<ByteVar>(), lpfilepart.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getHostNameW(name: Pwstr, namelen: Int): Int =
     stdSysPalWindowsCWindowssysWindowsSysGetHostNameW(name.rawAddress.toCPointer<ByteVar>(), namelen)
 
-public actual fun getLastError(): UInt =
+public actual fun getLastError(): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetLastError()
 
-public actual fun getLogicalDrives(): UInt =
+public actual fun getLogicalDrives(): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetLogicalDrives()
 
-public actual fun getModuleFileNameW(hmodule: Hmodule, lpfilename: Pwstr, nsize: UInt): UInt =
+public actual fun getModuleFileNameW(hmodule: Hmodule, lpfilename: Pwstr, nsize: kotlin.UInt): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetModuleFileNameW(hmodule.rawAddress.toCPointer<ByteVar>(), lpfilename.rawAddress.toCPointer<ByteVar>(), nsize)
 
 public actual fun getModuleHandleA(lpmodulename: Pcstr): Hmodule =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleA(lpmodulename.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun getModuleHandleExW(dwflags: UInt, lpmodulename: Pcwstr, phmodule: MutPtr): Bool =
+public actual fun getModuleHandleExW(dwflags: kotlin.UInt, lpmodulename: Pcwstr, phmodule: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysGetModuleHandleExW(dwflags, lpmodulename.rawAddress.toCPointer<ByteVar>(), phmodule.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getModuleHandleW(lpmodulename: Pcwstr): Hmodule =
@@ -349,13 +349,13 @@ public actual fun getOverlappedResult(hfile: Handle, lpoverlapped: ConstPtr, lpn
 public actual fun getProcAddress(hmodule: Hmodule, lpprocname: Pcstr): Farproc =
     null
 
-public actual fun getProcessId(process: Handle): UInt =
+public actual fun getProcessId(process: Handle): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetProcessId(process.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getStdHandle(nstdhandle: UInt): Handle =
+public actual fun getStdHandle(nstdhandle: kotlin.UInt): Handle =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysGetStdHandle(nstdhandle)?.toLong() ?: 0L)
 
-public actual fun getSystemDirectoryW(lpbuffer: Pwstr, usize: UInt): UInt =
+public actual fun getSystemDirectoryW(lpbuffer: Pwstr, usize: kotlin.UInt): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetSystemDirectoryW(lpbuffer.rawAddress.toCPointer<ByteVar>(), usize)
 
 public actual fun getSystemInfo(lpsysteminfo: MutPtr) {
@@ -370,64 +370,64 @@ public actual fun getSystemTimePreciseAsFileTime(lpsystemtimeasfiletime: MutPtr)
     stdSysPalWindowsCWindowssysWindowsSysGetSystemTimePreciseAsFileTime(lpsystemtimeasfiletime.rawAddress.toCPointer<ByteVar>())
 }
 
-public actual fun getTempPathW(nbufferlength: UInt, lpbuffer: Pwstr): UInt =
+public actual fun getTempPathW(nbufferlength: kotlin.UInt, lpbuffer: Pwstr): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetTempPathW(nbufferlength, lpbuffer.rawAddress.toCPointer<ByteVar>())
 
 public actual fun getUserProfileDirectoryW(htoken: Handle, lpprofiledir: Pwstr, lpcchsize: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysGetUserProfileDirectoryW(htoken.rawAddress.toCPointer<ByteVar>(), lpprofiledir.rawAddress.toCPointer<ByteVar>(), lpcchsize.rawAddress.toCPointer<ByteVar>())
 
-public actual fun getWindowsDirectoryW(lpbuffer: Pwstr, usize: UInt): UInt =
+public actual fun getWindowsDirectoryW(lpbuffer: Pwstr, usize: kotlin.UInt): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysGetWindowsDirectoryW(lpbuffer.rawAddress.toCPointer<ByteVar>(), usize)
 
-public actual fun initOnceBeginInitialize(lpinitonce: LpinitOnce, dwflags: UInt, fpending: MutPtr, lpcontext: MutPtr): Bool =
+public actual fun initOnceBeginInitialize(lpinitonce: LpinitOnce, dwflags: kotlin.UInt, fpending: MutPtr, lpcontext: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysInitOnceBeginInitialize(lpinitonce.rawAddress.toCPointer<ByteVar>(), dwflags, fpending.rawAddress.toCPointer<ByteVar>(), lpcontext.rawAddress.toCPointer<ByteVar>())
 
-public actual fun initOnceComplete(lpinitonce: LpinitOnce, dwflags: UInt, lpcontext: ConstPtr): Bool =
+public actual fun initOnceComplete(lpinitonce: LpinitOnce, dwflags: kotlin.UInt, lpcontext: ConstPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysInitOnceComplete(lpinitonce.rawAddress.toCPointer<ByteVar>(), dwflags, lpcontext.rawAddress.toCPointer<ByteVar>())
 
-public actual fun initializeProcThreadAttributeList(lpattributelist: MutPtr, dwattributecount: UInt, dwflags: UInt, lpsize: MutPtr): Bool =
+public actual fun initializeProcThreadAttributeList(lpattributelist: MutPtr, dwattributecount: kotlin.UInt, dwflags: kotlin.UInt, lpsize: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysInitializeProcThreadAttributeList(lpattributelist.rawAddress.toCPointer<ByteVar>(), dwattributecount, dwflags, lpsize.rawAddress.toCPointer<ByteVar>())
 
 public actual fun isThreadAFiber(): Bool =
     stdSysPalWindowsCWindowssysWindowsSysIsThreadAFiber()
 
-public actual fun loadLibraryExA(lplibfilename: Pcstr, hfile: Handle, dwflags: UInt): Hmodule =
+public actual fun loadLibraryExA(lplibfilename: Pcstr, hfile: Handle, dwflags: kotlin.UInt): Hmodule =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysLoadLibraryExA(lplibfilename.rawAddress.toCPointer<ByteVar>(), hfile.rawAddress.toCPointer<ByteVar>(), dwflags)?.toLong() ?: 0L)
 
 public actual fun localFree(hmem: Hlocal): Hlocal =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysLocalFree(hmem.rawAddress.toCPointer<ByteVar>())?.toLong() ?: 0L)
 
-public actual fun lockFileEx(hfile: Handle, dwflags: UInt, dwreserved: UInt, nnumberofbytestolocklow: UInt, nnumberofbytestolockhigh: UInt, lpoverlapped: MutPtr): Bool =
+public actual fun lockFileEx(hfile: Handle, dwflags: kotlin.UInt, dwreserved: kotlin.UInt, nnumberofbytestolocklow: kotlin.UInt, nnumberofbytestolockhigh: kotlin.UInt, lpoverlapped: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysLockFileEx(hfile.rawAddress.toCPointer<ByteVar>(), dwflags, dwreserved, nnumberofbytestolocklow, nnumberofbytestolockhigh, lpoverlapped.rawAddress.toCPointer<ByteVar>())
 
-public actual fun moveFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, dwflags: UInt): Bool =
+public actual fun moveFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, dwflags: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysMoveFileExW(lpexistingfilename.rawAddress.toCPointer<ByteVar>(), lpnewfilename.rawAddress.toCPointer<ByteVar>(), dwflags)
 
-public actual fun multiByteToWideChar(codepage: UInt, dwflags: UInt, lpmultibytestr: ConstPtr, cbmultibyte: Int, lpwidecharstr: Pwstr, cchwidechar: Int): Int =
+public actual fun multiByteToWideChar(codepage: kotlin.UInt, dwflags: kotlin.UInt, lpmultibytestr: ConstPtr, cbmultibyte: Int, lpwidecharstr: Pwstr, cchwidechar: Int): Int =
     stdSysPalWindowsCWindowssysWindowsSysMultiByteToWideChar(codepage, dwflags, lpmultibytestr.rawAddress.toCPointer<ByteVar>(), cbmultibyte, lpwidecharstr.rawAddress.toCPointer<ByteVar>(), cchwidechar)
 
-public actual fun ntCreateFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, allocationsize: ConstPtr, fileattributes: UInt, shareaccess: UInt, createdisposition: UInt, createoptions: UInt, eabuffer: ConstPtr, ealength: UInt): Ntstatus =
+public actual fun ntCreateFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, allocationsize: ConstPtr, fileattributes: kotlin.UInt, shareaccess: kotlin.UInt, createdisposition: kotlin.UInt, createoptions: kotlin.UInt, eabuffer: ConstPtr, ealength: kotlin.UInt): Ntstatus =
     stdSysPalWindowsCWindowssysWindowsSysNtCreateFile(filehandle.rawAddress.toCPointer<ByteVar>(), desiredaccess, objectattributes.rawAddress.toCPointer<ByteVar>(), iostatusblock.rawAddress.toCPointer<ByteVar>(), allocationsize.rawAddress.toCPointer<ByteVar>(), fileattributes, shareaccess, createdisposition, createoptions, eabuffer.rawAddress.toCPointer<ByteVar>(), ealength)
 
-public actual fun ntOpenFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, shareaccess: UInt, openoptions: UInt): Ntstatus =
+public actual fun ntOpenFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, shareaccess: kotlin.UInt, openoptions: kotlin.UInt): Ntstatus =
     stdSysPalWindowsCWindowssysWindowsSysNtOpenFile(filehandle.rawAddress.toCPointer<ByteVar>(), desiredaccess, objectattributes.rawAddress.toCPointer<ByteVar>(), iostatusblock.rawAddress.toCPointer<ByteVar>(), shareaccess, openoptions)
 
-public actual fun ntQueryVolumeInformationFile(filehandle: Handle, iostatusblock: MutPtr, fsinformation: MutPtr, length: UInt, fsinformationclass: FsInformationClass): Ntstatus =
+public actual fun ntQueryVolumeInformationFile(filehandle: Handle, iostatusblock: MutPtr, fsinformation: MutPtr, length: kotlin.UInt, fsinformationclass: FsInformationClass): Ntstatus =
     stdSysPalWindowsCWindowssysWindowsSysNtQueryVolumeInformationFile(filehandle.rawAddress.toCPointer<ByteVar>(), iostatusblock.rawAddress.toCPointer<ByteVar>(), fsinformation.rawAddress.toCPointer<ByteVar>(), length, fsinformationclass)
 
-public actual fun ntReadFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: MutPtr, length: UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
+public actual fun ntReadFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: MutPtr, length: kotlin.UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
     stdSysPalWindowsCWindowssysWindowsSysNtReadFile(filehandle.rawAddress.toCPointer<ByteVar>(), event.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>(), apccontext.rawAddress.toCPointer<ByteVar>(), iostatusblock.rawAddress.toCPointer<ByteVar>(), buffer.rawAddress.toCPointer<ByteVar>(), length, byteoffset.rawAddress.toCPointer<ByteVar>(), key.rawAddress.toCPointer<ByteVar>())
 
-public actual fun ntSetInformationFile(filehandle: Handle, iostatusblock: MutPtr, fileinformation: ConstPtr, length: UInt, fileinformationclass: FileInformationClass): Ntstatus =
+public actual fun ntSetInformationFile(filehandle: Handle, iostatusblock: MutPtr, fileinformation: ConstPtr, length: kotlin.UInt, fileinformationclass: FileInformationClass): Ntstatus =
     stdSysPalWindowsCWindowssysWindowsSysNtSetInformationFile(filehandle.rawAddress.toCPointer<ByteVar>(), iostatusblock.rawAddress.toCPointer<ByteVar>(), fileinformation.rawAddress.toCPointer<ByteVar>(), length, fileinformationclass)
 
-public actual fun ntWriteFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: ConstPtr, length: UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
+public actual fun ntWriteFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: ConstPtr, length: kotlin.UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus =
     stdSysPalWindowsCWindowssysWindowsSysNtWriteFile(filehandle.rawAddress.toCPointer<ByteVar>(), event.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>(), apccontext.rawAddress.toCPointer<ByteVar>(), iostatusblock.rawAddress.toCPointer<ByteVar>(), buffer.rawAddress.toCPointer<ByteVar>(), length, byteoffset.rawAddress.toCPointer<ByteVar>(), key.rawAddress.toCPointer<ByteVar>())
 
-public actual fun openProcessToken(processhandle: Handle, desiredaccess: UInt, tokenhandle: MutPtr): Bool =
+public actual fun openProcessToken(processhandle: Handle, desiredaccess: kotlin.UInt, tokenhandle: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysOpenProcessToken(processhandle.rawAddress.toCPointer<ByteVar>(), desiredaccess, tokenhandle.rawAddress.toCPointer<ByteVar>())
 
-public actual fun queryDosDeviceW(lpdevicename: Pcwstr, lptargetpath: Pwstr, ucchmax: UInt): UInt =
+public actual fun queryDosDeviceW(lpdevicename: Pcwstr, lptargetpath: Pwstr, ucchmax: kotlin.UInt): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysQueryDosDeviceW(lpdevicename.rawAddress.toCPointer<ByteVar>(), lptargetpath.rawAddress.toCPointer<ByteVar>(), ucchmax)
 
 public actual fun queryPerformanceCounter(lpperformancecount: MutPtr): Bool =
@@ -436,13 +436,13 @@ public actual fun queryPerformanceCounter(lpperformancecount: MutPtr): Bool =
 public actual fun queryPerformanceFrequency(lpfrequency: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysQueryPerformanceFrequency(lpfrequency.rawAddress.toCPointer<ByteVar>())
 
-public actual fun readConsoleW(hconsoleinput: Handle, lpbuffer: MutPtr, nnumberofcharstoread: UInt, lpnumberofcharsread: MutPtr, pinputcontrol: ConstPtr): Bool =
+public actual fun readConsoleW(hconsoleinput: Handle, lpbuffer: MutPtr, nnumberofcharstoread: kotlin.UInt, lpnumberofcharsread: MutPtr, pinputcontrol: ConstPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysReadConsoleW(hconsoleinput.rawAddress.toCPointer<ByteVar>(), lpbuffer.rawAddress.toCPointer<ByteVar>(), nnumberofcharstoread, lpnumberofcharsread.rawAddress.toCPointer<ByteVar>(), pinputcontrol.rawAddress.toCPointer<ByteVar>())
 
-public actual fun readFile(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: UInt, lpnumberofbytesread: MutPtr, lpoverlapped: MutPtr): Bool =
+public actual fun readFile(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: kotlin.UInt, lpnumberofbytesread: MutPtr, lpoverlapped: MutPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysReadFile(hfile.rawAddress.toCPointer<ByteVar>(), lpbuffer.rawAddress.toCPointer<ByteVar>(), nnumberofbytestoread, lpnumberofbytesread.rawAddress.toCPointer<ByteVar>(), lpoverlapped.rawAddress.toCPointer<ByteVar>())
 
-public actual fun readFileEx(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
+public actual fun readFileEx(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: kotlin.UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
     stdSysPalWindowsCWindowssysWindowsSysReadFileEx(hfile.rawAddress.toCPointer<ByteVar>(), lpbuffer.rawAddress.toCPointer<ByteVar>(), nnumberofbytestoread, lpoverlapped.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>())
 
 public actual fun releaseSRWLockExclusive(srwlock: MutPtr) {
@@ -456,10 +456,10 @@ public actual fun releaseSRWLockShared(srwlock: MutPtr) {
 public actual fun removeDirectoryW(lppathname: Pcwstr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysRemoveDirectoryW(lppathname.rawAddress.toCPointer<ByteVar>())
 
-public actual fun rtlGenRandom(randombuffer: MutPtr, randombufferlength: UInt): Boolean =
+public actual fun rtlGenRandom(randombuffer: MutPtr, randombufferlength: kotlin.UInt): Boolean =
     stdSysPalWindowsCWindowssysWindowsSysRtlGenRandom(randombuffer.rawAddress.toCPointer<ByteVar>(), randombufferlength)
 
-public actual fun rtlNtStatusToDosError(status: Ntstatus): UInt =
+public actual fun rtlNtStatusToDosError(status: Ntstatus): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysRtlNtStatusToDosError(status)
 
 public actual fun setCurrentDirectoryW(lppathname: Pcwstr): Bool =
@@ -468,26 +468,26 @@ public actual fun setCurrentDirectoryW(lppathname: Pcwstr): Bool =
 public actual fun setEnvironmentVariableW(lpname: Pcwstr, lpvalue: Pcwstr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysSetEnvironmentVariableW(lpname.rawAddress.toCPointer<ByteVar>(), lpvalue.rawAddress.toCPointer<ByteVar>())
 
-public actual fun setFileAttributesW(lpfilename: Pcwstr, dwfileattributes: UInt): Bool =
+public actual fun setFileAttributesW(lpfilename: Pcwstr, dwfileattributes: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysSetFileAttributesW(lpfilename.rawAddress.toCPointer<ByteVar>(), dwfileattributes)
 
-public actual fun setFileInformationByHandle(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: ConstPtr, dwbuffersize: UInt): Bool =
+public actual fun setFileInformationByHandle(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: ConstPtr, dwbuffersize: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysSetFileInformationByHandle(hfile.rawAddress.toCPointer<ByteVar>(), fileinformationclass, lpfileinformation.rawAddress.toCPointer<ByteVar>(), dwbuffersize)
 
-public actual fun setFilePointerEx(hfile: Handle, lidistancetomove: Long, lpnewfilepointer: MutPtr, dwmovemethod: UInt): Bool =
+public actual fun setFilePointerEx(hfile: Handle, lidistancetomove: Long, lpnewfilepointer: MutPtr, dwmovemethod: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysSetFilePointerEx(hfile.rawAddress.toCPointer<ByteVar>(), lidistancetomove, lpnewfilepointer.rawAddress.toCPointer<ByteVar>(), dwmovemethod)
 
 public actual fun setFileTime(hfile: Handle, lpcreationtime: ConstPtr, lplastaccesstime: ConstPtr, lplastwritetime: ConstPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysSetFileTime(hfile.rawAddress.toCPointer<ByteVar>(), lpcreationtime.rawAddress.toCPointer<ByteVar>(), lplastaccesstime.rawAddress.toCPointer<ByteVar>(), lplastwritetime.rawAddress.toCPointer<ByteVar>())
 
-public actual fun setHandleInformation(hobject: Handle, dwmask: UInt, dwflags: UInt): Bool =
+public actual fun setHandleInformation(hobject: Handle, dwmask: kotlin.UInt, dwflags: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysSetHandleInformation(hobject.rawAddress.toCPointer<ByteVar>(), dwmask, dwflags)
 
-public actual fun setLastError(dwerrcode: UInt) {
+public actual fun setLastError(dwerrcode: kotlin.UInt) {
     stdSysPalWindowsCWindowssysWindowsSysSetLastError(dwerrcode)
 }
 
-public actual fun setStdHandle(nstdhandle: UInt, hhandle: Handle): Bool =
+public actual fun setStdHandle(nstdhandle: kotlin.UInt, hhandle: Handle): Bool =
     stdSysPalWindowsCWindowssysWindowsSysSetStdHandle(nstdhandle, hhandle.rawAddress.toCPointer<ByteVar>())
 
 public actual fun setThreadStackGuarantee(stacksizeinbytes: MutPtr): Bool =
@@ -496,32 +496,32 @@ public actual fun setThreadStackGuarantee(stacksizeinbytes: MutPtr): Bool =
 public actual fun setWaitableTimer(htimer: Handle, lpduetime: ConstPtr, lperiod: Int, pfncompletionroutine: Ptimerapcroutine, lpargtocompletionroutine: ConstPtr, fresume: Bool): Bool =
     stdSysPalWindowsCWindowssysWindowsSysSetWaitableTimer(htimer.rawAddress.toCPointer<ByteVar>(), lpduetime.rawAddress.toCPointer<ByteVar>(), lperiod, 0L.toCPointer<ByteVar>(), lpargtocompletionroutine.rawAddress.toCPointer<ByteVar>(), fresume)
 
-public actual fun sleep(dwmilliseconds: UInt) {
+public actual fun sleep(dwmilliseconds: kotlin.UInt) {
     stdSysPalWindowsCWindowssysWindowsSysSleep(dwmilliseconds)
 }
 
-public actual fun sleepConditionVariableSRW(conditionvariable: MutPtr, srwlock: MutPtr, dwmilliseconds: UInt, flags: UInt): Bool =
+public actual fun sleepConditionVariableSRW(conditionvariable: MutPtr, srwlock: MutPtr, dwmilliseconds: kotlin.UInt, flags: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysSleepConditionVariableSRW(conditionvariable.rawAddress.toCPointer<ByteVar>(), srwlock.rawAddress.toCPointer<ByteVar>(), dwmilliseconds, flags)
 
-public actual fun sleepEx(dwmilliseconds: UInt, balertable: Bool): UInt =
+public actual fun sleepEx(dwmilliseconds: kotlin.UInt, balertable: Bool): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysSleepEx(dwmilliseconds, balertable)
 
 public actual fun switchToThread(): Bool =
     stdSysPalWindowsCWindowssysWindowsSysSwitchToThread()
 
-public actual fun terminateProcess(hprocess: Handle, uexitcode: UInt): Bool =
+public actual fun terminateProcess(hprocess: Handle, uexitcode: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysTerminateProcess(hprocess.rawAddress.toCPointer<ByteVar>(), uexitcode)
 
-public actual fun tlsAlloc(): UInt =
+public actual fun tlsAlloc(): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysTlsAlloc()
 
-public actual fun tlsFree(dwtlsindex: UInt): Bool =
+public actual fun tlsFree(dwtlsindex: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysTlsFree(dwtlsindex)
 
-public actual fun tlsGetValue(dwtlsindex: UInt): MutPtr =
+public actual fun tlsGetValue(dwtlsindex: kotlin.UInt): MutPtr =
     MutPtr(stdSysPalWindowsCWindowssysWindowsSysTlsGetValue(dwtlsindex)?.toLong() ?: 0L)
 
-public actual fun tlsSetValue(dwtlsindex: UInt, lptlsvalue: ConstPtr): Bool =
+public actual fun tlsSetValue(dwtlsindex: kotlin.UInt, lptlsvalue: ConstPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysTlsSetValue(dwtlsindex, lptlsvalue.rawAddress.toCPointer<ByteVar>())
 
 public actual fun tryAcquireSRWLockExclusive(srwlock: MutPtr): Boolean =
@@ -530,40 +530,40 @@ public actual fun tryAcquireSRWLockExclusive(srwlock: MutPtr): Boolean =
 public actual fun tryAcquireSRWLockShared(srwlock: MutPtr): Boolean =
     stdSysPalWindowsCWindowssysWindowsSysTryAcquireSRWLockShared(srwlock.rawAddress.toCPointer<ByteVar>())
 
-public actual fun unlockFile(hfile: Handle, dwfileoffsetlow: UInt, dwfileoffsethigh: UInt, nnumberofbytestounlocklow: UInt, nnumberofbytestounlockhigh: UInt): Bool =
+public actual fun unlockFile(hfile: Handle, dwfileoffsetlow: kotlin.UInt, dwfileoffsethigh: kotlin.UInt, nnumberofbytestounlocklow: kotlin.UInt, nnumberofbytestounlockhigh: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysUnlockFile(hfile.rawAddress.toCPointer<ByteVar>(), dwfileoffsetlow, dwfileoffsethigh, nnumberofbytestounlocklow, nnumberofbytestounlockhigh)
 
-public actual fun updateProcThreadAttribute(lpattributelist: MutPtr, dwflags: UInt, attribute: ULong, lpvalue: ConstPtr, cbsize: ULong, lppreviousvalue: MutPtr, lpreturnsize: ConstPtr): Bool =
+public actual fun updateProcThreadAttribute(lpattributelist: MutPtr, dwflags: kotlin.UInt, attribute: ULong, lpvalue: ConstPtr, cbsize: ULong, lppreviousvalue: MutPtr, lpreturnsize: ConstPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysUpdateProcThreadAttribute(lpattributelist.rawAddress.toCPointer<ByteVar>(), dwflags, attribute, lpvalue.rawAddress.toCPointer<ByteVar>(), cbsize, lppreviousvalue.rawAddress.toCPointer<ByteVar>(), lpreturnsize.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wSACleanup(): Int =
     stdSysPalWindowsCWindowssysWindowsSysWSACleanup()
 
-public actual fun wSADuplicateSocketW(s: Socket, dwprocessid: UInt, lpprotocolinfo: MutPtr): Int =
+public actual fun wSADuplicateSocketW(s: Socket, dwprocessid: kotlin.UInt, lpprotocolinfo: MutPtr): Int =
     stdSysPalWindowsCWindowssysWindowsSysWSADuplicateSocketW(s, dwprocessid, lpprotocolinfo.rawAddress.toCPointer<ByteVar>())
 
 public actual fun wSAGetLastError(): Int =
     stdSysPalWindowsCWindowssysWindowsSysWSAGetLastError()
 
-public actual fun wSARecv(s: Socket, lpbuffers: ConstPtr, dwbuffercount: UInt, lpnumberofbytesrecvd: MutPtr, lpflags: MutPtr, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
+public actual fun wSARecv(s: Socket, lpbuffers: ConstPtr, dwbuffercount: kotlin.UInt, lpnumberofbytesrecvd: MutPtr, lpflags: MutPtr, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
     stdSysPalWindowsCWindowssysWindowsSysWSARecv(s, lpbuffers.rawAddress.toCPointer<ByteVar>(), dwbuffercount, lpnumberofbytesrecvd.rawAddress.toCPointer<ByteVar>(), lpflags.rawAddress.toCPointer<ByteVar>(), lpoverlapped.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>())
 
-public actual fun wSASend(s: Socket, lpbuffers: ConstPtr, dwbuffercount: UInt, lpnumberofbytessent: MutPtr, dwflags: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
+public actual fun wSASend(s: Socket, lpbuffers: ConstPtr, dwbuffercount: kotlin.UInt, lpnumberofbytessent: MutPtr, dwflags: kotlin.UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int =
     stdSysPalWindowsCWindowssysWindowsSysWSASend(s, lpbuffers.rawAddress.toCPointer<ByteVar>(), dwbuffercount, lpnumberofbytessent.rawAddress.toCPointer<ByteVar>(), dwflags, lpoverlapped.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>())
 
-public actual fun wSASocketW(af: Int, type: Int, protocol: Int, lpprotocolinfo: ConstPtr, g: Group, dwflags: UInt): Socket =
+public actual fun wSASocketW(af: Int, type: Int, protocol: Int, lpprotocolinfo: ConstPtr, g: Group, dwflags: kotlin.UInt): Socket =
     stdSysPalWindowsCWindowssysWindowsSysWSASocketW(af, type, protocol, lpprotocolinfo.rawAddress.toCPointer<ByteVar>(), g, dwflags)
 
-public actual fun wSAStartup(wversionrequested: UShort, lpwsadata: MutPtr): Int =
+public actual fun wSAStartup(wversionrequested: kotlin.UShort, lpwsadata: MutPtr): Int =
     stdSysPalWindowsCWindowssysWindowsSysWSAStartup(wversionrequested, lpwsadata.rawAddress.toCPointer<ByteVar>())
 
-public actual fun waitForMultipleObjects(ncount: UInt, lphandles: ConstPtr, bwaitall: Bool, dwmilliseconds: UInt): UInt =
+public actual fun waitForMultipleObjects(ncount: kotlin.UInt, lphandles: ConstPtr, bwaitall: Bool, dwmilliseconds: kotlin.UInt): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysWaitForMultipleObjects(ncount, lphandles.rawAddress.toCPointer<ByteVar>(), bwaitall, dwmilliseconds)
 
-public actual fun waitForSingleObject(hhandle: Handle, dwmilliseconds: UInt): UInt =
+public actual fun waitForSingleObject(hhandle: Handle, dwmilliseconds: kotlin.UInt): kotlin.UInt =
     stdSysPalWindowsCWindowssysWindowsSysWaitForSingleObject(hhandle.rawAddress.toCPointer<ByteVar>(), dwmilliseconds)
 
-public actual fun waitOnAddress(address: ConstPtr, compareaddress: ConstPtr, addresssize: ULong, dwmilliseconds: UInt): Bool =
+public actual fun waitOnAddress(address: ConstPtr, compareaddress: ConstPtr, addresssize: ULong, dwmilliseconds: kotlin.UInt): Bool =
     stdSysPalWindowsCWindowssysWindowsSysWaitOnAddress(address.rawAddress.toCPointer<ByteVar>(), compareaddress.rawAddress.toCPointer<ByteVar>(), addresssize, dwmilliseconds)
 
 public actual fun wakeAllConditionVariable(conditionvariable: MutPtr) {
@@ -582,13 +582,13 @@ public actual fun wakeConditionVariable(conditionvariable: MutPtr) {
     stdSysPalWindowsCWindowssysWindowsSysWakeConditionVariable(conditionvariable.rawAddress.toCPointer<ByteVar>())
 }
 
-public actual fun wideCharToMultiByte(codepage: UInt, dwflags: UInt, lpwidecharstr: ConstPtr, cchwidechar: Int, lpmultibytestr: Pstr, cbmultibyte: Int, lpdefaultchar: ConstPtr, lpuseddefaultchar: MutPtr): Int =
+public actual fun wideCharToMultiByte(codepage: kotlin.UInt, dwflags: kotlin.UInt, lpwidecharstr: ConstPtr, cchwidechar: Int, lpmultibytestr: Pstr, cbmultibyte: Int, lpdefaultchar: ConstPtr, lpuseddefaultchar: MutPtr): Int =
     stdSysPalWindowsCWindowssysWindowsSysWideCharToMultiByte(codepage, dwflags, lpwidecharstr.rawAddress.toCPointer<ByteVar>(), cchwidechar, lpmultibytestr.rawAddress.toCPointer<ByteVar>(), cbmultibyte, lpdefaultchar.rawAddress.toCPointer<ByteVar>(), lpuseddefaultchar.rawAddress.toCPointer<ByteVar>())
 
-public actual fun writeConsoleW(hconsoleoutput: Handle, lpbuffer: ConstPtr, nnumberofcharstowrite: UInt, lpnumberofcharswritten: MutPtr, lpreserved: ConstPtr): Bool =
+public actual fun writeConsoleW(hconsoleoutput: Handle, lpbuffer: ConstPtr, nnumberofcharstowrite: kotlin.UInt, lpnumberofcharswritten: MutPtr, lpreserved: ConstPtr): Bool =
     stdSysPalWindowsCWindowssysWindowsSysWriteConsoleW(hconsoleoutput.rawAddress.toCPointer<ByteVar>(), lpbuffer.rawAddress.toCPointer<ByteVar>(), nnumberofcharstowrite, lpnumberofcharswritten.rawAddress.toCPointer<ByteVar>(), lpreserved.rawAddress.toCPointer<ByteVar>())
 
-public actual fun writeFileEx(hfile: Handle, lpbuffer: ConstPtr, nnumberofbytestowrite: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
+public actual fun writeFileEx(hfile: Handle, lpbuffer: ConstPtr, nnumberofbytestowrite: kotlin.UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool =
     stdSysPalWindowsCWindowssysWindowsSysWriteFileEx(hfile.rawAddress.toCPointer<ByteVar>(), lpbuffer.rawAddress.toCPointer<ByteVar>(), nnumberofbytestowrite, lpoverlapped.rawAddress.toCPointer<ByteVar>(), 0L.toCPointer<ByteVar>())
 
 public actual fun accept(s: Socket, addr: MutPtr, addrlen: MutPtr): Socket =

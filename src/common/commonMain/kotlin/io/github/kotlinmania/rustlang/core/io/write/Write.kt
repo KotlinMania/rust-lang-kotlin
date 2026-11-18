@@ -393,15 +393,15 @@ public fun <W : Write<W>> defaultWriteFmt(thisRef: W, args: Arguments): Result<U
         public var inner: T,
         public var error: Result<Unit>,
     )
-    fun <T : Write<T>> Adapter<T>.writeStr(s: String): RustResult<Unit, Error> =
+    fun <T : Write<T>> Adapter<T>.writeStr(s: String): RustResult<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
         run {
             val matchVal = this.inner.writeAll(s.encodeToByteArray().map { it.toUByte() })
             when (matchVal) { is RustResult.Ok<*, *> -> {
-                RustResult.Ok<Unit, Error>(Unit)
+                RustResult.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit)
             }; is RustResult.Err<*, *> -> {
                 val e = matchVal.errValue()
-                this.error = RustResult.Err<Unit, Error>(e)
-                RustResult.Err<Unit, Error>(Error())
+                this.error = RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(e)
+                RustResult.Err<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(io.github.kotlinmania.rustlang.core.fmt.Error())
             } }
         }
     val output = Adapter(inner = thisRef, error = RustResult.Ok(Unit))

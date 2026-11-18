@@ -8,10 +8,11 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.addrOf
+import io.github.kotlinmania.rustlang.core.mem.addrOfMut
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmute
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.f32.sqrt
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
@@ -186,7 +187,7 @@ public fun mmAndPs(a: M128, b: M128): M128 =
     run {
         val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
-        transmute(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 })
+        transmuteWithLayouts<M128i, M128>(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 }, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())
     }
 
 // i586 only seems to generate plain `not` and `and` instructions, so ignore
@@ -204,8 +205,8 @@ public fun mmAndnotPs(a: M128, b: M128): M128 =
     run {
         val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
-        val mask: M128i = transmute(Simd<Int>(List(4) { -1 }))
-        transmute(run { val simdArg0 = run { val simdArg0 = mask; val simdArg1 = a1; simdArg0 }; val simdArg1 = b1; simdArg0 })
+        val mask: M128i = transmuteWithLayouts<Any?, M128i>(Simd<Int>(List(4) { -1 }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
+        transmuteWithLayouts<M128i, M128>(run { val simdArg0 = run { val simdArg0 = mask; val simdArg1 = a1; simdArg0 }; val simdArg1 = b1; simdArg0 }, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())
     }
 
 // i586 only seems to generate plain `or` instructions, so we ignore it.
@@ -219,7 +220,7 @@ public fun mmOrPs(a: M128, b: M128): M128 =
     run {
         val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
-        transmute(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 })
+        transmuteWithLayouts<M128i, M128>(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 }, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())
     }
 
 // i586 only seems to generate plain `xor` instructions, so we ignore it.
@@ -234,7 +235,7 @@ public fun mmXorPs(a: M128, b: M128): M128 =
     run {
         val a1: M128i = transmuteWithLayouts<M128, M128i>(a, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
         val b1: M128i = transmuteWithLayouts<M128, M128i>(b, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128i>())
-        transmute(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 })
+        transmuteWithLayouts<M128i, M128>(run { val simdArg0 = a1; val simdArg1 = b1; simdArg0 }, UnresolvedTypeLayout<M128i>(), UnresolvedTypeLayout<M128>())
     }
 
 /**
@@ -796,7 +797,7 @@ public fun mmMovemaskPs(a: M128): Int {
     // Propagate the highest bit to the rest, because simdBitmask
     // requires all-1 or all-0.
     return run {
-        val mask: I32x4 = run { val simdArg0 = transmute(a); val simdArg1 = Simd<Int>(List(4) { 0 }); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }
+        val mask: I32x4 = run { val simdArg0 = a; val simdArg1 = Simd<Int>(List(4) { 0 }); run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); val res = (UnresolvedTypeLayout<I32x4>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<I32x4>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<I32x4>()).alignBytes)); res } }
         (run { val simdArg0 = mask; 0u }).toInt()
     }
 }

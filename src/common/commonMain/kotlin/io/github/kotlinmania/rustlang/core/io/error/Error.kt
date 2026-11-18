@@ -514,7 +514,7 @@ unreachableUnchecked()
 public sealed class ErrorData<C> {
     public data class Os<C>(public var value: RawOsError) : ErrorData<C>()
     public data class Simple<C>(public var value: ErrorKind) : ErrorData<C>()
-    public data class SimpleMessage<C>(public var value: SimpleMessage) : ErrorData<C>()
+    public data class SimpleMessage<C>(public var value: io.github.kotlinmania.rustlang.core.io.error.SimpleMessage) : ErrorData<C>()
     public data class Custom<C>(public var value: C) : ErrorData<C>()
 }
 

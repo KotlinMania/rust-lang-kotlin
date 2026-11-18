@@ -673,7 +673,7 @@ public sealed class CastKind {
     public data object Transmute : CastKind()
     public data object BoxDerefTransmute : CastKind()
     public data object Subtype : CastKind()
-    public data class PointerCoercion(public var value: PointerCoercion) : CastKind()
+    public data class PointerCoercion(public var value: io.github.kotlinmania.rustlang.core.intrinsics.mir.PointerCoercion) : CastKind()
 }
 
 /**

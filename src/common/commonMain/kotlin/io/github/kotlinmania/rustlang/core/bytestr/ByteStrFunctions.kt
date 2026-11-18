@@ -52,6 +52,6 @@ public fun String.asRef(): ByteStr = ByteStr.new(this)
 // ByteStr.fromBytes(s.asBytes())
 // )
 // )
-public fun tryFromString(s: ByteStr): Result<String, Utf8Error> = fromUtf8(s.value)
+public fun String.Companion.tryFrom(s: ByteStr): Result<String, Utf8Error> = fromUtf8(s.value)
 
-public fun tryFromString(s: RustMutableReference<ByteStr>): Result<String, Utf8Error> = fromUtf8Mut((s).read().first)
+public fun String.Companion.tryFrom(s: RustMutableReference<ByteStr>): Result<String, Utf8Error> = fromUtf8Mut((s).read().first)

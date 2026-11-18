@@ -376,7 +376,7 @@ public fun <IntoIter, ExtendT, I, T> defaultExtend(collection: ExtendT, iter: I)
         }
         iter1.forEach(extender(this))
     }
-    fun <ExtendT, I, T> ExtendT.extendI(iter1: I) where ExtendT : Extend<T>, I : TrustedLen<T> {
+    fun <ExtendT, I, T> ExtendT.extendI(iter1: I) where ExtendT : Extend<T>, I : TrustedLen {
         val (lowerBound, upperBound) = iter1.sizeHint()
         if (lowerBound > 0) {
             this.extendReserve(lowerBound)

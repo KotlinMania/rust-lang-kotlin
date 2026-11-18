@@ -1546,7 +1546,7 @@ public fun <I> IntoIter<I, Global>.asIntoIter(): ArrayDeque<I> = this.iter
 
 public open class IntoIterSorted<T, A : Allocator> internal constructor(
     innerCtorArg: BinaryHeap<T, A>,
-) : TrustedLen<Any>, Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 
@@ -1637,7 +1637,7 @@ public open class Drain<T, A : Allocator> internal constructor(
  */
 public open class DrainSorted<T, A : Allocator> internal constructor(
     innerCtorArg: BinaryHeap<T, A>,
-) : TrustedLen<Any>, Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var inner: BinaryHeap<T, A> = innerCtorArg
         internal set
 

@@ -4,6 +4,7 @@ package io.github.kotlinmania.rustlang.core.slice.iter
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.convert.AsRef
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.iter.adapters.fuse.nth
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccess
 import io.github.kotlinmania.rustlang.core.iter.adapters.zip.TrustedRandomAccessNoCoerce
@@ -1116,7 +1117,7 @@ public open class RSplitNMut<T, P, Output> internal constructor(
 public open class Windows<T> internal constructor(
     public var v: List<T>,
     sizeCtorArg: NonZero<Int, NonZeroUsizeInner>,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     public var size: NonZero<Int, NonZeroUsizeInner> = sizeCtorArg
         internal set
 
@@ -1234,7 +1235,7 @@ public open class Windows<T> internal constructor(
 public open class Chunks<T>(
     public var v: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@Chunks.next()) {
@@ -1378,7 +1379,7 @@ public open class ChunksMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -1547,7 +1548,7 @@ public open class ChunksExact<T>(
     public var v: List<T>,
     public var rem: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@ChunksExact.next()) {
@@ -1678,7 +1679,7 @@ public open class ChunksExactMut<T> internal constructor(
     // The iterator never yields from here, so this can be unique
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -1817,7 +1818,7 @@ public open class ChunksExactMut<T> internal constructor(
  */
 public open class ArrayWindows<T>(
     public var v: List<T>,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@ArrayWindows.next()) {
@@ -1910,7 +1911,7 @@ public open class ArrayWindows<T>(
 public open class RChunks<T>(
     public var v: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@RChunks.next()) {
@@ -2042,7 +2043,7 @@ public open class RChunksMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var chunkSize: Int,
     public var marker: Unit,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
@@ -2207,7 +2208,7 @@ public open class RChunksExact<T>(
     public var v: List<T>,
     public var rem: List<T>,
     public var chunkSize: Int,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<List<T>> {
     override fun iterator(): Iterator<List<T>> = object : AbstractIterator<List<T>>() {
         override fun computeNext() {
             when (val v = this@RChunksExact.next()) {
@@ -2342,7 +2343,7 @@ public open class RChunksExactMut<T> internal constructor(
     vCtorArg: MutPtr,
     public var rem: MutableList<T>,
     public var chunkSize: Int,
-) : TrustedLen<Any>, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
+) : TrustedLen, TrustedRandomAccess, TrustedRandomAccessNoCoerce, Iterable<MutableList<T>> {
     /**
      * # Safety
      * This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,

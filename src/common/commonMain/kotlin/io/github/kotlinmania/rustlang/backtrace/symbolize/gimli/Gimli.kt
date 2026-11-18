@@ -75,9 +75,9 @@ public open class Mapping(
     }
 }
 
-public sealed class Either<A, B> {
-    public data class A<A, B>(public var value: A) : Either<A, B>()
-    public data class B<A, B>(public var value: B) : Either<A, B>()
+public sealed class Either<AParam, BParam> {
+    public data class A<AParam, BParam>(public var value: AParam) : Either<AParam, BParam>()
+    public data class B<AParam, BParam>(public var value: BParam) : Either<AParam, BParam>()
 }
 
 public open class Context internal constructor(

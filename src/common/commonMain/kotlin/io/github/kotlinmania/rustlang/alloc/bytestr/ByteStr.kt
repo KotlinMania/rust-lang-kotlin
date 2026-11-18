@@ -322,7 +322,7 @@ public fun List<UByte>.partialCmp(other: ByteString): Ordering? {
 
 public fun ByteStr.toOwned(): ByteString = ByteString(this.value.toVec(), fieldLayout = UnresolvedTypeLayout<List<UByte>>())
 
-public fun tryFromString(s: ByteString): Result<String, FromUtf8Error> = String.fromUtf8(s.value)
+public fun String.Companion.tryFrom(s: ByteString): Result<String, FromUtf8Error> = String.fromUtf8(s.value)
 
 // Additional impls for `ByteStr` that require types from `alloc`:
 public fun <A : Allocator> ByteStr.clone(): ByteStr = Box.cloneFromRefIn(this, ByteStr.allocator(this).clone())
@@ -419,7 +419,7 @@ public fun List<UByte>.partialCmp(other: ByteStr): Ordering? {
     return PartialOrd.partialCmp(thisRef, other.asBytes())
 }
 
-public fun tryFromString(s: ByteStr): Result<String, Utf8Error> {
+public fun String.Companion.tryFrom(s: ByteStr): Result<String, Utf8Error> {
     return Result.Ok<String, Utf8Error>(when (val tryResult = String.fromUtf8(s.value)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<String, Utf8Error>(tryResult.errValue()) }.into())
 }
 

@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.alloc.fmt
 
 import io.github.kotlinmania.rustlang.alloc.borrow.toOwned
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
+import io.github.kotlinmania.rustlang.core.result.Result as RustResult
 
 // Utilities for formatting and printing `String`s.
 //

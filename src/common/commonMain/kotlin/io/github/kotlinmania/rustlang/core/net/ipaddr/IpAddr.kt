@@ -2402,9 +2402,9 @@ public sealed class Ipv6MulticastScope(
 /**
  * Uses [Ipv4Addr.toBits] to convert an IPv4 address to a host byte order `UInt`.
  */
-public fun fromUInt(ip: Ipv4Addr): UInt = ip.toBits().toUInt()
+public fun UInt.Companion.from(ip: Ipv4Addr): UInt = ip.toBits().toUInt()
 
 /**
  * Uses [Ipv6Addr.toBits] to convert an IPv6 address to a host byte order `ULong`.
  */
-public fun fromU128(ip: Ipv6Addr): U128 = ip.toBits()
+public fun U128.Companion.from(ip: Ipv6Addr): U128 = ip.toBits()

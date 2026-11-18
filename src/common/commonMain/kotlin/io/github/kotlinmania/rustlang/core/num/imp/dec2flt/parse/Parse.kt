@@ -267,7 +267,7 @@ public fun <Int, F : Float<F, Int>> parseInfNan(s: List<UByte>, negative: Boolea
     // all relevant characters into a u64 and work from there.
     // This also generates much better code.
     var register: Any?
-    val len: Int
+    val len: kotlin.Int
     // All valid strings are either of length 8 or 3.
     if (s.size == 8) {
         register = s.readU64()

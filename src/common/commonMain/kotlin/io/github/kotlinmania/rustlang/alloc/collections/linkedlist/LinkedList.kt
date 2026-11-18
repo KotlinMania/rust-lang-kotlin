@@ -1161,7 +1161,7 @@ public open class Iter<T> internal constructor(
     tailCtorArg: NonNull?,
     public var len: Int,
     public var marker: Unit,
-) : TrustedLen<Any>, Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var head: NonNull? = headCtorArg
         internal set
 
@@ -1256,7 +1256,7 @@ public open class IterMut<T> internal constructor(
     tailCtorArg: NonNull?,
     public var len: Int,
     public var marker: Unit,
-) : TrustedLen<Any>, Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var head: NonNull? = headCtorArg
         internal set
 
@@ -1337,7 +1337,7 @@ public open class IterMut<T> internal constructor(
  */
 public open class IntoIter<T, A : Allocator> internal constructor(
     listCtorArg: LinkedList<T, A>,
-) : TrustedLen<Any>, Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var list: LinkedList<T, A> = listCtorArg
         internal set
 

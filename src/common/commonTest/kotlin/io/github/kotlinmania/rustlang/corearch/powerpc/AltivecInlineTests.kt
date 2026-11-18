@@ -3,11 +3,13 @@
 
 package io.github.kotlinmania.rustlang.corearch.powerpc
 
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.AddressableArrayLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.slice.asPtr
@@ -2097,9 +2099,9 @@ public fun vecCtfI32() {
 
 public fun testVecCts() {
     val v = Simd<Int>(listOf(Int.MIN_VALUE, Int.MAX_VALUE, Int.MAX_VALUE, 42))
-    val v2 = I32x4.from(vecCts(transmute(Simd<Float>(listOf((-1073741800.0f).toFloat(), 1073741800.0f.toFloat(), 1073741800.0f.toFloat(), 21.0f.toFloat()))), 1))
-    val v4 = I32x4.from(vecCts(transmute(Simd<Float>(listOf((-536870900.0f).toFloat(), 536870900.0f.toFloat(), 536870900.0f.toFloat(), 10.5f.toFloat()))), 2))
-    val v8 = I32x4.from(vecCts(transmute(Simd<Float>(listOf((-268435460.0f).toFloat(), 268435460.0f.toFloat(), 268435460.0f.toFloat(), 5.25f.toFloat()))), 3))
+    val v2 = I32x4.from(vecCts(transmuteWithLayouts<Any?, VectorFloat>(Simd<Float>(listOf((-1073741800.0f).toFloat(), 1073741800.0f.toFloat(), 1073741800.0f.toFloat(), 21.0f.toFloat())), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorFloat>()), 1))
+    val v4 = I32x4.from(vecCts(transmuteWithLayouts<Any?, VectorFloat>(Simd<Float>(listOf((-536870900.0f).toFloat(), 536870900.0f.toFloat(), 536870900.0f.toFloat(), 10.5f.toFloat())), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorFloat>()), 2))
+    val v8 = I32x4.from(vecCts(transmuteWithLayouts<Any?, VectorFloat>(Simd<Float>(listOf((-268435460.0f).toFloat(), 268435460.0f.toFloat(), 268435460.0f.toFloat(), 5.25f.toFloat())), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<VectorFloat>()), 3))
     check(v2 == v)
     check(v4 == v)
     check(v8 == v)

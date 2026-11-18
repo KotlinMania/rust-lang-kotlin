@@ -4,16 +4,16 @@ package io.github.kotlinmania.rustlang.compilerbuiltins.int.bswap
 import io.github.kotlinmania.rustlang.core.U128
 
 public fun bswapsi2(x: UInt): UInt {
-    fun bswapsi2(x1: UInt): UInt = 0u
-    return bswapsi2(x)
+    fun externBswapsi2(x1: UInt): UInt = 0u
+    return externBswapsi2(x)
 }
 
 public fun bswapdi2(x: ULong): ULong {
-    fun bswapdi2(x1: ULong): ULong = 0uL
-    return bswapdi2(x)
+    fun externBswapdi2(x1: ULong): ULong = 0uL
+    return externBswapdi2(x)
 }
 
 public fun bswapti2(x: U128): U128 {
-    fun bswapti2(x1: U128): U128 = U128()
-    return bswapti2(x)
+    fun externBswapti2(x1: U128): U128 = U128()
+    return externBswapti2(x)
 }

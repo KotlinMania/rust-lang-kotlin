@@ -9,13 +9,12 @@ import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.IntTy
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.NarrowFloat
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.WideFloat
-import io.github.kotlinmania.rustlang.libm.math.support.inttraits.CastFrom
 
 /**
  * Fma implementation when a hardware-backed larger float type is available. For `Float` and `Double`,
  * `Double` has enough precision to represent the `Float` in its entirety, except for double rounding.
  */
-public fun <Int, SignedInt, F, B> fmaWideRound(x: F, y: F, z: F, round: Round, fromBitsBFn: (Int) -> B): FpResult<F> where F : Float<F, Int, SignedInt>, F : NarrowFloat<F, B, Int, SignedInt>, B : Float<B, Int, SignedInt>, B : WideFloat<B, F, Int, SignedInt>, Int : CastFrom<Int<Int, Any?, Any?>, Int> {
+public fun <Int, SignedInt, F, B> fmaWideRound(x: F, y: F, z: F, round: Round, fromBitsBFn: (Int) -> B): FpResult<F> where F : Float<F, Int, SignedInt>, F : NarrowFloat<F, B, Int, SignedInt>, B : Float<B, Int, SignedInt>, B : WideFloat<B, F, Int, SignedInt> {
     val one = IntTy.ONE
     val xy: B = x.widen() * y.widen()
     var result: B = xy + z.widen()
@@ -28,8 +27,8 @@ public fun <Int, SignedInt, F, B> fmaWideRound(x: F, y: F, z: F, round: Round, f
     // Common case: the larger precision is fine if...
     // This is not a halfway case
     if (excessPrec != halfway || re == B.EXP_SAT || (result - xy == zb && result - zb == xy) || round != Round.Nearest) {
-        val minInexactExp = (B.EXP_BIAS.toInt() + F.EXP_MIN_SUBNORM).toUInt()
-        val maxInexactExp = (B.EXP_BIAS.toInt() + F.EXP_MIN).toUInt()
+        val minInexactExp = (((B.EXP_BIAS as Any?) as kotlin.Int) + F.EXP_MIN_SUBNORM).toUInt()
+        val maxInexactExp = (((B.EXP_BIAS as Any?) as kotlin.Int) + F.EXP_MIN).toUInt()
         var status = Status.OK
         if ((minInexactExp until maxInexactExp).contains(re) && status.inexact()) {
             // This branch is never hit; requires previous operations to set a status

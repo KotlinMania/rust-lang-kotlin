@@ -1,6 +1,7 @@
 // port-lint: source math/generic/ceil.rs
 package io.github.kotlinmania.rustlang.libm.math.generic.ceil
 
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.libm.math.support.env.FpResult
 import io.github.kotlinmania.rustlang.libm.math.support.env.Status
 import io.github.kotlinmania.rustlang.libm.math.support.floattraits.Float
@@ -18,7 +19,7 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> ceilStatus(x: F, fromB
     var ix = x.toBits()
     val e = x.expUnbiased()
     // If the represented value has no fractional part, no truncation is needed.
-    if (e >= F.SIG_BITS.toInt()) {
+    if ((kmCompareValues(e, ((F.SIG_BITS as Any?) as kotlin.Int)) >= 0)) {
         return FpResult.ok(x)
     }
     val status: Any?

@@ -70,7 +70,7 @@ public open class Drain<T, A : Allocator> internal constructor(
      */
     public var iter: ArrayDeque<T>,
     vecCtorArg: NonNull,
-) : AsRef<List<T>>, TrustedLen<Any>, Iterable<T> {
+) : AsRef<List<T>>, TrustedLen, Iterable<T> {
     public var vec: NonNull = vecCtorArg
         internal set
 

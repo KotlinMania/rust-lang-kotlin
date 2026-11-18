@@ -12,7 +12,6 @@ import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.result.unwrapOrElse
 import io.github.kotlinmania.rustlang.procmacro.bridge.ApiTags
 import io.github.kotlinmania.rustlang.procmacro.bridge.BridgeConfig
-import io.github.kotlinmania.rustlang.procmacro.bridge.Decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.Diagnostic
 import io.github.kotlinmania.rustlang.procmacro.bridge.ExpnGlobals
 import io.github.kotlinmania.rustlang.procmacro.bridge.Literal
@@ -20,9 +19,10 @@ import io.github.kotlinmania.rustlang.procmacro.bridge.Methods
 import io.github.kotlinmania.rustlang.procmacro.bridge.TokenTree
 import io.github.kotlinmania.rustlang.procmacro.bridge.buffer.Buffer
 import io.github.kotlinmania.rustlang.procmacro.bridge.closure.Closure
-import io.github.kotlinmania.rustlang.procmacro.bridge.decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.handle.Handle
 import io.github.kotlinmania.rustlang.procmacro.bridge.panicmessage.PanicMessage
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.Decode
+import io.github.kotlinmania.rustlang.procmacro.bridge.rpc.decode
 import io.github.kotlinmania.rustlang.procmacro.bridge.selflessreify.reifyToExternCFnHrtBridge
 import io.github.kotlinmania.rustlang.procmacro.bridge.symbol.Symbol
 import io.github.kotlinmania.rustlang.std.panic.catchUnwind

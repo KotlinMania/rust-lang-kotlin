@@ -848,7 +848,7 @@ public fun fromBoxCStr(s: CStr): CStr = Box.cloneFromRef(s)
  *
  * This method is equivalent to [CString.intoString].
  */
-public fun tryFromString(value: CString): Result<String, IntoStringError> = value.intoString()
+public fun String.Companion.tryFrom(value: CString): Result<String, IntoStringError> = value.intoString()
 
 public fun <A : Allocator> CStr.clone(): CStr = Box.cloneFromRefIn(this, CStr.allocator(this).clone())
 

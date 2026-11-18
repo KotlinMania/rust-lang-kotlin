@@ -51,7 +51,7 @@ public class DebugTuple(
  */
 public open class IntoIter<T, A : Allocator> internal constructor(
     innerCtorArg: VecDeque<T, A>,
-) : TrustedLen<Any>, Iterable<T> {
+) : TrustedLen, Iterable<T> {
     public var inner: VecDeque<T, A> = innerCtorArg
         internal set
 

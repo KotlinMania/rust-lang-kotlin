@@ -373,7 +373,7 @@ public class DebugTuple(
  */
 public open class RustAllocString(
     public var vec: MutableList<UByte>,
-) : Pattern<Searcher>, Add<String, String>, AddAssign<String>, DerefPure, FromStr<Nothing>, SpecToString, AsRef<String>, AsMut<String>, Appendable {
+) : Pattern<Searcher>, Add<kotlin.String, String>, AddAssign<kotlin.String>, DerefPure, FromStr<Nothing>, SpecToString, AsRef<kotlin.String>, AsMut<kotlin.String>, Appendable {
     /**
      * Decomposes a `String` into its raw components: `(pointer, length, capacity)`.
      *
@@ -430,7 +430,7 @@ public open class RustAllocString(
      * check("foo" == s)
      * ```
      */
-    public open fun asStr(): String {
+    public open fun asStr(): kotlin.String {
         // SAFETY: String contents are stipulated to be valid UTF-8, invalid contents are an error
         // at construction.
         return String.fromUtf8Unchecked(this.vec.asSlice())
@@ -448,7 +448,7 @@ public open class RustAllocString(
      * check("FOOBAR" == sMutStr)
      * ```
      */
-    public open fun asMutStr(): String {
+    public open fun asMutStr(): kotlin.String {
         // SAFETY: String contents are stipulated to be valid UTF-8, invalid contents are an error
         // at construction.
         return String.fromUtf8UncheckedMut(this.vec.asMutSlice())
@@ -469,17 +469,17 @@ public open class RustAllocString(
      * check("foobar" == s)
      * ```
      */
-    public open fun pushStr(string: String) {
-        this.vec.extendFromSlice(string.encodeToByteArray().map { it.toUByte() })
+    public open fun pushStr(string: kotlin.String) {
+        this.vec.extendFromSlice(string.asBytes())
     }
 
     /**
      * Appends a given string slice onto the end of this `String`, returning
      * [TryReserveError] otherwise.
      */
-    public open fun tryPushStr(string: String): Result<Unit, TryReserveError> = this.vec.tryExtendFromSliceOfBytes(string.encodeToByteArray().map { it.toUByte() })
+    public open fun tryPushStr(string: kotlin.String): Result<Unit, TryReserveError> = this.vec.tryExtendFromSliceOfBytes(string.asBytes())
 
-    public open fun pushStrSlice(slice: List<String>) {
+    public open fun pushStrSlice(slice: List<kotlin.String>) {
         var selfMut = this
         // use saturating arithmetic to ensure that in the case of an overflow, reserve() throws OOM
         val additional: Saturating<Int> = slice.map({ x -> Saturating(x.len()) }).sum()
@@ -1095,10 +1095,10 @@ public open class RustAllocString(
      * check("foobar" == s)
      * ```
      */
-    public open fun insertStr(idx: Int, string: String) {
+    public open fun insertStr(idx: Int, string: kotlin.String) {
         check(this.isCharBoundary(idx))
         val len = this.len()
-        val amt = string.length
+        val amt = string.len()
         this.reserve(amt)
         // SAFETY: Move the bytes starting from `idx` to their new location `amt` bytes
         // ahead. This is safe because sufficient capacity was just reserved, and `idx`
@@ -1340,13 +1340,13 @@ public open class RustAllocString(
      * check(s == "Α is capital alpha; β is beta")
      * ```
      */
-    public open fun <R> replaceRange(range: R, replaceWith: String) where R : RangeBounds<Int> {
+    public open fun <R> replaceRange(range: R, replaceWith: kotlin.String) where R : RangeBounds<Int> {
         // We avoid #81138 (nondeterministic RangeBounds impls) because we only use `range` once, here.
         val checkedRange = Range(range, 0 until this.len())
         check(this.isCharBoundary(checkedRange.start)) { "start of range should be a character boundary" }
         check(this.isCharBoundary(checkedRange.end)) { "end of range should be a character boundary" }
-        if (replaceWith.length > checkedRange.len()) {
-            this.reserve(replaceWith.length - checkedRange.len())
+        if (replaceWith.len() > checkedRange.len()) {
+            this.reserve(replaceWith.len() - checkedRange.len())
         }
         // SAFETY: We ensure that we're not replacing across a char boundary and
         // that the new contents are valid UTF-8. The only potentially-unsound
@@ -1379,7 +1379,7 @@ public open class RustAllocString(
      *
      * [replacen]: ../../std/primitive.str.html#method.replacen
      */
-    public open fun <Searcher, P : Pattern<Searcher>> replaceFirst(from: P, to: String) {
+    public open fun <Searcher, P : Pattern<Searcher>> replaceFirst(from: P, to: kotlin.String) {
         val range =
             when (val matchVal = this.matchIndices(from).next()) {
                 null -> { return }
@@ -1409,7 +1409,7 @@ public open class RustAllocString(
      * }
      * ```
      */
-    public open fun <Searcher, P : Pattern<Searcher>> replaceLast(from: P, to: String) {
+    public open fun <Searcher, P : Pattern<Searcher>> replaceLast(from: P, to: kotlin.String) {
         val range =
             when (val matchVal = this.rmatchIndices(from).next()) {
                 null -> { return }
@@ -1438,7 +1438,7 @@ public open class RustAllocString(
      * val b = s.intoBoxedStr()
      * ```
      */
-    public open fun intoBoxedStr(): String {
+    public open fun intoBoxedStr(): kotlin.String {
         val slice = this.vec.intoBoxedSlice()
         // SAFETY: `slice` contains only valid UTF-8 because `String` is guaranteed to be valid UTF-8.
         return fromBoxedUtf8Unchecked(slice)
@@ -1467,7 +1467,7 @@ public open class RustAllocString(
      * check(staticRef == "bucket")
      * ```
      */
-    public open fun leak(): String {
+    public open fun leak(): kotlin.String {
         val slice = this.vec.leak()
         // SAFETY: `slice` contains only valid UTF-8 because `String` is guaranteed to be valid UTF-8.
         return fromUtf8UncheckedMut(slice)
@@ -1509,11 +1509,11 @@ public open class RustAllocString(
         this.reserve(additional)
     }
 
-    public open fun <I : Iterable<String>> extendString(iter: I, specExtendIntoIFn: (I, RustAllocString) -> Any?) {
+    public open fun <I : Iterable<kotlin.String>> extendString(iter: I, specExtendIntoIFn: (I, RustAllocString) -> Any?) {
         specExtendIntoIFn(iter, this)
     }
 
-    public open fun extendOne(s: String) {
+    public open fun extendOne(s: kotlin.String) {
         this.pushStr(s)
     }
 
@@ -1521,15 +1521,15 @@ public open class RustAllocString(
         iter.iterator().forEach({ s -> this.pushStr(s) })
     }
 
-    public open fun extendOneString(s: String) {
+    public open fun extendOne(s: String) {
         this.pushStr(s)
     }
 
-    public open fun <I : Iterable<String>> extendCowString(iter: I) {
+    public open fun <I : Iterable<kotlin.String>> extendCowString(iter: I) {
         iter.iterator().forEach({ s -> this.pushStr(s) })
     }
 
-    public open fun extendOneCowString(s: String) {
+    public open fun extendOneCowString(s: kotlin.String) {
         this.pushStr(s)
     }
 
@@ -1550,31 +1550,31 @@ public open class RustAllocString(
      * check("Hello world".indexOf("world").takeIf { it >= 0 } == 6)
      * ```
      */
-    public open fun intoSearcher(haystack: String): Searcher = this.intoSearcher(haystack)
+    public open fun intoSearcher(haystack: kotlin.String): Searcher = this.intoSearcher(haystack)
 
-    public open fun isContainedIn(haystack: String): Boolean = this.isContainedIn(haystack)
+    public open fun isContainedIn(haystack: kotlin.String): Boolean = this.isContainedIn(haystack)
 
-    public open fun isPrefixOf(haystack: String): Boolean = this.isPrefixOf(haystack)
+    public open fun isPrefixOf(haystack: kotlin.String): Boolean = this.isPrefixOf(haystack)
 
-    public open fun stripPrefixOf(haystack: String): String? = this.stripPrefixOf(haystack)
+    public open fun stripPrefixOf(haystack: kotlin.String): kotlin.String? = this.stripPrefixOf(haystack)
 
-    public open fun isSuffixOf(haystack: String): Boolean = this.isSuffixOf(haystack)
+    public open fun isSuffixOf(haystack: kotlin.String): Boolean = this.isSuffixOf(haystack)
 
-    public open fun stripSuffixOf(haystack: String): String? = this.stripSuffixOf(haystack)
+    public open fun stripSuffixOf(haystack: kotlin.String): kotlin.String? = this.stripSuffixOf(haystack)
 
     public open fun asUtf8Pattern(): Utf8Pattern? = Utf8Pattern.StringPattern(this.asStr())
 
-    public open fun eq(other: String): Boolean = PartialEq.eq(this, other)
+    public open fun eq(other: kotlin.String): Boolean = PartialEq.eq(this, other)
 
-    public open fun ne(other: String): Boolean = PartialEq.ne(this, other)
+    public open fun ne(other: kotlin.String): Boolean = PartialEq.ne(this, other)
 
-    public open fun eqString(other: String): Boolean = PartialEq.eq(this, other)
+    public open fun eqString(other: kotlin.String): Boolean = PartialEq.eq(this, other)
 
-    public open fun neString(other: String): Boolean = PartialEq.ne(this, other)
+    public open fun neString(other: kotlin.String): Boolean = PartialEq.ne(this, other)
 
-    public open fun eqCowString(other: String): Boolean = PartialEq.eq(this, other)
+    public open fun eqCowString(other: kotlin.String): Boolean = PartialEq.eq(this, other)
 
-    public open fun neCowString(other: String): Boolean = PartialEq.ne(this, other)
+    public open fun neCowString(other: kotlin.String): Boolean = PartialEq.ne(this, other)
 
     public open fun fmt(f: StringBuilder): Result<Unit, Error> = run { f.append((this).toString()); Result.Ok<Unit, Error>(Unit) }
 
@@ -1625,7 +1625,7 @@ public open class RustAllocString(
      * val c = a.toString() + b
      * ```
      */
-    public open fun add(other: String): String {
+    public open fun add(other: kotlin.String): String {
         this.pushStr(other)
         return this
     }
@@ -1635,16 +1635,16 @@ public open class RustAllocString(
      *
      * This has the same behavior as the [`pushStr`][String.pushStr] method.
      */
-    public open fun addAssign(other: String) {
+    public open fun addAssign(other: kotlin.String) {
         this.pushStr(other)
     }
 
-    public open fun deref(): String = this.asStr()
+    public open fun deref(): kotlin.String = this.asStr()
 
-    public open fun derefMut(): String = this.asMutStr()
+    public open fun derefMut(): kotlin.String = this.asMutStr()
 
     public override fun specToString(): String {
-        val s: String = this
+        val s: kotlin.String = this
         return String.from(s)
     }
 
@@ -1718,9 +1718,9 @@ public open class RustAllocString(
         }
     }
 
-    public open fun asRef(): String = this
+    public open fun asRef(): kotlin.String = this
 
-    public open fun asMut(): String = this
+    public open fun asMut(): kotlin.String = this
 
     public open fun asRefUByteSlice(): List<UByte> = this.asBytes()
 
@@ -1730,7 +1730,7 @@ public open class RustAllocString(
      * particular, [fmt.Write.writeStr] uses [`pushStr`][String.pushStr]
      * and [fmt.Write.writeChar] uses [`push`][String.push].
      */
-    public open fun writeStr(s: String): Result<Unit, Error> {
+    public open fun writeStr(s: kotlin.String): Result<Unit, Error> {
         this.pushStr(s)
         return Result.Ok<Unit, Error>(Unit)
     }
@@ -1923,8 +1923,8 @@ public open class RustAllocString(
          * check("Hello �World" == output)
          * ```
          */
-        public fun fromUtf8Lossy(v: List<UByte>): String {
-            val REPLACEMENT: String = "�"
+        public fun fromUtf8Lossy(v: List<UByte>): kotlin.String {
+            val REPLACEMENT: kotlin.String = "�"
             val iter = v.utf8Chunks()
             val chunk = iter.next() ?: return ""
             val firstValid = chunk.valid()
@@ -2282,7 +2282,7 @@ public open class RustAllocString(
             return buf
         }
 
-        public fun <I : Iterable<String>> fromIterString(iter: I): String {
+        public fun <I : Iterable<kotlin.String>> fromIterString(iter: I): String {
             val buf = String.new()
             buf.extend(iter)
             return buf
@@ -2303,7 +2303,7 @@ public open class RustAllocString(
             }
         }
 
-        public fun <I : Iterable<String>> fromIterCowString(iter: I): String {
+        public fun <I : Iterable<kotlin.String>> fromIterCowString(iter: I): String {
             val iterator = iter.iterator()
             // Because we're iterating over CoWs, we can (potentially) avoid at least
             // one allocation by getting the first item and appending to it all the
@@ -2331,28 +2331,28 @@ public open class RustAllocString(
          */
         public fun default(): String = String.new()
 
-        public fun fromStr(s: String): Result<String, Nothing> = Result.Ok<String, Nothing>(String.from(s))
+        public fun fromStr(s: kotlin.String): Result<String, Nothing> = Result.Ok<String, Nothing>(String.from(s))
 
         /**
          * Converts a `String` into a [String].
          *
          * The result is allocated on the heap.
          */
-        public fun from(s: String): String = s.toOwned()
+        public fun from(s: kotlin.String): String = s.toOwned()
 
         /**
          * Converts a `String` into a [String].
          *
          * The result is allocated on the heap.
          */
-        public fun fromString(s: String): String = s.toOwned()
+        public fun fromString(s: kotlin.String): String = s.toOwned()
 
         /**
          * Converts a `String` into a [String].
          *
          * This clones `s` and returns the clone.
          */
-        public fun fromStringString(s: String): String = s.clone()
+        public fun from(s: String): String = s.clone()
 
         // note: test pulls in std, which causes errors here
 
@@ -2369,7 +2369,7 @@ public open class RustAllocString(
          * check("hello world" == s3)
          * ```
          */
-        public fun fromBoxString(s: String): String = s.intoString()
+        public fun fromBoxString(s: kotlin.String): String = s.intoString()
 
         /**
          * Converts a clone-on-write string to an owned
@@ -2388,7 +2388,7 @@ public open class RustAllocString(
          * check(owned == "eggplant")
          * ```
          */
-        public fun fromCowString(s: String): String = s.intoOwned()
+        public fun fromCowString(s: kotlin.String): String = s.intoOwned()
 
         /**
          * Converts the given [Vec.u8] into a  [String] if it contains valid UTF-8 data.
@@ -2504,7 +2504,7 @@ public open class FromUtf8Error(
      * ```
      */
     public open fun intoUtf8Lossy(): String {
-        val REPLACEMENT: String = "�"
+        val REPLACEMENT: kotlin.String = "�"
         var res = run {
             val v = ArrayList<UByte>(this.bytes.size)
             // `Utf8Error.validUpTo` returns the maximum index of validated
@@ -2633,7 +2633,7 @@ public fun EscapeDefault.toStringSpec(): String {
     return this.toString()
 }
 
-public fun <A : Allocator, I : Iterable<String>> fromIteratorFromIterString(iter: I): String {
+public fun <A : Allocator, I : Iterable<kotlin.String>> fromIteratorFromIterString(iter: I): String {
     val buf = String.new()
     buf.extend(iter)
     return buf
@@ -2658,33 +2658,41 @@ public interface SpecExtendStr {
     public fun specExtendInto(s: String)
 }
 
-public fun List<String>.specExtendInto(target: String) {
+public fun List<kotlin.String>.specExtendInto(target: String) {
     target.pushStrSlice(this)
 }
 
-public fun List<String>.specExtendIntoFromStringArrayn(target: String, n: Int) {
+public fun List<kotlin.String>.specExtendIntoFromStringArrayn(target: String, n: Int) {
     target.pushStrSlice(this)
 }
 
-public fun <A : Allocator, I : Iterable<String>> String.extend(iter: I) {
+public fun <A : Allocator, I : Iterable<kotlin.String>> String.extend(iter: I) {
     iter.iterator().forEach({ s -> this += s })
 }
 
-public fun String.eq(other: String): Boolean = PartialEq.eq(this, other)
+public fun kotlin.String.eq(other: String): Boolean = PartialEq.eq(this, other)
 
-public fun String.ne(other: String): Boolean = PartialEq.ne(this, other)
+public fun kotlin.String.ne(other: String): Boolean = PartialEq.ne(this, other)
 
-public fun String.eqString(other: String): Boolean = PartialEq.eq(this, other)
+public fun kotlin.String.eqString(other: String): Boolean = PartialEq.eq(this, other)
 
-public fun String.neString(other: String): Boolean = PartialEq.ne(this, other)
+public fun kotlin.String.neString(other: String): Boolean = PartialEq.ne(this, other)
 
-public fun String.eqCowString(other: String): Boolean = PartialEq.eq(this, other)
+public fun kotlin.String.eq(other: kotlin.String): Boolean = PartialEq.eq(this, other)
 
-public fun String.neCowString(other: String): Boolean = PartialEq.ne(this, other)
+public fun kotlin.String.ne(other: kotlin.String): Boolean = PartialEq.ne(this, other)
 
-public fun <Output, I> String.index(index: I): Output where I : SliceIndex<String, Output> = index.index(this)
+public fun kotlin.String.eqCowString(other: kotlin.String): Boolean = PartialEq.eq(this, other)
 
-public fun <Output, I> String.indexMut(index: I): Output where I : SliceIndex<String, Output> = index.indexMut(this.asMutStr())
+public fun kotlin.String.neCowString(other: kotlin.String): Boolean = PartialEq.ne(this, other)
+
+public fun kotlin.String.eqString(other: kotlin.String): Boolean = PartialEq.eq(this, other)
+
+public fun kotlin.String.neString(other: kotlin.String): Boolean = PartialEq.ne(this, other)
+
+public fun <Output, I> String.index(index: I): Output where I : SliceIndex<kotlin.String, Output> = index.index(this)
+
+public fun <Output, I> String.indexMut(index: I): Output where I : SliceIndex<kotlin.String, Output> = index.indexMut(this.asMutStr())
 
 /**
  * A type alias for [!].
@@ -2863,8 +2871,8 @@ public fun U128.specToString(): String {
     return this.fmt(buf).toString()
 }
 
-public fun String.specToString(): String {
-    val s: String = this
+public fun kotlin.String.specToString(): String {
+    val s: kotlin.String = this
     return String.from(s)
 }
 
@@ -2914,7 +2922,7 @@ public fun escapeUnicodeInto(output: List<MaybeUninit<Char>>, c: Char): Int {
  * check("hello world" == s3)
  * ```
  */
-public fun fromBoxString(s: String): String = s.intoBoxedStr()
+public fun kotlin.String.Companion.from(s: String): kotlin.String = s.intoBoxedStr()
 
 /**
  * Converts a string slice into a [Borrowed] variant.
@@ -2927,9 +2935,9 @@ public fun fromBoxString(s: String): String = s.intoBoxedStr()
  * check(Cow.from("eggplant") == "eggplant")
  * ```
  */
-public fun fromCowString(s: String): String = s
+public fun kotlin.String.Companion.from(s: kotlin.String): kotlin.String = s
 
-public fun <I : Iterable<Char>> fromIteratorFromIterCowString(it: I): String = FromIterator.fromIter(it)
+public fun <I : Iterable<Char>> fromIteratorFromIterCowString(it: I): kotlin.String = FromIterator.fromIter(it)
 
 /**
  * Converts the given [String] to a vector [Vec] that holds values of type [u8].
@@ -2984,7 +2992,7 @@ public open class IntoChars(
      * check(chars == "")
      * ```
      */
-    public open fun asStr(): String {
+    public open fun asStr(): kotlin.String {
         // SAFETY: `bytes` is a valid UTF-8 string.
         return String.fromUtf8Unchecked(this.bytes.toList())
     }
@@ -3030,7 +3038,7 @@ public open class IntoChars(
     public open fun last(): Char? = this.nextBack()
 
     public open fun nextBack(): Char? {
-        val len = this.asStr().length
+        val len = this.asStr().len()
         val iter = this.iter()
         return when (val matchVal = iter.nextBack()) {
             null -> null
@@ -3073,7 +3081,7 @@ public open class Drain internal constructor(
      * Current remaining range to remove
      */
     public var iter: Chars,
-) : AsRef<String>, FromCharIterSpec, Iterable<Char> {
+) : AsRef<kotlin.String>, FromCharIterSpec, Iterable<Char> {
     /**
      * Will be used as &a mut String in the destructor
      */
@@ -3114,11 +3122,11 @@ public open class Drain internal constructor(
      * check(drain == "bc")
      * ```
      */
-    public open fun asStr(): String = this.iter.asStr()
+    public open fun asStr(): kotlin.String = this.iter.asStr()
 
-    public open fun asRef(): String = this.asStr()
+    public open fun asRef(): kotlin.String = this.asStr()
 
-    public open fun asRefUByteSlice(): List<UByte> = this.asStr().encodeToByteArray().map { it.toUByte() }
+    public open fun asRefUByteSlice(): List<UByte> = this.asStr().asBytes()
 
     public override fun next(): Char? = this.iter.next()
 

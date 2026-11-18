@@ -30,7 +30,7 @@ public sealed class ResolveWhat {
             )
         }
     }
-    public data class Frame(public var value: Frame) : ResolveWhat()
+    public data class Frame(public var value: io.github.kotlinmania.rustlang.backtrace.backtrace.Frame) : ResolveWhat()
 
     public open fun addressOrIp(): MutPtr =
         when (this) {

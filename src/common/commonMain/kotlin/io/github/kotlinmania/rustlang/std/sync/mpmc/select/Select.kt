@@ -92,7 +92,7 @@ public sealed class Selected {
     /**
      * An operation became ready because a message can be sent or received.
      */
-    public data class Operation(public var value: Operation) : Selected()
+    public data class Operation(public var value: io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation) : Selected()
 
     public fun rustEquals(other: Selected): Boolean = this == other
 
@@ -102,7 +102,7 @@ public sealed class Selected {
             this == Selected.Aborted -> 1
             this == Selected.Disconnected -> 2
             else -> {
-                val (value) = (this as Selected.Operation).value as Operation
+                val (value) = (this as Selected.Operation).value as io.github.kotlinmania.rustlang.std.sync.mpmc.select.Operation
                 value
             }
         }

@@ -1,6 +1,7 @@
 // port-lint: source escape.rs
 package io.github.kotlinmania.rustlang.core.escape
 
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.num.leadingZeros
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner

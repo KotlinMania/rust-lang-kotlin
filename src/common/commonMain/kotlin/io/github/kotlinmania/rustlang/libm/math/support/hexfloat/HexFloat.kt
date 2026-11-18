@@ -488,7 +488,7 @@ public fun <Int, SignedInt, F : Float<F, Int, SignedInt>> fmtAnyHex(x: F, f: Str
     }
     var exponent = x.expUnbiased()
     val sig = x.toBits() and F.SIG_MASK
-    val bias = F.EXP_BIAS.toInt()
+    val bias = ((F.EXP_BIAS as Any?) as kotlin.Int)
     // The mantissa MSB needs to be shifted up to the nearest nibble.
     // The width is rounded up to the nearest char (4 bits)
     val leading =

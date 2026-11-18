@@ -1,6 +1,7 @@
 // port-lint: tests os/unix/net/ucred/tests.rs
 package io.github.kotlinmania.rustlang.std.os.unix.net.ucred.tests
 
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libc.getegid
 import io.github.kotlinmania.rustlang.libc.geteuid
 import io.github.kotlinmania.rustlang.libc.getpid

@@ -1,6 +1,7 @@
 // port-lint: source char/methods.rs
 package io.github.kotlinmania.rustlang.core.char.methods
 
+import io.github.kotlinmania.rustlang.core.char.CaseMappingIter
 import io.github.kotlinmania.rustlang.core.char.CharCase
 import io.github.kotlinmania.rustlang.core.char.EscapeDebug
 import io.github.kotlinmania.rustlang.core.char.EscapeDefault

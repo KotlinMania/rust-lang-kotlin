@@ -102,7 +102,7 @@ public sealed class TypeKind {
     /**
      * Dynamic Traits.
      */
-    public data class DynTrait(public var value: DynTrait) : TypeKind()
+    public data class DynTrait(public var value: io.github.kotlinmania.rustlang.core.mem.typeinfo.DynTrait) : TypeKind()
     /**
      * Structs.
      */
@@ -134,7 +134,7 @@ public sealed class TypeKind {
     /**
      * String slice type.
      */
-    public data class Str(public var value: Str) : TypeKind()
+    public data class Str(public var value: io.github.kotlinmania.rustlang.core.mem.typeinfo.Str) : TypeKind()
     /**
      * References.
      */
@@ -197,7 +197,7 @@ public sealed class Generic {
     /**
      * Scopes.
      */
-    public data class Lifetime(public var value: Lifetime) : Generic()
+    public data class Lifetime(public var value: io.github.kotlinmania.rustlang.core.mem.typeinfo.Lifetime) : Generic()
     /**
      * Types.
      */
@@ -205,7 +205,7 @@ public sealed class Generic {
     /**
      * Const parameters.
      */
-    public data class Const(public var value: Const) : Generic()
+    public data class Const(public var value: io.github.kotlinmania.rustlang.core.mem.typeinfo.Const) : Generic()
 }
 
 /**

@@ -68,21 +68,21 @@ public fun mmSetSh(a: F16): M128h = m128h(listOf(a, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_set1_ph)
  */
-public fun mmSet1Ph(a: F16): M128h = transmute(Simd<F16>(List(8) { a }))
+public fun mmSet1Ph(a: F16): M128h = transmuteWithLayouts<Any?, M128h>(Simd<F16>(List(8) { a }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Broadcast the half-precision (16-bit) floating-point value a to all elements of dst.
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm256_set1_ph)
  */
-public fun mm256Set1Ph(a: F16): M256h = transmute(Simd<F16>(List(16) { a }))
+public fun mm256Set1Ph(a: F16): M256h = transmuteWithLayouts<Any?, M256h>(Simd<F16>(List(16) { a }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M256h>())
 
 /**
  * Broadcast the half-precision (16-bit) floating-point value a to all elements of dst.
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm512_set1_ph)
  */
-public fun mm512Set1Ph(a: F16): M512h = transmute(Simd<F16>(List(32) { a }))
+public fun mm512Set1Ph(a: F16): M512h = transmuteWithLayouts<Any?, M512h>(Simd<F16>(List(32) { a }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M512h>())
 
 /**
  * Set packed half-precision (16-bit) floating-point elements in dst with the supplied values in reverse order.
@@ -110,7 +110,7 @@ public fun mm512SetrPh(e0: F16, e1: F16, e2: F16, e3: F16, e4: F16, e5: F16, e6:
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_setzero_ph)
  */
-public fun mmSetzeroPh(): M128h = transmute(Simd<F16>(List(8) { F16.fromFloat(0.0f) }))
+public fun mmSetzeroPh(): M128h = transmuteWithLayouts<Any?, M128h>(Simd<F16>(List(8) { F16.fromFloat(0.0f) }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128h>())
 
 /**
  * Return vector of type __m256h with all elements set to zero.
@@ -2962,7 +2962,7 @@ public fun mmConjPch(a: M128h): M128h = transmuteWithLayouts<M128i, M128h>(mmXor
 public fun mmMaskConjPch(src: M128h, k: Mmask8, a: M128h): M128h =
     run {
         val r: M128 = transmuteWithLayouts<M128h, M128>(mmConjPch(a), UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>())
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(src); simdArg1 })
+        transmuteWithLayouts<M128, M128h>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(src); simdArg1 }, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -2995,7 +2995,7 @@ public fun mm256ConjPch(a: M256h): M256h = transmuteWithLayouts<M256i, M256h>(mm
 public fun mm256MaskConjPch(src: M256h, k: Mmask8, a: M256h): M256h =
     run {
         val r: M256 = transmuteWithLayouts<M256h, M256>(mm256ConjPch(a), UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256>())
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(src); simdArg1 })
+        transmuteWithLayouts<M256, M256h>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(src); simdArg1 }, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256h>())
     }
 
 /**
@@ -3028,7 +3028,7 @@ public fun mm512ConjPch(a: M512h): M512h = transmuteWithLayouts<M512i, M512h>(mm
 public fun mm512MaskConjPch(src: M512h, k: Mmask16, a: M512h): M512h =
     run {
         val r: M512 = transmuteWithLayouts<M512h, M512>(mm512ConjPch(a), UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512>())
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(src); simdArg1 })
+        transmuteWithLayouts<M512, M512h>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(src); simdArg1 }, UnresolvedTypeLayout<M512>(), UnresolvedTypeLayout<M512h>())
     }
 
 /**
@@ -3062,7 +3062,7 @@ public fun mmMaskFmaddPch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
     run {
         val r: M128 = transmuteWithLayouts<M128h, M128>(mmMask3FmaddPch(a, b, c, k), UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 })
+        transmuteWithLayouts<M128, M128h>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 }, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -3106,7 +3106,7 @@ public fun mm256MaskFmaddPch(a: M256h, k: Mmask8, b: M256h, c: M256h): M256h =
     run {
         val r: M256 = transmuteWithLayouts<M256h, M256>(mm256Mask3FmaddPch(a, b, c, k), UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 })
+        transmuteWithLayouts<M256, M256h>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 }, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256h>())
     }
 
 /**
@@ -3213,7 +3213,7 @@ public fun mm512MaskFmaddRoundPch(a: M512h, k: Mmask16, b: M512h, c: M512h, roun
         }
         val r: M512 = transmuteWithLayouts<M512h, M512>(mm512Mask3FmaddRoundPch(a, b, c, k, rounding), UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512>())
         // using `0xffff` would have been fine here, but this is what CLang does
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 })
+        transmuteWithLayouts<M512, M512h>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 }, UnresolvedTypeLayout<M512>(), UnresolvedTypeLayout<M512h>())
     }
 
 /**
@@ -3433,7 +3433,7 @@ public fun mmMaskFcmaddPch(a: M128h, k: Mmask8, b: M128h, c: M128h): M128h =
     run {
         val r: M128 = transmuteWithLayouts<M128h, M128>(mmMask3FcmaddPch(a, b, c, k), UnresolvedTypeLayout<M128h>(), UnresolvedTypeLayout<M128>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 })
+        transmuteWithLayouts<M128, M128h>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 }, UnresolvedTypeLayout<M128>(), UnresolvedTypeLayout<M128h>())
     }
 
 /**
@@ -3481,7 +3481,7 @@ public fun mm256MaskFcmaddPch(a: M256h, k: Mmask8, b: M256h, c: M256h): M256h =
     run {
         val r: M256 = transmuteWithLayouts<M256h, M256>(mm256Mask3FcmaddPch(a, b, c, k), UnresolvedTypeLayout<M256h>(), UnresolvedTypeLayout<M256>())
         // using `0xff` would have been fine here, but this is what CLang does
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 })
+        transmuteWithLayouts<M256, M256h>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 }, UnresolvedTypeLayout<M256>(), UnresolvedTypeLayout<M256h>())
     }
 
 /**
@@ -3596,7 +3596,7 @@ public fun mm512MaskFcmaddRoundPch(a: M512h, k: Mmask16, b: M512h, c: M512h, rou
         }
         val r: M512 = transmuteWithLayouts<M512h, M512>(mm512Mask3FcmaddRoundPch(a, b, c, k, rounding), UnresolvedTypeLayout<M512h>(), UnresolvedTypeLayout<M512>())
         // using `0xffff` would have been fine here, but this is what CLang does
-        transmute(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 })
+        transmuteWithLayouts<M512, M512h>(run { val simdArg0 = k; val simdArg1 = r; val simdArg2 = transmute(a); simdArg1 }, UnresolvedTypeLayout<M512>(), UnresolvedTypeLayout<M512h>())
     }
 
 /**
@@ -12408,7 +12408,7 @@ public fun mmCvtsi128Si16(a: M128i): Short = run { val simdArg0 = a.asI16x8(); v
  *
  * [Intel's documentation](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#text=_mm_cvtsi16_si128)
  */
-public fun mmCvtsi16Si128(a: Short): M128i = transmute(run { val simdArg0 = Simd<Short>(List(8) { 0.toShort() }); val simdArg1 = 0; val simdArg2 = a; simdArg0 })
+public fun mmCvtsi16Si128(a: Short): M128i = transmuteWithLayouts<Any?, M128i>(run { val simdArg0 = Simd<Short>(List(8) { 0.toShort() }); val simdArg1 = 0; val simdArg2 = a; simdArg0 }, UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<M128i>())
 
 public expect fun vcmpph128(a: M128h, b: M128h, imm5: Int, mask: Mmask8): Mmask8
 

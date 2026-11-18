@@ -63,7 +63,7 @@ public open class Decimal(
             } else {
                 // disguised fast path
                 val shift = this.exponent - F.MAX_EXPONENT_FAST_PATH
-                val mantissa = (this.mantissa.checkedMul(INT_POW10[shift.toInt()]) ?: return null)
+                val mantissa = (this.mantissa.checkedMul(INT_POW10[((shift as Any?) as kotlin.Int)]) ?: return null)
                 if (mantissa > F.MAX_MANTISSA_FAST_PATH) {
                     return null
                 }

@@ -9,7 +9,7 @@ import io.github.kotlinmania.rustlang.core.intrinsics.simd.*
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmute
+import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
@@ -160,22 +160,22 @@ public fun <Elem, T : SimdExt<T, Elem>> simdExtLdi(i: Int): T {
     val r =
         if ((i and 0x1000) == 0) {
             when ((i shr 10) and 3) {
-                0 -> transmute(Simd<Byte>(List(8) { imm8.toByte() }))
-                1 -> transmute(Simd<Short>(List(4) { sext(imm10, 10u).toShort() }))
-                2 -> transmute(Simd<Int>(List(2) { sext(imm10, 10u).toInt() }))
+                0 -> transmuteWithLayouts<Any?, T>(Simd<Byte>(List(8) { imm8.toByte() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<T>())
+                1 -> transmuteWithLayouts<Any?, T>(Simd<Short>(List(4) { sext(imm10, 10u).toShort() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<T>())
+                2 -> transmuteWithLayouts<Any?, T>(Simd<Int>(List(2) { sext(imm10, 10u).toInt() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<T>())
                 3 -> sext(imm10, 10u)
                 else -> error("unreachable")
             }
         } else {
             when ((i shr 8) and 0xf) {
-                in 0..3 -> { transmute(Simd<Int>(List(2) { imm8 shl (8 * ((i shr 8) and 3)) })) }
-                in 4..5 -> transmute(Simd<Short>(List(4) { ((imm8.toShort()).toInt() shl (8 * ((i shr 8) and 1))).toShort() }))
-                6 -> transmute(Simd<Int>(List(2) { (imm8 shl 8) or 0xff }))
-                7 -> transmute(Simd<Int>(List(2) { (imm8 shl 16) or 0xffff }))
-                8 -> transmute(Simd<Byte>(List(8) { imm8.toByte() }))
+                in 0..3 -> { transmuteWithLayouts<Any?, T>(Simd<Int>(List(2) { imm8 shl (8 * ((i shr 8) and 3)) }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<T>()) }
+                in 4..5 -> transmuteWithLayouts<Any?, T>(Simd<Short>(List(4) { ((imm8.toShort()).toInt() shl (8 * ((i shr 8) and 1))).toShort() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<T>())
+                6 -> transmuteWithLayouts<Any?, T>(Simd<Int>(List(2) { (imm8 shl 8) or 0xff }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<T>())
+                7 -> transmuteWithLayouts<Any?, T>(Simd<Int>(List(2) { (imm8 shl 16) or 0xffff }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<T>())
+                8 -> transmuteWithLayouts<Any?, T>(Simd<Byte>(List(8) { imm8.toByte() }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<T>())
                 9 -> expandU8(imm8).toLong()
-                10 -> transmute(Simd<Int>(List(2) { fp32Imm(i) }))
-                11 -> transmute(Simd<Int>((intArrayOf(fp32Imm(i), 0)).toList()))
+                10 -> transmuteWithLayouts<Any?, T>(Simd<Int>(List(2) { fp32Imm(i) }), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<T>())
+                11 -> transmuteWithLayouts<Any?, T>(Simd<Int>((intArrayOf(fp32Imm(i), 0)).toList()), UnresolvedTypeLayout<Any?>(), UnresolvedTypeLayout<T>())
                 12 -> fp64Imm(i)
                 else -> error("unreachable")
             }

@@ -1,7 +1,7 @@
 // port-lint: source int/udiv.rs
 package io.github.kotlinmania.rustlang.compilerbuiltins.int.udiv
 
-import io.github.kotlinmania.rustlang.compilerbuiltins.int.specializeddivrem.u128DivideSparc
+import io.github.kotlinmania.rustlang.compilerbuiltins.int.specializeddivrem.delegate.u128DivideSparc
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
@@ -10,33 +10,33 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 
 public fun udivsi3(n: UInt, d: UInt): UInt {
-    fun udivsi3(n1: UInt, d1: UInt): UInt = 0u
-    return udivsi3(n, d)
+    fun externUdivsi3(n1: UInt, d1: UInt): UInt = 0u
+    return externUdivsi3(n, d)
 }
 
 public fun umodsi3(n: UInt, d: UInt): UInt {
-    fun umodsi3(n1: UInt, d1: UInt): UInt = 0u
-    return umodsi3(n, d)
+    fun externUmodsi3(n1: UInt, d1: UInt): UInt = 0u
+    return externUmodsi3(n, d)
 }
 
 public fun udivmodsi4(n: UInt, d: UInt, rem: RustMutableReference<UInt>?): UInt {
-    fun udivmodsi4(n1: UInt, d1: UInt, rem1: RustMutableReference<UInt>?): UInt = 0u
-    return udivmodsi4(n, d, rem)
+    fun externUdivmodsi4(n1: UInt, d1: UInt, rem1: RustMutableReference<UInt>?): UInt = 0u
+    return externUdivmodsi4(n, d, rem)
 }
 
 public fun udivdi3(n: ULong, d: ULong): ULong {
-    fun udivdi3(n1: ULong, d1: ULong): ULong = 0uL
-    return udivdi3(n, d)
+    fun externUdivdi3(n1: ULong, d1: ULong): ULong = 0uL
+    return externUdivdi3(n, d)
 }
 
 public fun umoddi3(n: ULong, d: ULong): ULong {
-    fun umoddi3(n1: ULong, d1: ULong): ULong = 0uL
-    return umoddi3(n, d)
+    fun externUmoddi3(n1: ULong, d1: ULong): ULong = 0uL
+    return externUmoddi3(n, d)
 }
 
 public fun udivmoddi4(n: ULong, d: ULong, rem: RustMutableReference<ULong>?): ULong {
-    fun udivmoddi4(n1: ULong, d1: ULong, rem1: RustMutableReference<ULong>?): ULong = 0uL
-    return udivmoddi4(n, d, rem)
+    fun externUdivmoddi4(n1: ULong, d1: ULong, rem1: RustMutableReference<ULong>?): ULong = 0uL
+    return externUdivmoddi4(n, d, rem)
 }
 
 /**

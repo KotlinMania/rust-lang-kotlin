@@ -23,7 +23,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class IndexRange(
     public var start: Int,
     public var end: Int,
-) : TrustedLen<Any>, Iterable<Int> {
+) : TrustedLen, Iterable<Int> {
     override fun iterator(): Iterator<Int> = object : AbstractIterator<Int>() {
         override fun computeNext() {
             when (val v = this@IndexRange.next()) {

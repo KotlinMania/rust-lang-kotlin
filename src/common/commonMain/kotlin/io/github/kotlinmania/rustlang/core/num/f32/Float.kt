@@ -28,6 +28,7 @@ import io.github.kotlinmania.rustlang.core.num.FpCategory
 import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
 import io.github.kotlinmania.rustlang.core.num.imp.libm.fdimf
 import io.github.kotlinmania.rustlang.core.panic.constAssert
+import io.github.kotlinmania.rustlang.core.result.Result
 
 // Constants for the `Float` single-precision floating point type.
 //

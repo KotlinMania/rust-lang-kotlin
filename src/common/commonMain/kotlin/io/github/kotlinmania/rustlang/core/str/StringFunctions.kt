@@ -2645,7 +2645,7 @@ public fun String.copyFromStr(src: String) {
 public fun String.trimAsciiStart(): String {
     // SAFETY: Removing ASCII characters from a `String` does not invalidate
     // UTF-8.
-    return String.fromUtf8Unchecked(this.encodeToByteArray().map { it.toUByte() }.trimAsciiStart())
+    return fromUtf8Unchecked(this.encodeToByteArray().map { it.toUByte() }.trimAsciiStart())
 }
 
 /**
@@ -2670,7 +2670,7 @@ public fun String.trimAsciiStart(): String {
 public fun String.trimAsciiEnd(): String {
     // SAFETY: Removing ASCII characters from a `String` does not invalidate
     // UTF-8.
-    return String.fromUtf8Unchecked(this.encodeToByteArray().map { it.toUByte() }.trimAsciiEnd())
+    return fromUtf8Unchecked(this.encodeToByteArray().map { it.toUByte() }.trimAsciiEnd())
 }
 
 /**
@@ -2696,7 +2696,7 @@ public fun String.trimAsciiEnd(): String {
 public fun String.trimAscii(): String {
     // SAFETY: Removing ASCII characters from a `String` does not invalidate
     // UTF-8.
-    return String.fromUtf8Unchecked(this.encodeToByteArray().map { it.toUByte() }.trimAscii())
+    return fromUtf8Unchecked(this.encodeToByteArray().map { it.toUByte() }.trimAscii())
 }
 
 /**

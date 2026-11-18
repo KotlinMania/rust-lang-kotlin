@@ -1662,7 +1662,7 @@ public fun <K, A : AllocatorClone, Q> BTreeMap<K, SetValZST, A>.getOrInsertWith(
 public open class Iter<K, V> internal constructor(
     rangeCtorArg: LazyLeafRange<Immut, K, V>,
     public var length: Int,
-) : TrustedLen<Any>, Iterable<Pair<K, V>> {
+) : TrustedLen, Iterable<Pair<K, V>> {
     public var range: LazyLeafRange<Immut, K, V> = rangeCtorArg
         internal set
 
@@ -1743,7 +1743,7 @@ public open class IterMut<K, V> internal constructor(
     public var length: Int,
     // Be invariant in `K` and `V`
     public var marker: Unit,
-) : TrustedLen<Any>, Iterable<Pair<K, V>> {
+) : TrustedLen, Iterable<Pair<K, V>> {
     public var range: LazyLeafRange<ValMut, K, V> = rangeCtorArg
         internal set
 
@@ -1834,7 +1834,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
      * The BTreeMap will outlive this IntoIter so we don't care about drop order for `alloc`.
      */
     public var alloc: A,
-) : TrustedLen<Any>, Iterable<Pair<K, V>> {
+) : TrustedLen, Iterable<Pair<K, V>> {
     public var range: LazyLeafRange<Dying, K, V> = rangeCtorArg
         internal set
 
@@ -1964,7 +1964,7 @@ public open class IntoIter<K, V, A : AllocatorClone> internal constructor(
  */
 public open class Keys<K, V>(
     public var inner: Iter<K, V>,
-) : TrustedLen<Any>, Iterable<K> {
+) : TrustedLen, Iterable<K> {
     override fun iterator(): Iterator<K> = object : AbstractIterator<K>() {
         override fun computeNext() {
             when (val v = this@Keys.next()) {
@@ -2017,7 +2017,7 @@ public open class Keys<K, V>(
  */
 public open class Values<K, V>(
     public var inner: Iter<K, V>,
-) : TrustedLen<Any>, Iterable<V> {
+) : TrustedLen, Iterable<V> {
     override fun iterator(): Iterator<V> = object : AbstractIterator<V>() {
         override fun computeNext() {
             when (val v = this@Values.next()) {
@@ -2066,7 +2066,7 @@ public open class Values<K, V>(
  */
 public open class ValuesMut<K, V>(
     public var inner: IterMut<K, V>,
-) : TrustedLen<Any>, Iterable<V> {
+) : TrustedLen, Iterable<V> {
     override fun iterator(): Iterator<V> = object : AbstractIterator<V>() {
         override fun computeNext() {
             when (val v = this@ValuesMut.next()) {
@@ -2113,7 +2113,7 @@ public open class ValuesMut<K, V>(
  */
 public open class IntoKeys<K, V, A : AllocatorClone> internal constructor(
     innerCtorArg: IntoIter<K, V, A>,
-) : TrustedLen<Any>, Iterable<K> {
+) : TrustedLen, Iterable<K> {
     public var inner: IntoIter<K, V, A> = innerCtorArg
         internal set
 
@@ -2173,7 +2173,7 @@ public open class IntoKeys<K, V, A : AllocatorClone> internal constructor(
  */
 public open class IntoValues<K, V, A : AllocatorClone> internal constructor(
     innerCtorArg: IntoIter<K, V, A>,
-) : TrustedLen<Any>, Iterable<V> {
+) : TrustedLen, Iterable<V> {
     public var inner: IntoIter<K, V, A> = innerCtorArg
         internal set
 

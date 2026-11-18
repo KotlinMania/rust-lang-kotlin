@@ -4,6 +4,7 @@
 package io.github.kotlinmania.rustlang.core.unicode.unicodedata.cf
 
 import io.github.kotlinmania.rustlang.core.char.methods.isAscii
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.ShortOffsetRunHeader
 import io.github.kotlinmania.rustlang.core.unicode.unicodedata.skipSearch
 

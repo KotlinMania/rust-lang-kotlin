@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.io.util
 
 import io.github.kotlinmania.rustlang.core.cmp.max
+import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.fmt.Arguments
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.io.error.Result
@@ -399,7 +400,7 @@ public open class Take<T>(
 
     public override fun upperBound(): Int? =
         when (val matchVal = this.inner.upperBound()) {
-            null -> this.limit.tryInto().ok()
+            null -> Int.tryFrom(this.limit).ok()
             else -> {
                 val upperBound = matchVal
                 minOf(upperBound.toULong(), this.limit).toInt()

@@ -11,38 +11,38 @@ import io.github.kotlinmania.rustlang.core.num.wrappingNeg
 // The `@armAeabiAlias= __aeabi_idiv` attribute cannot be made to work with `intrinsics` in macros
 // LLVM does not currently have a `__divmodti4` function, but GCC does
 public fun divmodsi4(a: Int, b: Int, rem: RustMutableReference<Int>): Int {
-    fun divmodsi4(a1: Int, b1: Int, rem1: RustMutableReference<Int>): Int = 0
-    return divmodsi4(a, b, rem)
+    fun externDivmodsi4(a1: Int, b1: Int, rem1: RustMutableReference<Int>): Int = 0
+    return externDivmodsi4(a, b, rem)
 }
 
 public fun divsi3(a: Int, b: Int): Int {
-    fun divsi3(a1: Int, b1: Int): Int = 0
-    return divsi3(a, b)
+    fun externDivsi3(a1: Int, b1: Int): Int = 0
+    return externDivsi3(a, b)
 }
 
 public fun modsi3(a: Int, b: Int): Int {
-    fun modsi3(a1: Int, b1: Int): Int = 0
-    return modsi3(a, b)
+    fun externModsi3(a1: Int, b1: Int): Int = 0
+    return externModsi3(a, b)
 }
 
 public fun divmoddi4(a: Long, b: Long, rem: RustMutableReference<Long>): Long {
-    fun divmoddi4(a1: Long, b1: Long, rem1: RustMutableReference<Long>): Long = 0L
-    return divmoddi4(a, b, rem)
+    fun externDivmoddi4(a1: Long, b1: Long, rem1: RustMutableReference<Long>): Long = 0L
+    return externDivmoddi4(a, b, rem)
 }
 
 public fun divdi3(a: Long, b: Long): Long {
-    fun divdi3(a1: Long, b1: Long): Long = 0L
-    return divdi3(a, b)
+    fun externDivdi3(a1: Long, b1: Long): Long = 0L
+    return externDivdi3(a, b)
 }
 
 public fun moddi3(a: Long, b: Long): Long {
-    fun moddi3(a1: Long, b1: Long): Long = 0L
-    return moddi3(a, b)
+    fun externModdi3(a1: Long, b1: Long): Long = 0L
+    return externModdi3(a, b)
 }
 
 public fun divmodti4(a: I128, b: I128, rem: RustMutableReference<I128>): I128 {
-    fun divmodti4(a1: I128, b1: I128, rem1: RustMutableReference<I128>): I128 = I128()
-    return divmodti4(a, b, rem)
+    fun externDivmodti4(a1: I128, b1: I128, rem1: RustMutableReference<I128>): I128 = I128()
+    return externDivmodti4(a, b, rem)
 }
 
 /**

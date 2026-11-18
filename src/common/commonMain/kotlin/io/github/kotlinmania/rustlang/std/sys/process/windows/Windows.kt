@@ -5,6 +5,7 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.io.error.Error
 import io.github.kotlinmania.rustlang.core.io.error.ErrorKind
 import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
@@ -12,6 +13,7 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.mem.addrOfMut
 import io.github.kotlinmania.rustlang.core.mem.get
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
@@ -468,13 +470,13 @@ public sealed class Stdio {
             )
         }
     }
-    public class Handle internal constructor(valueCtorArg: Handle) : Stdio() {
-        public var value: Handle = valueCtorArg
+    public class Handle internal constructor(valueCtorArg: io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle) : Stdio() {
+        public var value: io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle = valueCtorArg
             internal set
 
-        public operator fun component1(): Handle = this.value
+        public operator fun component1(): io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle = this.value
 
-        public fun copy(value: Handle = this.value): Handle = Handle(valueCtorArg = value)
+        public fun copy(value: io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle = this.value): Handle = Handle(valueCtorArg = value)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -487,14 +489,14 @@ public sealed class Stdio {
 
         public companion object {
             public operator fun invoke(
-                value: Handle,
+                value: io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle,
             ): Handle = Handle(
                 valueCtorArg = value,
             )
         }
     }
 
-    public open fun toHandle(stdioId: UInt, pipe: ChildPipe?): Result<Handle, Error> {
+    public open fun toHandle(stdioId: UInt, pipe: ChildPipe?): Result<io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle, Error> {
         var pipe1 = pipe
         val useStdioId =
             { stdioId1 -> run {
@@ -520,9 +522,9 @@ public sealed class Stdio {
             }
             Stdio.MakePipe -> {
                 val oursReadable = stdioId != STD_INPUT_HANDLE
-                val pipes = when (val tryResult = childPipe(oursReadable, true)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Handle, Error>(tryResult.errValue()) }
+                val pipes = when (val tryResult = childPipe(oursReadable, true)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle, Error>(tryResult.errValue()) }
                 pipe1 = pipes.ours
-                Result.Ok<Handle, Error>(pipes.theirs.intoHandle())
+                Result.Ok<io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle, Error>(pipes.theirs.intoHandle())
             }
             is Stdio.Pipe -> {
                 val (source) = this as Stdio.Pipe
@@ -565,7 +567,7 @@ public sealed class Stdio {
     public companion object {
         public fun from(pipe: ChildPipe): Stdio = Stdio.Pipe(pipe)
 
-        public fun from(pipe: Handle): Stdio = Stdio.Handle(pipe)
+        public fun from(pipe: io.github.kotlinmania.rustlang.std.sys.pal.windows.handle.Handle): Stdio = Stdio.Handle(pipe)
 
         public fun from(file: File): Stdio = Stdio.Handle(file.intoInner())
 

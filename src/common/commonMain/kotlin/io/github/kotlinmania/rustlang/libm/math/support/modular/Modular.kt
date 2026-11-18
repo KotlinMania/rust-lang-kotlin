@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.libm.math.support.modular
 
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.HInt
 import io.github.kotlinmania.rustlang.libm.math.support.inttraits.Int
 

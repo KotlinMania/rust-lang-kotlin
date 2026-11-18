@@ -29,37 +29,37 @@ public interface Lshr<T> : DInt {
 }
 
 public fun ashlsi3(a: UInt, b: UInt): UInt {
-    fun ashlsi3(a1: UInt, b1: UInt): UInt = 0u
-    return ashlsi3(a, b)
+    fun externAshlsi3(a1: UInt, b1: UInt): UInt = 0u
+    return externAshlsi3(a, b)
 }
 
 public fun ashldi3(a: ULong, b: CUint): ULong {
-    fun ashldi3(a1: ULong, b1: CUint): ULong = 0uL
-    return ashldi3(a, b)
+    fun externAshldi3(a1: ULong, b1: CUint): ULong = 0uL
+    return externAshldi3(a, b)
 }
 
 public fun ashlti3(a: U128, b: UInt): U128 = a.ashl(b)
 
 public fun ashrsi3(a: Int, b: UInt): Int {
-    fun ashrsi3(a1: Int, b1: UInt): Int = 0
-    return ashrsi3(a, b)
+    fun externAshrsi3(a1: Int, b1: UInt): Int = 0
+    return externAshrsi3(a, b)
 }
 
 public fun ashrdi3(a: Long, b: CUint): Long {
-    fun ashrdi3(a1: Long, b1: CUint): Long = 0L
-    return ashrdi3(a, b)
+    fun externAshrdi3(a1: Long, b1: CUint): Long = 0L
+    return externAshrdi3(a, b)
 }
 
 public fun ashrti3(a: I128, b: UInt): I128 = a.ashr(b)
 
 public fun lshrsi3(a: UInt, b: UInt): UInt {
-    fun lshrsi3(a1: UInt, b1: UInt): UInt = 0u
-    return lshrsi3(a, b)
+    fun externLshrsi3(a1: UInt, b1: UInt): UInt = 0u
+    return externLshrsi3(a, b)
 }
 
 public fun lshrdi3(a: ULong, b: CUint): ULong {
-    fun lshrdi3(a1: ULong, b1: CUint): ULong = 0uL
-    return lshrdi3(a, b)
+    fun externLshrdi3(a1: ULong, b1: CUint): ULong = 0uL
+    return externLshrdi3(a, b)
 }
 
 public fun lshrti3(a: U128, b: UInt): U128 = a.lshr(b)

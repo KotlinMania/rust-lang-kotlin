@@ -15,7 +15,7 @@ public expect fun acquireSRWLockExclusive(srwlock: MutPtr)
 
 public expect fun acquireSRWLockShared(srwlock: MutPtr)
 
-public expect fun addVectoredExceptionHandler(first: UInt, handler: PvectoredExceptionHandler): MutPtr
+public expect fun addVectoredExceptionHandler(first: kotlin.UInt, handler: PvectoredExceptionHandler): MutPtr
 
 public expect fun cancelIo(hfile: Handle): Bool
 
@@ -23,107 +23,107 @@ public expect fun closeHandle(hobject: Handle): Bool
 
 public expect fun compareStringOrdinal(lpstring1: ConstPtr, cchcount1: Int, lpstring2: ConstPtr, cchcount2: Int, bignorecase: Bool): Int
 
-public expect fun copyFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, lpprogressroutine: LpprogressRoutine, lpdata: ConstPtr, pbcancel: MutPtr, dwcopyflags: UInt): Bool
+public expect fun copyFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, lpprogressroutine: LpprogressRoutine, lpdata: ConstPtr, pbcancel: MutPtr, dwcopyflags: kotlin.UInt): Bool
 
 public expect fun createDirectoryW(lppathname: Pcwstr, lpsecurityattributes: ConstPtr): Bool
 
 public expect fun createEventW(lpeventattributes: ConstPtr, bmanualreset: Bool, binitialstate: Bool, lpname: Pcwstr): Handle
 
-public expect fun createFileW(lpfilename: Pcwstr, dwdesiredaccess: UInt, dwsharemode: UInt, lpsecurityattributes: ConstPtr, dwcreationdisposition: UInt, dwflagsandattributes: UInt, htemplatefile: Handle): Handle
+public expect fun createFileW(lpfilename: Pcwstr, dwdesiredaccess: kotlin.UInt, dwsharemode: kotlin.UInt, lpsecurityattributes: ConstPtr, dwcreationdisposition: kotlin.UInt, dwflagsandattributes: kotlin.UInt, htemplatefile: Handle): Handle
 
 public expect fun createHardLinkW(lpfilename: Pcwstr, lpexistingfilename: Pcwstr, lpsecurityattributes: ConstPtr): Bool
 
-public expect fun createNamedPipeW(lpname: Pcwstr, dwopenmode: UInt, dwpipemode: UInt, nmaxinstances: UInt, noutbuffersize: UInt, ninbuffersize: UInt, ndefaulttimeout: UInt, lpsecurityattributes: ConstPtr): Handle
+public expect fun createNamedPipeW(lpname: Pcwstr, dwopenmode: kotlin.UInt, dwpipemode: kotlin.UInt, nmaxinstances: kotlin.UInt, noutbuffersize: kotlin.UInt, ninbuffersize: kotlin.UInt, ndefaulttimeout: kotlin.UInt, lpsecurityattributes: ConstPtr): Handle
 
-public expect fun createPipe(hreadpipe: MutPtr, hwritepipe: MutPtr, lppipeattributes: ConstPtr, nsize: UInt): Bool
+public expect fun createPipe(hreadpipe: MutPtr, hwritepipe: MutPtr, lppipeattributes: ConstPtr, nsize: kotlin.UInt): Bool
 
-public expect fun createProcessW(lpapplicationname: Pcwstr, lpcommandline: Pwstr, lpprocessattributes: ConstPtr, lpthreadattributes: ConstPtr, binherithandles: Bool, dwcreationflags: UInt, lpenvironment: ConstPtr, lpcurrentdirectory: Pcwstr, lpstartupinfo: ConstPtr, lpprocessinformation: MutPtr): Bool
+public expect fun createProcessW(lpapplicationname: Pcwstr, lpcommandline: Pwstr, lpprocessattributes: ConstPtr, lpthreadattributes: ConstPtr, binherithandles: Bool, dwcreationflags: kotlin.UInt, lpenvironment: ConstPtr, lpcurrentdirectory: Pcwstr, lpstartupinfo: ConstPtr, lpprocessinformation: MutPtr): Bool
 
-public expect fun createSymbolicLinkW(lpsymlinkfilename: Pcwstr, lptargetfilename: Pcwstr, dwflags: UInt): Boolean
+public expect fun createSymbolicLinkW(lpsymlinkfilename: Pcwstr, lptargetfilename: Pcwstr, dwflags: kotlin.UInt): Boolean
 
-public expect fun createThread(lpthreadattributes: ConstPtr, dwstacksize: ULong, lpstartaddress: LpthreadStartRoutine, lpparameter: ConstPtr, dwcreationflags: UInt, lpthreadid: MutPtr): Handle
+public expect fun createThread(lpthreadattributes: ConstPtr, dwstacksize: ULong, lpstartaddress: LpthreadStartRoutine, lpparameter: ConstPtr, dwcreationflags: kotlin.UInt, lpthreadid: MutPtr): Handle
 
-public expect fun createWaitableTimerExW(lptimerattributes: ConstPtr, lptimername: Pcwstr, dwflags: UInt, dwdesiredaccess: UInt): Handle
+public expect fun createWaitableTimerExW(lptimerattributes: ConstPtr, lptimername: Pcwstr, dwflags: kotlin.UInt, dwdesiredaccess: kotlin.UInt): Handle
 
 public expect fun deleteFileW(lpfilename: Pcwstr): Bool
 
 public expect fun deleteProcThreadAttributeList(lpattributelist: MutPtr)
 
-public expect fun deviceIoControl(hdevice: Handle, dwiocontrolcode: UInt, lpinbuffer: ConstPtr, ninbuffersize: UInt, lpoutbuffer: MutPtr, noutbuffersize: UInt, lpbytesreturned: MutPtr, lpoverlapped: MutPtr): Bool
+public expect fun deviceIoControl(hdevice: Handle, dwiocontrolcode: kotlin.UInt, lpinbuffer: ConstPtr, ninbuffersize: kotlin.UInt, lpoutbuffer: MutPtr, noutbuffersize: kotlin.UInt, lpbytesreturned: MutPtr, lpoverlapped: MutPtr): Bool
 
-public expect fun duplicateHandle(hsourceprocesshandle: Handle, hsourcehandle: Handle, htargetprocesshandle: Handle, lptargethandle: MutPtr, dwdesiredaccess: UInt, binherithandle: Bool, dwoptions: UInt): Bool
+public expect fun duplicateHandle(hsourceprocesshandle: Handle, hsourcehandle: Handle, htargetprocesshandle: Handle, lptargethandle: MutPtr, dwdesiredaccess: kotlin.UInt, binherithandle: Bool, dwoptions: kotlin.UInt): Bool
 
-public expect fun exitProcess(uexitcode: UInt): Nothing
+public expect fun exitProcess(uexitcode: kotlin.UInt): Nothing
 
 public expect fun findClose(hfindfile: Handle): Bool
 
-public expect fun findFirstFileExW(lpfilename: Pcwstr, finfolevelid: FindexInfoLevels, lpfindfiledata: MutPtr, fsearchop: FindexSearchOps, lpsearchfilter: ConstPtr, dwadditionalflags: UInt): Handle
+public expect fun findFirstFileExW(lpfilename: Pcwstr, finfolevelid: FindexInfoLevels, lpfindfiledata: MutPtr, fsearchop: FindexSearchOps, lpsearchfilter: ConstPtr, dwadditionalflags: kotlin.UInt): Handle
 
 public expect fun findNextFileW(hfindfile: Handle, lpfindfiledata: MutPtr): Bool
 
-public expect fun flsAlloc(lpcallback: PflsCallbackFunction): UInt
+public expect fun flsAlloc(lpcallback: PflsCallbackFunction): kotlin.UInt
 
-public expect fun flsFree(dwflsindex: UInt): Bool
+public expect fun flsFree(dwflsindex: kotlin.UInt): Bool
 
-public expect fun flsGetValue(dwflsindex: UInt): MutPtr
+public expect fun flsGetValue(dwflsindex: kotlin.UInt): MutPtr
 
-public expect fun flsSetValue(dwflsindex: UInt, lpflsdata: ConstPtr): Bool
+public expect fun flsSetValue(dwflsindex: kotlin.UInt, lpflsdata: ConstPtr): Bool
 
 public expect fun flushFileBuffers(hfile: Handle): Bool
 
-public expect fun formatMessageW(dwflags: UInt, lpsource: ConstPtr, dwmessageid: UInt, dwlanguageid: UInt, lpbuffer: Pcwstr, nsize: UInt, arguments: ConstPtr): UInt
+public expect fun formatMessageW(dwflags: kotlin.UInt, lpsource: ConstPtr, dwmessageid: kotlin.UInt, dwlanguageid: kotlin.UInt, lpbuffer: Pcwstr, nsize: kotlin.UInt, arguments: ConstPtr): kotlin.UInt
 
 public expect fun freeEnvironmentStringsW(penv: ConstPtr): Bool
 
-public expect fun getActiveProcessorCount(groupnumber: UShort): UInt
+public expect fun getActiveProcessorCount(groupnumber: kotlin.UShort): kotlin.UInt
 
 public expect fun getCommandLineW(): Pwstr
 
 public expect fun getConsoleMode(hconsolehandle: Handle, lpmode: MutPtr): Bool
 
-public expect fun getConsoleOutputCP(): UInt
+public expect fun getConsoleOutputCP(): kotlin.UInt
 
-public expect fun getCurrentDirectoryW(nbufferlength: UInt, lpbuffer: Pwstr): UInt
+public expect fun getCurrentDirectoryW(nbufferlength: kotlin.UInt, lpbuffer: Pwstr): kotlin.UInt
 
 public expect fun getCurrentProcess(): Handle
 
-public expect fun getCurrentProcessId(): UInt
+public expect fun getCurrentProcessId(): kotlin.UInt
 
 public expect fun getCurrentThread(): Handle
 
-public expect fun getCurrentThreadId(): UInt
+public expect fun getCurrentThreadId(): kotlin.UInt
 
 public expect fun getEnvironmentStringsW(): Lpwch
 
-public expect fun getEnvironmentVariableW(lpname: Pcwstr, lpbuffer: Pwstr, nsize: UInt): UInt
+public expect fun getEnvironmentVariableW(lpname: Pcwstr, lpbuffer: Pwstr, nsize: kotlin.UInt): kotlin.UInt
 
 public expect fun getExitCodeProcess(hprocess: Handle, lpexitcode: MutPtr): Bool
 
-public expect fun getFileAttributesW(lpfilename: Pcwstr): UInt
+public expect fun getFileAttributesW(lpfilename: Pcwstr): kotlin.UInt
 
 public expect fun getFileInformationByHandle(hfile: Handle, lpfileinformation: MutPtr): Bool
 
-public expect fun getFileInformationByHandleEx(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: MutPtr, dwbuffersize: UInt): Bool
+public expect fun getFileInformationByHandleEx(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: MutPtr, dwbuffersize: kotlin.UInt): Bool
 
 public expect fun getFileSizeEx(hfile: Handle, lpfilesize: MutPtr): Bool
 
-public expect fun getFileType(hfile: Handle): UInt
+public expect fun getFileType(hfile: Handle): kotlin.UInt
 
-public expect fun getFinalPathNameByHandleW(hfile: Handle, lpszfilepath: Pwstr, cchfilepath: UInt, dwflags: UInt): UInt
+public expect fun getFinalPathNameByHandleW(hfile: Handle, lpszfilepath: Pwstr, cchfilepath: kotlin.UInt, dwflags: kotlin.UInt): kotlin.UInt
 
-public expect fun getFullPathNameW(lpfilename: Pcwstr, nbufferlength: UInt, lpbuffer: Pwstr, lpfilepart: MutPtr): UInt
+public expect fun getFullPathNameW(lpfilename: Pcwstr, nbufferlength: kotlin.UInt, lpbuffer: Pwstr, lpfilepart: MutPtr): kotlin.UInt
 
 public expect fun getHostNameW(name: Pwstr, namelen: Int): Int
 
-public expect fun getLastError(): UInt
+public expect fun getLastError(): kotlin.UInt
 
-public expect fun getLogicalDrives(): UInt
+public expect fun getLogicalDrives(): kotlin.UInt
 
-public expect fun getModuleFileNameW(hmodule: Hmodule, lpfilename: Pwstr, nsize: UInt): UInt
+public expect fun getModuleFileNameW(hmodule: Hmodule, lpfilename: Pwstr, nsize: kotlin.UInt): kotlin.UInt
 
 public expect fun getModuleHandleA(lpmodulename: Pcstr): Hmodule
 
-public expect fun getModuleHandleExW(dwflags: UInt, lpmodulename: Pcwstr, phmodule: MutPtr): Bool
+public expect fun getModuleHandleExW(dwflags: kotlin.UInt, lpmodulename: Pcwstr, phmodule: MutPtr): Bool
 
 public expect fun getModuleHandleW(lpmodulename: Pcwstr): Hmodule
 
@@ -131,11 +131,11 @@ public expect fun getOverlappedResult(hfile: Handle, lpoverlapped: ConstPtr, lpn
 
 public expect fun getProcAddress(hmodule: Hmodule, lpprocname: Pcstr): Farproc
 
-public expect fun getProcessId(process: Handle): UInt
+public expect fun getProcessId(process: Handle): kotlin.UInt
 
-public expect fun getStdHandle(nstdhandle: UInt): Handle
+public expect fun getStdHandle(nstdhandle: kotlin.UInt): Handle
 
-public expect fun getSystemDirectoryW(lpbuffer: Pwstr, usize: UInt): UInt
+public expect fun getSystemDirectoryW(lpbuffer: Pwstr, usize: kotlin.UInt): kotlin.UInt
 
 public expect fun getSystemInfo(lpsysteminfo: MutPtr)
 
@@ -143,55 +143,55 @@ public expect fun getSystemTimeAsFileTime(lpsystemtimeasfiletime: MutPtr)
 
 public expect fun getSystemTimePreciseAsFileTime(lpsystemtimeasfiletime: MutPtr)
 
-public expect fun getTempPathW(nbufferlength: UInt, lpbuffer: Pwstr): UInt
+public expect fun getTempPathW(nbufferlength: kotlin.UInt, lpbuffer: Pwstr): kotlin.UInt
 
 public expect fun getUserProfileDirectoryW(htoken: Handle, lpprofiledir: Pwstr, lpcchsize: MutPtr): Bool
 
-public expect fun getWindowsDirectoryW(lpbuffer: Pwstr, usize: UInt): UInt
+public expect fun getWindowsDirectoryW(lpbuffer: Pwstr, usize: kotlin.UInt): kotlin.UInt
 
-public expect fun initOnceBeginInitialize(lpinitonce: LpinitOnce, dwflags: UInt, fpending: MutPtr, lpcontext: MutPtr): Bool
+public expect fun initOnceBeginInitialize(lpinitonce: LpinitOnce, dwflags: kotlin.UInt, fpending: MutPtr, lpcontext: MutPtr): Bool
 
-public expect fun initOnceComplete(lpinitonce: LpinitOnce, dwflags: UInt, lpcontext: ConstPtr): Bool
+public expect fun initOnceComplete(lpinitonce: LpinitOnce, dwflags: kotlin.UInt, lpcontext: ConstPtr): Bool
 
-public expect fun initializeProcThreadAttributeList(lpattributelist: MutPtr, dwattributecount: UInt, dwflags: UInt, lpsize: MutPtr): Bool
+public expect fun initializeProcThreadAttributeList(lpattributelist: MutPtr, dwattributecount: kotlin.UInt, dwflags: kotlin.UInt, lpsize: MutPtr): Bool
 
 public expect fun isThreadAFiber(): Bool
 
-public expect fun loadLibraryExA(lplibfilename: Pcstr, hfile: Handle, dwflags: UInt): Hmodule
+public expect fun loadLibraryExA(lplibfilename: Pcstr, hfile: Handle, dwflags: kotlin.UInt): Hmodule
 
 public expect fun localFree(hmem: Hlocal): Hlocal
 
-public expect fun lockFileEx(hfile: Handle, dwflags: UInt, dwreserved: UInt, nnumberofbytestolocklow: UInt, nnumberofbytestolockhigh: UInt, lpoverlapped: MutPtr): Bool
+public expect fun lockFileEx(hfile: Handle, dwflags: kotlin.UInt, dwreserved: kotlin.UInt, nnumberofbytestolocklow: kotlin.UInt, nnumberofbytestolockhigh: kotlin.UInt, lpoverlapped: MutPtr): Bool
 
-public expect fun moveFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, dwflags: UInt): Bool
+public expect fun moveFileExW(lpexistingfilename: Pcwstr, lpnewfilename: Pcwstr, dwflags: kotlin.UInt): Bool
 
-public expect fun multiByteToWideChar(codepage: UInt, dwflags: UInt, lpmultibytestr: ConstPtr, cbmultibyte: Int, lpwidecharstr: Pwstr, cchwidechar: Int): Int
+public expect fun multiByteToWideChar(codepage: kotlin.UInt, dwflags: kotlin.UInt, lpmultibytestr: ConstPtr, cbmultibyte: Int, lpwidecharstr: Pwstr, cchwidechar: Int): Int
 
-public expect fun ntCreateFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, allocationsize: ConstPtr, fileattributes: UInt, shareaccess: UInt, createdisposition: UInt, createoptions: UInt, eabuffer: ConstPtr, ealength: UInt): Ntstatus
+public expect fun ntCreateFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, allocationsize: ConstPtr, fileattributes: kotlin.UInt, shareaccess: kotlin.UInt, createdisposition: kotlin.UInt, createoptions: kotlin.UInt, eabuffer: ConstPtr, ealength: kotlin.UInt): Ntstatus
 
-public expect fun ntOpenFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, shareaccess: UInt, openoptions: UInt): Ntstatus
+public expect fun ntOpenFile(filehandle: MutPtr, desiredaccess: AccessMask, objectattributes: ConstPtr, iostatusblock: MutPtr, shareaccess: kotlin.UInt, openoptions: kotlin.UInt): Ntstatus
 
-public expect fun ntQueryVolumeInformationFile(filehandle: Handle, iostatusblock: MutPtr, fsinformation: MutPtr, length: UInt, fsinformationclass: FsInformationClass): Ntstatus
+public expect fun ntQueryVolumeInformationFile(filehandle: Handle, iostatusblock: MutPtr, fsinformation: MutPtr, length: kotlin.UInt, fsinformationclass: FsInformationClass): Ntstatus
 
-public expect fun ntReadFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: MutPtr, length: UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus
+public expect fun ntReadFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: MutPtr, length: kotlin.UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus
 
-public expect fun ntSetInformationFile(filehandle: Handle, iostatusblock: MutPtr, fileinformation: ConstPtr, length: UInt, fileinformationclass: FileInformationClass): Ntstatus
+public expect fun ntSetInformationFile(filehandle: Handle, iostatusblock: MutPtr, fileinformation: ConstPtr, length: kotlin.UInt, fileinformationclass: FileInformationClass): Ntstatus
 
-public expect fun ntWriteFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: ConstPtr, length: UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus
+public expect fun ntWriteFile(filehandle: Handle, event: Handle, apcroutine: PioApcRoutine, apccontext: ConstPtr, iostatusblock: MutPtr, buffer: ConstPtr, length: kotlin.UInt, byteoffset: ConstPtr, key: ConstPtr): Ntstatus
 
-public expect fun openProcessToken(processhandle: Handle, desiredaccess: UInt, tokenhandle: MutPtr): Bool
+public expect fun openProcessToken(processhandle: Handle, desiredaccess: kotlin.UInt, tokenhandle: MutPtr): Bool
 
-public expect fun queryDosDeviceW(lpdevicename: Pcwstr, lptargetpath: Pwstr, ucchmax: UInt): UInt
+public expect fun queryDosDeviceW(lpdevicename: Pcwstr, lptargetpath: Pwstr, ucchmax: kotlin.UInt): kotlin.UInt
 
 public expect fun queryPerformanceCounter(lpperformancecount: MutPtr): Bool
 
 public expect fun queryPerformanceFrequency(lpfrequency: MutPtr): Bool
 
-public expect fun readConsoleW(hconsoleinput: Handle, lpbuffer: MutPtr, nnumberofcharstoread: UInt, lpnumberofcharsread: MutPtr, pinputcontrol: ConstPtr): Bool
+public expect fun readConsoleW(hconsoleinput: Handle, lpbuffer: MutPtr, nnumberofcharstoread: kotlin.UInt, lpnumberofcharsread: MutPtr, pinputcontrol: ConstPtr): Bool
 
-public expect fun readFile(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: UInt, lpnumberofbytesread: MutPtr, lpoverlapped: MutPtr): Bool
+public expect fun readFile(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: kotlin.UInt, lpnumberofbytesread: MutPtr, lpoverlapped: MutPtr): Bool
 
-public expect fun readFileEx(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool
+public expect fun readFileEx(hfile: Handle, lpbuffer: MutPtr, nnumberofbytestoread: kotlin.UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool
 
 public expect fun releaseSRWLockExclusive(srwlock: MutPtr)
 
@@ -199,77 +199,77 @@ public expect fun releaseSRWLockShared(srwlock: MutPtr)
 
 public expect fun removeDirectoryW(lppathname: Pcwstr): Bool
 
-public expect fun rtlGenRandom(randombuffer: MutPtr, randombufferlength: UInt): Boolean
+public expect fun rtlGenRandom(randombuffer: MutPtr, randombufferlength: kotlin.UInt): Boolean
 
-public expect fun rtlNtStatusToDosError(status: Ntstatus): UInt
+public expect fun rtlNtStatusToDosError(status: Ntstatus): kotlin.UInt
 
 public expect fun setCurrentDirectoryW(lppathname: Pcwstr): Bool
 
 public expect fun setEnvironmentVariableW(lpname: Pcwstr, lpvalue: Pcwstr): Bool
 
-public expect fun setFileAttributesW(lpfilename: Pcwstr, dwfileattributes: UInt): Bool
+public expect fun setFileAttributesW(lpfilename: Pcwstr, dwfileattributes: kotlin.UInt): Bool
 
-public expect fun setFileInformationByHandle(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: ConstPtr, dwbuffersize: UInt): Bool
+public expect fun setFileInformationByHandle(hfile: Handle, fileinformationclass: FileInfoByHandleClass, lpfileinformation: ConstPtr, dwbuffersize: kotlin.UInt): Bool
 
-public expect fun setFilePointerEx(hfile: Handle, lidistancetomove: Long, lpnewfilepointer: MutPtr, dwmovemethod: UInt): Bool
+public expect fun setFilePointerEx(hfile: Handle, lidistancetomove: Long, lpnewfilepointer: MutPtr, dwmovemethod: kotlin.UInt): Bool
 
 public expect fun setFileTime(hfile: Handle, lpcreationtime: ConstPtr, lplastaccesstime: ConstPtr, lplastwritetime: ConstPtr): Bool
 
-public expect fun setHandleInformation(hobject: Handle, dwmask: UInt, dwflags: UInt): Bool
+public expect fun setHandleInformation(hobject: Handle, dwmask: kotlin.UInt, dwflags: kotlin.UInt): Bool
 
-public expect fun setLastError(dwerrcode: UInt)
+public expect fun setLastError(dwerrcode: kotlin.UInt)
 
-public expect fun setStdHandle(nstdhandle: UInt, hhandle: Handle): Bool
+public expect fun setStdHandle(nstdhandle: kotlin.UInt, hhandle: Handle): Bool
 
 public expect fun setThreadStackGuarantee(stacksizeinbytes: MutPtr): Bool
 
 public expect fun setWaitableTimer(htimer: Handle, lpduetime: ConstPtr, lperiod: Int, pfncompletionroutine: Ptimerapcroutine, lpargtocompletionroutine: ConstPtr, fresume: Bool): Bool
 
-public expect fun sleep(dwmilliseconds: UInt)
+public expect fun sleep(dwmilliseconds: kotlin.UInt)
 
-public expect fun sleepConditionVariableSRW(conditionvariable: MutPtr, srwlock: MutPtr, dwmilliseconds: UInt, flags: UInt): Bool
+public expect fun sleepConditionVariableSRW(conditionvariable: MutPtr, srwlock: MutPtr, dwmilliseconds: kotlin.UInt, flags: kotlin.UInt): Bool
 
-public expect fun sleepEx(dwmilliseconds: UInt, balertable: Bool): UInt
+public expect fun sleepEx(dwmilliseconds: kotlin.UInt, balertable: Bool): kotlin.UInt
 
 public expect fun switchToThread(): Bool
 
-public expect fun terminateProcess(hprocess: Handle, uexitcode: UInt): Bool
+public expect fun terminateProcess(hprocess: Handle, uexitcode: kotlin.UInt): Bool
 
-public expect fun tlsAlloc(): UInt
+public expect fun tlsAlloc(): kotlin.UInt
 
-public expect fun tlsFree(dwtlsindex: UInt): Bool
+public expect fun tlsFree(dwtlsindex: kotlin.UInt): Bool
 
-public expect fun tlsGetValue(dwtlsindex: UInt): MutPtr
+public expect fun tlsGetValue(dwtlsindex: kotlin.UInt): MutPtr
 
-public expect fun tlsSetValue(dwtlsindex: UInt, lptlsvalue: ConstPtr): Bool
+public expect fun tlsSetValue(dwtlsindex: kotlin.UInt, lptlsvalue: ConstPtr): Bool
 
 public expect fun tryAcquireSRWLockExclusive(srwlock: MutPtr): Boolean
 
 public expect fun tryAcquireSRWLockShared(srwlock: MutPtr): Boolean
 
-public expect fun unlockFile(hfile: Handle, dwfileoffsetlow: UInt, dwfileoffsethigh: UInt, nnumberofbytestounlocklow: UInt, nnumberofbytestounlockhigh: UInt): Bool
+public expect fun unlockFile(hfile: Handle, dwfileoffsetlow: kotlin.UInt, dwfileoffsethigh: kotlin.UInt, nnumberofbytestounlocklow: kotlin.UInt, nnumberofbytestounlockhigh: kotlin.UInt): Bool
 
-public expect fun updateProcThreadAttribute(lpattributelist: MutPtr, dwflags: UInt, attribute: ULong, lpvalue: ConstPtr, cbsize: ULong, lppreviousvalue: MutPtr, lpreturnsize: ConstPtr): Bool
+public expect fun updateProcThreadAttribute(lpattributelist: MutPtr, dwflags: kotlin.UInt, attribute: ULong, lpvalue: ConstPtr, cbsize: ULong, lppreviousvalue: MutPtr, lpreturnsize: ConstPtr): Bool
 
 public expect fun wSACleanup(): Int
 
-public expect fun wSADuplicateSocketW(s: Socket, dwprocessid: UInt, lpprotocolinfo: MutPtr): Int
+public expect fun wSADuplicateSocketW(s: Socket, dwprocessid: kotlin.UInt, lpprotocolinfo: MutPtr): Int
 
 public expect fun wSAGetLastError(): Int
 
-public expect fun wSARecv(s: Socket, lpbuffers: ConstPtr, dwbuffercount: UInt, lpnumberofbytesrecvd: MutPtr, lpflags: MutPtr, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int
+public expect fun wSARecv(s: Socket, lpbuffers: ConstPtr, dwbuffercount: kotlin.UInt, lpnumberofbytesrecvd: MutPtr, lpflags: MutPtr, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int
 
-public expect fun wSASend(s: Socket, lpbuffers: ConstPtr, dwbuffercount: UInt, lpnumberofbytessent: MutPtr, dwflags: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int
+public expect fun wSASend(s: Socket, lpbuffers: ConstPtr, dwbuffercount: kotlin.UInt, lpnumberofbytessent: MutPtr, dwflags: kotlin.UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpwsaoverlappedCompletionRoutine): Int
 
-public expect fun wSASocketW(af: Int, type: Int, protocol: Int, lpprotocolinfo: ConstPtr, g: Group, dwflags: UInt): Socket
+public expect fun wSASocketW(af: Int, type: Int, protocol: Int, lpprotocolinfo: ConstPtr, g: Group, dwflags: kotlin.UInt): Socket
 
-public expect fun wSAStartup(wversionrequested: UShort, lpwsadata: MutPtr): Int
+public expect fun wSAStartup(wversionrequested: kotlin.UShort, lpwsadata: MutPtr): Int
 
-public expect fun waitForMultipleObjects(ncount: UInt, lphandles: ConstPtr, bwaitall: Bool, dwmilliseconds: UInt): UInt
+public expect fun waitForMultipleObjects(ncount: kotlin.UInt, lphandles: ConstPtr, bwaitall: Bool, dwmilliseconds: kotlin.UInt): kotlin.UInt
 
-public expect fun waitForSingleObject(hhandle: Handle, dwmilliseconds: UInt): UInt
+public expect fun waitForSingleObject(hhandle: Handle, dwmilliseconds: kotlin.UInt): kotlin.UInt
 
-public expect fun waitOnAddress(address: ConstPtr, compareaddress: ConstPtr, addresssize: ULong, dwmilliseconds: UInt): Bool
+public expect fun waitOnAddress(address: ConstPtr, compareaddress: ConstPtr, addresssize: ULong, dwmilliseconds: kotlin.UInt): Bool
 
 public expect fun wakeAllConditionVariable(conditionvariable: MutPtr)
 
@@ -279,11 +279,11 @@ public expect fun wakeByAddressSingle(address: ConstPtr)
 
 public expect fun wakeConditionVariable(conditionvariable: MutPtr)
 
-public expect fun wideCharToMultiByte(codepage: UInt, dwflags: UInt, lpwidecharstr: ConstPtr, cchwidechar: Int, lpmultibytestr: Pstr, cbmultibyte: Int, lpdefaultchar: ConstPtr, lpuseddefaultchar: MutPtr): Int
+public expect fun wideCharToMultiByte(codepage: kotlin.UInt, dwflags: kotlin.UInt, lpwidecharstr: ConstPtr, cchwidechar: Int, lpmultibytestr: Pstr, cbmultibyte: Int, lpdefaultchar: ConstPtr, lpuseddefaultchar: MutPtr): Int
 
-public expect fun writeConsoleW(hconsoleoutput: Handle, lpbuffer: ConstPtr, nnumberofcharstowrite: UInt, lpnumberofcharswritten: MutPtr, lpreserved: ConstPtr): Bool
+public expect fun writeConsoleW(hconsoleoutput: Handle, lpbuffer: ConstPtr, nnumberofcharstowrite: kotlin.UInt, lpnumberofcharswritten: MutPtr, lpreserved: ConstPtr): Bool
 
-public expect fun writeFileEx(hfile: Handle, lpbuffer: ConstPtr, nnumberofbytestowrite: UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool
+public expect fun writeFileEx(hfile: Handle, lpbuffer: ConstPtr, nnumberofbytestowrite: kotlin.UInt, lpoverlapped: MutPtr, lpcompletionroutine: LpoverlappedCompletionRoutine): Bool
 
 public expect fun accept(s: Socket, addr: MutPtr, addrlen: MutPtr): Socket
 
@@ -325,9 +325,9 @@ public expect fun shutdown(s: Socket, how: Int): Int
 
 public val ABOVE_NORMAL_PRIORITY_CLASS: Int = 32768
 
-public typealias AccessMask = UInt
+public typealias AccessMask = kotlin.UInt
 
-public typealias AddressFamily = UShort
+public typealias AddressFamily = kotlin.UShort
 
 public open class Addrinfoa internal constructor(
     public var aiFlags: Int,
@@ -432,18 +432,18 @@ public val AF_UNSPEC: Int = 0
 public val ALL_PROCESSOR_GROUPS: Int = 65535
 
 public open class Arm64NtContext(
-    public var contextFlags: UInt,
-    public var cpsr: UInt,
+    public var contextFlags: kotlin.UInt,
+    public var cpsr: kotlin.UInt,
     public var anonymous: Arm64NtContext0,
-    public var sp: ULong,
-    public var pc: ULong,
+    public var sp: kotlin.ULong,
+    public var pc: kotlin.ULong,
     public var v: List<Arm64NtNeon128>,
-    public var fpcr: UInt,
-    public var fpsr: UInt,
+    public var fpcr: kotlin.UInt,
+    public var fpsr: kotlin.UInt,
     public var bcr: UIntArray,
-    public var bvr: ULongArray,
+    public var bvr: UIntArray,
     public var wcr: UIntArray,
-    public var wvr: ULongArray,
+    public var wvr: UIntArray,
 ) {
     public open fun clone(): Arm64NtContext = Arm64NtContext(contextFlags, cpsr, anonymous, sp, pc, v, fpcr, fpsr, bcr, bvr, wcr, wvr)
 
@@ -454,7 +454,7 @@ public open class Arm64NtContext(
 
 public open class Arm64NtContext0(
     public var anonymous: Arm64NtContext00? = null,
-    public var x: ULongArray? = null,
+    public var x: UIntArray? = null,
 ) {
     public companion object {
         public fun default(): Arm64NtContext0 = Arm64NtContext0()
@@ -462,178 +462,178 @@ public open class Arm64NtContext0(
 }
 
 public open class Arm64NtContext00(
-    public var x0: ULong,
-    public var x1: ULong,
-    public var x2: ULong,
-    public var x3: ULong,
-    public var x4: ULong,
-    public var x5: ULong,
-    public var x6: ULong,
-    public var x7: ULong,
-    public var x8: ULong,
-    public var x9: ULong,
-    public var x10: ULong,
-    public var x11: ULong,
-    public var x12: ULong,
-    public var x13: ULong,
-    public var x14: ULong,
-    public var x15: ULong,
-    public var x16: ULong,
-    public var x17: ULong,
-    public var x18: ULong,
-    public var x19: ULong,
-    public var x20: ULong,
-    public var x21: ULong,
-    public var x22: ULong,
-    public var x23: ULong,
-    public var x24: ULong,
-    public var x25: ULong,
-    public var x26: ULong,
-    public var x27: ULong,
-    public var x28: ULong,
-    public var fp: ULong,
-    public var lr: ULong,
+    public var x0: kotlin.ULong,
+    public var x1: kotlin.ULong,
+    public var x2: kotlin.ULong,
+    public var x3: kotlin.ULong,
+    public var x4: kotlin.ULong,
+    public var x5: kotlin.ULong,
+    public var x6: kotlin.ULong,
+    public var x7: kotlin.ULong,
+    public var x8: kotlin.ULong,
+    public var x9: kotlin.ULong,
+    public var x10: kotlin.ULong,
+    public var x11: kotlin.ULong,
+    public var x12: kotlin.ULong,
+    public var x13: kotlin.ULong,
+    public var x14: kotlin.ULong,
+    public var x15: kotlin.ULong,
+    public var x16: kotlin.ULong,
+    public var x17: kotlin.ULong,
+    public var x18: kotlin.ULong,
+    public var x19: kotlin.ULong,
+    public var x20: kotlin.ULong,
+    public var x21: kotlin.ULong,
+    public var x22: kotlin.ULong,
+    public var x23: kotlin.ULong,
+    public var x24: kotlin.ULong,
+    public var x25: kotlin.ULong,
+    public var x26: kotlin.ULong,
+    public var x27: kotlin.ULong,
+    public var x28: kotlin.ULong,
+    public var fp: kotlin.ULong,
+    public var lr: kotlin.ULong,
 ) {
     public open fun clone(): Arm64NtContext00 = Arm64NtContext00(x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, fp, lr)
 
     public companion object {
         public fun typeLayout(): TypeLayout<Arm64NtContext00> =
             object : TypeLayout<Arm64NtContext00> {
-                override val alignBytes: Long = 8L
-                override val sizeBytes: Long = 248L
+                override val alignBytes: Long = 4L
+                override val sizeBytes: Long = 124L
                 override fun readNative(addr: Long): Arm64NtContext00 =
                     Arm64NtContext00(
-                        (PrimitiveLayouts.U64).readNative(addr),
-                        (PrimitiveLayouts.U64).readNative(addr + 8L),
-                        (PrimitiveLayouts.U64).readNative(addr + 16L),
-                        (PrimitiveLayouts.U64).readNative(addr + 24L),
-                        (PrimitiveLayouts.U64).readNative(addr + 32L),
-                        (PrimitiveLayouts.U64).readNative(addr + 40L),
-                        (PrimitiveLayouts.U64).readNative(addr + 48L),
-                        (PrimitiveLayouts.U64).readNative(addr + 56L),
-                        (PrimitiveLayouts.U64).readNative(addr + 64L),
-                        (PrimitiveLayouts.U64).readNative(addr + 72L),
-                        (PrimitiveLayouts.U64).readNative(addr + 80L),
-                        (PrimitiveLayouts.U64).readNative(addr + 88L),
-                        (PrimitiveLayouts.U64).readNative(addr + 96L),
-                        (PrimitiveLayouts.U64).readNative(addr + 104L),
-                        (PrimitiveLayouts.U64).readNative(addr + 112L),
-                        (PrimitiveLayouts.U64).readNative(addr + 120L),
-                        (PrimitiveLayouts.U64).readNative(addr + 128L),
-                        (PrimitiveLayouts.U64).readNative(addr + 136L),
-                        (PrimitiveLayouts.U64).readNative(addr + 144L),
-                        (PrimitiveLayouts.U64).readNative(addr + 152L),
-                        (PrimitiveLayouts.U64).readNative(addr + 160L),
-                        (PrimitiveLayouts.U64).readNative(addr + 168L),
-                        (PrimitiveLayouts.U64).readNative(addr + 176L),
-                        (PrimitiveLayouts.U64).readNative(addr + 184L),
-                        (PrimitiveLayouts.U64).readNative(addr + 192L),
-                        (PrimitiveLayouts.U64).readNative(addr + 200L),
-                        (PrimitiveLayouts.U64).readNative(addr + 208L),
-                        (PrimitiveLayouts.U64).readNative(addr + 216L),
-                        (PrimitiveLayouts.U64).readNative(addr + 224L),
-                        (PrimitiveLayouts.U64).readNative(addr + 232L),
-                        (PrimitiveLayouts.U64).readNative(addr + 240L),
+                        (PrimitiveLayouts.U32).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr + 4L),
+                        (PrimitiveLayouts.U32).readNative(addr + 8L),
+                        (PrimitiveLayouts.U32).readNative(addr + 12L),
+                        (PrimitiveLayouts.U32).readNative(addr + 16L),
+                        (PrimitiveLayouts.U32).readNative(addr + 20L),
+                        (PrimitiveLayouts.U32).readNative(addr + 24L),
+                        (PrimitiveLayouts.U32).readNative(addr + 28L),
+                        (PrimitiveLayouts.U32).readNative(addr + 32L),
+                        (PrimitiveLayouts.U32).readNative(addr + 36L),
+                        (PrimitiveLayouts.U32).readNative(addr + 40L),
+                        (PrimitiveLayouts.U32).readNative(addr + 44L),
+                        (PrimitiveLayouts.U32).readNative(addr + 48L),
+                        (PrimitiveLayouts.U32).readNative(addr + 52L),
+                        (PrimitiveLayouts.U32).readNative(addr + 56L),
+                        (PrimitiveLayouts.U32).readNative(addr + 60L),
+                        (PrimitiveLayouts.U32).readNative(addr + 64L),
+                        (PrimitiveLayouts.U32).readNative(addr + 68L),
+                        (PrimitiveLayouts.U32).readNative(addr + 72L),
+                        (PrimitiveLayouts.U32).readNative(addr + 76L),
+                        (PrimitiveLayouts.U32).readNative(addr + 80L),
+                        (PrimitiveLayouts.U32).readNative(addr + 84L),
+                        (PrimitiveLayouts.U32).readNative(addr + 88L),
+                        (PrimitiveLayouts.U32).readNative(addr + 92L),
+                        (PrimitiveLayouts.U32).readNative(addr + 96L),
+                        (PrimitiveLayouts.U32).readNative(addr + 100L),
+                        (PrimitiveLayouts.U32).readNative(addr + 104L),
+                        (PrimitiveLayouts.U32).readNative(addr + 108L),
+                        (PrimitiveLayouts.U32).readNative(addr + 112L),
+                        (PrimitiveLayouts.U32).readNative(addr + 116L),
+                        (PrimitiveLayouts.U32).readNative(addr + 120L),
                     )
                 override fun writeNative(addr: Long, value: Arm64NtContext00) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.x0)
-                    (PrimitiveLayouts.U64).writeNative(addr + 8L, value.x1)
-                    (PrimitiveLayouts.U64).writeNative(addr + 16L, value.x2)
-                    (PrimitiveLayouts.U64).writeNative(addr + 24L, value.x3)
-                    (PrimitiveLayouts.U64).writeNative(addr + 32L, value.x4)
-                    (PrimitiveLayouts.U64).writeNative(addr + 40L, value.x5)
-                    (PrimitiveLayouts.U64).writeNative(addr + 48L, value.x6)
-                    (PrimitiveLayouts.U64).writeNative(addr + 56L, value.x7)
-                    (PrimitiveLayouts.U64).writeNative(addr + 64L, value.x8)
-                    (PrimitiveLayouts.U64).writeNative(addr + 72L, value.x9)
-                    (PrimitiveLayouts.U64).writeNative(addr + 80L, value.x10)
-                    (PrimitiveLayouts.U64).writeNative(addr + 88L, value.x11)
-                    (PrimitiveLayouts.U64).writeNative(addr + 96L, value.x12)
-                    (PrimitiveLayouts.U64).writeNative(addr + 104L, value.x13)
-                    (PrimitiveLayouts.U64).writeNative(addr + 112L, value.x14)
-                    (PrimitiveLayouts.U64).writeNative(addr + 120L, value.x15)
-                    (PrimitiveLayouts.U64).writeNative(addr + 128L, value.x16)
-                    (PrimitiveLayouts.U64).writeNative(addr + 136L, value.x17)
-                    (PrimitiveLayouts.U64).writeNative(addr + 144L, value.x18)
-                    (PrimitiveLayouts.U64).writeNative(addr + 152L, value.x19)
-                    (PrimitiveLayouts.U64).writeNative(addr + 160L, value.x20)
-                    (PrimitiveLayouts.U64).writeNative(addr + 168L, value.x21)
-                    (PrimitiveLayouts.U64).writeNative(addr + 176L, value.x22)
-                    (PrimitiveLayouts.U64).writeNative(addr + 184L, value.x23)
-                    (PrimitiveLayouts.U64).writeNative(addr + 192L, value.x24)
-                    (PrimitiveLayouts.U64).writeNative(addr + 200L, value.x25)
-                    (PrimitiveLayouts.U64).writeNative(addr + 208L, value.x26)
-                    (PrimitiveLayouts.U64).writeNative(addr + 216L, value.x27)
-                    (PrimitiveLayouts.U64).writeNative(addr + 224L, value.x28)
-                    (PrimitiveLayouts.U64).writeNative(addr + 232L, value.fp)
-                    (PrimitiveLayouts.U64).writeNative(addr + 240L, value.lr)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.x0)
+                    (PrimitiveLayouts.U32).writeNative(addr + 4L, value.x1)
+                    (PrimitiveLayouts.U32).writeNative(addr + 8L, value.x2)
+                    (PrimitiveLayouts.U32).writeNative(addr + 12L, value.x3)
+                    (PrimitiveLayouts.U32).writeNative(addr + 16L, value.x4)
+                    (PrimitiveLayouts.U32).writeNative(addr + 20L, value.x5)
+                    (PrimitiveLayouts.U32).writeNative(addr + 24L, value.x6)
+                    (PrimitiveLayouts.U32).writeNative(addr + 28L, value.x7)
+                    (PrimitiveLayouts.U32).writeNative(addr + 32L, value.x8)
+                    (PrimitiveLayouts.U32).writeNative(addr + 36L, value.x9)
+                    (PrimitiveLayouts.U32).writeNative(addr + 40L, value.x10)
+                    (PrimitiveLayouts.U32).writeNative(addr + 44L, value.x11)
+                    (PrimitiveLayouts.U32).writeNative(addr + 48L, value.x12)
+                    (PrimitiveLayouts.U32).writeNative(addr + 52L, value.x13)
+                    (PrimitiveLayouts.U32).writeNative(addr + 56L, value.x14)
+                    (PrimitiveLayouts.U32).writeNative(addr + 60L, value.x15)
+                    (PrimitiveLayouts.U32).writeNative(addr + 64L, value.x16)
+                    (PrimitiveLayouts.U32).writeNative(addr + 68L, value.x17)
+                    (PrimitiveLayouts.U32).writeNative(addr + 72L, value.x18)
+                    (PrimitiveLayouts.U32).writeNative(addr + 76L, value.x19)
+                    (PrimitiveLayouts.U32).writeNative(addr + 80L, value.x20)
+                    (PrimitiveLayouts.U32).writeNative(addr + 84L, value.x21)
+                    (PrimitiveLayouts.U32).writeNative(addr + 88L, value.x22)
+                    (PrimitiveLayouts.U32).writeNative(addr + 92L, value.x23)
+                    (PrimitiveLayouts.U32).writeNative(addr + 96L, value.x24)
+                    (PrimitiveLayouts.U32).writeNative(addr + 100L, value.x25)
+                    (PrimitiveLayouts.U32).writeNative(addr + 104L, value.x26)
+                    (PrimitiveLayouts.U32).writeNative(addr + 108L, value.x27)
+                    (PrimitiveLayouts.U32).writeNative(addr + 112L, value.x28)
+                    (PrimitiveLayouts.U32).writeNative(addr + 116L, value.fp)
+                    (PrimitiveLayouts.U32).writeNative(addr + 120L, value.lr)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Arm64NtContext00 =
                     Arm64NtContext00(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 8),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 16),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 24),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 32),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 40),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 48),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 56),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 64),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 72),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 80),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 88),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 96),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 104),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 112),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 120),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 128),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 136),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 144),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 152),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 160),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 168),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 176),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 184),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 192),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 200),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 208),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 216),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 224),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 232),
-                        (PrimitiveLayouts.U64).readBytes(buf, offset + 240),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 4),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 8),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 12),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 16),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 20),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 24),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 28),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 32),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 36),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 40),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 44),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 48),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 52),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 56),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 60),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 64),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 68),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 72),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 76),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 80),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 84),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 88),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 92),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 96),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 100),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 104),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 108),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 112),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 116),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset + 120),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Arm64NtContext00) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.x0)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 8, value.x1)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 16, value.x2)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 24, value.x3)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 32, value.x4)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 40, value.x5)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 48, value.x6)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 56, value.x7)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 64, value.x8)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 72, value.x9)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 80, value.x10)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 88, value.x11)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 96, value.x12)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 104, value.x13)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 112, value.x14)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 120, value.x15)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 128, value.x16)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 136, value.x17)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 144, value.x18)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 152, value.x19)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 160, value.x20)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 168, value.x21)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 176, value.x22)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 184, value.x23)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 192, value.x24)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 200, value.x25)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 208, value.x26)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 216, value.x27)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 224, value.x28)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 232, value.fp)
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset + 240, value.lr)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.x0)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 4, value.x1)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 8, value.x2)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 12, value.x3)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 16, value.x4)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 20, value.x5)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 24, value.x6)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 28, value.x7)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 32, value.x8)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 36, value.x9)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 40, value.x10)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 44, value.x11)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 48, value.x12)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 52, value.x13)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 56, value.x14)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 60, value.x15)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 64, value.x16)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 68, value.x17)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 72, value.x18)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 76, value.x19)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 80, value.x20)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 84, value.x21)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 88, value.x22)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 92, value.x23)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 96, value.x24)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 100, value.x25)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 104, value.x26)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 108, value.x27)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 112, value.x28)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 116, value.fp)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset + 120, value.lr)
                 }
             }
     }
@@ -652,7 +652,7 @@ public open class Arm64NtNeon128(
 }
 
 public open class Arm64NtNeon1280(
-    public var low: ULong,
+    public var low: kotlin.ULong,
     public var high: Long,
 ) {
     public open fun clone(): Arm64NtNeon1280 = Arm64NtNeon1280(low, high)
@@ -664,20 +664,20 @@ public open class Arm64NtNeon1280(
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): Arm64NtNeon1280 =
                     Arm64NtNeon1280(
-                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr),
                         (PrimitiveLayouts.I64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: Arm64NtNeon1280) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.low)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.low)
                     (PrimitiveLayouts.I64).writeNative(addr + 8L, value.high)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): Arm64NtNeon1280 =
                     Arm64NtNeon1280(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: Arm64NtNeon1280) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.low)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.low)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.high)
                 }
             }
@@ -689,16 +689,16 @@ public val BELOW_NORMAL_PRIORITY_CLASS: Int = 16384
 public typealias Bool = Int
 
 public open class ByHandleFileInformation(
-    public var dwFileAttributes: UInt,
+    public var dwFileAttributes: kotlin.UInt,
     public var ftCreationTime: Filetime,
     public var ftLastAccessTime: Filetime,
     public var ftLastWriteTime: Filetime,
-    public var dwVolumeSerialNumber: UInt,
-    public var nFileSizeHigh: UInt,
-    public var nFileSizeLow: UInt,
-    public var nNumberOfLinks: UInt,
-    public var nFileIndexHigh: UInt,
-    public var nFileIndexLow: UInt,
+    public var dwVolumeSerialNumber: kotlin.UInt,
+    public var nFileSizeHigh: kotlin.UInt,
+    public var nFileSizeLow: kotlin.UInt,
+    public var nNumberOfLinks: kotlin.UInt,
+    public var nFileIndexHigh: kotlin.UInt,
+    public var nFileIndexLow: kotlin.UInt,
 ) {
     public open fun clone(): ByHandleFileInformation = ByHandleFileInformation(dwFileAttributes, ftCreationTime, ftLastAccessTime, ftLastWriteTime, dwVolumeSerialNumber, nFileSizeHigh, nFileSizeLow, nNumberOfLinks, nFileIndexHigh, nFileIndexLow)
 
@@ -770,10 +770,10 @@ public typealias Cchar = Byte
 public typealias ConditionVariable = RtlConditionVariable
 
 public open class ConsoleReadconsoleControl(
-    public var nLength: UInt,
-    public var nInitialChars: UInt,
-    public var dwCtrlWakeupMask: UInt,
-    public var dwControlKeyState: UInt,
+    public var nLength: kotlin.UInt,
+    public var nInitialChars: kotlin.UInt,
+    public var dwCtrlWakeupMask: kotlin.UInt,
+    public var dwControlKeyState: kotlin.UInt,
 ) {
     public open fun clone(): ConsoleReadconsoleControl = ConsoleReadconsoleControl(nLength, nInitialChars, dwCtrlWakeupMask, dwControlKeyState)
 
@@ -813,52 +813,52 @@ public open class ConsoleReadconsoleControl(
 }
 
 public open class Context(
-    public var p1Home: ULong,
-    public var p2Home: ULong,
-    public var p3Home: ULong,
-    public var p4Home: ULong,
-    public var p5Home: ULong,
-    public var p6Home: ULong,
-    public var contextFlags: UInt,
-    public var mxCsr: UInt,
-    public var segCs: UShort,
-    public var segDs: UShort,
-    public var segEs: UShort,
-    public var segFs: UShort,
-    public var segGs: UShort,
-    public var segSs: UShort,
-    public var eFlags: UInt,
-    public var dr0: ULong,
-    public var dr1: ULong,
-    public var dr2: ULong,
-    public var dr3: ULong,
-    public var dr6: ULong,
-    public var dr7: ULong,
-    public var rax: ULong,
-    public var rcx: ULong,
-    public var rdx: ULong,
-    public var rbx: ULong,
-    public var rsp: ULong,
-    public var rbp: ULong,
-    public var rsi: ULong,
-    public var rdi: ULong,
-    public var r8: ULong,
-    public var r9: ULong,
-    public var r10: ULong,
-    public var r11: ULong,
-    public var r12: ULong,
-    public var r13: ULong,
-    public var r14: ULong,
-    public var r15: ULong,
-    public var rip: ULong,
+    public var p1Home: kotlin.ULong,
+    public var p2Home: kotlin.ULong,
+    public var p3Home: kotlin.ULong,
+    public var p4Home: kotlin.ULong,
+    public var p5Home: kotlin.ULong,
+    public var p6Home: kotlin.ULong,
+    public var contextFlags: kotlin.UInt,
+    public var mxCsr: kotlin.UInt,
+    public var segCs: kotlin.UShort,
+    public var segDs: kotlin.UShort,
+    public var segEs: kotlin.UShort,
+    public var segFs: kotlin.UShort,
+    public var segGs: kotlin.UShort,
+    public var segSs: kotlin.UShort,
+    public var eFlags: kotlin.UInt,
+    public var dr0: kotlin.ULong,
+    public var dr1: kotlin.ULong,
+    public var dr2: kotlin.ULong,
+    public var dr3: kotlin.ULong,
+    public var dr6: kotlin.ULong,
+    public var dr7: kotlin.ULong,
+    public var rax: kotlin.ULong,
+    public var rcx: kotlin.ULong,
+    public var rdx: kotlin.ULong,
+    public var rbx: kotlin.ULong,
+    public var rsp: kotlin.ULong,
+    public var rbp: kotlin.ULong,
+    public var rsi: kotlin.ULong,
+    public var rdi: kotlin.ULong,
+    public var r8: kotlin.ULong,
+    public var r9: kotlin.ULong,
+    public var r10: kotlin.ULong,
+    public var r11: kotlin.ULong,
+    public var r12: kotlin.ULong,
+    public var r13: kotlin.ULong,
+    public var r14: kotlin.ULong,
+    public var r15: kotlin.ULong,
+    public var rip: kotlin.ULong,
     public var anonymous: Context0,
     public var vectorRegister: List<M128a>,
-    public var vectorControl: ULong,
-    public var debugControl: ULong,
-    public var lastBranchToRip: ULong,
-    public var lastBranchFromRip: ULong,
-    public var lastExceptionToRip: ULong,
-    public var lastExceptionFromRip: ULong,
+    public var vectorControl: kotlin.ULong,
+    public var debugControl: kotlin.ULong,
+    public var lastBranchToRip: kotlin.ULong,
+    public var lastBranchFromRip: kotlin.ULong,
+    public var lastExceptionToRip: kotlin.ULong,
+    public var lastExceptionFromRip: kotlin.ULong,
 ) {
     public open fun clone(): Context = Context(p1Home, p2Home, p3Home, p4Home, p5Home, p6Home, contextFlags, mxCsr, segCs, segDs, segEs, segFs, segGs, segSs, eFlags, dr0, dr1, dr2, dr3, dr6, dr7, rax, rcx, rdx, rbx, rsp, rbp, rsi, rdi, r8, r9, r10, r11, r12, r13, r14, r15, rip, anonymous, vectorRegister, vectorControl, debugControl, lastBranchToRip, lastBranchFromRip, lastExceptionToRip, lastExceptionFromRip)
 
@@ -1003,7 +1003,7 @@ public val CREATE_DEFAULT_ERROR_MODE: Int = 67108864
 
 public val CREATE_FORCEDOS: Int = 8192
 
-public val CREATE_IGNORE_SYSTEM_DEFAULT: UInt = 2147483648u
+public val CREATE_IGNORE_SYSTEM_DEFAULT: kotlin.UInt = 2147483648u
 
 public val CREATE_NEW: Int = 1
 
@@ -4835,11 +4835,11 @@ public open class ExceptionPointers internal constructor(
 }
 
 public open class ExceptionRecord internal constructor(
-    public var exceptionCode: UInt,
-    public var exceptionFlags: UInt,
+    public var exceptionCode: kotlin.UInt,
+    public var exceptionFlags: kotlin.UInt,
     exceptionRecordCtorArg: MutPtr,
     exceptionAddressCtorArg: MutPtr,
-    public var numberParameters: UInt,
+    public var numberParameters: kotlin.UInt,
     public var exceptionInformation: IntArray,
 ) {
     public var exceptionRecord: MutPtr = exceptionRecordCtorArg
@@ -4892,11 +4892,11 @@ public open class ExceptionRecord internal constructor(
             }
 
         public operator fun invoke(
-            exceptionCode: UInt,
-            exceptionFlags: UInt,
+            exceptionCode: kotlin.UInt,
+            exceptionFlags: kotlin.UInt,
             exceptionRecord: MutPtr,
             exceptionAddress: MutPtr,
-            numberParameters: UInt,
+            numberParameters: kotlin.UInt,
             exceptionInformation: IntArray,
         ): ExceptionRecord = ExceptionRecord(
             exceptionCode = exceptionCode,
@@ -4942,8 +4942,8 @@ public typealias Farproc = FarprocFn?
 public val FAST_FAIL_FATAL_APP_EXIT: Int = 7
 
 public open class Filetime(
-    public var dwLowDateTime: UInt,
-    public var dwHighDateTime: UInt,
+    public var dwLowDateTime: kotlin.UInt,
+    public var dwHighDateTime: kotlin.UInt,
 ) {
     public open fun clone(): Filetime = Filetime(dwLowDateTime, dwHighDateTime)
 
@@ -5049,8 +5049,8 @@ public val FILE_ATTRIBUTE_SPARSE_FILE: Int = 512
 public val FILE_ATTRIBUTE_SYSTEM: Int = 4
 
 public open class FileAttributeTagInfo(
-    public var fileAttributes: UInt,
-    public var reparseTag: UInt,
+    public var fileAttributes: kotlin.UInt,
+    public var reparseTag: kotlin.UInt,
 ) {
     public open fun clone(): FileAttributeTagInfo = FileAttributeTagInfo(fileAttributes, reparseTag)
 
@@ -5092,7 +5092,7 @@ public open class FileBasicInfo(
     public var lastAccessTime: Long,
     public var lastWriteTime: Long,
     public var changeTime: Long,
-    public var fileAttributes: UInt,
+    public var fileAttributes: kotlin.UInt,
 ) {
     public open fun clone(): FileBasicInfo = FileBasicInfo(creationTime, lastAccessTime, lastWriteTime, changeTime, fileAttributes)
 
@@ -5198,7 +5198,7 @@ public open class FileDispositionInfo(
 }
 
 public open class FileDispositionInfoEx(
-    public var flags: UInt,
+    public var flags: kotlin.UInt,
 ) {
     public open fun clone(): FileDispositionInfoEx = FileDispositionInfoEx(flags)
 
@@ -5279,11 +5279,11 @@ public val FILE_FLAG_SEQUENTIAL_SCAN: Int = 134217728
 
 public val FILE_FLAG_SESSION_AWARE: Int = 8388608
 
-public val FILE_FLAG_WRITE_THROUGH: UInt = 2147483648u
+public val FILE_FLAG_WRITE_THROUGH: kotlin.UInt = 2147483648u
 
 public open class FileFsDeviceInformation(
-    public var deviceType: UInt,
-    public var characteristics: UInt,
+    public var deviceType: kotlin.UInt,
+    public var characteristics: kotlin.UInt,
 ) {
     public open fun clone(): FileFsDeviceInformation = FileFsDeviceInformation(deviceType, characteristics)
 
@@ -5321,17 +5321,17 @@ public val FILE_GENERIC_READ: Int = 1179785
 public val FILE_GENERIC_WRITE: Int = 1179926
 
 public open class FileIdBothDirInfo(
-    public var nextEntryOffset: UInt,
-    public var fileIndex: UInt,
+    public var nextEntryOffset: kotlin.UInt,
+    public var fileIndex: kotlin.UInt,
     public var creationTime: Long,
     public var lastAccessTime: Long,
     public var lastWriteTime: Long,
     public var changeTime: Long,
     public var endOfFile: Long,
     public var allocationSize: Long,
-    public var fileAttributes: UInt,
-    public var fileNameLength: UInt,
-    public var eaSize: UInt,
+    public var fileAttributes: kotlin.UInt,
+    public var fileNameLength: kotlin.UInt,
+    public var eaSize: kotlin.UInt,
     public var shortNameLength: Cchar,
     public var shortName: UShortArray,
     public var fileId: Long,
@@ -5517,7 +5517,7 @@ public val FILE_RENAME_FLAG_REPLACE_IF_EXISTS: Int = 1
 public open class FileRenameInfo internal constructor(
     public var anonymous: FileRenameInfo0,
     rootDirectoryCtorArg: Handle,
-    public var fileNameLength: UInt,
+    public var fileNameLength: kotlin.UInt,
     public var fileName: UShortArray,
 ) {
     public var rootDirectory: Handle = rootDirectoryCtorArg
@@ -5529,7 +5529,7 @@ public open class FileRenameInfo internal constructor(
         public operator fun invoke(
             anonymous: FileRenameInfo0,
             rootDirectory: Handle,
-            fileNameLength: UInt,
+            fileNameLength: kotlin.UInt,
             fileName: UShortArray,
         ): FileRenameInfo = FileRenameInfo(
             anonymous = anonymous,
@@ -5544,7 +5544,7 @@ public open class FileRenameInfo internal constructor(
 
 public open class FileRenameInfo0(
     public var replaceIfExists: Boolean? = null,
-    public var flags: UInt? = null,
+    public var flags: kotlin.UInt? = null,
 ) {
     public companion object {
         public fun default(): FileRenameInfo0 = FileRenameInfo0()
@@ -5554,7 +5554,7 @@ public open class FileRenameInfo0(
 public open class FileRenameInformation internal constructor(
     public var anonymous: FileRenameInformation0,
     rootDirectoryCtorArg: Handle,
-    public var fileNameLength: UInt,
+    public var fileNameLength: kotlin.UInt,
     public var fileName: UShortArray,
 ) {
     public var rootDirectory: Handle = rootDirectoryCtorArg
@@ -5566,7 +5566,7 @@ public open class FileRenameInformation internal constructor(
         public operator fun invoke(
             anonymous: FileRenameInformation0,
             rootDirectory: Handle,
-            fileNameLength: UInt,
+            fileNameLength: kotlin.UInt,
             fileName: UShortArray,
         ): FileRenameInformation = FileRenameInformation(
             anonymous = anonymous,
@@ -5581,7 +5581,7 @@ public open class FileRenameInformation internal constructor(
 
 public open class FileRenameInformation0(
     public var replaceIfExists: Boolean? = null,
-    public var flags: UInt? = null,
+    public var flags: kotlin.UInt? = null,
 ) {
     public companion object {
         public fun default(): FileRenameInformation0 = FileRenameInformation0()
@@ -5603,7 +5603,7 @@ public val FILE_SHARE_WRITE: Int = 2
 public open class FileStandardInfo(
     public var allocationSize: Long,
     public var endOfFile: Long,
-    public var numberOfLinks: UInt,
+    public var numberOfLinks: kotlin.UInt,
     public var deletePending: Boolean,
     public var directory: Boolean,
 ) {
@@ -5676,9 +5676,9 @@ public typealias FindexInfoLevels = Int
 
 public typealias FindexSearchOps = Int
 
-public val FIONBIO: UInt = 2147772030u
+public val FIONBIO: kotlin.UInt = 2147772030u
 
-public val FLS_OUT_OF_INDEXES: UInt = 4294967295u
+public val FLS_OUT_OF_INDEXES: kotlin.UInt = 4294967295u
 
 public val FORMAT_MESSAGE_ALLOCATE_BUFFER: Int = 256
 
@@ -5764,7 +5764,7 @@ public val GENERIC_ALL: Int = 268435456
 
 public val GENERIC_EXECUTE: Int = 536870912
 
-public val GENERIC_READ: UInt = 2147483648u
+public val GENERIC_READ: kotlin.UInt = 2147483648u
 
 public val GENERIC_WRITE: Int = 1073741824
 
@@ -5772,12 +5772,12 @@ public val GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS: Int = 4
 
 public val GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT: Int = 2
 
-public typealias Group = UInt
+public typealias Group = kotlin.UInt
 
 public open class Guid(
-    public var data1: UInt,
-    public var data2: UShort,
-    public var data3: UShort,
+    public var data1: kotlin.UInt,
+    public var data2: kotlin.UShort,
+    public var data3: kotlin.UShort,
     public var data4: UByteArray,
 ) {
     public open fun clone(): Guid = Guid(data1, data2, data3, data4)
@@ -5854,7 +5854,7 @@ public open class In6Addr0(
     }
 }
 
-public val INFINITE: UInt = 4294967295u
+public val INFINITE: kotlin.UInt = 4294967295u
 
 public val INHERIT_CALLER_PRIORITY: Int = 131072
 
@@ -5862,9 +5862,9 @@ public val INHERIT_PARENT_AFFINITY: Int = 65536
 
 public typealias InitOnce = RtlRunOnce
 
-public val INIT_ONCE_INIT_FAILED: UInt = 4u
+public val INIT_ONCE_INIT_FAILED: kotlin.UInt = 4u
 
-public val INVALID_FILE_ATTRIBUTES: UInt = 4294967295u
+public val INVALID_FILE_ATTRIBUTES: kotlin.UInt = 4294967295u
 
 public val INVALID_SOCKET: Socket = (18446744073709551615uL.toInt()).toULong()
 
@@ -5881,7 +5881,7 @@ public open class InAddr(
 public open class InAddr0(
     public var sUnB: InAddr00? = null,
     public var sUnW: InAddr01? = null,
-    public var sAddr: UInt? = null,
+    public var sAddr: kotlin.UInt? = null,
 ) {
     public companion object {
         public fun default(): InAddr0 = InAddr0()
@@ -5932,8 +5932,8 @@ public open class InAddr00(
 }
 
 public open class InAddr01(
-    public var sW1: UShort,
-    public var sW2: UShort,
+    public var sW1: kotlin.UShort,
+    public var sW2: kotlin.UShort,
 ) {
     public open fun clone(): InAddr01 = InAddr01(sW1, sW2)
 
@@ -5964,9 +5964,9 @@ public open class InAddr01(
     }
 }
 
-public val IO_REPARSE_TAG_MOUNT_POINT: UInt = 2684354563u
+public val IO_REPARSE_TAG_MOUNT_POINT: kotlin.UInt = 2684354563u
 
-public val IO_REPARSE_TAG_SYMLINK: UInt = 2684354572u
+public val IO_REPARSE_TAG_SYMLINK: kotlin.UInt = 2684354572u
 
 public open class IoStatusBlock(
     public var anonymous: IoStatusBlock0,
@@ -6086,7 +6086,7 @@ public val IPV6_DROP_MEMBERSHIP: Int = 13
 
 public open class Ipv6Mreq(
     public var ipv6mrMultiaddr: In6Addr,
-    public var ipv6mrInterface: UInt,
+    public var ipv6mrInterface: kotlin.UInt,
 ) {
     public open fun clone(): Ipv6Mreq = Ipv6Mreq(ipv6mrMultiaddr, ipv6mrInterface)
 
@@ -6128,7 +6128,7 @@ public val KF_FLAG_DONT_VERIFY: KnownFolderFlag = 16384u
 
 public typealias Knownfolderid = Guid
 
-public typealias KnownFolderFlag = UInt
+public typealias KnownFolderFlag = kotlin.UInt
 
 public val LOAD_LIBRARY_SEARCH_SYSTEM32: Int = 2048
 
@@ -6141,7 +6141,7 @@ public typealias Lpbyte = MutPtr
 public typealias LpinitOnce = PrtlRunOnce
 
 public fun interface LpoverlappedCompletionRoutineFn {
-    public operator fun invoke(dwerrorcode: UInt, dwnumberofbytestransfered: UInt, lpoverlapped: MutPtr)
+    public operator fun invoke(dwerrorcode: kotlin.UInt, dwnumberofbytestransfered: kotlin.UInt, lpoverlapped: MutPtr)
 }
 
 public typealias LpoverlappedCompletionRoutine = LpoverlappedCompletionRoutineFn?
@@ -6149,7 +6149,7 @@ public typealias LpoverlappedCompletionRoutine = LpoverlappedCompletionRoutineFn
 public typealias LpprocThreadAttributeList = MutPtr
 
 public fun interface LpprogressRoutineFn {
-    public operator fun invoke(totalfilesize: Long, totalbytestransferred: Long, streamsize: Long, streambytestransferred: Long, dwstreamnumber: UInt, dwcallbackreason: UInt, hsourcefile: Handle, hdestinationfile: Handle, lpdata: ConstPtr): UInt
+    public operator fun invoke(totalfilesize: Long, totalbytestransferred: Long, streamsize: Long, streambytestransferred: Long, dwstreamnumber: kotlin.UInt, dwcallbackreason: kotlin.UInt, hsourcefile: Handle, hdestinationfile: Handle, lpdata: ConstPtr): kotlin.UInt
 }
 
 public typealias LpprogressRoutine = LpprogressRoutineFn?
@@ -6159,13 +6159,13 @@ public typealias LpthreadStartRoutine = PthreadStartRoutine
 public typealias Lpwch = MutPtr
 
 public fun interface LpwsaoverlappedCompletionRoutineFn {
-    public operator fun invoke(dwerror: UInt, cbtransferred: UInt, lpoverlapped: MutPtr, dwflags: UInt)
+    public operator fun invoke(dwerror: kotlin.UInt, cbtransferred: kotlin.UInt, lpoverlapped: MutPtr, dwflags: kotlin.UInt)
 }
 
 public typealias LpwsaoverlappedCompletionRoutine = LpwsaoverlappedCompletionRoutineFn?
 
 public open class M128a(
-    public var low: ULong,
+    public var low: kotlin.ULong,
     public var high: Long,
 ) {
     public open fun clone(): M128a = M128a(low, high)
@@ -6177,20 +6177,20 @@ public open class M128a(
                 override val sizeBytes: Long = 16L
                 override fun readNative(addr: Long): M128a =
                     M128a(
-                        (PrimitiveLayouts.U64).readNative(addr),
+                        (PrimitiveLayouts.U32).readNative(addr),
                         (PrimitiveLayouts.I64).readNative(addr + 8L),
                     )
                 override fun writeNative(addr: Long, value: M128a) {
-                    (PrimitiveLayouts.U64).writeNative(addr, value.low)
+                    (PrimitiveLayouts.U32).writeNative(addr, value.low)
                     (PrimitiveLayouts.I64).writeNative(addr + 8L, value.high)
                 }
                 override fun readBytes(buf: ByteArray, offset: Int): M128a =
                     M128a(
-                        (PrimitiveLayouts.U64).readBytes(buf, offset),
+                        (PrimitiveLayouts.U32).readBytes(buf, offset),
                         (PrimitiveLayouts.I64).readBytes(buf, offset + 8),
                     )
                 override fun writeBytes(buf: ByteArray, offset: Int, value: M128a) {
-                    (PrimitiveLayouts.U64).writeBytes(buf, offset, value.low)
+                    (PrimitiveLayouts.U32).writeBytes(buf, offset, value.low)
                     (PrimitiveLayouts.I64).writeBytes(buf, offset + 8, value.high)
                 }
             }
@@ -6240,10 +6240,10 @@ public val NO_ERROR: Int = 0
 public typealias Ntstatus = Int
 
 public open class ObjectAttributes internal constructor(
-    public var length: UInt,
+    public var length: kotlin.UInt,
     rootDirectoryCtorArg: Handle,
     objectNameCtorArg: PunicodeString,
-    public var attributes: UInt,
+    public var attributes: kotlin.UInt,
     securityDescriptorCtorArg: MutPtr,
     securityQualityOfServiceCtorArg: MutPtr,
 ) {
@@ -6303,10 +6303,10 @@ public open class ObjectAttributes internal constructor(
             }
 
         public operator fun invoke(
-            length: UInt,
+            length: kotlin.UInt,
             rootDirectory: Handle,
             objectName: PunicodeString,
-            attributes: UInt,
+            attributes: kotlin.UInt,
             securityDescriptor: MutPtr,
             securityQualityOfService: MutPtr,
         ): ObjectAttributes = ObjectAttributes(
@@ -6398,8 +6398,8 @@ public class Overlapped0 internal constructor(
 }
 
 public open class Overlapped00(
-    public var offset: UInt,
-    public var offsetHigh: UInt,
+    public var offset: kotlin.UInt,
+    public var offsetHigh: kotlin.UInt,
 ) {
     public open fun clone(): Overlapped00 = Overlapped00(offset, offsetHigh)
 
@@ -6447,7 +6447,7 @@ public fun interface PflsCallbackFunctionFn {
 public typealias PflsCallbackFunction = PflsCallbackFunctionFn?
 
 public fun interface PioApcRoutineFn {
-    public operator fun invoke(apccontext: MutPtr, iostatusblock: MutPtr, reserved: UInt)
+    public operator fun invoke(apccontext: MutPtr, iostatusblock: MutPtr, reserved: kotlin.UInt)
 }
 
 public typealias PioApcRoutine = PioApcRoutineFn?
@@ -6483,8 +6483,8 @@ public typealias PriorityHint = Int
 public open class ProcessInformation internal constructor(
     hProcessCtorArg: Handle,
     hThreadCtorArg: Handle,
-    public var dwProcessId: UInt,
-    public var dwThreadId: UInt,
+    public var dwProcessId: kotlin.UInt,
+    public var dwThreadId: kotlin.UInt,
 ) {
     public var hProcess: Handle = hProcessCtorArg
         internal set
@@ -6530,8 +6530,8 @@ public open class ProcessInformation internal constructor(
         public operator fun invoke(
             hProcess: Handle,
             hThread: Handle,
-            dwProcessId: UInt,
-            dwThreadId: UInt,
+            dwProcessId: kotlin.UInt,
+            dwThreadId: kotlin.UInt,
         ): ProcessInformation = ProcessInformation(
             hProcessCtorArg = hProcess,
             hThreadCtorArg = hThread,
@@ -6558,13 +6558,13 @@ public typealias PrtlRunOnce = MutPtr
 public typealias Pstr = MutPtr
 
 public fun interface PthreadStartRoutineFn {
-    public operator fun invoke(lpthreadparameter: MutPtr): UInt
+    public operator fun invoke(lpthreadparameter: MutPtr): kotlin.UInt
 }
 
 public typealias PthreadStartRoutine = PthreadStartRoutineFn?
 
 public fun interface PtimerapcroutineFn {
-    public operator fun invoke(lpargtocompletionroutine: ConstPtr, dwtimerlowvalue: UInt, dwtimerhighvalue: UInt)
+    public operator fun invoke(lpargtocompletionroutine: ConstPtr, dwtimerlowvalue: kotlin.UInt, dwtimerhighvalue: kotlin.UInt)
 }
 
 public typealias Ptimerapcroutine = PtimerapcroutineFn?
@@ -6687,7 +6687,7 @@ public val SD_SEND: Int = 1
 public val SECURITY_ANONYMOUS: Int = 0
 
 public open class SecurityAttributes internal constructor(
-    public var nLength: UInt,
+    public var nLength: kotlin.UInt,
     lpSecurityDescriptorCtorArg: MutPtr,
     public var bInheritHandle: Bool,
 ) {
@@ -6726,7 +6726,7 @@ public open class SecurityAttributes internal constructor(
             }
 
         public operator fun invoke(
-            nLength: UInt,
+            nLength: kotlin.UInt,
             lpSecurityDescriptor: MutPtr,
             bInheritHandle: Bool,
         ): SecurityAttributes = SecurityAttributes(
@@ -6985,20 +6985,20 @@ public open class Startupinfoexw internal constructor(
 }
 
 public open class Startupinfow internal constructor(
-    public var cb: UInt,
+    public var cb: kotlin.UInt,
     lpReservedCtorArg: Pwstr,
     lpDesktopCtorArg: Pwstr,
     lpTitleCtorArg: Pwstr,
-    public var dwX: UInt,
-    public var dwY: UInt,
-    public var dwXSize: UInt,
-    public var dwYSize: UInt,
-    public var dwXCountChars: UInt,
-    public var dwYCountChars: UInt,
-    public var dwFillAttribute: UInt,
-    public var dwFlags: UInt,
-    public var wShowWindow: UShort,
-    public var cbReserved2: UShort,
+    public var dwX: kotlin.UInt,
+    public var dwY: kotlin.UInt,
+    public var dwXSize: kotlin.UInt,
+    public var dwYSize: kotlin.UInt,
+    public var dwXCountChars: kotlin.UInt,
+    public var dwYCountChars: kotlin.UInt,
+    public var dwFillAttribute: kotlin.UInt,
+    public var dwFlags: kotlin.UInt,
+    public var wShowWindow: kotlin.UShort,
+    public var cbReserved2: kotlin.UShort,
     lpReserved2CtorArg: Lpbyte,
     hStdInputCtorArg: Handle,
     hStdOutputCtorArg: Handle,
@@ -7117,20 +7117,20 @@ public open class Startupinfow internal constructor(
             }
 
         public operator fun invoke(
-            cb: UInt,
+            cb: kotlin.UInt,
             lpReserved: Pwstr,
             lpDesktop: Pwstr,
             lpTitle: Pwstr,
-            dwX: UInt,
-            dwY: UInt,
-            dwXSize: UInt,
-            dwYSize: UInt,
-            dwXCountChars: UInt,
-            dwYCountChars: UInt,
-            dwFillAttribute: UInt,
-            dwFlags: UInt,
-            wShowWindow: UShort,
-            cbReserved2: UShort,
+            dwX: kotlin.UInt,
+            dwY: kotlin.UInt,
+            dwXSize: kotlin.UInt,
+            dwYSize: kotlin.UInt,
+            dwXCountChars: kotlin.UInt,
+            dwYCountChars: kotlin.UInt,
+            dwFillAttribute: kotlin.UInt,
+            dwFlags: kotlin.UInt,
+            wShowWindow: kotlin.UShort,
+            cbReserved2: kotlin.UShort,
             lpReserved2: Lpbyte,
             hStdInput: Handle,
             hStdOutput: Handle,
@@ -7178,11 +7178,11 @@ public val STATUS_SHARING_VIOLATION: Ntstatus = 0xC0000043u.toInt()
 
 public val STATUS_SUCCESS: Ntstatus = 0x0u.toInt()
 
-public val STD_ERROR_HANDLE: UInt = 4294967284u
+public val STD_ERROR_HANDLE: kotlin.UInt = 4294967284u
 
-public val STD_INPUT_HANDLE: UInt = 4294967286u
+public val STD_INPUT_HANDLE: kotlin.UInt = 4294967286u
 
-public val STD_OUTPUT_HANDLE: UInt = 4294967285u
+public val STD_OUTPUT_HANDLE: kotlin.UInt = 4294967285u
 
 public val SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE: Int = 2
 
@@ -7194,15 +7194,15 @@ public val SYNCHRONIZE: Int = 1048576
 
 public open class SystemInfo internal constructor(
     public var anonymous: SystemInfo0,
-    public var dwPageSize: UInt,
+    public var dwPageSize: kotlin.UInt,
     lpMinimumApplicationAddressCtorArg: MutPtr,
     lpMaximumApplicationAddressCtorArg: MutPtr,
     public var dwActiveProcessorMask: Int,
-    public var dwNumberOfProcessors: UInt,
-    public var dwProcessorType: UInt,
-    public var dwAllocationGranularity: UInt,
-    public var wProcessorLevel: UShort,
-    public var wProcessorRevision: UShort,
+    public var dwNumberOfProcessors: kotlin.UInt,
+    public var dwProcessorType: kotlin.UInt,
+    public var dwAllocationGranularity: kotlin.UInt,
+    public var wProcessorLevel: kotlin.UShort,
+    public var wProcessorRevision: kotlin.UShort,
 ) {
     public var lpMinimumApplicationAddress: MutPtr = lpMinimumApplicationAddressCtorArg
         internal set
@@ -7215,15 +7215,15 @@ public open class SystemInfo internal constructor(
     public companion object {
         public operator fun invoke(
             anonymous: SystemInfo0,
-            dwPageSize: UInt,
+            dwPageSize: kotlin.UInt,
             lpMinimumApplicationAddress: MutPtr,
             lpMaximumApplicationAddress: MutPtr,
             dwActiveProcessorMask: Int,
-            dwNumberOfProcessors: UInt,
-            dwProcessorType: UInt,
-            dwAllocationGranularity: UInt,
-            wProcessorLevel: UShort,
-            wProcessorRevision: UShort,
+            dwNumberOfProcessors: kotlin.UInt,
+            dwProcessorType: kotlin.UInt,
+            dwAllocationGranularity: kotlin.UInt,
+            wProcessorLevel: kotlin.UShort,
+            wProcessorRevision: kotlin.UShort,
         ): SystemInfo = SystemInfo(
             anonymous = anonymous,
             dwPageSize = dwPageSize,
@@ -7242,7 +7242,7 @@ public open class SystemInfo internal constructor(
 }
 
 public open class SystemInfo0(
-    public var dwOemId: UInt? = null,
+    public var dwOemId: kotlin.UInt? = null,
     public var anonymous: SystemInfo00? = null,
 ) {
     public companion object {
@@ -7251,8 +7251,8 @@ public open class SystemInfo0(
 }
 
 public open class SystemInfo00(
-    public var wProcessorArchitecture: UShort,
-    public var wReserved: UShort,
+    public var wProcessorArchitecture: kotlin.UShort,
+    public var wReserved: kotlin.UShort,
 ) {
     public open fun clone(): SystemInfo00 = SystemInfo00(wProcessorArchitecture, wReserved)
 
@@ -7291,7 +7291,7 @@ public val TIMER_ALL_ACCESS: Int = 2031619
 
 public val TIMER_MODIFY_STATE: Int = 2
 
-public val TLS_OUT_OF_INDEXES: UInt = 4294967295u
+public val TLS_OUT_OF_INDEXES: kotlin.UInt = 4294967295u
 
 public val TOKEN_ACCESS_PSEUDO_HANDLE: Int = 24
 
@@ -7330,8 +7330,8 @@ public val TRUE: Int = 1
 public val TRUNCATE_EXISTING: Int = 5
 
 public open class UnicodeString internal constructor(
-    public var length: UShort,
-    public var maximumLength: UShort,
+    public var length: kotlin.UShort,
+    public var maximumLength: kotlin.UShort,
     bufferCtorArg: Pwstr,
 ) {
     public var buffer: Pwstr = bufferCtorArg
@@ -7369,8 +7369,8 @@ public open class UnicodeString internal constructor(
             }
 
         public operator fun invoke(
-            length: UShort,
-            maximumLength: UShort,
+            length: kotlin.UShort,
+            maximumLength: kotlin.UShort,
             buffer: Pwstr,
         ): UnicodeString = UnicodeString(
             length = length,
@@ -7392,7 +7392,7 @@ public val WAIT_ABANDONED: Int = 128
 
 public val WAIT_ABANDONED_0: Int = 128
 
-public val WAIT_FAILED: UInt = 4294967295u
+public val WAIT_FAILED: kotlin.UInt = 4294967295u
 
 public val WAIT_IO_COMPLETION: Int = 192
 
@@ -7401,14 +7401,14 @@ public val WAIT_OBJECT_0: Int = 0
 public val WAIT_TIMEOUT: Int = 258
 
 public open class Win32FindDataw(
-    public var dwFileAttributes: UInt,
+    public var dwFileAttributes: kotlin.UInt,
     public var ftCreationTime: Filetime,
     public var ftLastAccessTime: Filetime,
     public var ftLastWriteTime: Filetime,
-    public var nFileSizeHigh: UInt,
-    public var nFileSizeLow: UInt,
-    public var dwReserved0: UInt,
-    public var dwReserved1: UInt,
+    public var nFileSizeHigh: kotlin.UInt,
+    public var nFileSizeLow: kotlin.UInt,
+    public var dwReserved0: kotlin.UInt,
+    public var dwReserved1: kotlin.UInt,
     public var cFileName: UShortArray,
     public var cAlternateFileName: UShortArray,
 ) {
@@ -7482,7 +7482,7 @@ public val WRITE_OWNER: Int = 524288
 public val WSABASEERR: Int = 10000
 
 public open class Wsabuf internal constructor(
-    public var len: UInt,
+    public var len: kotlin.UInt,
     bufCtorArg: MutPtr,
 ) {
     public var buf: MutPtr = bufCtorArg
@@ -7516,7 +7516,7 @@ public open class Wsabuf internal constructor(
             }
 
         public operator fun invoke(
-            len: UInt,
+            len: kotlin.UInt,
             buf: MutPtr,
         ): Wsabuf = Wsabuf(
             len = len,
@@ -7526,10 +7526,10 @@ public open class Wsabuf internal constructor(
 }
 
 public open class Wsadata internal constructor(
-    public var wVersion: UShort,
-    public var wHighVersion: UShort,
-    public var iMaxSockets: UShort,
-    public var iMaxUdpDg: UShort,
+    public var wVersion: kotlin.UShort,
+    public var wHighVersion: kotlin.UShort,
+    public var iMaxSockets: kotlin.UShort,
+    public var iMaxUdpDg: kotlin.UShort,
     lpVendorInfoCtorArg: MutPtr,
     public var szDescription: ByteArray,
     public var szSystemStatus: ByteArray,
@@ -7585,10 +7585,10 @@ public open class Wsadata internal constructor(
             }
 
         public operator fun invoke(
-            wVersion: UShort,
-            wHighVersion: UShort,
-            iMaxSockets: UShort,
-            iMaxUdpDg: UShort,
+            wVersion: kotlin.UShort,
+            wHighVersion: kotlin.UShort,
+            iMaxSockets: kotlin.UShort,
+            iMaxUdpDg: kotlin.UShort,
             lpVendorInfo: MutPtr,
             szDescription: ByteArray,
             szSystemStatus: ByteArray,
@@ -7750,13 +7750,13 @@ public open class Wsaprotocolchain(
 }
 
 public open class WsaprotocolInfow(
-    public var dwServiceFlags1: UInt,
-    public var dwServiceFlags2: UInt,
-    public var dwServiceFlags3: UInt,
-    public var dwServiceFlags4: UInt,
-    public var dwProviderFlags: UInt,
+    public var dwServiceFlags1: kotlin.UInt,
+    public var dwServiceFlags2: kotlin.UInt,
+    public var dwServiceFlags3: kotlin.UInt,
+    public var dwServiceFlags4: kotlin.UInt,
+    public var dwProviderFlags: kotlin.UInt,
     public var providerId: Guid,
-    public var dwCatalogEntryId: UInt,
+    public var dwCatalogEntryId: kotlin.UInt,
     public var protocolChain: Wsaprotocolchain,
     public var iVersion: Int,
     public var iAddressFamily: Int,
@@ -7767,8 +7767,8 @@ public open class WsaprotocolInfow(
     public var iProtocolMaxOffset: Int,
     public var iNetworkByteOrder: Int,
     public var iSecurityScheme: Int,
-    public var dwMessageSize: UInt,
-    public var dwProviderReserved: UInt,
+    public var dwMessageSize: kotlin.UInt,
+    public var dwProviderReserved: kotlin.UInt,
     public var szProtocol: UShortArray,
 ) {
     public open fun clone(): WsaprotocolInfow = WsaprotocolInfow(dwServiceFlags1, dwServiceFlags2, dwServiceFlags3, dwServiceFlags4, dwProviderFlags, providerId, dwCatalogEntryId, protocolChain, iVersion, iAddressFamily, iMaxSockAddr, iMinSockAddr, iSocketType, iProtocol, iProtocolMaxOffset, iNetworkByteOrder, iSecurityScheme, dwMessageSize, dwProviderReserved, szProtocol)
@@ -7971,19 +7971,19 @@ public val WSA_WAIT_IO_COMPLETION: Int = 192
 public typealias XmmSaveArea32 = XsaveFormat
 
 public open class XsaveFormat(
-    public var controlWord: UShort,
-    public var statusWord: UShort,
+    public var controlWord: kotlin.UShort,
+    public var statusWord: kotlin.UShort,
     public var tagWord: UByte,
     public var reserved1: UByte,
-    public var errorOpcode: UShort,
-    public var errorOffset: UInt,
-    public var errorSelector: UShort,
-    public var reserved2: UShort,
-    public var dataOffset: UInt,
-    public var dataSelector: UShort,
-    public var reserved3: UShort,
-    public var mxCsr: UInt,
-    public var mxCsrMask: UInt,
+    public var errorOpcode: kotlin.UShort,
+    public var errorOffset: kotlin.UInt,
+    public var errorSelector: kotlin.UShort,
+    public var reserved2: kotlin.UShort,
+    public var dataOffset: kotlin.UInt,
+    public var dataSelector: kotlin.UShort,
+    public var reserved3: kotlin.UShort,
+    public var mxCsr: kotlin.UInt,
+    public var mxCsrMask: kotlin.UInt,
     public var floatRegisters: List<M128a>,
     public var xmmRegisters: List<M128a>,
     public var reserved4: UByteArray,
@@ -8210,6 +8210,10 @@ public open class Timeval(
     }
 }
 
-public typealias ULong = UInt
+public typealias UInt = kotlin.UInt
+
+public typealias ULong = kotlin.UInt
+
+public typealias UShort = kotlin.UShort
 
 public typealias VaList = MutPtr

@@ -38,7 +38,7 @@ public fun <T> sort(v: MutableList<T>, isLess: (T, T) -> Boolean, typeLayoutT: T
  * 2. Every element in `v[start .. end]`, which is sorted, and smaller than or equal to
  * 3. Every element in `v[end ..]`.
  */
-public fun <T, R> partialSort(v: MutableList<T>, range: R, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) where R : RangeBounds<Int<R>> {
+public fun <T, R> partialSort(v: MutableList<T>, range: R, isLess: (T, T) -> Boolean, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) where R : RangeBounds<Int> {
     val v1 = v
     // A heuristic factor to decide whether to partition the slice or not.
     // If the range bound is close to the edges of the slice, it's not worth

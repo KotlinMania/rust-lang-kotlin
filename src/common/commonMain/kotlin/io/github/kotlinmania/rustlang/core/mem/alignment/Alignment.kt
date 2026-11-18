@@ -362,7 +362,7 @@ public fun alignmentCanBeStructurallyMatched(a: Alignment): Boolean =
 
 public fun fromNonZeroInt(align: Alignment): NonZero<Int, NonZeroUsizeInner> = align.asNonzeroUsize()
 
-public fun fromInt(align: Alignment): Int = align.asUsize()
+public fun Int.Companion.from(align: Alignment): Int = align.asUsize()
 
 public sealed class AlignmentEnum(
     public val value: Int,

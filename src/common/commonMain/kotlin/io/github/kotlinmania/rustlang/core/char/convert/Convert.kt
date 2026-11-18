@@ -3,6 +3,8 @@ package io.github.kotlinmania.rustlang.core.char.convert
 
 import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.char.TryFromCharError
+import io.github.kotlinmania.rustlang.core.convert.num.from
+import io.github.kotlinmania.rustlang.core.convert.num.tryFrom
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
@@ -51,7 +53,7 @@ public fun fromU32Unchecked(i: UInt): Char {
  * check(4 == sizeOfVal(u))
  * ```
  */
-public fun fromUInt(c: Char): UInt = c.toUInt()
+public fun UInt.Companion.from(c: Char): UInt = c.toUInt()
 
 /**
  * Converts a [char] into a [u64].
@@ -64,7 +66,7 @@ public fun fromUInt(c: Char): UInt = c.toUInt()
  * check(8 == sizeOfVal(u))
  * ```
  */
-public fun fromULong(c: Char): ULong {
+public fun ULong.Companion.from(c: Char): ULong {
     // The char is casted to the value of the code point, then zero-extended to 64 bit.
     // See [https://doc.rust-lang.org/reference/expressions/operator-expr.html#semantics]
     return c.toULong()
@@ -81,7 +83,7 @@ public fun fromULong(c: Char): ULong {
  * check(16 == sizeOfVal(u))
  * ```
  */
-public fun fromU128(c: Char): U128 {
+public fun U128.Companion.from(c: Char): U128 {
     // The char is casted to the value of the code point, then zero-extended to 128 bit.
     // See [https://doc.rust-lang.org/reference/expressions/operator-expr.html#semantics]
     return U128.fromLong(c.toLong())
@@ -107,7 +109,7 @@ public fun fromU128(c: Char): U128 {
  * check(UByte.tryFrom(b).isErr())
  * ```
  */
-public fun tryFromUByte(c: Char): Result<UByte, TryFromCharError> {
+public fun UByte.Companion.tryFrom(c: Char): Result<UByte, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = UByte.tryFrom(UInt.from(c))
@@ -140,7 +142,7 @@ public fun tryFromUByte(c: Char): Result<UByte, TryFromCharError> {
  * check(UShort.tryFrom(ninjas).isErr())
  * ```
  */
-public fun tryFromUShort(c: Char): Result<UShort, TryFromCharError> {
+public fun UShort.Companion.tryFrom(c: Char): Result<UShort, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = UShort.tryFrom(UInt.from(c))
@@ -184,7 +186,7 @@ public fun tryFromUShort(c: Char): Result<UShort, TryFromCharError> {
  * }
  * ```
  */
-public fun tryFromInt(c: Char): Result<Int, TryFromCharError> {
+public fun Int.Companion.tryFrom(c: Char): Result<Int, TryFromCharError> {
     // Note(const-Note): this should use mapErr instead
     return run {
         val matchVal = Int.tryFrom(UInt.from(c))
@@ -229,7 +231,7 @@ public fun tryFromInt(c: Char): Result<Int, TryFromCharError> {
  * check(4 == sizeOfVal(c))
  * ```
  */
-public fun fromChar(i: UByte): Char = i.toInt().toChar()
+public fun Char.Companion.from(i: UByte): Char = i.toInt().toChar()
 
 /**
  * An error which can be returned when parsing a char.
@@ -313,7 +315,7 @@ public fun charTryFromU32(i: UInt): Result<Char, CharTryFromError> {
     }
 }
 
-public fun tryFromChar(i: UInt): Result<Char, CharTryFromError> = charTryFromU32(i)
+public fun Char.Companion.tryFrom(i: UInt): Result<Char, CharTryFromError> = charTryFromU32(i)
 
 /**
  * The error type returned when a conversion from [prim.u32] to [prim.char] fails.

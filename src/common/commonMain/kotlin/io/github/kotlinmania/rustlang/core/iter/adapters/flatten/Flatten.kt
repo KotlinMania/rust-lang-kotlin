@@ -108,7 +108,7 @@ public fun <Source, I, U, F> FlatMap<I, U, F, Item, IntoIter>.asInner(): Source 
  */
 public open class Flatten<I, Item> internal constructor(
     innerCtorArg: FlattenCompat<I, IntoIter>,
-) : TrustedLen<Item, Any> {
+) : TrustedLen {
     public var inner: FlattenCompat<I, IntoIter> = innerCtorArg
         internal set
 

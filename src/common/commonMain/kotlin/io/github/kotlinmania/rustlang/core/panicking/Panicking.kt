@@ -77,6 +77,7 @@ public fun panicFmt(fmt: Arguments): Nothing {
  */
 public fun panicNounwindFmt(fmt: Arguments, forceNoBacktrace: Boolean): Nothing =
     run {
+        fun panicImpl(pi: PanicInfo): Nothing = run { val ptr = kmAllocZeroed(maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes)); val res = (UnresolvedTypeLayout<Nothing>()).readNative(ptr); kmDealloc(ptr, maxOf(1L, (UnresolvedTypeLayout<Nothing>()).sizeBytes), maxOf(1L, (UnresolvedTypeLayout<Nothing>()).alignBytes)); res }
         if (false) {
             kmAbort()
         }

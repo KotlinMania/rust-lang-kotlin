@@ -3,6 +3,7 @@ package io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mmapfake
 
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.File
 import io.github.kotlinmania.rustlang.backtrace.symbolize.gimli.mystd.io.SeekFrom
+import io.github.kotlinmania.rustlang.core.result.Result
 
 public open class Mmap(
     public var vec: List<UByte>,

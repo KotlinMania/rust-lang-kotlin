@@ -2,6 +2,7 @@
 package io.github.kotlinmania.rustlang.core.future.ready
 
 import io.github.kotlinmania.rustlang.core.future.future.Future
+import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.task.poll.Poll
 import io.github.kotlinmania.rustlang.core.task.wake.Context
 

@@ -144,20 +144,20 @@ public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign<T>, MulAssign<
     /**
      * Maximum unbiased exponent value.
      */
-    public val EXP_MAX: Int
-        get() = T.EXP_BIAS.toInt()
+    public val EXP_MAX: kotlin.Int
+        get() = ((T.EXP_BIAS as Any?) as kotlin.Int)
 
     /**
      * Minimum *NORMAL* unbiased exponent value.
      */
-    public val EXP_MIN: Int
+    public val EXP_MIN: kotlin.Int
         get() = -(T.EXP_MAX - 1)
 
     /**
      * Minimum subnormal exponent value.
      */
-    public val EXP_MIN_SUBNORM: Int
-        get() = T.EXP_MIN - T.SIG_BITS.toInt()
+    public val EXP_MIN_SUBNORM: kotlin.Int
+        get() = T.EXP_MIN - ((T.SIG_BITS as Any?) as kotlin.Int)
 
     /**
      * A mask for the sign bit
@@ -256,7 +256,7 @@ public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign<T>, MulAssign<
     /**
      * Extract the exponent and adjust it for bias, not accounting for subnormals or zero.
      */
-    public fun expUnbiased(): Int = this.ex().signed() - (T.EXP_BIAS.toInt())
+    public fun expUnbiased(): kotlin.Int = this.ex().signed() - (((T.EXP_BIAS as Any?) as kotlin.Int))
 
     /**
      * Returns the significand with no implicit bit (or the "fractional" part)
@@ -306,7 +306,7 @@ public interface Float<T, Int, SignedInt> : DisplayHex, AddAssign<T>, MulAssign<
     /**
      * Returns (normalized exponent, normalized significand)
      */
-    public fun normalize(significand: Int): Pair<Int, Int>
+    public fun normalize(significand: Int): Pair<kotlin.Int, Int>
 
     /**
      * Returns a number that represents the sign of self.

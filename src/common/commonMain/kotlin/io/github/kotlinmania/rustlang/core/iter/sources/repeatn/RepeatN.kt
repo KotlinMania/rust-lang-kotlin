@@ -114,7 +114,7 @@ public open class RepeatNInner<T> internal constructor(
  */
 public open class RepeatN<A>(
     public var inner: RepeatNInner<A>?,
-) : TrustedLen<Any>, Iterable<A> {
+) : TrustedLen, Iterable<A> {
     override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
         override fun computeNext() {
             when (val v = this@RepeatN.next()) {

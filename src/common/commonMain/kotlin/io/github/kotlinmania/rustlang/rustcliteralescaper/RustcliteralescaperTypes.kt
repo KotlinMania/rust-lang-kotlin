@@ -207,13 +207,13 @@ public sealed class MixedUnit {
      * `MixedUnit.Char('¥')`, and it will be appended to the relevant byte
      * string as the two-byte UTF-8 sequence `[0xc2, 0xa5]`
      */
-    public class Char internal constructor(valueCtorArg: NonZero<Char, NonZeroCharInner>) : MixedUnit() {
-        public var value: NonZero<Char, NonZeroCharInner> = valueCtorArg
+    public class Char internal constructor(valueCtorArg: NonZero<kotlin.Char, NonZeroCharInner>) : MixedUnit() {
+        public var value: NonZero<kotlin.Char, NonZeroCharInner> = valueCtorArg
             internal set
 
-        public operator fun component1(): NonZero<Char, NonZeroCharInner> = this.value
+        public operator fun component1(): NonZero<kotlin.Char, NonZeroCharInner> = this.value
 
-        public fun copy(value: NonZero<Char, NonZeroCharInner> = this.value): Char = Char(valueCtorArg = value)
+        public fun copy(value: NonZero<kotlin.Char, NonZeroCharInner> = this.value): Char = Char(valueCtorArg = value)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -226,7 +226,7 @@ public sealed class MixedUnit {
 
         public companion object {
             public operator fun invoke(
-                value: NonZero<Char, NonZeroCharInner>,
+                value: NonZero<kotlin.Char, NonZeroCharInner>,
             ): Char = Char(
                 valueCtorArg = value,
             )
@@ -268,16 +268,16 @@ public sealed class MixedUnit {
     public fun rustEquals(other: MixedUnit): Boolean = this == other
 
     public companion object {
-        public fun from(c: NonZero<Char, NonZeroCharInner>): MixedUnit = MixedUnit.Char(c)
+        public fun from(c: NonZero<kotlin.Char, NonZeroCharInner>): MixedUnit = MixedUnit.Char(c)
 
         public fun fromNonZeroUByte(byte: NonZero<UByte, NonZeroU8Inner>): MixedUnit =
             if (byte.get().isAscii()) {
-                MixedUnit.Char((NonZero.new<NonZeroCharInner, Char>(byte.get().toInt().toChar()))!!)
+                MixedUnit.Char(NonZero.new(((byte.get() as Any?) as kotlin.Char))!!)
             } else {
                 MixedUnit.HighByte(byte)
             }
 
-        public fun tryFrom(c: Char): Result<MixedUnit, EscapeError> = ((NonZero.new<NonZeroCharInner, Char>(c))?.let({ MixedUnit.Char(it) })?.let { Result.Ok<Any, EscapeError>(it) } ?: Result.Err<Any, EscapeError>(EscapeError.NulInCStr))
+        public fun tryFrom(c: kotlin.Char): Result<MixedUnit, EscapeError> = (NonZero.new(c)?.let({ MixedUnit.Char(it) })?.let { Result.Ok<Any, EscapeError>(it) } ?: Result.Err<Any, EscapeError>(EscapeError.NulInCStr))
 
         public fun tryFrom(byte: UByte): Result<MixedUnit, EscapeError> = ((NonZero.new<NonZeroU8Inner, UByte>(byte))?.let(From::from)?.let { Result.Ok<Any, EscapeError>(it) } ?: Result.Err<Any, EscapeError>(EscapeError.NulInCStr))
     }

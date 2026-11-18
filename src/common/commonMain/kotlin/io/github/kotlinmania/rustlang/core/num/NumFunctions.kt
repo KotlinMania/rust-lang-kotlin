@@ -27,6 +27,7 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.cmp.clamp
 import io.github.kotlinmania.rustlang.core.convert.num.BoundedCastFromInt
 import io.github.kotlinmania.rustlang.core.convert.num.CheckedCastFromInt
+import io.github.kotlinmania.rustlang.core.convert.tryInto
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.intrinsics.disjointBitor
 import io.github.kotlinmania.rustlang.core.intrinsics.kmAddWithOverflowI128

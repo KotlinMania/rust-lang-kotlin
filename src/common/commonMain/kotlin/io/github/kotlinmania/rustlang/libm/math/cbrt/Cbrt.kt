@@ -1,6 +1,7 @@
 // port-lint: source math/cbrt.rs
 package io.github.kotlinmania.rustlang.libm.math.cbrt
 
+import io.github.kotlinmania.rustlang.core.convert.num.from
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCopysignf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmFabsf64
 import io.github.kotlinmania.rustlang.core.num.leadingZeros

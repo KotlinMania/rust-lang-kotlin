@@ -3,6 +3,7 @@
 
 package io.github.kotlinmania.rustlang.core.num.imp.dec2flt.slow
 
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.common.BiasedFp
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimalseq.DecimalSeq
 import io.github.kotlinmania.rustlang.core.num.imp.dec2flt.decimalseq.parseDecimalSeq
@@ -32,13 +33,13 @@ import io.github.kotlinmania.rustlang.core.num.imp.traits.Float
  * available here: <https://arxiv.org/pdf/2101.11408.pdf#section.11>.
  */
 public fun <Int, F : Float<F, Int>> parseLongMantissa(s: List<UByte>): BiasedFp {
-    val MAX_SHIFT: Int = 60
-    val NUM_POWERS: Int = 19
+    val MAX_SHIFT: kotlin.Int = 60
+    val NUM_POWERS: kotlin.Int = 19
     val POWERS: UByteArray = ubyteArrayOf(0u, 3u, 6u, 9u, 13u, 16u, 19u, 23u, 26u, 29u, 33u, 36u, 39u, 43u, 46u, 49u, 53u, 56u, 59u)
     val getShift =
         { n ->
             if (n < NUM_POWERS) {
-                POWERS[n].toInt()
+                ((POWERS[n] as Any?) as kotlin.Int)
             } else {
                 MAX_SHIFT
             }
@@ -55,13 +56,13 @@ public fun <Int, F : Float<F, Int>> parseLongMantissa(s: List<UByte>): BiasedFp 
     var exp2 = 0
     // Shift right toward (1/2 ... 1].
     while (d.decimalPoint > 0) {
-        val n = d.decimalPoint
+        val n = ((d.decimalPoint as Any?) as kotlin.Int)
         val shift = getShift(n)
         d.rightShift(shift)
         if (d.decimalPoint < -DecimalSeq.DECIMAL_POINT_RANGE) {
             return fpZero
         }
-        exp2 += shift.toInt()
+        exp2 += ((shift as Any?) as kotlin.Int)
     }
     // Shift left toward (1/2 ... 1].
     while (d.decimalPoint <= 0) {
@@ -85,24 +86,24 @@ public fun <Int, F : Float<F, Int>> parseLongMantissa(s: List<UByte>): BiasedFp 
         if (d.decimalPoint > DecimalSeq.DECIMAL_POINT_RANGE) {
             return fpInf
         }
-        exp2 -= shift1.toInt()
+        exp2 -= ((shift1 as Any?) as kotlin.Int)
     }
     // We are now in the range [1/2 ... 1] but the binary format uses [1 ... 2].
     exp2 -= 1
     while (F.EXP_MIN > exp2) {
-        var n1 = (F.EXP_MIN - exp2)
-        if (n1 > MAX_SHIFT) {
+        var n1 = (((F.EXP_MIN - exp2) as Any?) as kotlin.Int)
+        if ((kmCompareValues(n1, MAX_SHIFT) > 0)) {
             n1 = MAX_SHIFT
         }
         d.rightShift(n1)
-        exp2 += n1
+        exp2 += ((n1 as Any?) as kotlin.Int)
     }
     if ((exp2 - F.EXP_MIN + 1) >= F.INFINITE_POWER) {
         return fpInf
     }
     // Shift the decimal to the hidden bit, and then round the value
     // to get the high mantissa+1 bits.
-    d.leftShift(F.SIG_BITS.toInt() + 1)
+    d.leftShift(((F.SIG_BITS as Any?) as kotlin.Int) + 1)
     var mantissa = d.round()
     if (mantissa >= (1uL shl (F.SIG_BITS + 1).toInt())) {
         // Rounding up overflowed to the carry bit, need to

@@ -595,7 +595,7 @@ public fun <T> range.RangeToInclusive<Int>.indexMut(slice: MutableList<T>): Muta
  *
  * [Index.index]: ops.Index.index
  */
-public fun <R> range(range: R, bounds: RangeTo<Int>): Range<Int> where R : RangeBounds<Int<R>> {
+public fun <R> range(range: R, bounds: RangeTo<Int>): Range<Int> where R : RangeBounds<Int> {
     val len = bounds.end
     return intoSliceRange(len, Pair(range.startBound().copied(), range.endBound().copied()))
 }
@@ -634,7 +634,7 @@ public fun <R> range(range: R, bounds: RangeTo<Int>): Range<Int> where R : Range
  *
  * [Index.index]: ops.Index.index
  */
-public fun <R> tryRange(range: R, bounds: RangeTo<Int>): Range<Int>? where R : RangeBounds<Int<R>> {
+public fun <R> tryRange(range: R, bounds: RangeTo<Int>): Range<Int>? where R : RangeBounds<Int> {
     val len = bounds.end
     return tryIntoSliceRange(len, Pair(range.startBound().copied(), range.endBound().copied())).ok()
 }
