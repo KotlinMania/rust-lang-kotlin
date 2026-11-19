@@ -26,12 +26,15 @@ JVM-only or third-party Java dependencies in common code.
 
 ## Status
 
-The Kotlin sources are generated from upstream Rust by the `rust-kotlin.kexe` translator
-and are being brought to a clean all-target build. About 1,900 Kotlin files are checked
-in. Treat the API as unstable.
+Version `0.2.0` publishes the verified `core` + `alloc` release kernel (`99` Kotlin
+source files on `main`, zero external dependencies beyond `kotlin-stdlib`) to Maven Central
+as `io.github.kotlinmania:rust-lang-kotlin:0.2.0`. The release kernel passes all 17
+KotlinMania targets, Android emulator device tests, JNI/N-API/cinterop FFI tests, and
+Debug/Release Swift Export smoke tests.
 
-Version `0.2.0` has not been released to Maven Central. To consume it today, build from
-source and publish to Maven Local (see [Building](#building)).
+The broader `std`, `core_arch`, `core_simd`, `compiler_builtins`, `libm`, `std_detect`,
+and unwinding/panic modules are actively developed on the `development` branch and will be
+promoted in subsequent releases. Treat pre-`1.0` APIs as evolving.
 
 ---
 
