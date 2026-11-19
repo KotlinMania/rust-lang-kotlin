@@ -560,7 +560,7 @@ KM_ALWAYS_INLINE void kmU128DivRemRaw(
         *outRHi = 0ULL;
         return;
     }
-#if defined(__SIZEOF_INT128__)
+#if defined(__SIZEOF_INT128__) && !defined(_MSC_VER)
     __uint128_t num = ((__uint128_t)nHi << 64) | (__uint128_t)nLo;
     __uint128_t den = ((__uint128_t)dHi << 64) | (__uint128_t)dLo;
     __uint128_t q = num / den;
@@ -1426,7 +1426,7 @@ KM_ALWAYS_INLINE uint64_t kmDoubleToU64Unchecked(double v) {
 
 KM_ALWAYS_INLINE void kmFloatToU128UncheckedOut(float v, uint64_t* outLo, uint64_t* outHi) {
     if (!(v >= 0.0f)) { *outLo = 0ULL; *outHi = 0ULL; return; }
-#if defined(__SIZEOF_INT128__)
+#if defined(__SIZEOF_INT128__) && !defined(_MSC_VER)
     __uint128_t r = (__uint128_t)v;
     *outLo = (uint64_t)r;
     *outHi = (uint64_t)(r >> 64);
@@ -1443,7 +1443,7 @@ KM_ALWAYS_INLINE void kmFloatToU128UncheckedOut(float v, uint64_t* outLo, uint64
 
 KM_ALWAYS_INLINE void kmDoubleToU128UncheckedOut(double v, uint64_t* outLo, uint64_t* outHi) {
     if (!(v >= 0.0)) { *outLo = 0ULL; *outHi = 0ULL; return; }
-#if defined(__SIZEOF_INT128__)
+#if defined(__SIZEOF_INT128__) && !defined(_MSC_VER)
     __uint128_t r = (__uint128_t)v;
     *outLo = (uint64_t)r;
     *outHi = (uint64_t)(r >> 64);
