@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.armshared.cinterop
-headers = armshared_hints_wrapper.h
-headerFilter = armshared_hints_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = armshared_hints_wrapper.a

@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source ops/try_trait.rs
 package io.github.kotlinmania.rustlang.core.ops.trytrait
 
@@ -196,7 +197,7 @@ public interface FromResidual<R, T> {
 
 // because `Result.fromResidual` has it
 // not-exposed but still used via lang-item
-public fun <T, Y> fromYeet(yeeted: Y): T where T : FromResidual<Yeet<Y>, T> = FromResidual.fromResidual(Yeet(yeeted))
+public fun <T, Y> fromYeet(yeeted: Y, fromResidualTFn: (Yeet<Y>) -> T): T where T : FromResidual<Yeet<Y>, T> = fromResidualTFn(Yeet(yeeted))
 
 /**
  * Allows retrieving the canonical type implementing [Try] that has this type
@@ -221,9 +222,7 @@ public interface Residual<O, out TryType>
  * but importantly not on the contextual type the way it would be if
  * we called `<_ as FromResidual>.fromResidual(r)` directly.
  */
-public fun <TryType, R : Residual<O, TryType>, O> residualIntoTryType(r: R): TryType = FromResidual.fromResidual(r)
-
-public typealias ChangeOutputType<T : Try<T, Any?, Any?>, V, Output, Residual> = TryType
+public fun <TryType, R : Residual<O, TryType>, O> residualIntoTryType(r: R, fromResidualFn: (R) -> TryType): TryType = fromResidualFn(r)
 
 /**
  * An adapter for implementing non-try methods via the `Try` implementation.
@@ -236,12 +235,16 @@ public typealias ChangeOutputType<T : Try<T, Any?, Any?>, V, Output, Residual> =
  */
 public open class NeverShortCircuit<T>(
     public var value: T,
-) : Try<NeverShortCircuit<T>, T, NeverShortCircuitResidual>, FromResidual<Residual, NeverShortCircuit<T>> {
+) : Try<NeverShortCircuit<T>, T, NeverShortCircuitResidual> {
     public var field0: T
         get() = value
         set(v) {
             value = v
         }
+
+    public override fun fromOutput(output: T): NeverShortCircuit<T> = NeverShortCircuit.fromOutput(output)
+
+    public override fun fromResidual(residual: NeverShortCircuitResidual): NeverShortCircuit<T> = NeverShortCircuit.fromResidual(residual)
 
     public override fun branch(): ControlFlow<NeverShortCircuitResidual, T> = ControlFlow.Continue(this.value)
 
@@ -258,7 +261,7 @@ public open class NeverShortCircuit<T>(
 
         public fun <T> fromOutput(x: T): NeverShortCircuit<T> = NeverShortCircuit(x)
 
-        public fun <T> fromResidual(never: NeverShortCircuitResidual): NeverShortCircuit<T> = when (never) {}
+        public fun <T> fromResidual(never: NeverShortCircuitResidual): NeverShortCircuit<T> = error("NeverShortCircuitResidual is uninhabited")
     }
 }
 

@@ -1,37 +1,30 @@
+// rust-kotlin: manual
 // port-lint: source ffi/c_str.rs
 package io.github.kotlinmania.rustlang.core.ffi.cstr
 
-import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.cmp
+import io.github.kotlinmania.rustlang.core.cmp.partialCmp
 import io.github.kotlinmania.rustlang.core.convert.AsRef
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CChar
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLoadU8
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.addrOf
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.mem.kmNormalizeUByteList
 import io.github.kotlinmania.rustlang.core.num.nichetypes.UsizeNoHighBitMinusOne
 import io.github.kotlinmania.rustlang.core.num.uncheckedSub
-import io.github.kotlinmania.rustlang.core.ops.index.index
 import io.github.kotlinmania.rustlang.core.ops.range.RangeFrom
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.constptr.add
-import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
-import io.github.kotlinmania.rustlang.core.ptr.constptr.read
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 import io.github.kotlinmania.rustlang.core.slice.asPtr
 import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
+import io.github.kotlinmania.rustlang.core.str.error.Utf8Error
+import io.github.kotlinmania.rustlang.core.str.fromUtf8
+import io.github.kotlinmania.rustlang.core.str.fromUtf8Lossy
 
 // [CStr] and its related types.
 
@@ -116,22 +109,14 @@ import io.github.kotlinmania.rustlang.core.slice.memchr.memchr
  * [str]: prim@str "str"
  */
 public open class CStr internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout(),
+    public var inner: List<CChar>,
+    private val nativePtr: ConstPtr? = null,
 ) : AsRef<CStr> {
-    public var inner: List<CChar>
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
-
-    public fun pointerLayout(): TypeLayout<CStr> = TransparentTypeLayout(fieldLayout, { ptr, layout -> CStr(ptr, layout) }, { it.inner })
-
-    /**
-     * Shows the underlying bytes as a normal string, with invalid UTF-8
-     * presented as hex escape sequences.
-     */
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.toBytes())).toString()); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(fromUtf8Lossy(this.toBytes()))
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     /**
      * Returns the inner pointer to this C string.
@@ -189,15 +174,14 @@ public open class CStr internal constructor(
      * check(CStr.fromPtr(ptr) == "HI!")
      * ```
      */
-    public open fun asPtr(): ConstPtr = this.inner.asPtr()
+    public open fun asPtr(): ConstPtr = nativePtr ?: this.inner.asPtr()
 
     /**
      * We could eventually expose this publicly, if we wanted.
      */
     public open fun asNonNullPtr(): NonNull {
-        // Note(constTraitImpl) replace with `NonNull.from`
-        // SAFETY: a reference is never null
-        return NonNull.newUnchecked((constPtrFromRustCast(this.inner)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) }).asNonNullPtr()
+        val ptr = this.asPtr()
+        return NonNull.newUnchecked(MutPtr(ptr.rawAddress, ptr.rawMeta))
     }
 
     /**
@@ -232,8 +216,7 @@ public open class CStr internal constructor(
     public open fun isEmpty(): Boolean {
         // SAFETY: We know there is at least one byte; for empty strings it
         // is the NUL terminator.
-        // Note(const-Note): use getUnchecked
-        return (UnresolvedTypeLayout<CChar>()).readNative((this.inner.asPtr()).rawAddress) == 0u.toUByte()
+        return this.inner[0] == 0u.toUByte()
     }
 
     /**
@@ -254,9 +237,7 @@ public open class CStr internal constructor(
      */
     public open fun toBytes(): List<UByte> {
         val bytes = this.toBytesWithNul()
-        // Note(const-Note) replace with range index
-        // SAFETY: toBytesWithNul returns slice with length at least 1
-        return linearSliceView(bytes.asPtr(), (bytes.size - 1).toInt(), PrimitiveLayouts.U8)
+        return bytes.subList(0, bytes.size - 1)
     }
 
     /**
@@ -276,9 +257,7 @@ public open class CStr internal constructor(
      * ```
      */
     public open fun toBytesWithNul(): List<UByte> {
-        // SAFETY: Transmuting a slice of `cChar`s to a slice of `UByte`s
-        // is safe on all supported targets.
-        val bytes = (UnresolvedTypeLayout<List<UByte>>()).readNative(((((addrOf(this.inner))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+        val bytes = this.inner
         // SAFETY: A valid `CStr` always contains at least its trailing nul byte.
         assertUnchecked(!bytes.isEmpty())
         return bytes
@@ -321,7 +300,7 @@ public open class CStr internal constructor(
         // instead of in `fromPtr()`, it may be worth considering if this should
         // be rewritten to do the UTF-8 check inline with the length calculation
         // instead of doing it afterwards.
-        return String.fromUtf8(this.toBytes())
+        return fromUtf8(this.toBytes())
     }
 
     /**
@@ -375,16 +354,15 @@ public open class CStr internal constructor(
         }
     }
 
-    public open fun index(index: io.github.kotlinmania.rustlang.core.range.RangeFrom<Int>): CStr = this.index(RangeFrom.from(index))
-
     public override fun asRef(): CStr = this
 
     public companion object {
-        public operator fun invoke(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()): CStr = CStr(inner, fieldLayout)
+        public operator fun invoke(inner: List<CChar>, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()): CStr = CStr(inner, null)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()): CStr = CStr(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<List<CChar>> = UnresolvedTypeLayout()): CStr =
+            CStr.fromPtr(ConstPtr(fieldStorage.rawAddress, fieldStorage.rawMeta))
 
-        public fun default(): CStr = ""
+        public fun default(): CStr = CStr.fromBytesWithNulUnchecked(listOf(0u.toUByte()))
 
         // inline is necessary for codegen to see strlen.
 
@@ -455,14 +433,9 @@ public open class CStr internal constructor(
         public fun fromPtr(ptr: ConstPtr): CStr {
             // SAFETY: The caller has provided a pointer that points to a valid C
             // string with a NUL terminator less than `Long.MAX` from `ptr`.
-            val len = strlen(ptr)
-            // SAFETY: The caller has provided a valid pointer with length less than
-            // `Long.MAX`, so `fromRawParts` is safe. The content remains valid
-            // and doesn't change for the scope of the returned `CStr`. This
-            // means the call to `fromBytesWithNulUnchecked` is correct.
-            //
-            // The cast from cChar to u8 is ok because a cChar is always one byte.
-            return CStr.fromBytesWithNulUnchecked(linearSliceView(ConstPtr((ptr).rawAddress), (len.asInner() + 1).toInt(), UnresolvedTypeLayout<CChar>()))
+            val len = strlen(ptr).asInner()
+            val bytes = MutableList(len + 1) { idx -> kmLoadU8(ptr.rawAddress + idx.toLong()) }
+            return CStr(inner = bytes, nativePtr = ptr)
         }
 
         /**
@@ -504,16 +477,15 @@ public open class CStr internal constructor(
          * ```
          */
         public fun fromBytesUntilNul(bytes: List<UByte>): Result<CStr, FromBytesUntilNulError> {
-            val nulPos = memchr(0u.toUByte(), bytes)
+            val normalized = kmNormalizeUByteList(bytes)
+            val nulPos = memchr(0u.toUByte(), normalized)
             return when (nulPos) {
-                null -> Result.Err<CStr, FromBytesUntilNulError>(FromBytesUntilNulError(Unit))
+                null -> Result.Err<CStr, FromBytesUntilNulError>(FromBytesUntilNulError())
                 else -> {
                     val nulPos1 = nulPos
-                    // Note(const-Note) replace with range index
-                    // SAFETY: nulPos + 1 <= bytes.len()
-                    val subslice = linearSliceView(bytes.asPtr(), (nulPos1 + 1).toInt(), PrimitiveLayouts.U8)
                     // SAFETY: We know there is a nul byte at nulPos, so this slice
                     // (ending at the nul byte) is a well-formed C string.
+                    val subslice = normalized.subList(0, nulPos1 + 1)
                     Result.Ok<CStr, FromBytesUntilNulError>(CStr.fromBytesWithNulUnchecked(subslice))
                 }
             }
@@ -560,13 +532,13 @@ public open class CStr internal constructor(
          * ```
          */
         public fun fromBytesWithNul(bytes: List<UByte>): Result<CStr, FromBytesWithNulError> {
-            val nulPos = memchr(0u.toUByte(), bytes)
+            val normalized = kmNormalizeUByteList(bytes)
+            val nulPos = memchr(0u.toUByte(), normalized)
             return when {
-                nulPos != null && nulPos + 1 == bytes.size -> {
-                    val nulPos1 = nulPos
+                nulPos != null && nulPos + 1 == normalized.size -> {
                     // SAFETY: We know there is only one nul byte, at the end
                     // of the byte slice.
-                    Result.Ok<CStr, FromBytesWithNulError>(CStr.fromBytesWithNulUnchecked(bytes))
+                    Result.Ok<CStr, FromBytesWithNulError>(CStr.fromBytesWithNulUnchecked(normalized))
                 }
                 nulPos != null -> {
                     val position = nulPos
@@ -598,8 +570,9 @@ public open class CStr internal constructor(
          */
         public fun fromBytesWithNulUnchecked(bytes: List<UByte>): CStr =
             run {
-                check(!bytes.isEmpty() && bytes[bytes.size - 1] == 0u.toUByte())
-                (UnresolvedTypeLayout<CStr>()).readNative((((constPtrFromRustCast(bytes)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+                val normalized = kmNormalizeUByteList(bytes)
+                check(!normalized.isEmpty() && normalized[normalized.size - 1] == 0u.toUByte())
+                CStr(inner = normalized.toList(), nativePtr = null)
             }
     }
 }
@@ -626,7 +599,10 @@ public sealed class FromBytesWithNulError {
     /**
      * Data provided contains an interior nul byte at byte `position`.
      */
-    public data class InteriorNul(public var position: Int) : FromBytesWithNulError()
+    public data class InteriorNul(
+        public var position: Int,
+    ) : FromBytesWithNulError()
+
     /**
      * Data provided is not nul terminated.
      */
@@ -637,10 +613,17 @@ public sealed class FromBytesWithNulError {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         when (this) {
             is InteriorNul -> {
-                val position = (this as InteriorNul).position
-                run { f.append("data provided contains an interior nul byte at byte position $position"); Result.Ok<Unit, Unit>(Unit) }
+                val position = this.position
+                run {
+                    f.append("data provided contains an interior nul byte at byte position $position")
+                    Result.Ok<Unit, Unit>(Unit)
+                }
             }
-            FromBytesWithNulError.NotNulTerminated -> run { f.append("data provided is not nul terminated"); Result.Ok<Unit, Unit>(Unit) }
+            FromBytesWithNulError.NotNulTerminated ->
+                run {
+                    f.append("data provided is not nul terminated")
+                    Result.Ok<Unit, Unit>(Unit)
+                }
         }
 }
 
@@ -652,38 +635,24 @@ public sealed class FromBytesWithNulError {
  *
  * This error is created by the [CStr.fromBytesUntilNul] method.
  */
-public open class FromBytesUntilNulError(
-    public var value: Unit,
-) {
-    public var field0: Unit
-        get() = value
-        set(v) {
-            value = v
+public open class FromBytesUntilNulError {
+    public open fun clone(): FromBytesUntilNulError = FromBytesUntilNulError()
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append("data provided does not contain a nul")
+            Result.Ok<Unit, Unit>(Unit)
         }
-
-    public open fun clone(): FromBytesUntilNulError = FromBytesUntilNulError(value)
-
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("data provided does not contain a nul"); Result.Ok<Unit, Unit>(Unit) }
 
     public companion object {
         public fun typeLayout(): TypeLayout<FromBytesUntilNulError> =
             object : TypeLayout<FromBytesUntilNulError> {
                 override val alignBytes: Long = 1L
                 override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): FromBytesUntilNulError =
-                    FromBytesUntilNulError(
-                        (PrimitiveLayouts.UNIT).readNative(addr),
-                    )
-                override fun writeNative(addr: Long, value: FromBytesUntilNulError) {
-                    (PrimitiveLayouts.UNIT).writeNative(addr, value.value)
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): FromBytesUntilNulError =
-                    FromBytesUntilNulError(
-                        (PrimitiveLayouts.UNIT).readBytes(buf, offset),
-                    )
-                override fun writeBytes(buf: ByteArray, offset: Int, value: FromBytesUntilNulError) {
-                    (PrimitiveLayouts.UNIT).writeBytes(buf, offset, value.value)
-                }
+                override fun readNative(addr: Long): FromBytesUntilNulError = FromBytesUntilNulError()
+                override fun writeNative(addr: Long, value: FromBytesUntilNulError) {}
+                override fun readBytes(buf: ByteArray, offset: Int): FromBytesUntilNulError = FromBytesUntilNulError()
+                override fun writeBytes(buf: ByteArray, offset: Int, value: FromBytesUntilNulError) {}
             }
     }
 }
@@ -696,14 +665,16 @@ public open class FromBytesUntilNulError(
  * The pointer must point to a valid buffer that contains a NUL terminator. The NUL must be
  * located within `Long.MAX` from `ptr`.
  */
-public fun strlen(ptr: ConstPtr): UsizeNoHighBitMinusOne =
-    run {
-        /**
-         * Provided by libc or compilerBuiltins.
-         */
-        fun externStrlen(s: ConstPtr): ULong = 0uL
-        UsizeNoHighBitMinusOne.newUnchecked(externStrlen(s))
+public fun strlen(ptr: ConstPtr): UsizeNoHighBitMinusOne {
+    var len = 0uL
+    val base = ptr.rawAddress
+    if (base != 0L) {
+        while (kmLoadU8(base + len.toLong()) != 0u.toUByte()) {
+            len += 1uL
+        }
     }
+    return UsizeNoHighBitMinusOne.newUnchecked(len.toInt())
+}
 
 /**
  * An iterator over the bytes of a [CStr], without the nul terminator.
@@ -715,28 +686,28 @@ public fun strlen(ptr: ConstPtr): UsizeNoHighBitMinusOne =
  */
 public open class Bytes internal constructor(
     ptrCtorArg: NonNull,
-    public var phantom: Unit,
 ) : Iterable<UByte> {
     // since we know the string is nul-terminated, we only need one pointer
     public var ptr: NonNull = ptrCtorArg
         internal set
 
-    override fun iterator(): Iterator<UByte> = object : AbstractIterator<UByte>() {
-        override fun computeNext() {
-            when (val v = this@Bytes.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<UByte> =
+        object : AbstractIterator<UByte>() {
+            override fun computeNext() {
+                when (val v = this@Bytes.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
-    public open fun clone(): Bytes = Bytes(ptr, phantom)
+    public open fun clone(): Bytes = Bytes(ptr)
 
     public open fun isEmpty(): Boolean {
         // SAFETY: We uphold that the pointer is always valid to dereference
         // by starting with a valid C string and then never incrementing beyond
         // the nul terminator.
-        return this.ptr.read() == 0
+        return this.ptr.read(PrimitiveLayouts.U8) == 0u.toUByte()
     }
 
     public open fun next(): UByte? {
@@ -747,11 +718,11 @@ public open class Bytes internal constructor(
         // it and assume that adding 1 will create a new, non-null, valid
         // pointer.
         return run {
-            val ret = this.ptr.read()
-            if (ret == 0) {
+            val ret = this.ptr.read(PrimitiveLayouts.U8)
+            if (ret == 0u.toUByte()) {
                 null
             } else {
-                this.ptr = this.ptr.add(1)
+                this.ptr = this.ptr.add(1, PrimitiveLayouts.U8)
                 ret
             }
         }
@@ -766,19 +737,18 @@ public open class Bytes internal constructor(
 
     public open fun count(): Int {
         // SAFETY: We always hold a valid pointer to a C string
-        return strlen((this.ptr.asPtr().cast()).asConstPtr()).toInt().asInner()
+        return strlen(ConstPtr(this.ptr.asPtr().rawAddress, this.ptr.asPtr().rawMeta)).asInner()
     }
 
     public companion object {
         public operator fun invoke(
             ptr: NonNull,
-            phantom: Unit,
-        ): Bytes = Bytes(
-            ptrCtorArg = ptr,
-            phantom = phantom,
-        )
+        ): Bytes =
+            Bytes(
+                ptrCtorArg = ptr,
+            )
 
-        public fun new(s: CStr): Bytes = Bytes(ptr = s.asNonNullPtr().cast(), phantom = Unit)
+        public fun new(s: CStr): Bytes = Bytes(ptr = s.asNonNullPtr().cast())
     }
 }
 
@@ -804,9 +774,17 @@ public open class Bytes internal constructor(
 public open class Display(
     public var cStr: CStr,
 ) {
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.cStr).toString()); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append((this.cStr).toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = run { f.append((ByteStr.fromBytes(this.cStr.toBytes())).toString()); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(fromUtf8Lossy(this.cStr.toBytes()))
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     public companion object
 }

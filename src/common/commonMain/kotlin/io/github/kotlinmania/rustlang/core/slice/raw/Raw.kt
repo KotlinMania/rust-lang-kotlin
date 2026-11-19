@@ -1,17 +1,16 @@
+// rust-kotlin: manual
 // port-lint: source slice/raw.rs
 package io.github.kotlinmania.rustlang.core.slice.raw
 
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
+import io.github.kotlinmania.rustlang.core.mem.TypeLayout
+import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.offsetFromUnsigned
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFromUnsigned
-import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
-import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castConst
 
 // Free functions to create `[T]` and `[T]`.
 
@@ -131,12 +130,9 @@ import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawPartsMut
  * [valid]: ptr#safety
  * [NonNull.dangling]: ptr.NonNull.dangling
  */
-public fun <T> fromRawParts(data: ConstPtr, len: Int): List<T> {
+public fun <T> fromRawParts(data: ConstPtr, len: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> {
     // SAFETY: the caller must uphold the safety contract for `fromRawParts`.
-    return run {
-        Unit
-        (PrimitiveLayouts.U8).readNative((sliceFromRawParts(data, len)).rawAddress)
-    }
+    return linearSliceView(data, len, typeLayoutT)
 }
 
 /**
@@ -171,23 +167,20 @@ public fun <T> fromRawParts(data: ConstPtr, len: Int): List<T> {
  * [valid]: ptr#safety
  * [NonNull.dangling]: ptr.NonNull.dangling
  */
-public fun <T> fromRawPartsMut(data: MutPtr, len: Int): MutableList<T> {
+public fun <T> fromRawPartsMut(data: MutPtr, len: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<T> {
     // SAFETY: the caller must uphold the safety contract for `fromRawPartsMut`.
-    return run {
-        Unit
-        RustMutableReference(MutPtr((sliceFromRawPartsMut(data, len)).rawAddress), PrimitiveLayouts.U8)
-    }
+    return linearMutSliceView(data, len, typeLayoutT)
 }
 
 /**
  * Converts a reference to T into a slice of length 1 (without copying).
  */
-public fun <T> fromRef(s: T): List<T> = io.github.kotlinmania.rustlang.core.array.fromRef(s)
+public fun <T> fromRef(s: T): List<T> = listOf(s)
 
 /**
  * Converts a reference to T into a slice of length 1 (without copying).
  */
-public fun <T> fromMut(s: T): MutableList<T> = io.github.kotlinmania.rustlang.core.array.fromMut(s)
+public fun <T> fromMut(s: T): List<T> = mutableListOf(s)
 
 /**
  * Forms a slice from a pointer range.
@@ -250,9 +243,9 @@ public fun <T> fromMut(s: T): MutableList<T> = io.github.kotlinmania.rustlang.co
  *
  * [valid]: ptr#safety
  */
-public fun <T> fromPtrRange(range: Range<ConstPtr>): List<T> {
+public fun <T> fromPtrRange(range: Range<ConstPtr>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> {
     // SAFETY: the caller must uphold the safety contract for `fromPtrRange`.
-    return linearSliceView(range.start, range.end.offsetFromUnsigned(range.start).toInt(), PrimitiveLayouts.U8)
+    return linearSliceView(range.start, range.end.offsetFromUnsigned(range.start, typeLayoutT), typeLayoutT)
 }
 
 /**
@@ -320,7 +313,7 @@ public fun <T> fromPtrRange(range: Range<ConstPtr>): List<T> {
  *
  * [valid]: ptr#safety
  */
-public fun <T> fromMutPtrRange(range: Range<MutPtr>): MutableList<T> {
+public fun <T> fromMutPtrRange(range: Range<MutPtr>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<T> {
     // SAFETY: the caller must uphold the safety contract for `fromMutPtrRange`.
-    return linearMutSliceView(range.start, range.end.offsetFromUnsigned(range.start).toInt(), PrimitiveLayouts.U8)
+    return linearMutSliceView(range.start, range.end.castConst().offsetFromUnsigned(range.start.castConst(), typeLayoutT), typeLayoutT)
 }

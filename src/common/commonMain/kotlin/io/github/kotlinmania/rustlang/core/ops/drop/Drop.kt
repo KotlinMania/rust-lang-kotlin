@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source ops/drop.rs
 package io.github.kotlinmania.rustlang.core.ops.drop
 
@@ -223,7 +224,7 @@ public interface Drop : AutoCloseable {
      */
     public fun drop() {
         // SAFETY: `self` is pinned till after dropped.
-        Pin.newUnchecked(this).pinDrop()
+        this.pinDrop()
     }
 
     /**

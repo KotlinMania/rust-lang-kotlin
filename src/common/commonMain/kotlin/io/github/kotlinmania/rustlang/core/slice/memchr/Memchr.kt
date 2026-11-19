@@ -1,26 +1,25 @@
+// rust-kotlin: manual
 // port-lint: source slice/memchr.rs
 package io.github.kotlinmania.rustlang.core.slice.memchr
 
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
+import io.github.kotlinmania.rustlang.core.mem.LinearSliceView
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
+import io.github.kotlinmania.rustlang.core.mem.kmNormalizeUByteList
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
+import io.github.kotlinmania.rustlang.core.num.repeatU8Int
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.alignOffset
-import io.github.kotlinmania.rustlang.core.ptr.constptr.len
-import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.iter
-import io.github.kotlinmania.rustlang.core.slice.len
-import io.github.kotlinmania.rustlang.core.str.len
 
 public typealias Chunk = Int
 
-public val LO_USIZE: Int = Int.repeatU8(0x01u.toUByte())
+public val LO_USIZE: Int = repeatU8Int(0x01u.toUByte())
 
-public val HI_USIZE: Int = Int.repeatU8(0x80u.toUByte())
+public val HI_USIZE: Int = repeatU8Int(0x80u.toUByte())
 
-public val USIZE_BYTES: Int = sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64)
+public val USIZE_BYTES: Int = sizeOf<Int>(typeLayoutT = PrimitiveLayouts.I32)
 
 /**
  * Returns `true` if `x` contains any zero byte.
@@ -31,32 +30,34 @@ public val USIZE_BYTES: Int = sizeOf<Int>(typeLayoutT = PrimitiveLayouts.USIZE64
  * bytes where the borrow propagated all the way to the most significant
  * bit."
  */
-public fun containsZeroByte(x: Int): Boolean = (x - (LO_USIZE.toInt())) and x.inv() and HI_USIZE != 0
+public fun containsZeroByte(x: Int): Boolean = (x - LO_USIZE) and x.inv() and HI_USIZE != 0
 
 /**
  * Returns the first index matching the byte `x` in `text`.
  */
 public fun memchr(x: UByte, text: List<UByte>): Int? {
+    val normalized = kmNormalizeUByteList(text)
     // Fast path for small slices.
     val result =
-        if (text.size < 2 * USIZE_BYTES) {
-            memchrNaive(x, text)
+        if (normalized.size < 2 * USIZE_BYTES) {
+            memchrNaive(x, normalized)
         } else {
-            memchrAligned(x, text)
+            memchrAligned(x, normalized)
         }
     if (result != null) {
         val index = result
         // SAFETY: Both implementations only return an index from within `text`.
-        assertUnchecked(index < text.size)
+        assertUnchecked(index < normalized.size)
     }
     return result
 }
 
 public fun memchrNaive(x: UByte, text: List<UByte>): Int? {
+    val normalized = kmNormalizeUByteList(text)
     var i = 0
     // Note(const-Note): Replace with `text.iter().pos(| c | * c == x)`.
-    while (i < text.size) {
-        if (text[i] == x) {
+    while (i < normalized.size) {
+        if (normalized[i] == x) {
             return i
         }
         i += 1
@@ -68,15 +69,19 @@ public fun memchrNaive(x: UByte, text: List<UByte>): Int? {
 public fun memchrAligned(x: UByte, text: List<UByte>): Int? {
     // The runtime version behaves the same as the compiletime version, it's
     // just more optimized.
+    val normalized = kmNormalizeUByteList(text)
+    if (normalized !is LinearSliceView<*>) {
+        return memchrNaive(x, normalized)
+    }
     return run {
-        val len = text.size
-        val ptr = text.asPtr()
-        var offset = ptr.alignOffset(USIZE_BYTES)
+        val len = normalized.size
+        val ptr = normalized.pointer
+        var offset = ptr.alignOffset<UByte>(USIZE_BYTES, PrimitiveLayouts.U8)
         // Original implementation taken from rust-memchr.
         // Copyright 2015 Andrew Gallant, bluss and Nicolas Koch
         if (offset > 0) {
             offset = offset.min(len)
-            val slice = ((text).subList(0, offset))
+            val slice = ((normalized).subList(0, offset))
             when (val matchVal = memchrNaive(x, slice)) {
                 null -> {}
                 else -> {
@@ -85,11 +90,11 @@ public fun memchrAligned(x: UByte, text: List<UByte>): Int? {
                 }
             }
         }
-        val repeatedX = Int.repeatU8(x)
+        val repeatedX = repeatU8Int(x)
         while (offset <= len - 2 * USIZE_BYTES) {
             run {
-                val u = (PrimitiveLayouts.USIZE64).readNative((((ConstPtr((ptr).rawAddress + ((offset).toLong() * (PrimitiveLayouts.U8).strideBytes))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
-                val v = (PrimitiveLayouts.USIZE64).readNative((((ConstPtr((ptr).rawAddress + ((offset + USIZE_BYTES).toLong() * (PrimitiveLayouts.U8).strideBytes))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+                val u = (PrimitiveLayouts.I32).readNative((((ConstPtr((ptr).rawAddress + ((offset).toLong() * (PrimitiveLayouts.U8).strideBytes))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+                val v = (PrimitiveLayouts.I32).readNative((((ConstPtr((ptr).rawAddress + ((offset + USIZE_BYTES).toLong() * (PrimitiveLayouts.U8).strideBytes))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
                 val zu = containsZeroByte(u xor repeatedX)
                 val zv = containsZeroByte(v xor repeatedX)
                 if (zu || zv) {
@@ -98,7 +103,7 @@ public fun memchrAligned(x: UByte, text: List<UByte>): Int? {
             }
             offset += USIZE_BYTES * 2
         }
-        val slice1 = linearSliceView(ConstPtr((text.asPtr()).rawAddress + ((offset).toLong() * (PrimitiveLayouts.U8).strideBytes)), (text.size - offset).toInt(), PrimitiveLayouts.U8)
+        val slice1 = linearSliceView(ConstPtr((ptr).rawAddress + ((offset).toLong() * (PrimitiveLayouts.U8).strideBytes)), normalized.size - offset, PrimitiveLayouts.U8)
         when (val matchVal1 = memchrNaive(x, slice1)) {
             null -> {
                 null
@@ -115,11 +120,12 @@ public fun memchrAligned(x: UByte, text: List<UByte>): Int? {
  * Returns the last index matching the byte `x` in `text`.
  */
 public fun memrchr(x: UByte, text: List<UByte>): Int? {
-    val result = memrchrAligned(x, text)
+    val normalized = kmNormalizeUByteList(text)
+    val result = memrchrAligned(x, normalized)
     if (result != null) {
         val index = result
         // SAFETY: `memrchrAligned` only returns the index of a matching byte in `text`.
-        assertUnchecked(index < text.size)
+        assertUnchecked(index < normalized.size)
     }
     return result
 }
@@ -131,18 +137,28 @@ public fun memrchrAligned(x: UByte, text: List<UByte>): Int? {
     // - unaligned tail, after the last word aligned address in text,
     // - body, scanned by 2 words at a time,
     // - the first remaining bytes, < 2 word size.
-    val len = text.size
-    val ptr = text.asPtr()
-    val (minAlignedOffset, maxAlignedOffset) = run {
-        // We call this just to obtain the length of the prefix and suffix.
-        // In the middle we always process two chunks at once.
-        // SAFETY: transmuting `[UByte]` to `[Int]` is safe except for size differences
-        // which are handled by `alignTo`.
-        val (prefix, _, suffix) = text.alignTo<Pair<Chunk, Chunk>>()
-        Pair(prefix.len(), len - suffix.len())
+    val normalized = kmNormalizeUByteList(text)
+    if (normalized !is LinearSliceView<*>) {
+        for (i in normalized.lastIndex downTo 0) {
+            if (normalized[i] == x) {
+                return i
+            }
+        }
+        return null
     }
+    val len = normalized.size
+    val ptr = normalized.pointer
+    val chunkBytes = sizeOf<Chunk>(typeLayoutT = PrimitiveLayouts.I32)
+    val twoChunkBytes = chunkBytes * 2
+    val (minAlignedOffset, maxAlignedOffset) =
+        run {
+            val alignOff = ptr.alignOffset<UByte>(twoChunkBytes, PrimitiveLayouts.U8)
+            val prefixLen = if (alignOff == Int.MAX_VALUE) len else alignOff.min(len)
+            val bodyBytes = ((len - prefixLen) / twoChunkBytes) * twoChunkBytes
+            Pair(prefixLen, prefixLen + bodyBytes)
+        }
     var offset = maxAlignedOffset
-    when (val matchVal = ((text).subList(offset, (text).size)).iter().indexOfLast({ elt -> elt == x }).takeIf { it >= 0 }) {
+    when (val matchVal = ((normalized).subList(offset, (normalized).size)).lastIndexOf(x).takeIf { it >= 0 }) {
         null -> {}
         else -> {
             val index = matchVal
@@ -152,14 +168,13 @@ public fun memrchrAligned(x: UByte, text: List<UByte>): Int? {
     // Search the body of the text, make sure we don't cross minAlignedOffset.
     // offset is always aligned, so just testing `>` is sufficient and avoids possible
     // overflow.
-    val repeatedX = Int.repeatU8(x)
-    val chunkBytes = sizeOf<Chunk>(typeLayoutT = PrimitiveLayouts.USIZE64)
+    val repeatedX = repeatU8Int(x)
     while (offset > minAlignedOffset) {
         // SAFETY: offset starts at len - suffix.len(), as long as it is greater than
         // minAlignedOffset (prefix.len()) the remaining distance is at least 2 * chunkBytes.
         run {
-            val u = (PrimitiveLayouts.USIZE64).readNative((((ConstPtr((ptr).rawAddress + ((offset - 2 * chunkBytes).toLong() * (PrimitiveLayouts.U8).strideBytes))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
-            val v = (PrimitiveLayouts.USIZE64).readNative((((ConstPtr((ptr).rawAddress + ((offset - chunkBytes).toLong() * (PrimitiveLayouts.U8).strideBytes))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+            val u = (PrimitiveLayouts.I32).readNative((((ConstPtr((ptr).rawAddress + ((offset - 2 * chunkBytes).toLong() * (PrimitiveLayouts.U8).strideBytes))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+            val v = (PrimitiveLayouts.I32).readNative((((ConstPtr((ptr).rawAddress + ((offset - chunkBytes).toLong() * (PrimitiveLayouts.U8).strideBytes))).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
             // Break if there is a matching byte.
             val zu = containsZeroByte(u xor repeatedX)
             val zv = containsZeroByte(v xor repeatedX)
@@ -170,5 +185,5 @@ public fun memrchrAligned(x: UByte, text: List<UByte>): Int? {
         offset -= 2 * chunkBytes
     }
     // Find the byte before the point the body loop stopped.
-    return ((text).subList(0, offset)).iter().indexOfLast({ elt -> elt == x }).takeIf { it >= 0 }
+    return ((normalized).subList(0, offset)).lastIndexOf(x).takeIf { it >= 0 }
 }

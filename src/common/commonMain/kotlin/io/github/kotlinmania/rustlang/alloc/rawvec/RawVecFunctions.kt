@@ -1,12 +1,13 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.alloc.rawvec
 
 import io.github.kotlinmania.rustlang.alloc.alloc.handleAllocError
 import io.github.kotlinmania.rustlang.alloc.collections.TryReserveError
-import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind.*
-import io.github.kotlinmania.rustlang.core.alloc.AllocError
+import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
+import io.github.kotlinmania.rustlang.core.num.nichetypes.UsizeNoHighBit
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // One central function responsible for reporting capacity overflows. This'll
@@ -47,8 +48,8 @@ public fun minNonZeroCap(size: Int): Int =
 // Central function for reserve error handling.
 public fun handleError(e: TryReserveError): Nothing =
     when (val matchVal = e.kind()) {
-        CapacityOverflow -> capacityOverflow()
-        is AllocError -> {
+        TryReserveErrorKind.CapacityOverflow -> capacityOverflow()
+        is TryReserveErrorKind.AllocError -> {
             val layout = matchVal.layout
             handleAllocError(layout)
         }
@@ -58,5 +59,5 @@ public fun layoutArray(cap: Int, elemLayout: Layout): Result<Layout, TryReserveE
     // This is only used with `elemLayout`s which are those of real rust types,
     // which lets us use the much-simpler `repeatPacked`.
     check(elemLayout.size() == elemLayout.padToAlign().size())
-    return elemLayout.repeatPacked(cap).mapErr({ CapacityOverflow.into() })
+    return elemLayout.repeatPacked(cap).mapErr { TryReserveError.from(TryReserveErrorKind.CapacityOverflow) }
 }

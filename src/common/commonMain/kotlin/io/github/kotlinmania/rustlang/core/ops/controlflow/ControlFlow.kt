@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source ops/control_flow.rs
 package io.github.kotlinmania.rustlang.core.ops.controlflow
 
@@ -86,18 +87,33 @@ public typealias TryType<B, C> = ControlFlow<B, C>
  * [Break]: ControlFlow.Break
  * [Continue]: ControlFlow.Continue
  */
-public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B, Nothing>>, FromResidual<ControlFlow<B, Nothing>, ControlFlow<B, C>> {
+public sealed class ControlFlow<B, C> :
+    Try<ControlFlow<B, C>, C, ControlFlow<B, Nothing>>,
+    FromResidual<ControlFlow<B, Nothing>, ControlFlow<B, C>> {
     /**
      * Move on to the next phase of the operation as normal.
      */
-    public data class Continue<B, C>(public var value: C) : ControlFlow<B, C>()
+    public data class Continue<B, C>(
+        public var value: C,
+    ) : ControlFlow<B, C>()
+
     /**
      * Exit the operation without running subsequent phases.
      */
-    public data class Break<B, C>(public var value: B) : ControlFlow<B, C>()
+    public data class Break<B, C>(
+        public var value: B,
+    ) : ControlFlow<B, C>()
 
-    public fun cfBreakValue(): B = when (this) { is Break -> value; is Continue -> error("not Break") }
-    public fun cfContinueValue(): C = when (this) { is Continue -> value; is Break -> error("not Continue") }
+    public fun cfBreakValue(): B =
+        when (this) {
+            is Break -> value
+            is Continue -> error("not Break")
+        }
+    public fun cfContinueValue(): C =
+        when (this) {
+            is Continue -> value
+            is Break -> error("not Continue")
+        }
 
     public fun rustEquals(other: ControlFlow<B, C>): Boolean = this == other
 
@@ -356,6 +372,10 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
             }
         }
 
+    public override fun fromOutput(output: C): ControlFlow<B, C> = ControlFlow.fromOutput(output)
+
+    public override fun fromResidual(residual: ControlFlow<B, Nothing>): ControlFlow<B, C> = ControlFlow.fromResidual(residual)
+
     public companion object {
         public fun <B, C> fromOutput(output: C): ControlFlow<B, C> = ControlFlow.Continue(output)
 
@@ -365,6 +385,7 @@ public sealed class ControlFlow<B, C> : Try<ControlFlow<B, C>, C, ControlFlow<B,
                     val b = residual.cfBreakValue()
                     ControlFlow.Break(b)
                 }
+                is ControlFlow.Continue<*, *> -> error("ControlFlow.Continue<*, Nothing> residual is unreachable")
             }
     }
 }
@@ -403,7 +424,7 @@ public fun <T> ControlFlow<T, T>.intoValue(): T =
 /**
  * Creates a `ControlFlow` from any type implementing `Try`.
  */
-public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<ControlFlow<B, Nothing>, C>, fromResidualRFn: (R) -> R): ControlFlow<R, Output> where R : Try<R, Output, Residual> =
+public fun <Output, Residual, R : Try<*, Output, Residual>> ControlFlow.Companion.fromTry(r: R, branchRFn: (R) -> ControlFlow<Residual, Output>, fromResidualRFn: (Residual) -> R): ControlFlow<R, Output> =
     when (val matchVal = branchRFn(r)) {
         is ControlFlow.Continue<*, *> -> {
             val v = matchVal.cfContinueValue()
@@ -418,7 +439,7 @@ public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow.Companio
 /**
  * Converts a `ControlFlow` into any type implementing `Try`.
  */
-public fun <Output, Residual, R : Try<R, Output, Residual>> ControlFlow<R, Output>.intoTry(fromOutputRFn: (C) -> R): R where R : Try<R, Output, Residual> =
+public fun <Output, Residual, R : Try<*, Output, Residual>> ControlFlow<R, Output>.intoTry(fromOutputRFn: (Output) -> R): R =
     when (this) {
         is ControlFlow.Continue<*, *> -> {
             val v = this.cfContinueValue()

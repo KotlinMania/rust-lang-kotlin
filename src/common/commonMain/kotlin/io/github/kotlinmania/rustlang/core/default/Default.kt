@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source default.rs
 package io.github.kotlinmania.rustlang.core.default
 
@@ -5,7 +6,6 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.ascii.Char as AsciiChar
 
 // The `Default` trait for types with a default value.
 
@@ -202,11 +202,6 @@ public fun defaultBoolean(): Boolean = false
  * Returns the default value of `\x00`
  */
 public fun defaultChar(): Char = '\u0000'
-
-/**
- * Returns the default value of `Null`
- */
-public fun defaultAsciiChar(): AsciiChar = AsciiChar.Null
 
 /**
  * Returns the default value of `0`

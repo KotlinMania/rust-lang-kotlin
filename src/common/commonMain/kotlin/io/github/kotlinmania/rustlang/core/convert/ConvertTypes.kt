@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.convert
 
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -433,7 +434,7 @@ public interface From<T, SelfType> {
  * This suffers the same restrictions and reasoning as implementing
  * [Into], see there for details.
  */
-public interface TryInto<T, out Error> {
+public interface TryInto<T, Error> {
     /**
      * Performs the conversion.
      */
@@ -508,7 +509,7 @@ public interface TryInto<T, out Error> {
  *
  * [tryFrom]: TryFrom.tryFrom
  */
-public interface TryFrom<T, SelfType, out Error> {
+public interface TryFrom<T, SelfType, Error> {
     /**
      * Performs the conversion.
      */

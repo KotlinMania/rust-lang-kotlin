@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.intrinsics
 
 public actual fun kmLoadU8(addr: Long): UByte = KmLinearMemoryArena.loadU8(addr)
@@ -225,7 +226,7 @@ public actual fun kmDoubleToU64Unchecked(v: Double): ULong = KmLinearMemoryArena
 public actual fun kmFloatToU128Unchecked(v: Float): U128ValueOutcome = KmLinearMemoryArena.floatToU128Unchecked(v)
 public actual fun kmDoubleToU128Unchecked(v: Double): U128ValueOutcome = KmLinearMemoryArena.doubleToU128Unchecked(v)
 
-private class KmWasmWasiCleanState(
+internal class KmWasmWasiCleanState(
     private var cleanup: (() -> Unit)?,
 ) {
     private var state: Int = 0
@@ -247,7 +248,7 @@ private class KmWasmWasiCleanState(
     }
 }
 
-public actual class KmResourceCleaner internal constructor() : KmForgettableResource {
+public actual class KmResourceCleaner internal actual constructor() : KmForgettableResource {
     private var cleanState: KmWasmWasiCleanState? = null
 
     internal fun attach(state: KmWasmWasiCleanState) {

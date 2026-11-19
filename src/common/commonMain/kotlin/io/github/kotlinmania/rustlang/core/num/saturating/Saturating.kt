@@ -1,12 +1,31 @@
+// rust-kotlin: manual
 // port-lint: source num/saturating.rs
 package io.github.kotlinmania.rustlang.core.num.saturating
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.num.countOnes
+import io.github.kotlinmania.rustlang.core.num.countZeros
+import io.github.kotlinmania.rustlang.core.num.isNegative
+import io.github.kotlinmania.rustlang.core.num.isPositive
 import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.reverseBits
+import io.github.kotlinmania.rustlang.core.num.rotateLeft
+import io.github.kotlinmania.rustlang.core.num.rotateRight
+import io.github.kotlinmania.rustlang.core.num.saturatingAbs
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
+import io.github.kotlinmania.rustlang.core.num.saturatingDiv
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
+import io.github.kotlinmania.rustlang.core.num.saturatingNeg
+import io.github.kotlinmania.rustlang.core.num.saturatingPow
 import io.github.kotlinmania.rustlang.core.num.saturatingSub
+import io.github.kotlinmania.rustlang.core.num.signum
+import io.github.kotlinmania.rustlang.core.num.swapBytes
+import io.github.kotlinmania.rustlang.core.num.toBe
+import io.github.kotlinmania.rustlang.core.num.toLe
+import io.github.kotlinmania.rustlang.core.num.trailingZeros
+import io.github.kotlinmania.rustlang.core.num.wrappingRem
 import io.github.kotlinmania.rustlang.core.result.Result
 import kotlin.experimental.and
 import kotlin.experimental.or
@@ -55,17 +74,41 @@ public open class Saturating<T>(
 
     public open fun clone(): Saturating<T> = Saturating(value)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtBinary(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmtBinary(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtOctal(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmtOctal(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtUpperHex(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmtUpperHex(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     public companion object
 }
@@ -73,37 +116,31 @@ public open class Saturating<T>(
 public fun Saturating<Int>.add(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.saturatingAdd(other.value))
 
 public fun Saturating<Int>.addAssign(other: Saturating<Int>) {
-    var selfMut = this
-    selfMut = selfMut + other
+    this.value = this.value.saturatingAdd(other.value)
 }
 
 public fun Saturating<Int>.addAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<Int>.sub(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.saturatingSub(other.value))
 
 public fun Saturating<Int>.subAssign(other: Saturating<Int>) {
-    var selfMut = this
-    selfMut = selfMut - other
+    this.value = this.value.saturatingSub(other.value)
 }
 
 public fun Saturating<Int>.subAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<Int>.mul(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.saturatingMul(other.value))
 
 public fun Saturating<Int>.mulAssign(other: Saturating<Int>) {
-    var selfMut = this
-    selfMut = selfMut * other
+    this.value = this.value.saturatingMul(other.value)
 }
 
 public fun Saturating<Int>.mulAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -120,78 +157,65 @@ public fun Saturating<Int>.mulAssign(other: Int) {
 public operator fun Saturating<Int>.div(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.saturatingDiv(other.value))
 
 public fun Saturating<Int>.divAssign(other: Saturating<Int>) {
-    var selfMut = this
-    selfMut = selfMut / other
+    this.value = this.value.saturatingDiv(other.value)
 }
 
 public fun Saturating<Int>.divAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
-public operator fun Saturating<Int>.rem(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.rem(other.value))
+public operator fun Saturating<Int>.rem(other: Saturating<Int>): Saturating<Int> = Saturating(this.value.wrappingRem(other.value))
 
 public fun Saturating<Int>.remAssign(other: Saturating<Int>) {
-    var selfMut = this
-    selfMut = selfMut % other
+    this.value = this.value.wrappingRem(other.value)
 }
 
 public fun Saturating<Int>.remAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
-public operator fun Saturating<Int>.not(): Saturating<Int> = Saturating(!this.value)
+public operator fun Saturating<Int>.not(): Saturating<Int> = Saturating(this.value.inv())
 
 public fun Saturating<Int>.bitxor(other: Saturating<Int>): Saturating<Int> = Saturating(this.value xor other.value)
 
 public fun Saturating<Int>.bitxorAssign(other: Saturating<Int>) {
-    var selfMut = this
-    selfMut = selfMut xor other
+    this.value = this.value xor other.value
 }
 
 public fun Saturating<Int>.bitxorAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<Int>.bitor(other: Saturating<Int>): Saturating<Int> = Saturating(this.value or other.value)
 
 public fun Saturating<Int>.bitorAssign(other: Saturating<Int>) {
-    var selfMut = this
-    selfMut = selfMut or other
+    this.value = this.value or other.value
 }
 
 public fun Saturating<Int>.bitorAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<Int>.bitand(other: Saturating<Int>): Saturating<Int> = Saturating(this.value and other.value)
 
 public fun Saturating<Int>.bitandAssign(other: Saturating<Int>) {
-    var selfMut = this
-    selfMut = selfMut and other
+    this.value = this.value and other.value
 }
 
 public fun Saturating<Int>.bitandAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 public fun Saturating<UByte>.addAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<UByte>.subAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<UByte>.mulAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -207,43 +231,35 @@ public fun Saturating<UByte>.mulAssign(other: UByte) {
  */
 
 public fun Saturating<UByte>.divAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
 public fun Saturating<UByte>.remAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Saturating<UByte>.bitxorAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<UByte>.bitorAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<UByte>.bitandAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 public fun Saturating<UShort>.addAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<UShort>.subAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<UShort>.mulAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -259,43 +275,35 @@ public fun Saturating<UShort>.mulAssign(other: UShort) {
  */
 
 public fun Saturating<UShort>.divAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
 public fun Saturating<UShort>.remAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Saturating<UShort>.bitxorAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<UShort>.bitorAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<UShort>.bitandAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 public fun Saturating<UInt>.addAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<UInt>.subAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<UInt>.mulAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -311,43 +319,35 @@ public fun Saturating<UInt>.mulAssign(other: UInt) {
  */
 
 public fun Saturating<UInt>.divAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
 public fun Saturating<UInt>.remAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Saturating<UInt>.bitxorAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<UInt>.bitorAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<UInt>.bitandAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 public fun Saturating<ULong>.addAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<ULong>.subAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<ULong>.mulAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -363,43 +363,35 @@ public fun Saturating<ULong>.mulAssign(other: ULong) {
  */
 
 public fun Saturating<ULong>.divAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
 public fun Saturating<ULong>.remAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Saturating<ULong>.bitxorAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<ULong>.bitorAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<ULong>.bitandAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 public fun Saturating<U128>.addAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<U128>.subAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<U128>.mulAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -415,43 +407,35 @@ public fun Saturating<U128>.mulAssign(other: U128) {
  */
 
 public fun Saturating<U128>.divAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
 public fun Saturating<U128>.remAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Saturating<U128>.bitxorAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<U128>.bitorAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<U128>.bitandAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 public fun Saturating<Int>.addAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<Int>.subAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<Int>.mulAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -467,43 +451,35 @@ public fun Saturating<Int>.mulAssignInt(other: Int) {
  */
 
 public fun Saturating<Int>.divAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
 public fun Saturating<Int>.remAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Saturating<Int>.bitxorAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<Int>.bitorAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<Int>.bitandAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 public fun Saturating<Byte>.addAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<Byte>.subAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<Byte>.mulAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -519,43 +495,35 @@ public fun Saturating<Byte>.mulAssign(other: Byte) {
  */
 
 public fun Saturating<Byte>.divAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
 public fun Saturating<Byte>.remAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Saturating<Byte>.bitxorAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<Byte>.bitorAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<Byte>.bitandAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 public fun Saturating<Short>.addAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<Short>.subAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<Short>.mulAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -571,28 +539,23 @@ public fun Saturating<Short>.mulAssign(other: Short) {
  */
 
 public fun Saturating<Short>.divAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
 public fun Saturating<Short>.remAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Saturating<Short>.bitxorAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<Short>.bitorAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<Short>.bitandAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 /**
@@ -608,18 +571,15 @@ public fun Saturating<Short>.bitandAssign(other: Short) {
  */
 
 public fun Saturating<Long>.addAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<Long>.subAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<Long>.mulAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -635,43 +595,35 @@ public fun Saturating<Long>.mulAssign(other: Long) {
  */
 
 public fun Saturating<Long>.divAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
 public fun Saturating<Long>.remAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Saturating<Long>.bitxorAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<Long>.bitorAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<Long>.bitandAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 public fun Saturating<I128>.addAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut + Saturating(other)
+    this.value = this.value.saturatingAdd(other)
 }
 
 public fun Saturating<I128>.subAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut - Saturating(other)
+    this.value = this.value.saturatingSub(other)
 }
 
 public fun Saturating<I128>.mulAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut * Saturating(other)
+    this.value = this.value.saturatingMul(other)
 }
 
 /**
@@ -687,28 +639,23 @@ public fun Saturating<I128>.mulAssign(other: I128) {
  */
 
 public fun Saturating<I128>.divAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut / Saturating(other)
+    this.value = this.value.saturatingDiv(other)
 }
 
 public fun Saturating<I128>.remAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut % Saturating(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Saturating<I128>.bitxorAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut xor Saturating(other)
+    this.value = this.value xor other
 }
 
 public fun Saturating<I128>.bitorAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut or Saturating(other)
+    this.value = this.value or other
 }
 
 public fun Saturating<I128>.bitandAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut and Saturating(other)
+    this.value = this.value and other
 }
 
 /**
@@ -870,7 +817,13 @@ public fun Saturating<Int>.reverseBits(): Saturating<Int> = Saturating(this.valu
  * import std.num.Saturating; if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun Saturating.Companion.fromBe(x: Saturating<Int>): Saturating<Int> = Saturating(run { val swapVal0 = (x.value); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24)) })
+public fun Saturating.Companion.fromBe(x: Saturating<Int>): Saturating<Int> =
+    Saturating(
+        run {
+            val swapVal0 = (x.value)
+            ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24))
+        },
+    )
 
 /**
  * Converts an integer from little endian to the target's endianness.

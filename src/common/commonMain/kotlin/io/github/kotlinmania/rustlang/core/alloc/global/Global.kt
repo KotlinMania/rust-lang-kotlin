@@ -1,21 +1,17 @@
+// rust-kotlin: manual
 // port-lint: source alloc/global.rs
 package io.github.kotlinmania.rustlang.core.alloc.global
 
-import io.github.kotlinmania.rustlang.core.alloc.AllocError
 import io.github.kotlinmania.rustlang.core.alloc.GlobalAllocator
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
-import io.github.kotlinmania.rustlang.core.ptr.constptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 /**
  * A memory allocator that can be registered as the standard library’s default
@@ -272,7 +268,7 @@ public interface GlobalAlloc {
         if (!ptr.isNull()) {
             // SAFETY: as allocation succeeded, the region from `ptr`
             // of size `size` is guaranteed to be valid for writes.
-            writeBytes(ptr, 0u.toUByte(), size)
+            writeBytes<UByte>(ptr, 0u.toUByte(), size, typeLayoutT = PrimitiveLayouts.U8)
         }
         return ptr
     }
@@ -370,10 +366,7 @@ public fun <A> A.alloc(layout: Layout): MutPtr where A : GlobalAllocator {
                 val ptr = matchVal.okValue()
                 ptr.cast().asPtr()
             }
-            else -> {
-                val AllocError = matchVal.errValue()
-                MutPtr(0L)
-            }
+            else -> MutPtr(0L)
         }
     }
 }
@@ -397,10 +390,7 @@ public fun <A> A.allocZeroed(layout: Layout): MutPtr where A : GlobalAllocator {
                 val ptr = matchVal.okValue()
                 ptr.cast().asPtr()
             }
-            else -> {
-                val AllocError = matchVal.errValue()
-                MutPtr(0L)
-            }
+            else -> MutPtr(0L)
         }
     }
 }
@@ -433,9 +423,6 @@ public fun <A> A.realloc(ptr: MutPtr, layout: Layout, newSize: Int): MutPtr wher
             val ptr3 = ptr2.okValue()
             ptr3.cast().asPtr()
         }
-        else -> {
-            val AllocError = ptr2.errValue()
-            MutPtr(0L)
-        }
+        else -> MutPtr(0L)
     }
 }

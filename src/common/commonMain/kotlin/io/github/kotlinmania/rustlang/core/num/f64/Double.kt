@@ -1,11 +1,12 @@
+// rust-kotlin: manual
 // port-lint: source num/f64.rs
 @file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core.num.f64
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.clamp
-import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
+import io.github.kotlinmania.rustlang.core.cmp.clamp.DoubleClampBounds
+import io.github.kotlinmania.rustlang.core.cmp.cmp
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf64
@@ -21,13 +22,17 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf64
 import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf64
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
-import io.github.kotlinmania.rustlang.core.num.imp.libm.fdim
-import io.github.kotlinmania.rustlang.core.num.midpoint
-import io.github.kotlinmania.rustlang.core.result.Result
+import kotlin.reflect.KClass
+import kotlin.math.cbrt as kotlinCbrt
+
+internal const val DOUBLE_SIGN_MASK: ULong = 0x8000_0000_0000_0000uL
+internal const val DOUBLE_EXPONENT_MASK: ULong = 0x7FF0_0000_0000_0000uL
+internal const val DOUBLE_MANTISSA_MASK: ULong = 0x000F_FFFF_FFFF_FFFFuL
+internal const val DOUBLE_TINY_BITS: ULong = 0x1uL
+internal const val DOUBLE_NEG_TINY_BITS: ULong = 0x8000_0000_0000_0001uL
 
 // Constants for the `Double` double-precision floating point type.
 //
@@ -522,12 +527,12 @@ public fun Double.classify(): FpCategory {
     // version, so now we are back to the naive version.
     val b = this.toRawBits().toULong()
     return run {
-        val matchVal = Pair(b and Double.MANTISSA_MASK, b and Double.EXPONENT_MASK)
+        val matchVal = Pair(b and DOUBLE_MANTISSA_MASK, b and DOUBLE_EXPONENT_MASK)
         when {
-            matchVal.first == 0 && matchVal.second == Double.EXPONENT_MASK -> FpCategory.Infinite
-            matchVal.second == Double.EXPONENT_MASK -> FpCategory.Nan
-            matchVal.first == 0 && matchVal.second == 0 -> FpCategory.Zero
-            matchVal.second == 0 -> FpCategory.Subnormal
+            matchVal.first == 0uL && matchVal.second == DOUBLE_EXPONENT_MASK -> FpCategory.Infinite
+            matchVal.second == DOUBLE_EXPONENT_MASK -> FpCategory.Nan
+            matchVal.first == 0uL && matchVal.second == 0uL -> FpCategory.Zero
+            matchVal.second == 0uL -> FpCategory.Subnormal
             else -> FpCategory.Normal
         }
     }
@@ -574,7 +579,7 @@ public fun Double.isSignPositive(): Boolean = !this.isSignNegative()
 public fun Double.isSignNegative(): Boolean {
     // IEEE754 says: isSignMinus(x) is true if and only if x has negative sign. isSignMinus
     // applies to zeros and NaNs as well.
-    return this.toRawBits().toULong() and Double.SIGN_MASK != 0uL
+    return this.toRawBits().toULong() and DOUBLE_SIGN_MASK != 0uL
 }
 
 /**
@@ -614,16 +619,16 @@ public fun Double.nextUp(): Double {
     if (this.isNaN() || bits == Double.POSITIVE_INFINITY.toBits()) {
         return this
     }
-    val abs = bits and Double.SIGN_MASK.inv()
+    val abs = bits and DOUBLE_SIGN_MASK.inv()
     val nextBits =
         if (abs == 0uL) {
-            Double.TINY_BITS
+            DOUBLE_TINY_BITS
         } else if (bits == abs) {
             bits + 1uL
         } else {
             bits - 1uL
         }
-    return Double.fromBits(nextBits)
+    return Double.fromBits(nextBits.toLong())
 }
 
 /**
@@ -663,16 +668,16 @@ public fun Double.nextDown(): Double {
     if (this.isNaN() || bits == Double.NEGATIVE_INFINITY.toBits()) {
         return this
     }
-    val abs = bits and Double.SIGN_MASK.inv()
+    val abs = bits and DOUBLE_SIGN_MASK.inv()
     val nextBits =
         if (abs == 0uL) {
-            Double.NEG_TINY_BITS
+            DOUBLE_NEG_TINY_BITS
         } else if (bits == abs) {
             bits - 1uL
         } else {
             bits + 1uL
         }
-    return Double.fromBits(nextBits)
+    return Double.fromBits(nextBits.toLong())
 }
 
 /**
@@ -875,11 +880,63 @@ public fun Double.midpoint(other: Double): Double {
  * * Not be infinite
  * * Be representable in the return type `Int`, after truncating off its fractional part
  */
-public inline fun <reified Int> Double.toIntUnchecked(): Int {
-    // SAFETY: the caller must uphold the safety contract for
-    // `FloatToInt.toIntUnchecked`.
-    return this.toIntUnchecked()
+public fun dispatchDoubleToIntUnchecked(v: Double, cls: KClass<*>): Any =
+    when (cls) {
+        Byte::class -> v.toInt().toByte()
+        UByte::class -> v.toInt().toUByte()
+        Short::class -> v.toInt().toShort()
+        UShort::class -> v.toInt().toUShort()
+        Int::class -> v.toInt()
+        UInt::class -> v.toUInt()
+        Long::class -> v.toLong()
+        ULong::class -> v.toULong()
+        else -> error("unsupported double target $cls")
+    }
+
+public fun dispatchDoubleToIntChecked(v: Double, cls: KClass<*>): Any? {
+    if (v.isNaN() || v.isInfinite()) return null
+    return when (cls) {
+        Byte::class -> if (v > -129.0 && v < 128.0) v.toInt().toByte() else null
+        UByte::class -> if (v > -1.0 && v < 256.0) v.toInt().toUByte() else null
+        Short::class -> if (v > -32769.0 && v < 32768.0) v.toInt().toShort() else null
+        UShort::class -> if (v > -1.0 && v < 65536.0) v.toInt().toUShort() else null
+        Int::class -> if (v >= -2147483648.0 && v < 2147483648.0) v.toInt() else null
+        UInt::class -> if (v > -1.0 && v < 4294967296.0) v.toUInt() else null
+        Long::class -> if (v >= -9223372036854775808.0 && v < 9223372036854775808.0) v.toLong() else null
+        ULong::class -> if (v > -1.0 && v < 18446744073709551616.0) v.toULong() else null
+        else -> null
+    }
 }
+
+public fun dispatchDoubleToIntSaturating(v: Double, cls: KClass<*>): Any {
+    if (v.isNaN()) {
+        return when (cls) {
+            Byte::class -> 0.toByte()
+            UByte::class -> 0u.toUByte()
+            Short::class -> 0.toShort()
+            UShort::class -> 0u.toUShort()
+            Int::class -> 0
+            UInt::class -> 0u
+            Long::class -> 0L
+            ULong::class -> 0uL
+            else -> error("unsupported double target $cls")
+        }
+    }
+    return when (cls) {
+        Byte::class -> v.toInt().coerceIn(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt()).toByte()
+        UByte::class -> v.toInt().coerceIn(0, UByte.MAX_VALUE.toInt()).toUByte()
+        Short::class -> v.toInt().coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
+        UShort::class -> v.toInt().coerceIn(0, UShort.MAX_VALUE.toInt()).toUShort()
+        Int::class -> v.toInt()
+        UInt::class -> v.toUInt()
+        Long::class -> v.toLong()
+        ULong::class -> v.toULong()
+        else -> error("unsupported double target $cls")
+    }
+}
+
+public inline fun <reified Target> Double.toIntUnchecked(): Target =
+    dispatchDoubleToIntUnchecked(this, Target::class) as Target
 
 /**
  * Converts to the target float type, rounding as defined in IEEE 754.
@@ -895,7 +952,12 @@ public inline fun <reified Int> Double.toIntUnchecked(): Int {
  * }
  * ```
  */
-public inline fun <reified Flt> Double.cast(): Flt = this.cast()
+public inline fun <reified Target> Double.cast(): Target =
+    when (Target::class) {
+        Double::class -> this as Target
+        kotlin.Float::class -> this.toFloat() as Target
+        else -> dispatchDoubleToIntSaturating(this, Target::class) as Target
+    }
 
 /**
  * Rounds toward zero and converts to any primitive integer type, saturating
@@ -913,7 +975,8 @@ public inline fun <reified Flt> Double.cast(): Flt = this.cast()
  * }
  * ```
  */
-public inline fun <reified Int> Double.toIntSaturating(): Int = this.toIntSaturating()
+public inline fun <reified Target> Double.toIntSaturating(): Target =
+    dispatchDoubleToIntSaturating(this, Target::class) as Target
 
 /**
  * Rounds toward zero and converts to any primitive integer type, returning
@@ -928,7 +991,8 @@ public inline fun <reified Int> Double.toIntSaturating(): Int = this.toIntSatura
  * }
  * ```
  */
-public inline fun <reified Int> Double.toIntChecked(): Int? = this.toIntChecked()
+public inline fun <reified Target> Double.toIntChecked(): Target? =
+    dispatchDoubleToIntChecked(this, Target::class) as Target?
 
 /**
  * Rounds toward zero and converts to any primitive integer type.
@@ -969,7 +1033,7 @@ public inline fun <reified Int> Double.toIntStrict(): Int = (this.toIntChecked<I
  */
 public fun Double.toBits(): ULong {
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret to it.
-    return transmuteWithLayouts<Double, ULong>(this, UnresolvedTypeLayout<Double>(), PrimitiveLayouts.U64)
+    return this.toRawBits().toULong()
 }
 
 /**
@@ -1010,7 +1074,7 @@ public fun Double.toBits(): ULong {
  * check(v == 12.5.toDouble())
  * ```
  */
-public fun Double.Companion.fromBits(v: ULong): Double {
+public fun f64FromBits(v: ULong): Double {
     // It turns out the safety issues with sNaN were overblown! Hooray!
     // SAFETY: `ULong` is a plain old datatype so we can always reinterpret from it.
     return transmuteWithLayouts<ULong, Double>(v, PrimitiveLayouts.U64, PrimitiveLayouts.F64)
@@ -1034,7 +1098,11 @@ public fun Double.Companion.fromBits(v: ULong): Double {
  * }
  * ```
  */
-public fun Double.toBeBytes(): UByteArray = run { val rawBits = this.toRawBits().toULong(); ubyteArrayOf((rawBits shr 56).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte()) }
+public fun Double.toBeBytes(): UByteArray =
+    run {
+        val rawBits = this.toRawBits().toULong()
+        ubyteArrayOf((rawBits shr 56).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte())
+    }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -1054,7 +1122,11 @@ public fun Double.toBeBytes(): UByteArray = run { val rawBits = this.toRawBits()
  * }
  * ```
  */
-public fun Double.toLeBytes(): UByteArray = run { val rawBits = this.toRawBits().toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
+public fun Double.toLeBytes(): UByteArray =
+    run {
+        val rawBits = this.toRawBits().toULong()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
+    }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -1084,7 +1156,11 @@ public fun Double.toLeBytes(): UByteArray = run { val rawBits = this.toRawBits()
  * }
  * ```
  */
-public fun Double.toNeBytes(): UByteArray = run { val rawBits = this.toRawBits().toULong(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte()) }
+public fun Double.toNeBytes(): UByteArray =
+    run {
+        val rawBits = this.toRawBits().toULong()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte(), (rawBits shr 32).toUByte(), (rawBits shr 40).toUByte(), (rawBits shr 48).toUByte(), (rawBits shr 56).toUByte())
+    }
 
 /**
  * Creates a floating point value from its representation as a byte array in big endian.
@@ -1103,7 +1179,13 @@ public fun Double.toNeBytes(): UByteArray = run { val rawBits = this.toRawBits()
  * }
  * ```
  */
-public fun Double.Companion.fromBeBytes(bytes: UByteArray): Double = Double.fromBits(run { val bytesTmp0 = bytes; ((bytesTmp0[0].toULong() shl 56) or (bytesTmp0[1].toULong() shl 48) or (bytesTmp0[2].toULong() shl 40) or (bytesTmp0[3].toULong() shl 32) or (bytesTmp0[4].toULong() shl 24) or (bytesTmp0[5].toULong() shl 16) or (bytesTmp0[6].toULong() shl 8) or bytesTmp0[7].toULong()) })
+public fun f64FromBeBytes(bytes: UByteArray): Double =
+    f64FromBits(
+        run {
+            val bytesTmp0 = bytes
+            ((bytesTmp0[0].toULong() shl 56) or (bytesTmp0[1].toULong() shl 48) or (bytesTmp0[2].toULong() shl 40) or (bytesTmp0[3].toULong() shl 32) or (bytesTmp0[4].toULong() shl 24) or (bytesTmp0[5].toULong() shl 16) or (bytesTmp0[6].toULong() shl 8) or bytesTmp0[7].toULong())
+        },
+    )
 
 /**
  * Creates a floating point value from its representation as a byte array in little endian.
@@ -1122,7 +1204,13 @@ public fun Double.Companion.fromBeBytes(bytes: UByteArray): Double = Double.from
  * }
  * ```
  */
-public fun Double.Companion.fromLeBytes(bytes: UByteArray): Double = Double.fromBits(run { val bytesTmp1 = bytes; ((bytesTmp1[7].toULong() shl 56) or (bytesTmp1[6].toULong() shl 48) or (bytesTmp1[5].toULong() shl 40) or (bytesTmp1[4].toULong() shl 32) or (bytesTmp1[3].toULong() shl 24) or (bytesTmp1[2].toULong() shl 16) or (bytesTmp1[1].toULong() shl 8) or bytesTmp1[0].toULong()) })
+public fun f64FromLeBytes(bytes: UByteArray): Double =
+    f64FromBits(
+        run {
+            val bytesTmp1 = bytes
+            ((bytesTmp1[7].toULong() shl 56) or (bytesTmp1[6].toULong() shl 48) or (bytesTmp1[5].toULong() shl 40) or (bytesTmp1[4].toULong() shl 32) or (bytesTmp1[3].toULong() shl 24) or (bytesTmp1[2].toULong() shl 16) or (bytesTmp1[1].toULong() shl 8) or bytesTmp1[0].toULong())
+        },
+    )
 
 /**
  * Creates a floating point value from its representation as a byte array in native endian.
@@ -1152,7 +1240,13 @@ public fun Double.Companion.fromLeBytes(bytes: UByteArray): Double = Double.from
  * }
  * ```
  */
-public fun Double.Companion.fromNeBytes(bytes: UByteArray): Double = Double.fromBits(run { val bytesTmp2 = bytes; ((bytesTmp2[7].toULong() shl 56) or (bytesTmp2[6].toULong() shl 48) or (bytesTmp2[5].toULong() shl 40) or (bytesTmp2[4].toULong() shl 32) or (bytesTmp2[3].toULong() shl 24) or (bytesTmp2[2].toULong() shl 16) or (bytesTmp2[1].toULong() shl 8) or bytesTmp2[0].toULong()) })
+public fun f64FromNeBytes(bytes: UByteArray): Double =
+    f64FromBits(
+        run {
+            val bytesTmp2 = bytes
+            ((bytesTmp2[7].toULong() shl 56) or (bytesTmp2[6].toULong() shl 48) or (bytesTmp2[5].toULong() shl 40) or (bytesTmp2[4].toULong() shl 32) or (bytesTmp2[3].toULong() shl 24) or (bytesTmp2[2].toULong() shl 16) or (bytesTmp2[1].toULong() shl 8) or bytesTmp2[0].toULong())
+        },
+    )
 
 /**
  * Returns the ordering between `self` and `other`.
@@ -1328,7 +1422,7 @@ public fun Double.clampMagnitude(limit: Double): Double {
  * }
  * ```
  */
-public fun <R> Double.clampTo(range: R): Double where R : ClampBounds<Double> = range.clamp(this)
+public fun Double.clampTo(range: DoubleClampBounds): Double = range.clamp(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -1814,7 +1908,14 @@ public fun sqrt(x: Double): Double = kmSqrtf64(x)
  *
  * [f64.absSub]: ../../../std/primitive.f64.html#method.absSub
  */
-public fun absSub(x: Double, other: Double): Double = fdim(x, other)
+public fun absSub(x: Double, other: Double): Double =
+    if (x.isNaN() || other.isNaN()) {
+        Double.NaN
+    } else if (x > other) {
+        x - other
+    } else {
+        0.0
+    }
 
 /**
  * Experimental version of `cbrt` in `core`. See [f64.cbrt] for details.
@@ -1836,4 +1937,4 @@ public fun absSub(x: Double, other: Double): Double = fdim(x, other)
  *
  * [f64.cbrt]: ../../../std/primitive.f64.html#method.cbrt
  */
-public fun cbrt(x: Double): Double = io.github.kotlinmania.rustlang.core.num.imp.libm.cbrt(x)
+public fun cbrt(x: Double): Double = kotlinCbrt(x)

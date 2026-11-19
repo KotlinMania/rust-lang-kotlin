@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source mem/manually_drop.rs
 package io.github.kotlinmania.rustlang.core.mem.manuallydrop
 
@@ -9,7 +10,6 @@ import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
-import io.github.kotlinmania.rustlang.core.ptr.read
 
 /**
  * A wrapper to inhibit the compiler from automatically calling `T`’s
@@ -147,13 +147,15 @@ import io.github.kotlinmania.rustlang.core.ptr.read
  *
  * [drop order]: https://doc.rust-lang.org/reference/destructors.html
  */
-public open class ManuallyDrop<T>(
+public open class ManuallyDrop<T> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
 ) : DerefPure {
     public var value: T
         get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        set(value) {
+            fieldLayout.writeNative(fieldStorage.rawAddress, value)
+        }
 
     public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
 
@@ -215,7 +217,7 @@ public open class ManuallyDrop<T>(
         public fun <T> take(slot: RustMutableReference<ManuallyDrop<T>>): T {
             // SAFETY: we are reading from a reference, which is guaranteed
             // to be valid for reads.
-            return read((slot).read().value)
+            return slot.read().value
         }
 
         /**
@@ -244,7 +246,7 @@ public open class ManuallyDrop<T>(
             // SAFETY: we are dropping the value pointed to by a mutable reference
             // which is guaranteed to be valid for writes.
             // It is up to the caller to make sure that `slot` isn't dropped again.
-            dropInPlace((slot).read().value)
+            (slot.read().value as? AutoCloseable)?.close()
         }
     }
 }

@@ -1,10 +1,16 @@
+// rust-kotlin: manual
+@file:OptIn(ExperimentalUnsignedTypes::class)
+
 package io.github.kotlinmania.rustlang.core.ffi
 
 import io.github.kotlinmania.rustlang.core.ffi.primitives.CInt
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCompareBytes
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
+import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
+import io.github.kotlinmania.rustlang.core.intrinsics.kmLoadU8
+import io.github.kotlinmania.rustlang.core.intrinsics.kmWriteBytes
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.constptr.add
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.result.Result
 
 private class DebugStruct(
@@ -32,22 +38,14 @@ private class DebugStruct(
     }
 }
 
-// N.B., for LLVM to recognize the void pointer type and by extension
-// functions like malloc(), we need to have it represented as i8* in
-// LLVM bitcode. The enum used here ensures this and prevents misuse
-// of the "raw" type by only having private variants. We need two
-// variants, because the compiler complains about the repr attribute
-// otherwise and we need at least one variant as otherwise the enum
-// would be uninhabited and at least dereferencing such pointers would
-// be UB.
 public sealed class CVoid {
     public data object Variant1 : CVoid()
     public data object Variant2 : CVoid()
 
     private fun kmDiscriminant(): Int =
         when (this) {
-        Variant1 -> 0
-        Variant2 -> 1
+            Variant1 -> 0
+            Variant2 -> 1
         }
 
     public fun toByte(): Byte = kmDiscriminant().toByte()
@@ -66,17 +64,38 @@ public sealed class CVoid {
 
     public fun toULong(): ULong = kmDiscriminant().toULong()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "c_void").finish(); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            DebugStruct(f, "c_void").finish()
+            Result.Ok<Unit, Unit>(Unit)
+        }
 }
 
-public expect fun memcpy(dest: MutPtr, src: ConstPtr, n: ULong): MutPtr
+public fun memcpy(dest: MutPtr, src: ConstPtr, n: ULong): MutPtr {
+    kmCopyNonoverlapping(dest.rawAddress, src.rawAddress, n.toLong())
+    return dest
+}
 
-public expect fun memmove(dest: MutPtr, src: ConstPtr, n: ULong): MutPtr
+public fun memmove(dest: MutPtr, src: ConstPtr, n: ULong): MutPtr {
+    kmCopy(dest.rawAddress, src.rawAddress, n.toLong())
+    return dest
+}
 
-public expect fun memset(s: MutPtr, c: CInt, n: ULong): MutPtr
+public fun memset(s: MutPtr, c: CInt, n: ULong): MutPtr {
+    kmWriteBytes(s.rawAddress, (c and 0xFF).toUByte(), n.toLong())
+    return s
+}
 
-public expect fun memcmp(s1: ConstPtr, s2: ConstPtr, n: ULong): CInt
+public fun memcmp(s1: ConstPtr, s2: ConstPtr, n: ULong): CInt =
+    kmCompareBytes(s1.rawAddress, s2.rawAddress, n.toLong())
 
-public expect fun bcmp(s1: ConstPtr, s2: ConstPtr, n: ULong): CInt
+public fun bcmp(s1: ConstPtr, s2: ConstPtr, n: ULong): CInt =
+    kmCompareBytes(s1.rawAddress, s2.rawAddress, n.toLong())
 
-public expect fun strlen(s: ConstPtr): ULong
+public fun strlen(s: ConstPtr): ULong {
+    var offset = 0L
+    while (kmLoadU8(s.rawAddress + offset) != 0u.toUByte()) {
+        offset++
+    }
+    return offset.toULong()
+}

@@ -1,11 +1,33 @@
+// rust-kotlin: manual
 // port-lint: source num/wrapping.rs
 package io.github.kotlinmania.rustlang.core.num.wrapping
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
+import io.github.kotlinmania.rustlang.core.num.countOnes
+import io.github.kotlinmania.rustlang.core.num.countZeros
+import io.github.kotlinmania.rustlang.core.num.isNegative
+import io.github.kotlinmania.rustlang.core.num.isPositive
 import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
-import io.github.kotlinmania.rustlang.core.num.nextPowerOfTwo
+import io.github.kotlinmania.rustlang.core.num.leadingZeros
+import io.github.kotlinmania.rustlang.core.num.reverseBits
+import io.github.kotlinmania.rustlang.core.num.rotateLeft
+import io.github.kotlinmania.rustlang.core.num.rotateRight
+import io.github.kotlinmania.rustlang.core.num.signum
+import io.github.kotlinmania.rustlang.core.num.swapBytes
+import io.github.kotlinmania.rustlang.core.num.toBe
+import io.github.kotlinmania.rustlang.core.num.toLe
+import io.github.kotlinmania.rustlang.core.num.trailingZeros
+import io.github.kotlinmania.rustlang.core.num.wrappingAbs
+import io.github.kotlinmania.rustlang.core.num.wrappingAdd
+import io.github.kotlinmania.rustlang.core.num.wrappingDiv
+import io.github.kotlinmania.rustlang.core.num.wrappingMul
 import io.github.kotlinmania.rustlang.core.num.wrappingNextPowerOfTwo
+import io.github.kotlinmania.rustlang.core.num.wrappingPow
+import io.github.kotlinmania.rustlang.core.num.wrappingRem
+import io.github.kotlinmania.rustlang.core.num.wrappingShl
+import io.github.kotlinmania.rustlang.core.num.wrappingShr
+import io.github.kotlinmania.rustlang.core.num.wrappingSub
 import io.github.kotlinmania.rustlang.core.result.Result
 import kotlin.experimental.and
 import kotlin.experimental.or
@@ -55,17 +77,41 @@ public open class Wrapping<T>(
 
     public open fun clone(): Wrapping<T> = Wrapping(value)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtBinary(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmtBinary(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtOctal(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmtOctal(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtUpperHex(f: StringBuilder): Result<Unit, Unit> = this.value.fmt(f)
+    public open fun fmtUpperHex(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(this.value.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     public companion object
 }
@@ -73,529 +119,429 @@ public open class Wrapping<T>(
 public infix fun Wrapping<UByte>.shl(other: Int): Wrapping<UByte> = Wrapping(this.value.wrappingShl(other.toUInt()))
 
 public fun Wrapping<UByte>.shlAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut shl other
+    this.value = this.value.wrappingShl(other.toUInt())
 }
 
 public infix fun Wrapping<UByte>.shr(other: Int): Wrapping<UByte> = Wrapping(this.value.wrappingShr(other.toUInt()))
 
 public fun Wrapping<UByte>.shrAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut shr other
+    this.value = this.value.wrappingShr(other.toUInt())
 }
 
 public fun Wrapping<UShort>.shlInt(other: Int): Wrapping<UShort> = Wrapping(this.value.wrappingShl(other.toUInt()))
 
 public fun Wrapping<UShort>.shlAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut shl other
+    this.value = this.value.wrappingShl(other.toUInt())
 }
 
 public fun Wrapping<UShort>.shrInt(other: Int): Wrapping<UShort> = Wrapping(this.value.wrappingShr(other.toUInt()))
 
 public fun Wrapping<UShort>.shrAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut shr other
+    this.value = this.value.wrappingShr(other.toUInt())
 }
 
 public fun Wrapping<Int>.add(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value.wrappingAdd(other.value))
 
 public fun Wrapping<Int>.addAssign(other: Wrapping<Int>) {
-    var selfMut = this
-    selfMut = selfMut + other
+    this.value = this.value.wrappingAdd(other.value)
 }
 
 public fun Wrapping<Int>.addAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<Int>.sub(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value.wrappingSub(other.value))
 
 public fun Wrapping<Int>.subAssign(other: Wrapping<Int>) {
-    var selfMut = this
-    selfMut = selfMut - other
+    this.value = this.value.wrappingSub(other.value)
 }
 
 public fun Wrapping<Int>.subAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<Int>.mul(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value.wrappingMul(other.value))
 
 public fun Wrapping<Int>.mulAssign(other: Wrapping<Int>) {
-    var selfMut = this
-    selfMut = selfMut * other
+    this.value = this.value.wrappingMul(other.value)
 }
 
 public fun Wrapping<Int>.mulAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public operator fun Wrapping<Int>.div(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value.wrappingDiv(other.value))
 
 public fun Wrapping<Int>.divAssign(other: Wrapping<Int>) {
-    var selfMut = this
-    selfMut = selfMut / other
+    this.value = this.value.wrappingDiv(other.value)
 }
 
 public fun Wrapping<Int>.divAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public operator fun Wrapping<Int>.rem(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value.wrappingRem(other.value))
 
 public fun Wrapping<Int>.remAssign(other: Wrapping<Int>) {
-    var selfMut = this
-    selfMut = selfMut % other
+    this.value = this.value.wrappingRem(other.value)
 }
 
 public fun Wrapping<Int>.remAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
-public operator fun Wrapping<Int>.not(): Wrapping<Int> = Wrapping(!this.value)
+public operator fun Wrapping<Int>.not(): Wrapping<Int> = Wrapping(this.value.inv())
 
 public fun Wrapping<Int>.bitxor(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value xor other.value)
 
 public fun Wrapping<Int>.bitxorAssign(other: Wrapping<Int>) {
-    var selfMut = this
-    selfMut = selfMut xor other
+    this.value = this.value xor other.value
 }
 
 public fun Wrapping<Int>.bitxorAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<Int>.bitor(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value or other.value)
 
 public fun Wrapping<Int>.bitorAssign(other: Wrapping<Int>) {
-    var selfMut = this
-    selfMut = selfMut or other
+    this.value = this.value or other.value
 }
 
 public fun Wrapping<Int>.bitorAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<Int>.bitand(other: Wrapping<Int>): Wrapping<Int> = Wrapping(this.value and other.value)
 
 public fun Wrapping<Int>.bitandAssign(other: Wrapping<Int>) {
-    var selfMut = this
-    selfMut = selfMut and other
+    this.value = this.value and other.value
 }
 
 public fun Wrapping<Int>.bitandAssign(other: Int) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
-public fun Wrapping<Int>.neg(): Wrapping<Int> = Wrapping(0) - this
+public fun Wrapping<Int>.neg(): Wrapping<Int> = Wrapping(0.wrappingSub(this.value))
 
 public fun Wrapping<UByte>.addAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<UByte>.subAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<UByte>.mulAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public fun Wrapping<UByte>.divAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public fun Wrapping<UByte>.remAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Wrapping<UByte>.bitxorAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<UByte>.bitorAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<UByte>.bitandAssign(other: UByte) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
 public fun Wrapping<UShort>.addAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<UShort>.subAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<UShort>.mulAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public fun Wrapping<UShort>.divAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public fun Wrapping<UShort>.remAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Wrapping<UShort>.bitxorAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<UShort>.bitorAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<UShort>.bitandAssign(other: UShort) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
 public fun Wrapping<UInt>.addAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<UInt>.subAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<UInt>.mulAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public fun Wrapping<UInt>.divAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public fun Wrapping<UInt>.remAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Wrapping<UInt>.bitxorAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<UInt>.bitorAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<UInt>.bitandAssign(other: UInt) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
 public fun Wrapping<ULong>.addAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<ULong>.subAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<ULong>.mulAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public fun Wrapping<ULong>.divAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public fun Wrapping<ULong>.remAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Wrapping<ULong>.bitxorAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<ULong>.bitorAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<ULong>.bitandAssign(other: ULong) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
 public fun Wrapping<U128>.addAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<U128>.subAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<U128>.mulAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public fun Wrapping<U128>.divAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public fun Wrapping<U128>.remAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Wrapping<U128>.bitxorAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<U128>.bitorAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<U128>.bitandAssign(other: U128) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
 public fun Wrapping<Int>.addAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<Int>.subAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<Int>.mulAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public fun Wrapping<Int>.divAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public fun Wrapping<Int>.remAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Wrapping<Int>.bitxorAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<Int>.bitorAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<Int>.bitandAssignInt(other: Int) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
 public fun Wrapping<Byte>.addAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<Byte>.subAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<Byte>.mulAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public fun Wrapping<Byte>.divAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public fun Wrapping<Byte>.remAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Wrapping<Byte>.bitxorAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<Byte>.bitorAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<Byte>.bitandAssign(other: Byte) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
 public fun Wrapping<Short>.addAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<Short>.subAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<Short>.mulAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public fun Wrapping<Short>.divAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public fun Wrapping<Short>.remAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Wrapping<Short>.bitxorAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<Short>.bitorAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<Short>.bitandAssign(other: Short) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
 public fun Wrapping<Long>.addAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<Long>.subAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<Long>.mulAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public fun Wrapping<Long>.divAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public fun Wrapping<Long>.remAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Wrapping<Long>.bitxorAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<Long>.bitorAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<Long>.bitandAssign(other: Long) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
 public fun Wrapping<I128>.addAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut + Wrapping(other)
+    this.value = this.value.wrappingAdd(other)
 }
 
 public fun Wrapping<I128>.subAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut - Wrapping(other)
+    this.value = this.value.wrappingSub(other)
 }
 
 public fun Wrapping<I128>.mulAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut * Wrapping(other)
+    this.value = this.value.wrappingMul(other)
 }
 
 public fun Wrapping<I128>.divAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut / Wrapping(other)
+    this.value = this.value.wrappingDiv(other)
 }
 
 public fun Wrapping<I128>.remAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut % Wrapping(other)
+    this.value = this.value.wrappingRem(other)
 }
 
 public fun Wrapping<I128>.bitxorAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut xor Wrapping(other)
+    this.value = this.value xor other
 }
 
 public fun Wrapping<I128>.bitorAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut or Wrapping(other)
+    this.value = this.value or other
 }
 
 public fun Wrapping<I128>.bitandAssign(other: I128) {
-    var selfMut = this
-    selfMut = selfMut and Wrapping(other)
+    this.value = this.value and other
 }
 
 /**
@@ -806,7 +752,13 @@ public fun Wrapping<Int>.reverseBits(): Wrapping<Int> = Wrapping(this.value.reve
  * @file:feature(wrappingIntImpl) import std.num.Wrapping; if cfg(targetEndian = "big") {} else {}
  * ```
  */
-public fun Wrapping.Companion.fromBe(x: Wrapping<Int>): Wrapping<Int> = Wrapping(run { val swapVal0 = (x.value); ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24)) })
+public fun Wrapping.Companion.fromBe(x: Wrapping<Int>): Wrapping<Int> =
+    Wrapping(
+        run {
+            val swapVal0 = (x.value)
+            ((((swapVal0) shl 24)) or (((swapVal0) and 0x0000FF00) shl 8) or (((swapVal0) ushr 8) and 0x0000FF00) or ((swapVal0) ushr 24))
+        },
+    )
 
 /**
  * Converts an integer from little endian to the target's endianness.

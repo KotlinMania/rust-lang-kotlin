@@ -1,15 +1,16 @@
+// rust-kotlin: manual
 // port-lint: source ptr/non_null.rs
 package io.github.kotlinmania.rustlang.core.ptr.nonnull
 
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.cmp
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
@@ -17,22 +18,14 @@ import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
+import io.github.kotlinmania.rustlang.core.num.uncheckedNeg
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.constptr.addr
-import io.github.kotlinmania.rustlang.core.ptr.constptr.alignOffset
+import io.github.kotlinmania.rustlang.core.ptr.constptr.asRefUnchecked
 import io.github.kotlinmania.rustlang.core.ptr.constptr.asUninitSlice
-import io.github.kotlinmania.rustlang.core.ptr.constptr.byteAdd
-import io.github.kotlinmania.rustlang.core.ptr.constptr.byteOffset
-import io.github.kotlinmania.rustlang.core.ptr.constptr.byteOffsetFrom
 import io.github.kotlinmania.rustlang.core.ptr.constptr.byteOffsetFromUnsigned
-import io.github.kotlinmania.rustlang.core.ptr.constptr.byteSub
-import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
-import io.github.kotlinmania.rustlang.core.ptr.constptr.castInit
-import io.github.kotlinmania.rustlang.core.ptr.constptr.castSlice
 import io.github.kotlinmania.rustlang.core.ptr.constptr.exposeProvenance
-import io.github.kotlinmania.rustlang.core.ptr.constptr.isAligned
-import io.github.kotlinmania.rustlang.core.ptr.constptr.isAlignedTo
 import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.constptr.offset
 import io.github.kotlinmania.rustlang.core.ptr.constptr.offsetFrom
@@ -44,26 +37,21 @@ import io.github.kotlinmania.rustlang.core.ptr.constptr.withAddr
 import io.github.kotlinmania.rustlang.core.ptr.copy
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.dangling
-import io.github.kotlinmania.rustlang.core.ptr.dropGlue
 import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.fromMut
-import io.github.kotlinmania.rustlang.core.ptr.fromRef
-import io.github.kotlinmania.rustlang.core.ptr.metadata.Thin
+import io.github.kotlinmania.rustlang.core.ptr.metadata.Metadata
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
 import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.alignOffset
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMutUnchecked
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asUninitSlice
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asUninitSliceMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteAdd
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteOffset
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteOffsetFrom
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteOffsetFromUnsigned
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteSub
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castConst
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.castInit
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAligned
@@ -85,11 +73,9 @@ import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeVolatile
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.withExposedProvenanceMut
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
 import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.writeUnaligned
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts
 import io.github.kotlinmania.rustlang.core.str.len
@@ -190,11 +176,8 @@ public open class NonNull(
      * Note that because the created reference is to `MaybeUninit<T>`, the
      * source pointer can point to uninitialized memory.
      */
-    public open fun asUninitRef(): MaybeUninit<T> {
-        // SAFETY: the caller must guarantee that `self` meets all the
-        // requirements for a reference.
-        return this.cast().asPtr()
-    }
+    public open fun <T> asUninitRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<T> =
+        MaybeUninit.uninit(typeLayoutT)
 
     /**
      * Returns a unique references to the value. In contrast to [asMut], this does not require
@@ -212,11 +195,8 @@ public open class NonNull(
      * Note that because the created reference is to `MaybeUninit<T>`, the
      * source pointer can point to uninitialized memory.
      */
-    public open fun asUninitMut(): MaybeUninit<T> {
-        // SAFETY: the caller must guarantee that `self` meets all the
-        // requirements for a reference.
-        return this.cast().asPtr()
-    }
+    public open fun <T> asUninitMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<T> =
+        MaybeUninit.uninit(typeLayoutT)
 
     /**
      * Casts from a pointer-to-`T` to a pointer-to-`[T; N]`.
@@ -338,12 +318,8 @@ public open class NonNull(
      * println("$refX")
      * ```
      */
-    public open fun asRef(): T {
-        // SAFETY: the caller must guarantee that `self` meets all the
-        // requirements for a reference.
-        // `castConst` avoids a mutable raw pointer deref.
-        return this.asPtr().castConst()
-    }
+    public open fun <T> asRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T =
+        this.asPtr().castConst().asRefUnchecked(typeLayoutT)
 
     /**
      * Returns a unique reference to the value. If the value may be uninitialized, [asUninitMut]
@@ -374,11 +350,8 @@ public open class NonNull(
      * check(xRef == 2)
      * ```
      */
-    public open fun asMut(): T {
-        // SAFETY: the caller must guarantee that `self` meets all the
-        // requirements for a mutable reference.
-        return this.asPtr()
-    }
+    public open fun <T> asMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T =
+        this.asPtr().asMutUnchecked(typeLayoutT)
 
     /**
      * Casts to a pointer of another type.
@@ -398,10 +371,7 @@ public open class NonNull(
      * val rawPtr: MutPtr = castedPtr.asPtr()
      * ```
      */
-    public open fun <U> cast(): NonNull {
-        // SAFETY: `self` is a `NonNull` pointer which is necessarily non-null
-        return transmuteWithLayouts<MutPtr, NonNull>(mutPtrFromRustCast(this.asPtr()), PrimitiveLayouts.mutPtrLayout(64L), NonNull.typeLayout<U>())
-    }
+    public open fun cast(): NonNull = this
 
     /**
      * Try to cast to a pointer of another type by checking alignment.
@@ -448,13 +418,11 @@ public open class NonNull(
      * }
      * ```
      */
-    public open fun offset(count: Int): NonNull {
-        // SAFETY: the caller must uphold the safety contract for `offset`.
-        // Additionally safety contract of `offset` guarantees that the resulting pointer is
-        // pointing to an allocation, there can't be an allocation at null, thus it's safe to
-        // construct `NonNull`.
-        return transmuteWithLayouts<Ptr, NonNull>(ConstPtr(this.asPtr().rawAddress + (count).toLong() * 1L), UnresolvedTypeLayout<Ptr>(), NonNull.typeLayout())
-    }
+    public open fun <T> offset(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): NonNull =
+        NonNull(ConstPtr(this.asPtr().rawAddress + count.toLong() * typeLayoutT.strideBytes, this.rawMeta))
+
+    public open fun offset(count: Int): NonNull =
+        NonNull(ConstPtr(this.asPtr().rawAddress + count.toLong(), this.rawMeta))
 
     // even without panics, this helps for Miri backtraces
 
@@ -479,7 +447,8 @@ public open class NonNull(
         // Additionally safety contract of `offset` guarantees that the resulting pointer is
         // pointing to an allocation, there can't be an allocation at null, thus it's safe to
         // construct `NonNull`.
-        return transmuteWithLayouts<MutPtr, NonNull>(this.asPtr().byteOffset(count), UnresolvedTypeLayout<MutPtr>(), NonNull.typeLayout())
+        val p = this.asPtr().byteOffset(count)
+        return NonNull(ConstPtr(p.rawAddress, p.rawMeta))
     }
 
     // even without panics, this helps for Miri backtraces
@@ -498,13 +467,11 @@ public open class NonNull(
      * }
      * ```
      */
-    public open fun add(count: Int): NonNull {
-        // SAFETY: the caller must uphold the safety contract for `offset`.
-        // Additionally safety contract of `offset` guarantees that the resulting pointer is
-        // pointing to an allocation, there can't be an allocation at null, thus it's safe to
-        // construct `NonNull`.
-        return transmuteWithLayouts<Ptr, NonNull>(ConstPtr(this.asPtr().rawAddress + (count).toLong() * 1L), UnresolvedTypeLayout<Ptr>(), NonNull.typeLayout())
-    }
+    public open fun <T> add(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): NonNull =
+        NonNull(ConstPtr(this.asPtr().rawAddress + count.toLong() * typeLayoutT.strideBytes, this.rawMeta))
+
+    public open fun add(count: Int): NonNull =
+        NonNull(ConstPtr(this.asPtr().rawAddress + count.toLong(), this.rawMeta))
 
     // even without panics, this helps for Miri backtraces
 
@@ -529,7 +496,8 @@ public open class NonNull(
         // Additionally safety contract of `add` guarantees that the resulting pointer is pointing
         // to an allocation, there can't be an allocation at null, thus it's safe to construct
         // `NonNull`.
-        return transmuteWithLayouts<MutPtr, NonNull>(this.asPtr().byteAdd(count), UnresolvedTypeLayout<MutPtr>(), NonNull.typeLayout())
+        val p = this.asPtr().byteAdd(count)
+        return NonNull(ConstPtr(p.rawAddress, p.rawMeta))
     }
 
     // even without panics, this helps for Miri backtraces
@@ -548,16 +516,15 @@ public open class NonNull(
      * }
      * ```
      */
-    public open fun sub(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): NonNull =
-        if (((typeLayoutT).sizeBytes == 0L)) {
-            // Pointer arithmetic does nothing when the pointee is a ZST.
+    public open fun <T> sub(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): NonNull =
+        if (typeLayoutT.sizeBytes == 0L) {
             this
         } else {
-            // SAFETY: the caller must uphold the safety contract for `offset`.
-            // Because the pointee is *not* a ZST, that means that `count` is
-            // at most `Long.MAX`, and thus the negation cannot overflow.
-            this.offset((count).uncheckedNeg())
+            this.offset(count.uncheckedNeg(), typeLayoutT)
         }
+
+    public open fun sub(count: Int): NonNull =
+        this.offset(count.uncheckedNeg())
 
     // even without panics, this helps for Miri backtraces
 
@@ -583,7 +550,8 @@ public open class NonNull(
         // Additionally safety contract of `sub` guarantees that the resulting pointer is pointing
         // to an allocation, there can't be an allocation at null, thus it's safe to construct
         // `NonNull`.
-        return transmuteWithLayouts<MutPtr, NonNull>(this.asPtr().byteSub(count), UnresolvedTypeLayout<MutPtr>(), NonNull.typeLayout())
+        val p = this.asPtr().byteSub(count)
+        return NonNull(ConstPtr(p.rawAddress, p.rawMeta))
     }
 
     // even without panics, this helps for Miri backtraces
@@ -673,9 +641,9 @@ public open class NonNull(
      * // Undefined Behavior! ⚠️
      * ```
      */
-    public open fun offsetFrom(origin: NonNull): Int {
+    public open fun <T> offsetFrom(origin: NonNull, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
         // SAFETY: the caller must uphold the safety contract for `offsetFrom`.
-        return this.asPtr().offsetFrom((origin.asPtr()).asConstPtr())
+        return this.asPtr().offsetFrom(origin.asPtr().castConst(), typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -696,7 +664,7 @@ public open class NonNull(
      */
     public open fun byteOffsetFrom(origin: NonNull): Int {
         // SAFETY: the caller must uphold the safety contract for `byteOffsetFrom`.
-        return this.asPtr().byteOffsetFrom((origin.asPtr()).asConstPtr())
+        return this.asPtr().byteOffsetFrom(origin.asPtr().castConst())
     }
 
     // N.B. `wrappingOffset``,`wrappingAdd`, etc are not implemented because they can wrap to null
@@ -758,9 +726,9 @@ public open class NonNull(
      * // ptr1.offsetFromUnsigned(ptr2)
      * ```
      */
-    public open fun offsetFromUnsigned(subtracted: NonNull): Int {
+    public open fun <T> offsetFromUnsigned(subtracted: NonNull, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
         // SAFETY: the caller must uphold the safety contract for `offsetFromUnsigned`.
-        return this.asPtr().offsetFromUnsigned((subtracted.asPtr()).asConstPtr())
+        return this.asPtr().offsetFromUnsigned(subtracted.asPtr().castConst(), typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -782,7 +750,7 @@ public open class NonNull(
      */
     public open fun byteOffsetFromUnsigned(origin: NonNull): Int {
         // SAFETY: the caller must uphold the safety contract for `byteOffsetFromUnsigned`.
-        return this.asPtr().byteOffsetFromUnsigned((origin.asPtr()).asConstPtr())
+        return this.asPtr().castConst().byteOffsetFromUnsigned(origin.asPtr().castConst())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -795,9 +763,10 @@ public open class NonNull(
      *
      * See [ptr.read] for safety concerns and examples.
      */
-    public open fun read(): T {
+    public open fun <T> read(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
         // SAFETY: the caller must uphold the safety contract for `read`.
-        return io.github.kotlinmania.rustlang.core.ptr.read((this.asPtr()).asConstPtr())
+        return io.github.kotlinmania.rustlang.core.ptr
+            .read(this.asPtr().castConst(), typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -814,9 +783,10 @@ public open class NonNull(
      *
      * See [ptr.readVolatile] for safety concerns and examples.
      */
-    public open fun readVolatile(): T {
+    public open fun <T> readVolatile(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
         // SAFETY: the caller must uphold the safety contract for `readVolatile`.
-        return io.github.kotlinmania.rustlang.core.ptr.readVolatile((this.asPtr()).asConstPtr())
+        return io.github.kotlinmania.rustlang.core.ptr
+            .readVolatile(this.asPtr().castConst(), typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -831,9 +801,10 @@ public open class NonNull(
      *
      * See [ptr.readUnaligned] for safety concerns and examples.
      */
-    public open fun readUnaligned(): T {
+    public open fun <T> readUnaligned(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
         // SAFETY: the caller must uphold the safety contract for `readUnaligned`.
-        return io.github.kotlinmania.rustlang.core.ptr.readUnaligned((this.asPtr()).asConstPtr())
+        return io.github.kotlinmania.rustlang.core.ptr
+            .readUnaligned(this.asPtr().castConst(), typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -848,9 +819,9 @@ public open class NonNull(
      *
      * See [ptr.copy] for safety concerns and examples.
      */
-    public open fun copyTo(dest: NonNull, count: Int) {
+    public open fun <T> copyTo(dest: NonNull, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: the caller must uphold the safety contract for `copy`.
-        copy((this.asPtr()).asConstPtr(), dest.asPtr(), count)
+        copy(this.asPtr().castConst(), dest.asPtr(), count, typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -865,9 +836,9 @@ public open class NonNull(
      *
      * See [ptr.copyNonoverlapping] for safety concerns and examples.
      */
-    public open fun copyToNonoverlapping(dest: NonNull, count: Int) {
+    public open fun <T> copyToNonoverlapping(dest: NonNull, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: the caller must uphold the safety contract for `copyNonoverlapping`.
-        copyNonoverlapping((this.asPtr()).asConstPtr(), dest.asPtr(), count)
+        copyNonoverlapping(this.asPtr().castConst(), dest.asPtr(), count, typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -882,9 +853,9 @@ public open class NonNull(
      *
      * See [ptr.copy] for safety concerns and examples.
      */
-    public open fun copyFrom(src: NonNull, count: Int) {
+    public open fun <T> copyFrom(src: NonNull, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: the caller must uphold the safety contract for `copy`.
-        copy((src.asPtr()).asConstPtr(), this.asPtr(), count, typeLayoutT = UnresolvedTypeLayout<T>())
+        copy(src.asPtr().castConst(), this.asPtr(), count, typeLayoutT = typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -899,9 +870,9 @@ public open class NonNull(
      *
      * See [ptr.copyNonoverlapping] for safety concerns and examples.
      */
-    public open fun copyFromNonoverlapping(src: NonNull, count: Int) {
+    public open fun <T> copyFromNonoverlapping(src: NonNull, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: the caller must uphold the safety contract for `copyNonoverlapping`.
-        copyNonoverlapping((src.asPtr()).asConstPtr(), this.asPtr(), count, typeLayoutT = UnresolvedTypeLayout<T>())
+        copyNonoverlapping(src.asPtr().castConst(), this.asPtr(), count, typeLayoutT = typeLayoutT)
     }
 
     /**
@@ -911,9 +882,13 @@ public open class NonNull(
      *
      * See [ptr.dropInPlace] for safety concerns and examples.
      */
-    public open fun dropInPlace() {
+    public open fun <T> dropInPlace(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: the caller must uphold the safety contract for `dropInPlace`.
-        dropGlue(this.asMut())
+        dropInPlace(this.asPtr(), typeLayoutT)
+    }
+
+    public open fun dropInPlace() {
+        dropInPlace<Unit>(this.asPtr())
     }
 
     // even without panics, this helps for Miri backtraces
@@ -926,9 +901,10 @@ public open class NonNull(
      *
      * See [ptr.write] for safety concerns and examples.
      */
-    public open fun write(value: T) {
+    public open fun <T> write(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: the caller must uphold the safety contract for `write`.
-        io.github.kotlinmania.rustlang.core.ptr.write(this.asPtr(), value)
+        io.github.kotlinmania.rustlang.core.ptr
+            .write(this.asPtr(), value, typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -941,9 +917,10 @@ public open class NonNull(
      *
      * See [ptr.writeBytes] for safety concerns and examples.
      */
-    public open fun writeBytes(value: UByte, count: Int) {
+    public open fun <T> writeBytes(value: UByte, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: the caller must uphold the safety contract for `writeBytes`.
-        io.github.kotlinmania.rustlang.core.ptr.writeBytes(this.asPtr(), value, count)
+        io.github.kotlinmania.rustlang.core.ptr
+            .writeBytes(this.asPtr(), value, count, typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -960,9 +937,10 @@ public open class NonNull(
      *
      * See [ptr.writeVolatile] for safety concerns and examples.
      */
-    public open fun writeVolatile(value: T) {
+    public open fun <T> writeVolatile(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: the caller must uphold the safety contract for `writeVolatile`.
-        io.github.kotlinmania.rustlang.core.ptr.writeVolatile(this.asPtr(), value)
+        io.github.kotlinmania.rustlang.core.ptr
+            .writeVolatile(this.asPtr(), value, typeLayoutT)
     }
 
     // even without panics, this helps for Miri backtraces
@@ -977,9 +955,10 @@ public open class NonNull(
      *
      * See [ptr.writeUnaligned] for safety concerns and examples.
      */
-    public open fun writeUnaligned(value: T) {
+    public open fun <T> writeUnaligned(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: the caller must uphold the safety contract for `writeUnaligned`.
-        io.github.kotlinmania.rustlang.core.ptr.writeUnaligned(this.asPtr(), value)
+        io.github.kotlinmania.rustlang.core.ptr
+            .writeUnaligned(this.asPtr(), value, typeLayoutT)
     }
 
     /**
@@ -990,9 +969,10 @@ public open class NonNull(
      *
      * See [ptr.replace] for safety concerns and examples.
      */
-    public open fun replace(src: T): T {
+    public open fun <T> replace(src: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
         // SAFETY: the caller must uphold the safety contract for `replace`.
-        return io.github.kotlinmania.rustlang.core.ptr.replace(this.asPtr(), src)
+        return io.github.kotlinmania.rustlang.core.ptr
+            .replace(this.asPtr(), src, typeLayoutT)
     }
 
     /**
@@ -1004,9 +984,10 @@ public open class NonNull(
      *
      * See [ptr.swap] for safety concerns and examples.
      */
-    public open fun swap(with: NonNull) {
+    public open fun <T> swap(with: NonNull, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
         // SAFETY: the caller must uphold the safety contract for `swap`.
-        io.github.kotlinmania.rustlang.core.ptr.swap(this.asPtr(), with.asPtr())
+        io.github.kotlinmania.rustlang.core.ptr
+            .swap(this.asPtr(), with.asPtr(), typeLayoutT)
     }
 
     /**
@@ -1066,33 +1047,11 @@ public open class NonNull(
         if (!align.isPowerOfTwo()) {
             error("align_offset: align is not a power-of-two")
         }
-        return io.github.kotlinmania.rustlang.core.ptr.alignOffset((this.asPtr()).asConstPtr(), align)
+        return io.github.kotlinmania.rustlang.core.ptr
+            .alignOffset<UByte>(this.asPtr().castConst(), align, PrimitiveLayouts.U8)
     }
 
-    /**
-     * Returns whether the pointer is properly aligned for `T`.
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * import std.ptr.NonNull
-     *
-     * // On some platforms, the alignment of i32 is less than 4.
-     * @repr(align(4))
-     * open class AlignedI32(public var value: Int) {
-     *     public var field0: Int
-     *         get() = value
-     *         set(v) {
-     *             value = v
-     *         }
-     * }
-     * val data = AlignedI32(42)
-     * val ptr = NonNull.from(data)
-     * check(ptr.isAligned())
-     * check(!NonNull.new(ptr.asPtr().wrappingByteAdd(1)).unwrap().isAligned())
-     * ```
-     */
-    public open fun isAligned(): Boolean = this.asPtr().isAligned()
+    public open fun isAligned(): Boolean = this.asPtr().isAligned<UByte>(PrimitiveLayouts.U8)
 
     /**
      * Returns whether the pointer is aligned to `align`.
@@ -1164,17 +1123,25 @@ public open class NonNull(
      */
     public open fun castSlice(len: Int): NonNull = NonNull.sliceFromRawParts(this, len)
 
-    public open fun clone(): NonNull = NonNull(this.pointer)
+    public override fun clone(): NonNull = NonNull(this.pointer)
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.asPtr()).toString()); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append((this.asPtr()).toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> = run { f.append((this.asPtr()).toString()); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmtPointer(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append((this.asPtr()).toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     public open fun eq(other: NonNull): Boolean = this.asPtr() == other.asPtr()
 
-    public open fun cmp(other: NonNull): Ordering = this.asPtr().cmp(other.asPtr())
+    public open fun cmp(other: NonNull): Ordering = this.asPtr().rawAddress.cmp(other.asPtr().rawAddress)
 
-    public open fun partialCmp(other: NonNull): Ordering? = this.asPtr().partialCmp(other.asPtr())
+    public open fun partialCmp(other: NonNull): Ordering? = this.cmp(other)
 
     public override fun hashCode(): Int {
         var state = 0
@@ -1212,7 +1179,7 @@ public open class NonNull(
          */
         public fun withoutProvenance(addr: NonZero<Int, NonZeroUsizeInner>): NonNull {
             // SAFETY: we know `addr` is non-zero and all nonzero integers are valid raw pointers.
-            return transmuteWithLayouts<NonZero<Int, NonZeroUsizeInner>, NonNull>(addr, UnresolvedTypeLayout<NonZero<Int, NonZeroUsizeInner>>(), NonNull.typeLayout())
+            return NonNull(ConstPtr(addr.get().toLong()))
         }
 
         /**
@@ -1236,10 +1203,12 @@ public open class NonNull(
          * // initializing it first! The pointer is not null but isn't valid either!
          * ```
          */
-        public fun <T> dangling(): NonNull {
-            val align = Alignment.of<T>()
+        public fun <T> dangling(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): NonNull {
+            val align = Alignment.of<T>(typeLayoutT)
             return NonNull.withoutProvenance(align.asNonzeroUsize())
         }
+
+        public fun dangling(): NonNull = NonNull.dangling<UByte>(PrimitiveLayouts.U8)
 
         /**
          * Converts an address back to a mutable pointer, picking up some previously `exposed`
@@ -1292,10 +1261,7 @@ public open class NonNull(
          */
         public fun newUnchecked(ptr: MutPtr): NonNull {
             // SAFETY: the caller must guarantee that `ptr` is non-null.
-            return run {
-                Unit
-                transmuteWithLayouts<MutPtr, NonNull>(ptr, PrimitiveLayouts.mutPtrLayout(64L), NonNull.typeLayout())
-            }
+            return NonNull(ConstPtr(ptr.rawAddress, ptr.rawMeta))
         }
 
         /**
@@ -1361,10 +1327,8 @@ public open class NonNull(
          *
          * See the documentation of [std.ptr.fromRawParts] for more details.
          */
-        public fun fromRawParts(dataPointer: NonNull, metadata: Metadata): NonNull {
-            // SAFETY: The result of `ptr.from.rawPartsMut` is non-null because `dataPointer` is.
-            return NonNull.newUnchecked(linearMutSliceView(dataPointer.asPtr(), metadata.toInt(), UnresolvedTypeLayout<Thin>()))
-        }
+        public fun fromRawParts(dataPointer: NonNull, metadata: Metadata): NonNull =
+            NonNull.newUnchecked(MutPtr(dataPointer.rawAddress, metadata.toLong()))
 
         /**
          * Converts a `T` to a `NonNull<T>`.
@@ -1523,9 +1487,9 @@ public fun NonNull.asMutPtr(): MutPtr = this.asNonNullPtr().asPtr()
  *
  * See also [slice.fromRawParts].
  */
-public fun <T> NonNull.asUninitSlice(): List<MaybeUninit<T>> {
+public fun <T> NonNull.asUninitSlice(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<MaybeUninit<T>> {
     // SAFETY: the caller must uphold the safety contract for `asUninitSlice`.
-    return linearSliceView(this.cast().asPtr(), this.len().toInt(), UnresolvedTypeLayout<U>())
+    return linearSliceView(this.cast().asPtr().castConst(), this.len(), UnresolvedTypeLayout<MaybeUninit<T>>())
 }
 
 /**
@@ -1587,40 +1551,10 @@ public fun <T> NonNull.asUninitSlice(): List<MaybeUninit<T>> {
  * }
  * ```
  */
-public fun <T> NonNull.asUninitSliceMut(): MutableList<MaybeUninit<T>> {
+public fun <T> NonNull.asUninitSliceMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<MaybeUninit<T>> {
     // SAFETY: the caller must uphold the safety contract for `asUninitSliceMut`.
-    return io.github.kotlinmania.rustlang.core.slice.raw.fromRawPartsMut(this.cast().asPtr(), this.len())
+    return io.github.kotlinmania.rustlang.core.slice.raw
+        .fromRawPartsMut<MaybeUninit<T>>(this.cast().asPtr(), this.len())
 }
 
-/**
- * Returns a raw pointer to an element or subslice, without doing bounds
- * checking.
- *
- * # Safety
- *
- * Calling this method with an [out-of-bounds index] or when `self` is not dereferenceable
- * is *[undefined behavior]* even if the resulting pointer is not used.
- *
- * [out-of-bounds index]: #method.add
- * [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
- *
- * # Examples
- *
- * ```kotlin
- * import std.ptr.NonNull
- *
- * @feature(slicePtrGet)
- * public fun doctestEntry() {
- *     val x = listOf(1, 2, 4)
- *     val x1 = NonNull.sliceFromRawParts(NonNull.new(x.asMutPtr()).unwrap(), x.size)
- *     run {
- *         check(x1.getUncheckedMut(1).asPtr() == x1.asNonNullPtr().asPtr().add(1))
- *     }
- * }
- * ```
- */
-public fun <Output, T, I> NonNull.getUncheckedMut(index: I): NonNull where I : SliceIndex<List<T>, Output> {
-    // SAFETY: the caller ensures that `self` is dereferenceable and `index` in-bounds.
-    // As a consequence, the resulting pointer cannot be null.
-    return NonNull.newUnchecked(this.asPtr().getUncheckedMut(index))
-}
+// getUncheckedMut(SliceIndex) removed (core.slice.index carved out).

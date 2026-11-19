@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.riscvshared.cinterop
-headers = riscvshared_zb_wrapper.h
-headerFilter = riscvshared_zb_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = riscvshared_zb_wrapper.a

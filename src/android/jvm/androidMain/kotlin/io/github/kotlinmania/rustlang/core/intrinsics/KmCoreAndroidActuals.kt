@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 @file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core.intrinsics
@@ -7,209 +8,392 @@ internal object KmCoreJniBridge {
         System.loadLibrary("kmcore_jni")
     }
 
-
     @JvmStatic external fun kmLoadU8(addr: Long): Byte
+
     @JvmStatic external fun kmLoadU16(addr: Long): Short
+
     @JvmStatic external fun kmLoadU32(addr: Long): Int
+
     @JvmStatic external fun kmLoadU64(addr: Long): Long
+
     @JvmStatic external fun kmLoadF32(addr: Long): Float
+
     @JvmStatic external fun kmLoadF64(addr: Long): Double
 
     @JvmStatic external fun kmStoreU8(addr: Long, value: Byte)
+
     @JvmStatic external fun kmStoreU16(addr: Long, value: Short)
+
     @JvmStatic external fun kmStoreU32(addr: Long, value: Int)
+
     @JvmStatic external fun kmStoreU64(addr: Long, value: Long)
+
     @JvmStatic external fun kmStoreF32(addr: Long, value: Float)
+
     @JvmStatic external fun kmStoreF64(addr: Long, value: Double)
 
     @JvmStatic external fun kmVolatileLoadU8(addr: Long): Byte
+
     @JvmStatic external fun kmVolatileLoadU16(addr: Long): Short
+
     @JvmStatic external fun kmVolatileLoadU32(addr: Long): Int
+
     @JvmStatic external fun kmVolatileLoadU64(addr: Long): Long
 
     @JvmStatic external fun kmVolatileStoreU8(addr: Long, value: Byte)
+
     @JvmStatic external fun kmVolatileStoreU16(addr: Long, value: Short)
+
     @JvmStatic external fun kmVolatileStoreU32(addr: Long, value: Int)
+
     @JvmStatic external fun kmVolatileStoreU64(addr: Long, value: Long)
 
     @JvmStatic external fun kmCopyNonoverlapping(dst: Long, src: Long, bytes: Long)
+
     @JvmStatic external fun kmCopy(dst: Long, src: Long, bytes: Long)
+
     @JvmStatic external fun kmWriteBytes(dst: Long, value: Byte, bytes: Long)
+
     @JvmStatic external fun kmCompareBytes(left: Long, right: Long, bytes: Long): Int
 
     @JvmStatic external fun kmAlloc(size: Long, align: Long): Long
+
     @JvmStatic external fun kmAllocZeroed(size: Long, align: Long): Long
+
     @JvmStatic external fun kmRealloc(ptr: Long, oldSize: Long, align: Long, newSize: Long): Long
+
     @JvmStatic external fun kmDealloc(ptr: Long, size: Long, align: Long)
 
     @JvmStatic external fun kmAtomicFence(ord: Int)
+
     @JvmStatic external fun kmAtomicSignalFence(ord: Int)
+
     @JvmStatic external fun kmAtomicLoadU8(addr: Long, ord: Int): Byte
+
     @JvmStatic external fun kmAtomicLoadU16(addr: Long, ord: Int): Short
+
     @JvmStatic external fun kmAtomicLoadU32(addr: Long, ord: Int): Int
+
     @JvmStatic external fun kmAtomicLoadU64(addr: Long, ord: Int): Long
+
     @JvmStatic external fun kmAtomicStoreU8(addr: Long, value: Byte, ord: Int)
+
     @JvmStatic external fun kmAtomicStoreU16(addr: Long, value: Short, ord: Int)
+
     @JvmStatic external fun kmAtomicStoreU32(addr: Long, value: Int, ord: Int)
+
     @JvmStatic external fun kmAtomicStoreU64(addr: Long, value: Long, ord: Int)
+
     @JvmStatic external fun kmAtomicXchgU8(addr: Long, value: Byte, ord: Int): Byte
+
     @JvmStatic external fun kmAtomicXchgU16(addr: Long, value: Short, ord: Int): Short
+
     @JvmStatic external fun kmAtomicXchgU32(addr: Long, value: Int, ord: Int): Int
+
     @JvmStatic external fun kmAtomicXchgU64(addr: Long, value: Long, ord: Int): Long
+
     @JvmStatic external fun kmAtomicCxchgU8Packed(addr: Long, expected: Byte, desired: Byte, succ: Int, fail: Int): Long
+
     @JvmStatic external fun kmAtomicCxchgU16Packed(addr: Long, expected: Short, desired: Short, succ: Int, fail: Int): Long
+
     @JvmStatic external fun kmAtomicCxchgU32Packed(addr: Long, expected: Int, desired: Int, succ: Int, fail: Int): Long
+
     @JvmStatic external fun kmAtomicCxchgU64Out(addr: Long, expected: Long, desired: Long, succ: Int, fail: Int, outBuf: LongArray)
+
     @JvmStatic external fun kmAtomicRmwU8(addr: Long, value: Byte, op: Int, ord: Int): Byte
+
     @JvmStatic external fun kmAtomicRmwU16(addr: Long, value: Short, op: Int, ord: Int): Short
+
     @JvmStatic external fun kmAtomicRmwU32(addr: Long, value: Int, op: Int, ord: Int): Int
+
     @JvmStatic external fun kmAtomicRmwU64(addr: Long, value: Long, op: Int, ord: Int): Long
 
     @JvmStatic external fun kmCtpopU64(value: Long): Int
+
     @JvmStatic external fun kmCtlzU64(value: Long): Int
+
     @JvmStatic external fun kmCttzU64(value: Long): Int
+
     @JvmStatic external fun kmBswapU16(value: Short): Short
+
     @JvmStatic external fun kmBswapU32(value: Int): Int
+
     @JvmStatic external fun kmBswapU64(value: Long): Long
+
     @JvmStatic external fun kmBitreverseU64(value: Long): Long
+
     @JvmStatic external fun kmFmaf32(a: Float, b: Float, c: Float): Float
+
     @JvmStatic external fun kmFmaf64(a: Double, b: Double, c: Double): Double
+
     @JvmStatic external fun kmSqrtf32(x: Float): Float
+
     @JvmStatic external fun kmSqrtf64(x: Double): Double
+
     @JvmStatic external fun kmAbort()
 
     @JvmStatic external fun kmSpinLoopHint()
+
     @JvmStatic external fun kmBlackBoxU64(value: Long): Long
+
     @JvmStatic external fun kmUmulhU64(a: Long, b: Long): Long
+
     @JvmStatic external fun kmSmulhI64(a: Long, b: Long): Long
+
     @JvmStatic external fun kmAtomicCxchgU128Out(addr: Long, expLo: Long, expHi: Long, desLo: Long, desHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmSimdFmaF32x4(dstAddr: Long, aAddr: Long, bAddr: Long, cAddr: Long)
+
     @JvmStatic external fun kmSimdDotF32(aAddr: Long, bAddr: Long, len: Long): Float
+
     @JvmStatic external fun kmCtpopU8(value: Byte): Int
+
     @JvmStatic external fun kmCtpopU16(value: Short): Int
+
     @JvmStatic external fun kmCtpopU32(value: Int): Int
+
     @JvmStatic external fun kmCtpopU128(lo: Long, hi: Long): Int
+
     @JvmStatic external fun kmCtlzU8(value: Byte): Int
+
     @JvmStatic external fun kmCtlzU16(value: Short): Int
+
     @JvmStatic external fun kmCtlzU32(value: Int): Int
+
     @JvmStatic external fun kmCtlzU128(lo: Long, hi: Long): Int
+
     @JvmStatic external fun kmCttzU8(value: Byte): Int
+
     @JvmStatic external fun kmCttzU16(value: Short): Int
+
     @JvmStatic external fun kmCttzU32(value: Int): Int
+
     @JvmStatic external fun kmCttzU128(lo: Long, hi: Long): Int
+
     @JvmStatic external fun kmBswapU128Out(lo: Long, hi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmBitreverseU8(value: Byte): Byte
+
     @JvmStatic external fun kmBitreverseU16(value: Short): Short
+
     @JvmStatic external fun kmBitreverseU32(value: Int): Int
+
     @JvmStatic external fun kmBitreverseU128Out(lo: Long, hi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmRotateLeftU8(value: Byte, n: Int): Byte
+
     @JvmStatic external fun kmRotateLeftU16(value: Short, n: Int): Short
+
     @JvmStatic external fun kmRotateLeftU32(value: Int, n: Int): Int
+
     @JvmStatic external fun kmRotateLeftU64(value: Long, n: Int): Long
+
     @JvmStatic external fun kmRotateLeftU128Out(lo: Long, hi: Long, n: Int, outBuf: LongArray)
+
     @JvmStatic external fun kmRotateRightU8(value: Byte, n: Int): Byte
+
     @JvmStatic external fun kmRotateRightU16(value: Short, n: Int): Short
+
     @JvmStatic external fun kmRotateRightU32(value: Int, n: Int): Int
+
     @JvmStatic external fun kmRotateRightU64(value: Long, n: Int): Long
+
     @JvmStatic external fun kmRotateRightU128Out(lo: Long, hi: Long, n: Int, outBuf: LongArray)
+
     @JvmStatic external fun kmAddWithOverflowU8Packed(a: Byte, b: Byte): Long
+
     @JvmStatic external fun kmAddWithOverflowU16Packed(a: Short, b: Short): Long
+
     @JvmStatic external fun kmAddWithOverflowU32Packed(a: Int, b: Int): Long
+
     @JvmStatic external fun kmAddWithOverflowU64Out(a: Long, b: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmAddWithOverflowU128Out(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmAddWithOverflowI8Packed(a: Byte, b: Byte): Long
+
     @JvmStatic external fun kmAddWithOverflowI16Packed(a: Short, b: Short): Long
+
     @JvmStatic external fun kmAddWithOverflowI32Packed(a: Int, b: Int): Long
+
     @JvmStatic external fun kmAddWithOverflowI64Out(a: Long, b: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmAddWithOverflowI128Out(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmSubWithOverflowU8Packed(a: Byte, b: Byte): Long
+
     @JvmStatic external fun kmSubWithOverflowU16Packed(a: Short, b: Short): Long
+
     @JvmStatic external fun kmSubWithOverflowU32Packed(a: Int, b: Int): Long
+
     @JvmStatic external fun kmSubWithOverflowU64Out(a: Long, b: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmSubWithOverflowU128Out(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmSubWithOverflowI8Packed(a: Byte, b: Byte): Long
+
     @JvmStatic external fun kmSubWithOverflowI16Packed(a: Short, b: Short): Long
+
     @JvmStatic external fun kmSubWithOverflowI32Packed(a: Int, b: Int): Long
+
     @JvmStatic external fun kmSubWithOverflowI64Out(a: Long, b: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmSubWithOverflowI128Out(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmMulWithOverflowU8Packed(a: Byte, b: Byte): Long
+
     @JvmStatic external fun kmMulWithOverflowU16Packed(a: Short, b: Short): Long
+
     @JvmStatic external fun kmMulWithOverflowU32Packed(a: Int, b: Int): Long
+
     @JvmStatic external fun kmMulWithOverflowU64Out(a: Long, b: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmMulWithOverflowU128Out(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmMulWithOverflowI8Packed(a: Byte, b: Byte): Long
+
     @JvmStatic external fun kmMulWithOverflowI16Packed(a: Short, b: Short): Long
+
     @JvmStatic external fun kmMulWithOverflowI32Packed(a: Int, b: Int): Long
+
     @JvmStatic external fun kmMulWithOverflowI64Out(a: Long, b: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmMulWithOverflowI128Out(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmSaturatingAddU8(a: Byte, b: Byte): Byte
+
     @JvmStatic external fun kmSaturatingAddU16(a: Short, b: Short): Short
+
     @JvmStatic external fun kmSaturatingAddU32(a: Int, b: Int): Int
+
     @JvmStatic external fun kmSaturatingAddU64(a: Long, b: Long): Long
+
     @JvmStatic external fun kmSaturatingAddU128Out(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmSaturatingAddI8(a: Byte, b: Byte): Byte
+
     @JvmStatic external fun kmSaturatingAddI16(a: Short, b: Short): Short
+
     @JvmStatic external fun kmSaturatingAddI32(a: Int, b: Int): Int
+
     @JvmStatic external fun kmSaturatingAddI64(a: Long, b: Long): Long
+
     @JvmStatic external fun kmSaturatingAddI128Out(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmSaturatingSubU8(a: Byte, b: Byte): Byte
+
     @JvmStatic external fun kmSaturatingSubU16(a: Short, b: Short): Short
+
     @JvmStatic external fun kmSaturatingSubU32(a: Int, b: Int): Int
+
     @JvmStatic external fun kmSaturatingSubU64(a: Long, b: Long): Long
+
     @JvmStatic external fun kmSaturatingSubU128Out(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmSaturatingSubI8(a: Byte, b: Byte): Byte
+
     @JvmStatic external fun kmSaturatingSubI16(a: Short, b: Short): Short
+
     @JvmStatic external fun kmSaturatingSubI32(a: Int, b: Int): Int
+
     @JvmStatic external fun kmSaturatingSubI64(a: Long, b: Long): Long
+
     @JvmStatic external fun kmSaturatingSubI128Out(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmU128AddOut(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmU128SubOut(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmU128MulOut(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmU128DivRemOut(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmI128DivRemOut(aLo: Long, aHi: Long, bLo: Long, bHi: Long, outBuf: LongArray)
+
     @JvmStatic external fun kmU128ShlOut(aLo: Long, aHi: Long, shift: Int, outBuf: LongArray)
+
     @JvmStatic external fun kmU128ShrOut(aLo: Long, aHi: Long, shift: Int, outBuf: LongArray)
+
     @JvmStatic external fun kmI128ShrOut(aLo: Long, aHi: Long, shift: Int, outBuf: LongArray)
+
     @JvmStatic external fun kmSinf32(x: Float): Float
+
     @JvmStatic external fun kmSinf64(x: Double): Double
+
     @JvmStatic external fun kmCosf32(x: Float): Float
+
     @JvmStatic external fun kmCosf64(x: Double): Double
+
     @JvmStatic external fun kmExpf32(x: Float): Float
+
     @JvmStatic external fun kmExpf64(x: Double): Double
+
     @JvmStatic external fun kmExp2f32(x: Float): Float
+
     @JvmStatic external fun kmExp2f64(x: Double): Double
+
     @JvmStatic external fun kmLogf32(x: Float): Float
+
     @JvmStatic external fun kmLogf64(x: Double): Double
+
     @JvmStatic external fun kmLog2f32(x: Float): Float
+
     @JvmStatic external fun kmLog2f64(x: Double): Double
+
     @JvmStatic external fun kmLog10f32(x: Float): Float
+
     @JvmStatic external fun kmLog10f64(x: Double): Double
+
     @JvmStatic external fun kmTruncf32(x: Float): Float
+
     @JvmStatic external fun kmTruncf64(x: Double): Double
+
     @JvmStatic external fun kmRoundf32(x: Float): Float
+
     @JvmStatic external fun kmRoundf64(x: Double): Double
+
     @JvmStatic external fun kmRoundTiesEvenf32(x: Float): Float
+
     @JvmStatic external fun kmRoundTiesEvenf64(x: Double): Double
+
     @JvmStatic external fun kmCeilf32(x: Float): Float
+
     @JvmStatic external fun kmCeilf64(x: Double): Double
+
     @JvmStatic external fun kmFloorf32(x: Float): Float
+
     @JvmStatic external fun kmFloorf64(x: Double): Double
+
     @JvmStatic external fun kmFabsf32(x: Float): Float
+
     @JvmStatic external fun kmFabsf64(x: Double): Double
+
     @JvmStatic external fun kmPowf32(a: Float, b: Float): Float
+
     @JvmStatic external fun kmPowf64(a: Double, b: Double): Double
+
     @JvmStatic external fun kmPowif32(x: Float, exp: Int): Float
+
     @JvmStatic external fun kmPowif64(x: Double, exp: Int): Double
+
     @JvmStatic external fun kmCopysignf32(a: Float, b: Float): Float
+
     @JvmStatic external fun kmCopysignf64(a: Double, b: Double): Double
+
     @JvmStatic external fun kmMinnumf32(a: Float, b: Float): Float
+
     @JvmStatic external fun kmMinnumf64(a: Double, b: Double): Double
+
     @JvmStatic external fun kmMaxnumf32(a: Float, b: Float): Float
+
     @JvmStatic external fun kmMaxnumf64(a: Double, b: Double): Double
 
     @JvmStatic external fun kmFloatToU64Unchecked(v: Float): Long
+
     @JvmStatic external fun kmDoubleToU64Unchecked(v: Double): Long
+
     @JvmStatic external fun kmFloatToU128UncheckedOut(v: Float, outBuf: LongArray)
+
     @JvmStatic external fun kmDoubleToU128UncheckedOut(v: Double, outBuf: LongArray)
 }
 
@@ -631,13 +815,15 @@ public actual fun kmDoubleToU128Unchecked(v: Double): U128ValueOutcome {
     return U128ValueOutcome(outBuf[0].toULong(), outBuf[1].toULong())
 }
 
-private class KmJvmCleanRef(
+internal class KmJvmCleanRef(
     referent: Any,
     queue: java.lang.ref.ReferenceQueue<Any>,
     private val activeRefs: java.util.concurrent.ConcurrentHashMap<KmJvmCleanRef, Boolean>,
     private val cleanup: () -> Unit,
 ) : java.lang.ref.PhantomReference<Any>(referent, queue) {
-    private val state = java.util.concurrent.atomic.AtomicInteger(0)
+    private val state =
+        java.util.concurrent.atomic
+            .AtomicInteger(0)
 
     fun disarm() {
         if (state.compareAndSet(0, 1)) {
@@ -658,7 +844,9 @@ private class KmJvmCleanRef(
 private object KmJvmCleanerRegistry {
     private val queue = java.lang.ref.ReferenceQueue<Any>()
     private val activeRefs = java.util.concurrent.ConcurrentHashMap<KmJvmCleanRef, Boolean>()
-    private val started = java.util.concurrent.atomic.AtomicBoolean(false)
+    private val started =
+        java.util.concurrent.atomic
+            .AtomicBoolean(false)
 
     private fun ensureStarted() {
         if (started.compareAndSet(false, true)) {
@@ -687,7 +875,7 @@ private object KmJvmCleanerRegistry {
     }
 }
 
-public actual class KmResourceCleaner internal constructor() : KmForgettableResource {
+public actual class KmResourceCleaner internal actual constructor() : KmForgettableResource {
     private var cleanRef: KmJvmCleanRef? = null
 
     internal fun attach(ref: KmJvmCleanRef) {
@@ -713,4 +901,3 @@ public actual class KmResourceCleaner internal constructor() : KmForgettableReso
 
 public actual fun kmRegisterResourceCleaner(owner: Any, cleanup: () -> Unit): KmResourceCleaner =
     KmJvmCleanerRegistry.register(owner, cleanup)
-

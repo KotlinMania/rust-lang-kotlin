@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.backtrace.windowssys.cinterop
-headers = windows_sys_wrapper.h
-headerFilter = windows_sys_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = windows_sys_wrapper.a

@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source cell.rs
 package io.github.kotlinmania.rustlang.core.cell
 
@@ -7,28 +8,33 @@ import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.num.absDiff
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefPure
 import io.github.kotlinmania.rustlang.core.panic.location.Location
 import io.github.kotlinmania.rustlang.core.pin.PinSafePointer
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
-import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingAdd
-import io.github.kotlinmania.rustlang.core.ptr.eq
-import io.github.kotlinmania.rustlang.core.ptr.fromMut
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.swap
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
-import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
+
+private class UnsafeCellHeapSlot<T>(
+    var value: T,
+)
+
+private class UnsafeCellVirtualSlot<T>(
+    val getter: () -> T,
+    val setter: (T) -> Unit,
+)
+
+private fun kmOrderingFromSign(sign: Int): Ordering =
+    when {
+        sign < 0 -> Ordering.Less
+        sign > 0 -> Ordering.Greater
+        else -> Ordering.Equal
+    }
 
 // Shareable mutable containers.
 //
@@ -284,11 +290,22 @@ public open class Cell<T> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout(),
 ) {
-    public var value: UnsafeCell<T>
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+    private var heapValue: UnsafeCell<T>? = null
 
-    internal constructor(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    public var value: UnsafeCell<T>
+        get() = heapValue ?: fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) {
+            val h = heapValue
+            if (h != null) {
+                h.value = value.value
+            } else {
+                fieldLayout.writeNative(fieldStorage.rawAddress, value)
+            }
+        }
+
+    internal constructor(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()) : this(MutPtr(0L), fieldLayout) {
+        this.heapValue = value
+    }
 
     public fun pointerLayout(): TypeLayout<Cell<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Cell<T>(ptr, layout) }, { it.value })
 
@@ -302,17 +319,17 @@ public open class Cell<T> internal constructor(
 
     public open fun eq(other: Cell<T>): Boolean = this.get() == other.get()
 
-    public open fun partialCmp(other: Cell<T>): Ordering? = this.get().partialCmp(other.get())
+    public open fun partialCmp(other: Cell<T>): Ordering? = kmPartialCompareValues(this.get(), other.get())?.let(::kmOrderingFromSign)
 
-    public open fun lt(other: Cell<T>): Boolean = this.get() < other.get()
+    public open fun lt(other: Cell<T>): Boolean = kmPartialCompareValues(this.get(), other.get())?.let { it < 0 } ?: false
 
-    public open fun le(other: Cell<T>): Boolean = this.get() <= other.get()
+    public open fun le(other: Cell<T>): Boolean = kmPartialCompareValues(this.get(), other.get())?.let { it <= 0 } ?: false
 
-    public open fun gt(other: Cell<T>): Boolean = this.get() > other.get()
+    public open fun gt(other: Cell<T>): Boolean = kmPartialCompareValues(this.get(), other.get())?.let { it > 0 } ?: false
 
-    public open fun ge(other: Cell<T>): Boolean = this.get() >= other.get()
+    public open fun ge(other: Cell<T>): Boolean = kmPartialCompareValues(this.get(), other.get())?.let { it >= 0 } ?: false
 
-    public open fun cmp(other: Cell<T>): Ordering = this.get().cmp(other.get())
+    public open fun cmp(other: Cell<T>): Ordering = kmOrderingFromSign(kmCompareValues(this.get(), other.get()))
 
     /**
      * Sets the contained value.
@@ -355,30 +372,24 @@ public open class Cell<T> internal constructor(
      * ```
      */
     public open fun swap(other: Cell<T>) {
-        // This function documents that it *will* panic, and intrinsics.isNonoverlapping doesn't
-        // do the check in const, so trying to use it here would be inviting unnecessary fragility.
-        fun <T> isNonoverlapping(src: ConstPtr, dst: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Boolean {
-            val srcUsize = (src).rawAddress.toInt()
-            val dstUsize = (dst).rawAddress.toInt()
-            val diff = srcUsize.absDiff(dstUsize)
-            return diff >= sizeOf<T>(typeLayoutT = typeLayoutT)
-        }
-        if (eq(this, other)) {
-            // Swapping wouldn't change anything.
+        if (this === other) {
             return
         }
-        if (!isNonoverlapping(this, other)) {
-            // See <https://github.com/rust-lang/rust/issues/80778> for why we need to stop here.
-            error("`Cell::swap` on overlapping non-identical `Cell`s")
+        if (this.fieldStorage.rawAddress != 0L && other.fieldStorage.rawAddress != 0L && this.value.fieldLayout !is UnresolvedTypeLayout) {
+            val srcUsize = this.fieldStorage.rawAddress.toULong()
+            val dstUsize = other.fieldStorage.rawAddress.toULong()
+            val diff = if (srcUsize >= dstUsize) srcUsize - dstUsize else dstUsize - srcUsize
+            val elemSize = sizeOf<T>(typeLayoutT = this.value.fieldLayout).toULong()
+            if (elemSize > 0uL && diff == 0uL) {
+                return
+            }
+            if (elemSize > 0uL && diff < elemSize) {
+                error("`Cell::swap` on overlapping non-identical `Cell`s")
+            }
         }
-        // SAFETY: This can be risky if called from separate threads, but `Cell`
-        // is `!Sync` so this won't happen. This also won't invalidate any
-        // pointers since `Cell` makes sure nothing else will be pointing into
-        // either of these `Cell`s. We also excluded shenanigans like partially overlapping `Cell`s,
-        // so `swap` will just properly copy two full values of type `T` back and forth.
-        run {
-            kotlin.Pair((this.value), (other.value)).let { (placeReceiver, placeOther) -> val placePrevious = placeReceiver.value; placeReceiver.value = placeOther.value; placeOther.value = placePrevious }
-        }
+        val tmp = this.value.value
+        this.value.value = other.value.value
+        other.value.value = tmp
     }
 
     /**
@@ -398,7 +409,11 @@ public open class Cell<T> internal constructor(
     public open fun replace(value: T): T {
         // SAFETY: This can cause data races if called from a separate thread,
         // but `Cell` is `!Sync` so this won't happen.
-        return kotlin.Pair((this.value), value).let { (placeReceiver, placeValue) -> val placePrevious = placeReceiver.value; placeReceiver.value = placeValue; placePrevious }
+        return kotlin.Pair((this.value), value).let { (placeReceiver, placeValue) ->
+            val placePrevious = placeReceiver.value
+            placeReceiver.value = placeValue
+            placePrevious
+        }
     }
 
     /**
@@ -489,9 +504,7 @@ public open class Cell<T> internal constructor(
      * check(c.get() == 6)
      * ```
      */
-    public open fun getMut(): kotlin.reflect.KMutableProperty0<T> {
-        return this.value::value
-    }
+    public open fun getMut(): kotlin.reflect.KMutableProperty0<T> = this.value::value
 
     /**
      * Takes the value of the cell, leaving `Default.default()` in its place.
@@ -578,6 +591,9 @@ public open class Cell<T> internal constructor(
          */
         public fun <T> fromMut(t: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Cell<T> {
             // SAFETY:  ensures unique access.
+            if (typeLayoutT is UnresolvedTypeLayout) {
+                return Cell.new(t, fieldLayout = typeLayoutT)
+            }
             return (TransparentTypeLayout(TransparentTypeLayout(typeLayoutT, { ptr, layout -> UnsafeCell<T>(ptr, layout) }, { it.value }), { ptr, layout -> Cell<T>(ptr, layout) }, { it.value })).readNative((((mutPtrFromRustCast(t)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
         }
     }
@@ -612,8 +628,23 @@ public fun <T> Cell<List<T>>.asRef(): List<Cell<T>> = this.asSliceOfCells()
  * ```
  */
 public fun <T> Cell<List<T>>.asSliceOfCells(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<Cell<T>> {
-    // SAFETY: `Cell<T>` has the same memory layout as `T`.
-    return (UnresolvedTypeLayout<List<Cell<T>>>()).readNative((((ConstPtr(this.fieldStorage.rawAddress)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+    val backing = this.get()
+    return List(backing.size) { index ->
+        Cell(
+            value =
+                UnsafeCell(
+                    virtualGetter = { backing[index] },
+                    virtualSetter = { newVal ->
+                        if (backing is MutableList<T>) {
+                            backing[index] = newVal
+                        } else {
+                            error("Cell::asSliceOfCells element mutation requires MutableList")
+                        }
+                    },
+                ),
+            fieldLayout = UnresolvedTypeLayout(),
+        )
+    }
 }
 
 /**
@@ -630,8 +661,10 @@ public fun <T> Cell<List<T>>.asSliceOfCells(typeLayoutT: TypeLayout<T> = Unresol
  * ```
  */
 public fun <T> Cell<List<T>>.asArrayOfCells(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<Cell<T>> {
-    // SAFETY: `Cell<T>` has the same memory layout as `T`.
-    return (fixedListTypeLayout(TransparentTypeLayout(this.fieldLayout, { ptr, layout -> Cell<T>(ptr, layout) }, { it.value }), (n).toInt())).readNative((((ConstPtr(this.fieldStorage.rawAddress)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
+    if (n > 0) {
+        check(this.get().size == n) { "Cell::asArrayOfCells size mismatch: expected $n" }
+    }
+    return this.asSliceOfCells(typeLayoutT)
 }
 
 // Allow potential overlapping implementations in user code
@@ -690,8 +723,7 @@ public open class RefCell<T> internal constructor(
     borrowedAtCtorArg: Cell<Location?>,
     public var value: UnsafeCell<T>,
 ) {
-    public var borrow: Cell<BorrowCounter> = borrowCtorArg
-        internal set
+    internal var borrow: Cell<BorrowCounter> = borrowCtorArg
 
     // Stores the location of the earliest currently active borrow.
     // This gets updated whenever we go from having zero borrows
@@ -739,7 +771,11 @@ public open class RefCell<T> internal constructor(
      * check(cell == RefCell.new(6))
      * ```
      */
-    public open fun replace(t: T): T = io.github.kotlinmania.rustlang.core.mem.replace(this.borrowMut(), t)
+    public open fun replace(t: T): T {
+        this.borrowMut().use {
+            return this.value.replace(t)
+        }
+    }
 
     /**
      * Replaces the wrapped value with a new one computed from `f`, returning
@@ -761,9 +797,12 @@ public open class RefCell<T> internal constructor(
      * ```
      */
     public open fun replaceWith(f: (T) -> T): T {
-        val mutBorrow = this.borrowMut()
-        val replacement = f(mutBorrow)
-        return replace(mutBorrow, replacement)
+        this.borrowMut().use {
+            val old = this.value.value
+            val replacement = f(old)
+            this.value.value = replacement
+            return old
+        }
     }
 
     /**
@@ -790,7 +829,16 @@ public open class RefCell<T> internal constructor(
      * ```
      */
     public open fun swap(other: RefCell<T>) {
-        io.github.kotlinmania.rustlang.core.mem.swap(this.borrowMut(), other.borrowMut())
+        if (this === other) {
+            error("RefCell::swap called on the same RefCell")
+        }
+        this.borrowMut().use {
+            other.borrowMut().use {
+                val tmp = this.value.value
+                this.value.value = other.value.value
+                other.value.value = tmp
+            }
+        }
     }
 
     /**
@@ -828,13 +876,16 @@ public open class RefCell<T> internal constructor(
     public open fun borrow(): Ref<T> =
         run {
             val matchVal = this.tryBorrow()
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val b = matchVal.okValue()
-                b
-            }; is Result.Err<*, *> -> {
-                val err = matchVal.errValue()
-                panicAlreadyMutablyBorrowed(err)
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val b = matchVal.okValue()
+                    b
+                }
+                is Result.Err<*, *> -> {
+                    val err = matchVal.errValue()
+                    panicAlreadyMutablyBorrowed(err)
+                }
+            }
         }
 
     /**
@@ -870,10 +921,8 @@ public open class RefCell<T> internal constructor(
                 if (b.borrow.get() == 1) {
                     this.borrowedAt.replace(Location.caller())
                 }
-                // SAFETY: `BorrowRef` ensures that there is only immutable access
-                // to the value while borrowed.
-                val value = NonNull.newUnchecked(this.value.get())
-                Result.Ok<Ref<T>, BorrowError>(Ref(value = value, borrow = b))
+                val cell = this.value
+                Result.Ok<Ref<T>, BorrowError>(Ref(valueGetter = { cell.value }, borrow = b))
             }
         }
 
@@ -913,13 +962,16 @@ public open class RefCell<T> internal constructor(
     public open fun borrowMut(): RefMut<T> =
         run {
             val matchVal = this.tryBorrowMut()
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val b = matchVal.okValue()
-                b
-            }; is Result.Err<*, *> -> {
-                val err = matchVal.errValue()
-                panicAlreadyBorrowed(err)
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    val b = matchVal.okValue()
+                    b
+                }
+                is Result.Err<*, *> -> {
+                    val err = matchVal.errValue()
+                    panicAlreadyBorrowed(err)
+                }
+            }
         }
 
     /**
@@ -952,9 +1004,8 @@ public open class RefCell<T> internal constructor(
                 run {
                     this.borrowedAt.replace(Location.caller())
                 }
-                // SAFETY: `BorrowRefMut` guarantees unique access.
-                val value = NonNull.newUnchecked(this.value.get())
-                Result.Ok<RefMut<T>, BorrowMutError>(RefMut(value = value, borrow = b, marker = Unit))
+                val cell = this.value
+                Result.Ok<RefMut<T>, BorrowMutError>(RefMut(valueGetter = { cell.value }, valueSetter = { cell.value = it }, borrow = b))
             }
         }
 
@@ -1004,9 +1055,7 @@ public open class RefCell<T> internal constructor(
      * check(c == RefCell.new(6))
      * ```
      */
-    public open fun getMut(): kotlin.reflect.KMutableProperty0<T> {
-        return this.value::value
-    }
+    public open fun getMut(): kotlin.reflect.KMutableProperty0<T> = this.value::value
 
     /**
      * Undo the effect of leaked guards on the borrow state of the `RefCell`.
@@ -1101,7 +1150,10 @@ public open class RefCell<T> internal constructor(
      *
      * Panics if the value is currently mutably borrowed.
      */
-    public open fun clone(): RefCell<T> = RefCell.new(this.borrow().clone(), typeLayoutT = UnresolvedTypeLayout<Any?>())
+    public open fun clone(): RefCell<T> =
+        this.borrow().use { b ->
+            RefCell.new(b.deref().clone())
+        }
 
     /**
      * # Panics
@@ -1109,7 +1161,9 @@ public open class RefCell<T> internal constructor(
      * Panics if `source` is currently mutably borrowed.
      */
     public open fun cloneFrom(source: RefCell<T>) {
-        this.getMut().cloneFrom(source.borrow())
+        source.borrow().use { b ->
+            this.value.value = b.deref().clone()
+        }
     }
 
     /**
@@ -1117,60 +1171,96 @@ public open class RefCell<T> internal constructor(
      *
      * Panics if the value in either `RefCell` is currently mutably borrowed.
      */
-    public open fun eq(other: RefCell<T>): Boolean = this.borrow() == other.borrow()
+    public open fun eq(other: RefCell<T>): Boolean =
+        this.borrow().use { a ->
+            other.borrow().use { b ->
+                a.deref() == b.deref()
+            }
+        }
 
     /**
      * # Panics
      *
      * Panics if the value in either `RefCell` is currently mutably borrowed.
      */
-    public open fun partialCmp(other: RefCell<T>): Ordering? = this.borrow().partialCmp(other.borrow())
+    public open fun partialCmp(other: RefCell<T>): Ordering? =
+        this.borrow().use { a ->
+            other.borrow().use { b ->
+                kmPartialCompareValues(a.deref(), b.deref())?.let(::kmOrderingFromSign)
+            }
+        }
 
     /**
      * # Panics
      *
      * Panics if the value in either `RefCell` is currently mutably borrowed.
      */
-    public open fun lt(other: RefCell<T>): Boolean = this.borrow() < other.borrow()
+    public open fun lt(other: RefCell<T>): Boolean =
+        this.borrow().use { a ->
+            other.borrow().use { b ->
+                kmPartialCompareValues(a.deref(), b.deref())?.let { it < 0 } ?: false
+            }
+        }
 
     /**
      * # Panics
      *
      * Panics if the value in either `RefCell` is currently mutably borrowed.
      */
-    public open fun le(other: RefCell<T>): Boolean = this.borrow() <= other.borrow()
+    public open fun le(other: RefCell<T>): Boolean =
+        this.borrow().use { a ->
+            other.borrow().use { b ->
+                kmPartialCompareValues(a.deref(), b.deref())?.let { it <= 0 } ?: false
+            }
+        }
 
     /**
      * # Panics
      *
      * Panics if the value in either `RefCell` is currently mutably borrowed.
      */
-    public open fun gt(other: RefCell<T>): Boolean = this.borrow() > other.borrow()
+    public open fun gt(other: RefCell<T>): Boolean =
+        this.borrow().use { a ->
+            other.borrow().use { b ->
+                kmPartialCompareValues(a.deref(), b.deref())?.let { it > 0 } ?: false
+            }
+        }
 
     /**
      * # Panics
      *
      * Panics if the value in either `RefCell` is currently mutably borrowed.
      */
-    public open fun ge(other: RefCell<T>): Boolean = this.borrow() >= other.borrow()
+    public open fun ge(other: RefCell<T>): Boolean =
+        this.borrow().use { a ->
+            other.borrow().use { b ->
+                kmPartialCompareValues(a.deref(), b.deref())?.let { it >= 0 } ?: false
+            }
+        }
 
     /**
      * # Panics
      *
      * Panics if the value in either `RefCell` is currently mutably borrowed.
      */
-    public open fun cmp(other: RefCell<T>): Ordering = this.borrow().cmp(other.borrow())
+    public open fun cmp(other: RefCell<T>): Ordering =
+        this.borrow().use { a ->
+            other.borrow().use { b ->
+                kmOrderingFromSign(kmCompareValues(a.deref(), b.deref()))
+            }
+        }
 
     public companion object {
         public operator fun <T> invoke(
             borrow: Cell<BorrowCounter>,
             borrowedAt: Cell<Location?>,
             value: UnsafeCell<T>,
-        ): RefCell<T> = RefCell<T>(
-            borrowCtorArg = borrow,
-            borrowedAtCtorArg = borrowedAt,
-            value = value,
-        )
+        ): RefCell<T> =
+            RefCell<T>(
+                borrowCtorArg = borrow,
+                borrowedAtCtorArg = borrowedAt,
+                value = value,
+            )
 
         /**
          * Creates a new `RefCell` containing `value`.
@@ -1183,12 +1273,17 @@ public open class RefCell<T> internal constructor(
          * val c = RefCell.new(5)
          * ```
          */
-        public fun <T> new(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RefCell<T> = RefCell(value = UnsafeCell.new(value, fieldLayout = typeLayoutT), borrow = Cell.new(UNUSED, fieldLayout = typeLayoutT), borrowedAt = Cell.new(null, fieldLayout = typeLayoutT))
+        public fun <T> new(value: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): RefCell<T> =
+            RefCell(
+                value = UnsafeCell.new(value, fieldLayout = typeLayoutT),
+                borrow = Cell.new(UNUSED),
+                borrowedAt = Cell.new(null),
+            )
 
         /**
          * Creates a `RefCell<T>`, with the `Default` value for T.
          */
-        public fun <T> default(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), defaultTFn: () -> T): RefCell<T> = RefCell.new(defaultTFn(), typeLayoutT = UnresolvedTypeLayout<Any?>())
+        public fun <T> default(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout(), defaultTFn: () -> T): RefCell<T> = RefCell.new(defaultTFn(), typeLayoutT = typeLayoutT)
 
         /**
          * Creates a new `RefCell<T>` containing the given value.
@@ -1204,8 +1299,8 @@ public open class BorrowError(
     public var location: Location,
 ) {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        val res = f.append("RefCell already mutably borrowed; a previous borrow was at ${this.location}")
-        return res
+        f.append("RefCell already mutably borrowed; a previous borrow was at ${this.location}")
+        return Result.Ok(Unit)
     }
 
     public companion object
@@ -1218,8 +1313,8 @@ public open class BorrowMutError(
     public var location: Location,
 ) {
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
-        val res = f.append("RefCell already borrowed; a previous borrow was at ${this.location}")
-        return res
+        f.append("RefCell already borrowed; a previous borrow was at ${this.location}")
+        return Result.Ok(Unit)
     }
 
     public companion object
@@ -1259,8 +1354,7 @@ public fun isReading(x: BorrowCounter): Boolean = x > UNUSED
 public open class BorrowRef internal constructor(
     borrowCtorArg: Cell<BorrowCounter>,
 ) : AutoCloseable {
-    public var borrow: Cell<BorrowCounter> = borrowCtorArg
-        internal set
+    internal var borrow: Cell<BorrowCounter> = borrowCtorArg
 
     override fun close() {
         this.drop()
@@ -1291,12 +1385,13 @@ public open class BorrowRef internal constructor(
     public companion object {
         public operator fun invoke(
             borrow: Cell<BorrowCounter>,
-        ): BorrowRef = BorrowRef(
-            borrowCtorArg = borrow,
-        )
+        ): BorrowRef =
+            BorrowRef(
+                borrowCtorArg = borrow,
+            )
 
         public fun new(borrow: Cell<BorrowCounter>): BorrowRef? {
-            val b = borrow.get().wrappingAdd(1)
+            val b = borrow.get() + 1
             return if (!isReading(b)) {
                 // Incrementing borrow can result in a non-reading value (<= 0) in these cases:
                 // 1. It was < 0, i.e. there are writing borrows, so we can't allow a read borrow
@@ -1326,22 +1421,28 @@ public open class BorrowRef internal constructor(
  * See the [module-level documentation](self) for more.
  */
 public open class Ref<T>(
-    // NB: we use a pointer instead of `T` to avoid `noalias` violations, because a
-    // `Ref` argument doesn't hold immutability for its whole scope, only until it drops.
-    // `NonNull` is also covariant over `T`, just like we would have with `T`.
-    public var value: NonNull,
+    private val valueGetter: () -> T,
     public var borrow: BorrowRef,
-) : DerefPure, PinSafePointer {
-    public open fun deref(): T {
-        // SAFETY: the value is accessible as long as we hold our borrow.
-        return (this).value.value.asRef()
+) : DerefPure,
+    PinSafePointer,
+    AutoCloseable {
+    public val value: T
+        get() = valueGetter()
+
+    override fun close() {
+        this.borrow.close()
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = this.fmt(f)
+    public open fun drop() {
+        this.borrow.drop()
+    }
 
-    // The implementations of Deref/DerefMut are not malicious, so we can allow the
-    // user to perform unsizing coercions with `Pin<Ref<T>>` pointers if they
-    // can manage to create one.
+    public open fun deref(): T = valueGetter()
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
+        f.append(valueGetter().toString())
+        return Result.Ok(Unit)
+    }
 
     public companion object {
         /**
@@ -1354,7 +1455,7 @@ public open class Ref<T>(
          * with the widespread use of `r.borrow().clone()` to clone the contents of
          * a `RefCell`.
          */
-        public fun <T> clone(orig: Ref<T>): Ref<T> = Ref(value = (orig).value.value, borrow = (orig).value.borrow.clone())
+        public fun <T> clone(orig: Ref<T>): Ref<T> = Ref(valueGetter = orig.valueGetter, borrow = orig.borrow.clone())
 
         /**
          * Makes a new `Ref` for a component of the borrowed data.
@@ -1377,7 +1478,10 @@ public open class Ref<T>(
          * check((b2).value == 5u)
          * ```
          */
-        public fun <T, U> map(orig: Ref<T>, f: (T) -> U): Ref<U> = Ref(value = NonNull.from(f((orig).value)), borrow = (orig).value.borrow)
+        public fun <T, U> map(orig: Ref<T>, f: (T) -> U): Ref<U> {
+            val mapped = f(orig.deref())
+            return Ref(valueGetter = { mapped }, borrow = orig.borrow)
+        }
 
         /**
          * Makes a new `Ref` for an optional component of the borrowed data. The
@@ -1403,12 +1507,9 @@ public open class Ref<T>(
          * ```
          */
         public fun <T, U> filterMap(orig: Ref<T>, f: (T) -> U?): Result<Ref<U>, Ref<T>> =
-            when (val matchVal = f((orig).value)) {
+            when (val matchVal = f(orig.deref())) {
                 null -> Result.Err<Ref<U>, Ref<T>>(orig)
-                else -> {
-                    val value = matchVal
-                    Result.Ok<Ref<U>, Ref<T>>(Ref(value = NonNull.from(value), borrow = (orig).value.borrow))
-                }
+                else -> Result.Ok<Ref<U>, Ref<T>>(Ref(valueGetter = { matchVal }, borrow = orig.borrow))
             }
 
         /**
@@ -1446,15 +1547,9 @@ public open class Ref<T>(
          * ```
          */
         public fun <T, U, E> tryMap(orig: Ref<T>, f: (T) -> Result<U, E>): Result<Ref<U>, Pair<Ref<T>, E>> =
-            run {
-                val matchVal = f((orig).value)
-                when (matchVal) { is Result.Ok<*, *> -> {
-                    val value = matchVal.okValue()
-                    Result.Ok<Ref<U>, Pair<Ref<T>, E>>(Ref(value = NonNull.from(value), borrow = (orig).value.borrow))
-                }; is Result.Err<*, *> -> {
-                    val e = matchVal.errValue()
-                    Result.Err<Ref<U>, Pair<Ref<T>, E>>(Pair(orig, e))
-                } }
+            when (val matchVal = f(orig.deref())) {
+                is Result.Ok -> Result.Ok<Ref<U>, Pair<Ref<T>, E>>(Ref(valueGetter = { matchVal.value }, borrow = orig.borrow))
+                is Result.Err -> Result.Err<Ref<U>, Pair<Ref<T>, E>>(Pair(orig, matchVal.value))
             }
 
         /**
@@ -1481,9 +1576,9 @@ public open class Ref<T>(
          * ```
          */
         public fun <T, U, V> mapSplit(orig: Ref<T>, f: (T) -> Pair<U, V>): Pair<Ref<U>, Ref<V>> {
-            val (a, b) = f((orig).value)
-            val borrow = (orig).value.borrow.clone()
-            return Pair(Ref(value = NonNull.from(a), borrow = borrow), Ref(value = NonNull.from(b), borrow = (orig).value.borrow))
+            val (a, b) = f(orig.deref())
+            val borrow = orig.borrow.clone()
+            return Pair(Ref(valueGetter = { a }, borrow = borrow), Ref(valueGetter = { b }, borrow = orig.borrow))
         }
 
         /**
@@ -1519,9 +1614,8 @@ public open class Ref<T>(
             // UNUSED within the scope `b`. Resetting the reference tracking state would require a
             // unique reference to the borrowed RefCell. No further mutable references can be created
             // from the original cell.
-            forget((orig).value.borrow)
-            // SAFETY: after forgetting, we can form a reference for the rest of scope `b`.
-            return (orig).value.value.asRef()
+            forget(orig.borrow)
+            return orig.deref()
         }
     }
 }
@@ -1529,8 +1623,7 @@ public open class Ref<T>(
 public open class BorrowRefMut internal constructor(
     borrowCtorArg: Cell<BorrowCounter>,
 ) : AutoCloseable {
-    public var borrow: Cell<BorrowCounter> = borrowCtorArg
-        internal set
+    internal var borrow: Cell<BorrowCounter> = borrowCtorArg
 
     override fun close() {
         this.drop()
@@ -1563,9 +1656,10 @@ public open class BorrowRefMut internal constructor(
     public companion object {
         public operator fun invoke(
             borrow: Cell<BorrowCounter>,
-        ): BorrowRefMut = BorrowRefMut(
-            borrowCtorArg = borrow,
-        )
+        ): BorrowRefMut =
+            BorrowRefMut(
+                borrowCtorArg = borrow,
+            )
 
         public fun new(borrow: Cell<BorrowCounter>): BorrowRefMut? {
             // NOTE: Unlike BorrowRefMut.clone, new is called to create the initial
@@ -1589,28 +1683,38 @@ public open class BorrowRefMut internal constructor(
  * See the [module-level documentation](self) for more.
  */
 public open class RefMut<T>(
-    // NB: we use a pointer instead of `T` to avoid `noalias` violations, because a
-    // `RefMut` argument doesn't hold exclusivity for its whole scope, only until it drops.
-    public var value: NonNull,
+    private val valueGetter: () -> T,
+    private val valueSetter: (T) -> Unit,
     public var borrow: BorrowRefMut,
-    // `NonNull` is covariant over `T`, so we need to reintroduce invariance.
-    public var marker: Unit,
-) : DerefPure, PinSafePointer {
-    public open fun deref(): T {
-        // SAFETY: the value is accessible as long as we hold our borrow.
-        return (this).value.value.asRef()
+) : DerefPure,
+    PinSafePointer,
+    AutoCloseable {
+    public var value: T
+        get() = valueGetter()
+        set(v) {
+            valueSetter(v)
+        }
+
+    override fun close() {
+        this.borrow.close()
     }
 
-    public open fun derefMut(): T {
-        // SAFETY: the value is accessible as long as we hold our borrow.
-        return (this).value.value.asMut()
+    public open fun drop() {
+        this.borrow.drop()
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = this.fmt(f)
+    public open fun deref(): T = valueGetter()
 
-    // The implementations of Deref/DerefMut are not malicious, so we can allow the
-    // user to perform unsizing coercions with `Pin<RefMut<T>>` pointers if they
-    // can manage to create one.
+    public open fun derefMut(): T = valueGetter()
+
+    public open fun set(v: T) {
+        valueSetter(v)
+    }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
+        f.append(valueGetter().toString())
+        return Result.Ok(Unit)
+    }
 
     public companion object {
         /**
@@ -1640,8 +1744,8 @@ public open class RefMut<T>(
          * ```
          */
         public fun <T, U> map(orig: RefMut<T>, f: (T) -> U): RefMut<U> {
-            val value = NonNull.from(f((orig).value))
-            return RefMut(value = value, borrow = (orig).value.borrow, marker = Unit)
+            var mapped = f(orig.derefMut())
+            return RefMut(valueGetter = { mapped }, valueSetter = { mapped = it }, borrow = orig.borrow)
         }
 
         /**
@@ -1673,19 +1777,14 @@ public open class RefMut<T>(
          * check(c.borrow() == mutableListOf(1, 4, 3))
          * ```
          */
-        public fun <T, U> filterMap(orig: RefMut<T>, f: (T) -> U?): Result<RefMut<U>, RefMut<T>> {
-            // SAFETY: function holds onto an exclusive reference for the duration
-            // of its call through `orig`, and the pointer is only de-referenced
-            // inside of the function call never allowing the exclusive reference to
-            // escape.
-            return when (val matchVal = f((orig).value)) {
+        public fun <T, U> filterMap(orig: RefMut<T>, f: (T) -> U?): Result<RefMut<U>, RefMut<T>> =
+            when (val matchVal = f(orig.derefMut())) {
                 null -> Result.Err<RefMut<U>, RefMut<T>>(orig)
                 else -> {
-                    val value = matchVal
-                    Result.Ok<RefMut<U>, RefMut<T>>(RefMut(value = NonNull.from(value), borrow = (orig).value.borrow, marker = Unit))
+                    var mapped: U = matchVal
+                    Result.Ok<RefMut<U>, RefMut<T>>(RefMut(valueGetter = { mapped }, valueSetter = { mapped = it }, borrow = orig.borrow))
                 }
             }
-        }
 
         /**
          * Tries to makes a new `RefMut` for a component of the borrowed data.
@@ -1726,22 +1825,14 @@ public open class RefMut<T>(
          * }
          * ```
          */
-        public fun <T, U, E> tryMap(orig: RefMut<T>, f: (T) -> Result<U, E>): Result<RefMut<U>, Pair<RefMut<T>, E>> {
-            // SAFETY: function holds onto an exclusive reference for the duration
-            // of its call through `orig`, and the pointer is only de-referenced
-            // inside of the function call never allowing the exclusive reference to
-            // escape.
-            return run {
-                val matchVal = f((orig).value)
-                when (matchVal) { is Result.Ok<*, *> -> {
-                    val value = matchVal.okValue()
-                    Result.Ok<RefMut<U>, Pair<RefMut<T>, E>>(RefMut(value = NonNull.from(value), borrow = (orig).value.borrow, marker = Unit))
-                }; is Result.Err<*, *> -> {
-                    val e = matchVal.errValue()
-                    Result.Err<RefMut<U>, Pair<RefMut<T>, E>>(Pair(orig, e))
-                } }
+        public fun <T, U, E> tryMap(orig: RefMut<T>, f: (T) -> Result<U, E>): Result<RefMut<U>, Pair<RefMut<T>, E>> =
+            when (val matchVal = f(orig.derefMut())) {
+                is Result.Ok -> {
+                    var mapped = matchVal.value
+                    Result.Ok<RefMut<U>, Pair<RefMut<T>, E>>(RefMut(valueGetter = { mapped }, valueSetter = { mapped = it }, borrow = orig.borrow))
+                }
+                is Result.Err -> Result.Err<RefMut<U>, Pair<RefMut<T>, E>>(Pair(orig, matchVal.value))
             }
-        }
 
         /**
          * Splits a `RefMut` into multiple `RefMut`s for different components of the
@@ -1772,9 +1863,14 @@ public open class RefMut<T>(
          * ```
          */
         public fun <T, U, V> mapSplit(orig: RefMut<T>, f: (T) -> Pair<U, V>): Pair<RefMut<U>, RefMut<V>> {
-            val borrow = (orig).value.borrow.clone()
-            val (a, b) = f((orig).value)
-            return Pair(RefMut(value = NonNull.from(a), borrow = borrow, marker = Unit), RefMut(value = NonNull.from(b), borrow = (orig).value.borrow, marker = Unit))
+            val borrow = orig.borrow.clone()
+            val (a, b) = f(orig.derefMut())
+            var mappedA = a
+            var mappedB = b
+            return Pair(
+                RefMut(valueGetter = { mappedA }, valueSetter = { mappedA = it }, borrow = borrow),
+                RefMut(valueGetter = { mappedB }, valueSetter = { mappedB = it }, borrow = orig.borrow),
+            )
         }
 
         /**
@@ -1809,9 +1905,8 @@ public open class RefMut<T>(
             // require a unique reference to the borrowed RefCell. No further references can be created
             // from the original cell within that scope, making the current borrow the only
             // reference for the remaining scope.
-            forget((orig).value.borrow)
-            // SAFETY: after forgetting, we can form a reference for the rest of scope `b`.
-            return (orig).value.value.asMut()
+            forget(orig.borrow)
+            return orig.derefMut()
         }
     }
 }
@@ -1992,15 +2087,59 @@ public open class RefMut<T>(
  * check(contents == 0)
  * ```
  */
-public open class UnsafeCell<T>(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
-) {
-    public var value: T
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+public open class UnsafeCell<T> {
+    public val fieldStorage: MutPtr
+    public val fieldLayout: TypeLayout<T>
+    private var heapSlot: UnsafeCellHeapSlot<T>? = null
+    private var virtualSlot: UnsafeCellVirtualSlot<T>? = null
 
-    public constructor(value: T, fieldLayout: TypeLayout<T> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    internal constructor(
+        fieldStorage: MutPtr,
+        fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
+    ) {
+        this.fieldStorage = fieldStorage
+        this.fieldLayout = fieldLayout
+    }
+
+    public constructor(
+        value: T,
+        fieldLayout: TypeLayout<T> = UnresolvedTypeLayout(),
+    ) {
+        this.fieldStorage = MutPtr(0L)
+        this.fieldLayout = fieldLayout
+        this.heapSlot = UnsafeCellHeapSlot(value)
+    }
+
+    internal constructor(
+        virtualGetter: () -> T,
+        virtualSetter: (T) -> Unit,
+    ) {
+        this.fieldStorage = MutPtr(0L)
+        this.fieldLayout = UnresolvedTypeLayout()
+        this.virtualSlot = UnsafeCellVirtualSlot(virtualGetter, virtualSetter)
+    }
+
+    public var value: T
+        get() {
+            val vSlot = virtualSlot
+            if (vSlot != null) return vSlot.getter()
+            val hSlot = heapSlot
+            if (hSlot != null) return hSlot.value
+            return fieldLayout.readNative(fieldStorage.rawAddress)
+        }
+        set(newValue) {
+            val vSlot = virtualSlot
+            if (vSlot != null) {
+                vSlot.setter(newValue)
+                return
+            }
+            val hSlot = heapSlot
+            if (hSlot != null) {
+                hSlot.value = newValue
+                return
+            }
+            fieldLayout.writeNative(fieldStorage.rawAddress, newValue)
+        }
 
     public fun pointerLayout(): TypeLayout<UnsafeCell<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> UnsafeCell<T>(ptr, layout) }, { it.value })
 
@@ -2042,7 +2181,11 @@ public open class UnsafeCell<T>(
      */
     public open fun replace(value: T): T {
         // SAFETY: pointer comes from `self` so naturally satisfies invariants.
-        return kotlin.Pair((this), value).let { (placeReceiver, placeValue) -> val placePrevious = placeReceiver.value; placeReceiver.value = placeValue; placePrevious }
+        return kotlin.Pair((this), value).let { (placeReceiver, placeValue) ->
+            val placePrevious = placeReceiver.value
+            placeReceiver.value = placeValue
+            placePrevious
+        }
     }
 
     /**
@@ -2064,9 +2207,7 @@ public open class UnsafeCell<T>(
      * val five = uc.get()
      * ```
      */
-    public open fun get(): kotlin.reflect.KMutableProperty0<T> {
-        return this.fieldStorage
-    }
+    public open fun get(): kotlin.reflect.KMutableProperty0<T> = this::value
 
     /**
      * Returns a mutable reference to the underlying data.
@@ -2084,9 +2225,7 @@ public open class UnsafeCell<T>(
      * check(c.getMut() == 6)
      * ```
      */
-    public open fun getMut(): kotlin.reflect.KMutableProperty0<T> {
-        return this::value
-    }
+    public open fun getMut(): kotlin.reflect.KMutableProperty0<T> = this::value
 
     /**
      * Get a shared reference to the value within the `UnsafeCell`.
@@ -2108,10 +2247,7 @@ public open class UnsafeCell<T>(
      * check(value == 5)
      * ```
      */
-    public open fun asRefUnchecked(): T {
-        // SAFETY: pointer comes from `self` so naturally satisfies ptr-to-ref invariants.
-        return this.get().asRefUnchecked()
-    }
+    public open fun asRefUnchecked(): T = this.value
 
     /**
      * Get an exclusive reference to the value within the `UnsafeCell`.
@@ -2135,10 +2271,7 @@ public open class UnsafeCell<T>(
      * check(uc.intoInner() == 6)
      * ```
      */
-    public open fun asMutUnchecked(): T {
-        // SAFETY: pointer comes from `self` so naturally satisfies ptr-to-ref invariants.
-        return this.get().asMutUnchecked()
-    }
+    public open fun asMutUnchecked(): T = this.value
 
     public companion object {
         /**
@@ -2256,11 +2389,22 @@ public open class SyncUnsafeCell<T> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout(),
 ) {
-    public var value: UnsafeCell<T>
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+    private var heapValue: UnsafeCell<T>? = null
 
-    internal constructor(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    public var value: UnsafeCell<T>
+        get() = heapValue ?: fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) {
+            val h = heapValue
+            if (h != null) {
+                h.value = value.value
+            } else {
+                fieldLayout.writeNative(fieldStorage.rawAddress, value)
+            }
+        }
+
+    internal constructor(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()) : this(MutPtr(0L), fieldLayout) {
+        this.heapValue = value
+    }
 
     public fun pointerLayout(): TypeLayout<SyncUnsafeCell<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> SyncUnsafeCell<T>(ptr, layout) }, { it.value })
 
@@ -2285,9 +2429,7 @@ public open class SyncUnsafeCell<T> internal constructor(
      * This call borrows the `SyncUnsafeCell` mutably (at compile-time) which
      * guarantees that we possess the only reference.
      */
-    public open fun getMut(): kotlin.reflect.KMutableProperty0<T> {
-        return this.value::value
-    }
+    public open fun getMut(): kotlin.reflect.KMutableProperty0<T> = this.value::value
 
     public companion object {
         public operator fun <T> invoke(value: UnsafeCell<T>, fieldLayout: TypeLayout<UnsafeCell<T>> = UnresolvedTypeLayout()): SyncUnsafeCell<T> = SyncUnsafeCell<T>(value, fieldLayout)

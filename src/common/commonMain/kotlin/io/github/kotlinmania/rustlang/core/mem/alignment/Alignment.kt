@@ -1,17 +1,14 @@
+// rust-kotlin: manual
 // port-lint: source mem/alignment.rs
 package io.github.kotlinmania.rustlang.core.mem.alignment
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOfVal
 import io.github.kotlinmania.rustlang.core.mem.alignOfValRaw
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
 import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
@@ -22,6 +19,80 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.result.Result
 
+private fun alignmentEnumFromUsize(align: Int): AlignmentEnum {
+    require(align != 0 && (align and (align - 1)) == 0) {
+        "Alignment must be a non-zero power of two, got $align"
+    }
+    return when (align.countTrailingZeroBits()) {
+        0 -> AlignmentEnum.Align1Shl0
+        1 -> AlignmentEnum.Align1Shl1
+        2 -> AlignmentEnum.Align1Shl2
+        3 -> AlignmentEnum.Align1Shl3
+        4 -> AlignmentEnum.Align1Shl4
+        5 -> AlignmentEnum.Align1Shl5
+        6 -> AlignmentEnum.Align1Shl6
+        7 -> AlignmentEnum.Align1Shl7
+        8 -> AlignmentEnum.Align1Shl8
+        9 -> AlignmentEnum.Align1Shl9
+        10 -> AlignmentEnum.Align1Shl10
+        11 -> AlignmentEnum.Align1Shl11
+        12 -> AlignmentEnum.Align1Shl12
+        13 -> AlignmentEnum.Align1Shl13
+        14 -> AlignmentEnum.Align1Shl14
+        15 -> AlignmentEnum.Align1Shl15
+        16 -> AlignmentEnum.Align1Shl16
+        17 -> AlignmentEnum.Align1Shl17
+        18 -> AlignmentEnum.Align1Shl18
+        19 -> AlignmentEnum.Align1Shl19
+        20 -> AlignmentEnum.Align1Shl20
+        21 -> AlignmentEnum.Align1Shl21
+        22 -> AlignmentEnum.Align1Shl22
+        23 -> AlignmentEnum.Align1Shl23
+        24 -> AlignmentEnum.Align1Shl24
+        25 -> AlignmentEnum.Align1Shl25
+        26 -> AlignmentEnum.Align1Shl26
+        27 -> AlignmentEnum.Align1Shl27
+        28 -> AlignmentEnum.Align1Shl28
+        29 -> AlignmentEnum.Align1Shl29
+        30 -> AlignmentEnum.Align1Shl30
+        else -> AlignmentEnum.Align1Shl31
+    }
+}
+
+internal val ALIGNMENT_ENUM_LAYOUT: TypeLayout<AlignmentEnum> =
+    object : TypeLayout<AlignmentEnum> {
+        override val sizeBytes: Long = PrimitiveLayouts.USIZE64.sizeBytes
+        override val alignBytes: Long = PrimitiveLayouts.USIZE64.alignBytes
+
+        override fun readNative(addr: Long): AlignmentEnum =
+            alignmentEnumFromUsize(PrimitiveLayouts.USIZE64.readNative(addr))
+
+        override fun writeNative(
+            addr: Long,
+            value: AlignmentEnum,
+        ) {
+            PrimitiveLayouts.USIZE64.writeNative(addr, value.toInt())
+        }
+
+        override fun readBytes(
+            buf: ByteArray,
+            offset: Int,
+        ): AlignmentEnum = alignmentEnumFromUsize(PrimitiveLayouts.USIZE64.readBytes(buf, offset))
+
+        override fun writeBytes(
+            buf: ByteArray,
+            offset: Int,
+            value: AlignmentEnum,
+        ) {
+            PrimitiveLayouts.USIZE64.writeBytes(buf, offset, value.toInt())
+        }
+
+        override fun toBitsU64(value: AlignmentEnum): ULong = PrimitiveLayouts.USIZE64.toBitsU64(value.toInt())
+
+        override fun fromBitsU64(bits: ULong): AlignmentEnum =
+            alignmentEnumFromUsize(PrimitiveLayouts.USIZE64.fromBitsU64(bits))
+    }
+
 /**
  * A type storing a `Int` which is a power of two, and thus
  * represents a possible alignment in the Rust abstract machine.
@@ -31,13 +102,22 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class Alignment internal constructor(
     public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<AlignmentEnum> = UnresolvedTypeLayout(),
+    public val fieldLayout: TypeLayout<AlignmentEnum> = ALIGNMENT_ENUM_LAYOUT,
+    private var inlineValue: AlignmentEnum? = null,
 ) {
     public var innerReprTrick: AlignmentEnum
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+        get() = inlineValue ?: fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) {
+            if (fieldStorage.rawAddress != 0L) {
+                fieldLayout.writeNative(fieldStorage.rawAddress, value)
+            }
+            inlineValue = value
+        }
 
-    internal constructor(innerReprTrick: AlignmentEnum, fieldLayout: TypeLayout<AlignmentEnum> = UnresolvedTypeLayout()) : this(allocateNativeCell(innerReprTrick, fieldLayout), fieldLayout)
+    internal constructor(
+        innerReprTrick: AlignmentEnum,
+        fieldLayout: TypeLayout<AlignmentEnum> = ALIGNMENT_ENUM_LAYOUT,
+    ) : this(MutPtr(0L), fieldLayout, innerReprTrick)
 
     public fun pointerLayout(): TypeLayout<Alignment> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Alignment(ptr, layout) }, { it.innerReprTrick })
 
@@ -55,14 +135,7 @@ public open class Alignment internal constructor(
     /**
      * Returns the alignment as a <code>[NonZero]<[Int]></code>.
      */
-    public open fun asNonzeroUsize(): NonZero<Int, NonZeroUsizeInner> {
-        // This transmutes directly to avoid the UbCheck in `NonZero.newUnchecked`
-        // since there's no way for the user to trip that check anyway -- the
-        // validity invariant of the type would have to have been broken earlier --
-        // and emitting it in an otherwise simple method is bad for compile time.
-        // SAFETY: All the discriminants are non-zero.
-        return transmuteWithLayouts<Alignment, NonZero<Int, NonZeroUsizeInner>>(this, TransparentTypeLayout(this.fieldLayout, { ptr, layout -> Alignment(ptr, layout) }, { it.innerReprTrick }), UnresolvedTypeLayout<NonZero<Int, NonZeroUsizeInner>>())
-    }
+    public open fun asNonzeroUsize(): NonZero<Int, NonZeroUsizeInner> = NonZero.newUnchecked<NonZeroUsizeInner, Int>(this.innerReprTrick.toInt())
 
     /**
      * Returns the base-2 logarithm of the alignment.
@@ -81,7 +154,12 @@ public open class Alignment internal constructor(
      * }
      * ```
      */
-    public open fun log2(): UInt = this.asNonzeroUsize().trailingZeros()
+    public open fun log2(): UInt =
+        this
+            .asNonzeroUsize()
+            .get()
+            .countTrailingZeroBits()
+            .toUInt()
 
     // Also @unstable(feature = "ptrMask", issue = "98290")
 
@@ -134,14 +212,20 @@ public open class Alignment internal constructor(
      */
     public open fun mask(): Int {
         // SAFETY: The alignment is always nonzero, and therefore decrementing won't overflow.
-        return !(this.asUsize().uncheckedSub(1))
+        return (this.asUsize().uncheckedSub(1)).inv()
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, TryFromIntError> = run { f.append("${this.asNonzeroUsize()} (1 << ${this.log2()})"); Result.Ok<Unit, TryFromIntError>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, TryFromIntError> =
+        run {
+            f.append("${this.asNonzeroUsize()} (1 << ${this.log2()})")
+            Result.Ok<Unit, TryFromIntError>(Unit)
+        }
 
     public open fun cmp(other: Alignment): Ordering = this.asNonzeroUsize().cmp(other.asNonzeroUsize())
 
     public open fun partialCmp(other: Alignment): Ordering? = this.cmp(other)
+
+    public override fun equals(other: Any?): Boolean = other is Alignment && this.asUsize() == other.asUsize()
 
     public override fun hashCode(): Int {
         var state = 0
@@ -150,9 +234,9 @@ public open class Alignment internal constructor(
     }
 
     public companion object {
-        public operator fun invoke(innerReprTrick: AlignmentEnum, fieldLayout: TypeLayout<AlignmentEnum> = UnresolvedTypeLayout()): Alignment = Alignment(innerReprTrick, fieldLayout)
+        public operator fun invoke(innerReprTrick: AlignmentEnum, fieldLayout: TypeLayout<AlignmentEnum> = ALIGNMENT_ENUM_LAYOUT): Alignment = Alignment(innerReprTrick, fieldLayout)
 
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<AlignmentEnum> = UnresolvedTypeLayout()): Alignment = Alignment(fieldStorage, fieldLayout)
+        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<AlignmentEnum> = ALIGNMENT_ENUM_LAYOUT): Alignment = Alignment(fieldStorage, fieldLayout)
 
         /**
          * The smallest possible alignment, 1.
@@ -271,7 +355,7 @@ public open class Alignment internal constructor(
          */
         public fun ofValRaw(value: ConstPtr): Alignment {
             // SAFETY: precondition propagated to the caller
-            val align = alignOfValRaw(value)
+            val align = alignOfValRaw<Unit>(value)
             // SAFETY: `alignOfValRaw` returns valid alignment
             return Alignment.newUnchecked(align)
         }
@@ -301,10 +385,9 @@ public open class Alignment internal constructor(
          * It must *not* be zero.
          */
         public fun newUnchecked(align: Int): Alignment {
-            Unit
             // SAFETY: By precondition, this must be a power of two, and
             // our variants encompass all possible powers of two.
-            return transmuteWithLayouts<Int, Alignment>(align, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<Alignment>())
+            return Alignment(alignmentEnumFromUsize(align), ALIGNMENT_ENUM_LAYOUT)
         }
 
         // Note(const-Note) Remove me once `Ord.max` is usable in const
@@ -315,7 +398,7 @@ public open class Alignment internal constructor(
                 b
             }
 
-        public fun tryFrom(align: NonZero<Int, NonZeroUsizeInner>): Result<Alignment, TryFromIntError> = align.get().tryInto()
+        public fun tryFrom(align: NonZero<Int, NonZeroUsizeInner>): Result<Alignment, TryFromIntError> = Alignment.tryFrom(align.get())
 
         public fun tryFrom(align: Int): Result<Alignment, TryFromIntError> = (Alignment.new(align)?.let { Result.Ok<Alignment, TryFromIntError>(it) } ?: Result.Err<Alignment, TryFromIntError>(TryFromIntError(IntErrorKind.NotAPowerOfTwo)))
 
@@ -328,13 +411,13 @@ public open class Alignment internal constructor(
 
 public fun alignmentCanBeStructurallyMatched(a: Alignment): Boolean =
     when (a) {
-        Alignment.min -> true
+        Alignment.MIN -> true
         else -> false
     }
 
 public fun fromNonZeroInt(align: Alignment): NonZero<Int, NonZeroUsizeInner> = align.asNonzeroUsize()
 
-public fun Int.Companion.from(align: Alignment): Int = align.asUsize()
+public fun intFromAlignment(align: Alignment): Int = align.asUsize()
 
 public sealed class AlignmentEnum(
     public val value: Int,

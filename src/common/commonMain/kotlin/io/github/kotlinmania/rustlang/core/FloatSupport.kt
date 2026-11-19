@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 @file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core
@@ -113,8 +114,8 @@ public class F16(
         public fun fromBits(bits: UShort): F16 = F16(bits)
         public fun toBits(value: F16): UShort = value.toBits()
 
-        public fun fromFloat(v: Float): F16 {
-            val fb = v.toRawBits()
+        public fun fromFloat(value: Float): F16 {
+            val fb = value.toRawBits()
             val sign = (fb ushr 16) and 0x8000
             val rawExp = (fb ushr 23) and 0xFF
             val mant = fb and 0x007F_FFFF

@@ -1,18 +1,16 @@
+// rust-kotlin: manual
 // port-lint: source result.rs
 package io.github.kotlinmania.rustlang.core.result
 
 import io.github.kotlinmania.rustlang.core.clone.clone
-import io.github.kotlinmania.rustlang.core.convert.From
-import io.github.kotlinmania.rustlang.core.convert.from
+import io.github.kotlinmania.rustlang.core.convert.Into
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.deref.Deref
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
-import io.github.kotlinmania.rustlang.core.ops.deref.derefMut
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 
@@ -582,16 +580,29 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
     /**
      * Contains the success value
      */
-    public data class Ok<T, E>(public var value: T) : Result<T, E>()
+    public data class Ok<T, E>(
+        public var value: T,
+    ) : Result<T, E>()
+
     /**
      * Contains the error value
      */
-    public data class Err<T, E>(public var value: E) : Result<T, E>() {
+    public data class Err<T, E>(
+        public var value: E,
+    ) : Result<T, E>() {
         public val error: E get() = value
     }
 
-    public fun okValue(): T = when (this) { is Ok -> value; is Err -> error("not Ok") }
-    public fun errValue(): E = when (this) { is Err -> value; is Ok -> error("not Err") }
+    public fun okValue(): T =
+        when (this) {
+            is Ok -> value
+            is Err -> error("not Ok")
+        }
+    public fun errValue(): E =
+        when (this) {
+            is Err -> value
+            is Ok -> error("not Err")
+        }
 
     public fun rustEquals(other: Result<T, E>): Boolean = this == other
 
@@ -615,11 +626,14 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun isOk(): Boolean =
-        when (this) { is Result.Ok<*, *> -> {
-            true
-        }; is Result.Err<*, *> -> {
-            false
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                true
+            }
+            is Result.Err<*, *> -> {
+                false
+            }
+        }
 
     /**
      * Returns `true` if the result is [Ok] and the value inside of it matches a predicate.
@@ -639,12 +653,15 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun isOkAnd(f: (T) -> Boolean): Boolean =
-        when (this) { is Result.Ok<*, *> -> {
-            val x = this.okValue()
-            f(x)
-        }; is Result.Err<*, *> -> {
-            false
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val x = this.okValue()
+                f(x)
+            }
+            is Result.Err<*, *> -> {
+                false
+            }
+        }
 
     /**
      * Returns `true` if the result is [Err].
@@ -681,12 +698,15 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun isErrAnd(f: (E) -> Boolean): Boolean =
-        when (this) { is Result.Ok<*, *> -> {
-            false
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            f(e)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                false
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                f(e)
+            }
+        }
 
     // ////////////////////////////////////////////////////////////////////
     // Adapter for each variant
@@ -708,12 +728,15 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun ok(): T? =
-        when (this) { is Result.Ok<*, *> -> {
-            val x = this.okValue()
-            x
-        }; is Result.Err<*, *> -> {
-            null
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val x = this.okValue()
+                x
+            }
+            is Result.Err<*, *> -> {
+                null
+            }
+        }
 
     /**
      * Converts from `Result<T, E>` to [Option.E].
@@ -731,12 +754,15 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun err(): E? =
-        when (this) { is Result.Ok<*, *> -> {
-            null
-        }; is Result.Err<*, *> -> {
-            val x = this.errValue()
-            x
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                null
+            }
+            is Result.Err<*, *> -> {
+                val x = this.errValue()
+                x
+            }
+        }
 
     // ////////////////////////////////////////////////////////////////////
     // Adapter for working with references
@@ -758,13 +784,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun asRef(): Result<T, E> =
-        when (this) { is Result.Ok<*, *> -> {
-            val x = this.okValue()
-            Ok(x)
-        }; is Result.Err<*, *> -> {
-            val x1 = this.errValue()
-            Err(x1)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val x = this.okValue()
+                Ok(x)
+            }
+            is Result.Err<*, *> -> {
+                val x1 = this.errValue()
+                Err(x1)
+            }
+        }
 
     /**
      * Converts from `Result<T, E>` to `Result<T, E>`.
@@ -793,13 +822,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun asMut(): Result<T, E> =
-        when (this) { is Result.Ok<*, *> -> {
-            val x = this.okValue()
-            Ok(x)
-        }; is Result.Err<*, *> -> {
-            val x1 = this.errValue()
-            Err(x1)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val x = this.okValue()
+                Ok(x)
+            }
+            is Result.Err<*, *> -> {
+                val x1 = this.errValue()
+                Err(x1)
+            }
+        }
 
     // ////////////////////////////////////////////////////////////////////
     // Transforming contained values
@@ -829,13 +861,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun <U> map(op: (T) -> U): Result<U, E> =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            Ok(op(t))
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            Err(e)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                Ok(op(t))
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                Err(e)
+            }
+        }
 
     /**
      * Returns the provided default (if [Err]), or
@@ -857,12 +892,15 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun <U> mapOr(default: U, f: (T) -> U): U =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            f(t)
-        }; is Result.Err<*, *> -> {
-            default
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                f(t)
+            }
+            is Result.Err<*, *> -> {
+                default
+            }
+        }
 
     /**
      * Maps a `Result<T, E>` to `U` by applying fallback function `default` to
@@ -882,13 +920,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun <U> mapOrElse(default: (E) -> U, f: (T) -> U): U =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            f(t)
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            default(e)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                f(t)
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                default(e)
+            }
+        }
 
     /**
      * Maps a `Result<T, E>` to a `U` by applying function `f` to the contained
@@ -907,12 +948,15 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * [default value]: Default.default
      */
     public open fun <U> mapOrDefault(f: (T) -> U, defaultUFn: () -> U): U =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            f(t)
-        }; is Result.Err<*, *> -> {
-            defaultUFn()
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                f(t)
+            }
+            is Result.Err<*, *> -> {
+                defaultUFn()
+            }
+        }
 
     /**
      * Maps a `Result<T, E>` to `Result<T, F>` by applying a function to a
@@ -934,13 +978,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun <F> mapErr(op: (E) -> F): Result<T, F> =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            Ok(t)
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            Err(op(e))
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                Ok(t)
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                Err(op(e))
+            }
+        }
 
     /**
      * Calls a function with a reference to the contained value if [Ok].
@@ -1002,7 +1049,7 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * check(x1.asDeref() == y1)
      * ```
      */
-    public open fun asDeref(): Result<Target, E> = this.asRef().map(Deref::deref)
+    // Converts from Result<T, E> to Result<T, E> via Deref (moved to extension function Result.asDeref).
 
     /**
      * Converts from `Result<T, E>` (or `Result<T, E>`) to `Result<<T as DerefMut>.Target, E>`.
@@ -1033,7 +1080,7 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * }) == y1)
      * ```
      */
-    public open fun asDerefMut(): Result<Target, E> = this.asMut().map({ DerefMut.derefMut(it) })
+    // Converts via DerefMut (moved to extension function Result.asDerefMut).
 
     // ////////////////////////////////////////////////////////////////////
     // Iterator constructors
@@ -1127,13 +1174,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * [`std.error`](../../std/error/index.html) module docs.
      */
     public open fun expect(msg: String): T =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            t
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            unwrapFailed(msg, e)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                t
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                unwrapFailed(msg, e)
+            }
+        }
 
     /**
      * Returns the contained [Ok] value, consuming the `self` value.
@@ -1173,13 +1223,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun unwrap(): T =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            t
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            unwrapFailed("called `Result::unwrap()` on an `Err` value", e)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                t
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                unwrapFailed("called `Result::unwrap()` on an `Err` value", e)
+            }
+        }
 
     /**
      * Returns the contained [Ok] value or a default
@@ -1207,12 +1260,15 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * [parse]: str.parse
      */
     public open fun unwrapOrDefault(defaultTFn: () -> T): T =
-        when (this) { is Result.Ok<*, *> -> {
-            val x = this.okValue()
-            x
-        }; is Result.Err<*, *> -> {
-            defaultTFn()
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val x = this.okValue()
+                x
+            }
+            is Result.Err<*, *> -> {
+                defaultTFn()
+            }
+        }
 
     /**
      * Returns the contained [Err] value, consuming the `self` value.
@@ -1231,13 +1287,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun expectErr(msg: String): E =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            unwrapFailed(msg, t)
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            e
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                unwrapFailed(msg, t)
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                e
+            }
+        }
 
     /**
      * Returns the contained [Err] value, consuming the `self` value.
@@ -1261,13 +1320,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun unwrapErr(): E =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            unwrapFailed("called `Result::unwrap_err()` on an `Ok` value", t)
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            e
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                unwrapFailed("called `Result::unwrap_err()` on an `Ok` value", t)
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                e
+            }
+        }
 
     /**
      * Returns the contained [Ok] value, but never panics.
@@ -1290,44 +1352,7 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * println("$s")
      * ```
      */
-    public open fun intoOk(): T =
-        when (this) { is Result.Ok<*, *> -> {
-            val x = this.okValue()
-            x
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            e.into()
-        } }
-
-    /**
-     * Returns the contained [Err] value, but never panics.
-     *
-     * Unlike [unwrapErr], this method is known to never panic on the
-     * result types it is implemented for. Therefore, it can be used
-     * instead of `unwrapErr` as a maintainability safeguard that will fail
-     * to compile if the ok type of the `Result` is later changed
-     * to a type that can actually occur.
-     *
-     * [unwrapErr]: Result.unwrapErr
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * fun onlyBadNews(): Result<Nothing> {
-     *     return Result.failure("Oops, it failed".into())
-     * }
-     * val error: String = onlyBadNews().intoErr()
-     * println("$error")
-     * ```
-     */
-    public open fun intoErr(): E =
-        when (this) { is Result.Ok<*, *> -> {
-            val x = this.okValue()
-            x.into()
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            e
-        } }
+    // intoOk/intoErr/cloneFrom moved to constrained top-level extensions below.
 
     // ///////////////////////////////////////////////////////////////////
     // Boolean operations on the values, eager and lazy
@@ -1360,12 +1385,15 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun <U> and(res: Result<U, E>): Result<U, E> =
-        when (this) { is Result.Ok<*, *> -> {
-            res
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            Err(e)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                res
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                Err(e)
+            }
+        }
 
     /**
      * Calls `op` if the result is [Ok], otherwise returns the [Err] value of `self`.
@@ -1398,13 +1426,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun <U> andThen(op: (T) -> Result<U, E>): Result<U, E> =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            op(t)
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            Err(e)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                op(t)
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                Err(e)
+            }
+        }
 
     /**
      * Returns `res` if the result is [Err], otherwise returns the [Ok] value of `self`.
@@ -1433,12 +1464,15 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun <F> or(res: Result<T, F>): Result<T, F> =
-        when (this) { is Result.Ok<*, *> -> {
-            val v = this.okValue()
-            Ok(v)
-        }; is Result.Err<*, *> -> {
-            res
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val v = this.okValue()
+                Ok(v)
+            }
+            is Result.Err<*, *> -> {
+                res
+            }
+        }
 
     /**
      * Calls `op` if the result is [Err], otherwise returns the [Ok] value of `self`.
@@ -1461,13 +1495,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun <F> orElse(op: (E) -> Result<T, F>): Result<T, F> =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            Ok(t)
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            op(e)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                Ok(t)
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                op(e)
+            }
+        }
 
     /**
      * Returns the contained [Ok] value or a provided default.
@@ -1489,12 +1526,15 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun unwrapOr(default: T): T =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            t
-        }; is Result.Err<*, *> -> {
-            default
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                t
+            }
+            is Result.Err<*, *> -> {
+                default
+            }
+        }
 
     /**
      * Returns the contained [Ok] value or computes it from a closure.
@@ -1510,13 +1550,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun unwrapOrElse(op: (E) -> T): T =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            t
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            op(e)
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                t
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                op(e)
+            }
+        }
 
     /**
      * Returns the contained [Ok] value, consuming the `self` value,
@@ -1542,16 +1585,19 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun unwrapUnchecked(): T =
-        when (this) { is Result.Ok<*, *> -> {
-            val t = this.okValue()
-            t
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            // Note(const-Note): to avoid E: const Destruct bound
-            forget(e)
-            // SAFETY: the safety contract must be upheld by the caller.
-            unreachableUnchecked()
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val t = this.okValue()
+                t
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                // Note(const-Note): to avoid E: const Destruct bound
+                forget(e)
+                // SAFETY: the safety contract must be upheld by the caller.
+                unreachableUnchecked()
+            }
+        }
 
     /**
      * Returns the contained [Err] value, consuming the `self` value,
@@ -1577,47 +1623,30 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      * ```
      */
     public open fun unwrapErrUnchecked(): E =
-        when (this) { is Result.Ok<*, *> -> {
-            unreachableUnchecked()
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            e
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                unreachableUnchecked()
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                e
+            }
+        }
 
     // ////////////////////////////////////////////////////////////////////////
     // Trait implementations
     // ////////////////////////////////////////////////////////////////////////
     public open fun clone(cloneEFn: (E) -> E = { it }): Result<T, E> =
-        when (this) { is Result.Ok<*, *> -> {
-            val x = this.okValue()
-            Ok(x.clone())
-        }; is Result.Err<*, *> -> {
-            val x1 = this.errValue()
-            Err(x1.clone())
-        } }
-
-    public open fun cloneFrom(source: Result<T, E>, cloneEFn: (E) -> E = { it }) {
-        run {
-            val matchVal = Pair(this, source)
-            when {
-                matchVal.first is Result.Ok<*, *> && matchVal.second is Result.Ok<*, *> -> {
-                    val to = matchVal.first.okValue()
-                    val from = matchVal.second.okValue()
-                    to.cloneFrom(from)
-                }
-                matchVal.first is Result.Err<*, *> && matchVal.second is Result.Err<*, *> -> {
-                    val to1 = matchVal.first.errValue()
-                    val from1 = matchVal.second.errValue()
-                    to1.cloneFrom(from1)
-                }
-                else -> {
-                    val to2 = matchVal.first
-                    val from2 = matchVal.second
-                    to2 = from2.clone()
-                }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val x = this.okValue()
+                Ok(x.clone())
+            }
+            is Result.Err<*, *> -> {
+                val x1 = this.errValue()
+                Err(x1.clone())
             }
         }
-    }
 
     /**
      * Returns a consuming iterator over the possibly contained value.
@@ -1637,19 +1666,56 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
      */
     public open fun intoIter(): IntoIter<T> = IntoIter(inner = this.ok())
 
+    public override fun fromOutput(output: T): Result<T, E> = Result.fromOutput(output)
+
+    public override fun fromResidual(residual: Result<Nothing, E>): Result<T, E> =
+        when (residual) {
+            is Result.Err<*, *> -> Err(residual.errValue())
+            is Result.Ok<*, *> -> error("Result.Ok<Nothing, E> residual is unreachable")
+        }
+
     public override fun branch(): ControlFlow<Result<Nothing, E>, T> =
-        when (this) { is Result.Ok<*, *> -> {
-            val v = this.okValue()
-            ControlFlow.Continue(v)
-        }; is Result.Err<*, *> -> {
-            val e = this.errValue()
-            ControlFlow.Break(Err(e))
-        } }
+        when (this) {
+            is Result.Ok<*, *> -> {
+                val v = this.okValue()
+                ControlFlow.Continue(v)
+            }
+            is Result.Err<*, *> -> {
+                val e = this.errValue()
+                ControlFlow.Break(Err(e))
+            }
+        }
 
     public companion object {
         public fun <T, E> fromOutput(output: T): Result<T, E> = Ok(output)
+
+        public fun <T, E> fromResidual(residual: Result<Nothing, E>): Result<T, E> =
+            when (residual) {
+                is Result.Err<*, *> -> Err(residual.errValue())
+                is Result.Ok<*, *> -> error("Result.Ok<Nothing, E> residual is unreachable")
+            }
     }
 }
+
+public fun <T : Deref<Target>, Target, E> Result<T, E>.asDeref(): Result<Target, E> =
+    this.asRef().map { it.deref() }
+
+public fun <T : DerefMut<Target>, Target, E> Result<T, E>.asDerefMut(): Result<Target, E> =
+    this.asMut().map { it.derefMut() }
+
+public fun <T, E : Into<T>> Result<T, E>.intoOk(): T =
+    when (this) {
+        is Result.Ok<*, *> -> this.okValue()
+        is Result.Err<*, *> -> this.errValue().into()
+    }
+
+public fun <T : Into<E>, E> Result<T, E>.intoErr(): E =
+    when (this) {
+        is Result.Ok<*, *> -> this.okValue().into()
+        is Result.Err<*, *> -> this.errValue()
+    }
+
+public fun <T, E> Result<T, E>.cloneFrom(source: Result<T, E>): Result<T, E> = source.clone()
 
 /**
  * Maps a `Result<T, E>` to a `Result<T, E>` by copying the contents of the
@@ -1668,13 +1734,16 @@ public sealed class Result<T, E> : Try<Result<T, E>, T, Result<Nothing, E>> {
 public fun <T, E> Result<T, E>.copied(): Result<T, E> {
     // Note(const-Note): this implementation, which sidesteps using `Result.map` since it's not const
     // ready yet, should be reverted when possible to avoid code repetition
-    return when (this) { is Result.Ok<*, *> -> {
-        val v = this.okValue()
-        Ok(v)
-    }; is Result.Err<*, *> -> {
-        val e = this.errValue()
-        Err(e)
-    } }
+    return when (this) {
+        is Result.Ok<*, *> -> {
+            val v = this.okValue()
+            Result.Ok(v)
+        }
+        is Result.Err<*, *> -> {
+            val e = this.errValue()
+            Result.Err(e)
+        }
+    }
 }
 
 /**
@@ -1712,16 +1781,15 @@ public fun <T, E> Result<T?, E>.transpose(): Result<T, E>? =
     when {
         this is Result.Ok<*, *> && (this as Result.Ok<*, *>).okValue() != null -> {
             val okValueVal = this.okValue()
-            val x = okValueVal
-            Ok(x)
+            val x = okValueVal!!
+            Result.Ok(x)
         }
         this is Result.Ok<*, *> && (this as Result.Ok<*, *>).okValue() == null -> {
-            val None = this.okValue()
             null
         }
         else -> {
             val e = this.errValue()
-            Err(e)
+            Result.Err(e)
         }
     }
 
@@ -1749,13 +1817,16 @@ public fun <T, E> Result<T?, E>.transpose(): Result<T, E>? =
  */
 public fun <T, E> Result<Result<T, E>, E>.flatten(): Result<T, E> {
     // Note(const-Note): could be written with `andThen`
-    return when (this) { is Result.Ok<*, *> -> {
-        val inner = this.okValue()
-        inner
-    }; is Result.Err<*, *> -> {
-        val e = this.errValue()
-        Err(e)
-    } }
+    return when (this) {
+        is Result.Ok<*, *> -> {
+            val inner = this.okValue()
+            inner
+        }
+        is Result.Err<*, *> -> {
+            val e = this.errValue()
+            Result.Err(e)
+        }
+    }
 }
 
 // This is a separate function to reduce the code size of the methods
@@ -1763,11 +1834,7 @@ public fun <T, E> Result<Result<T, E>, E>.flatten(): Result<T, E> {
 // Take `error` by value so that `unwrap` doesn't need to include a landing pad to drop `error`
 // during unwinding. This reduces the size of `unwrap` and allows it to be MIR inlined.
 public fun <T> unwrapFailed(msg: String, error: T): Nothing {
-    // Do the actual formatting with a `dynamic Debug` to reduce code size.
-    fun unwrapFailedInner(msg1: String, error1: Any): Nothing {
-        error("$msg: $error")
-    }
-    return unwrapFailedInner(msg, error)
+    error("$msg: $error")
 }
 
 // ////////////////////////////////////////////////////////////////////////
@@ -1784,14 +1851,15 @@ public fun <T> unwrapFailed(msg: String, error: T): Nothing {
 public open class Iter<T>(
     public var inner: T?,
 ) : Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@Iter.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@Iter.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun next(): T? = this.inner.also { this.inner = null }
 
@@ -1820,14 +1888,15 @@ public open class Iter<T>(
 public open class IterMut<T>(
     public var inner: T?,
 ) : Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@IterMut.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@IterMut.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun next(): T? = this.inner.also { this.inner = null }
 
@@ -1859,14 +1928,15 @@ public open class IterMut<T>(
 public open class IntoIter<T>(
     public var inner: T?,
 ) : Iterable<T> {
-    override fun iterator(): Iterator<T> = object : AbstractIterator<T>() {
-        override fun computeNext() {
-            when (val v = this@IntoIter.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<T> =
+        object : AbstractIterator<T>() {
+            override fun computeNext() {
+                when (val v = this@IntoIter.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): IntoIter<T> = IntoIter(inner)
 
@@ -1931,17 +2001,16 @@ public open class IntoIter<T>(
  * Since the third element caused an underflow, no further elements were taken,
  * so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
  */
-public fun <T, E, V, I : Iterable<Result<T, E>>> fromIteratorFromIterResultVE(iter: I): Result<V, E> = tryProcess(iter.iterator(), { i -> i.collect() })
-
-public fun <T, E, F> fromResidualResultTF(residual: Result<Nothing, E>): Result<T, F> =
+public fun <T, E : Into<F>, F> fromResidualResultTF(residual: Result<Nothing, E>): Result<T, F> =
     when (residual) {
         is Result.Err<*, *> -> {
             val e = residual.errValue()
-            Err(From.from(e))
+            Result.Err(e.into())
         }
+        is Result.Ok<*, *> -> error("Result.Ok<Nothing, E> residual is unreachable")
     }
 
-public fun <T, E, F> fromResidualResultTF(destructuredArg0: Yeet<E>): Result<T, F> {
+public fun <T, E : Into<F>, F> fromResidualResultTF(destructuredArg0: Yeet<E>): Result<T, F> {
     val e = destructuredArg0.value
-    return Err(From.from(e))
+    return Result.Err(e.into())
 }

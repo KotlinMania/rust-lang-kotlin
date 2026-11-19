@@ -1,10 +1,10 @@
+// rust-kotlin: manual
 // port-lint: source ops/bit.rs
 package io.github.kotlinmania.rustlang.core.ops.bit
 
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
 import kotlin.experimental.and
-import kotlin.experimental.inv
 import kotlin.experimental.or
 import kotlin.experimental.xor
 
@@ -85,8 +85,6 @@ public interface Not<out Output> {
     public operator fun not(): Output
 }
 
-public fun Boolean.not(): Boolean = !this
-
 public operator fun Int.not(): Int = this.inv()
 
 public operator fun UByte.not(): UByte = this.inv()
@@ -106,8 +104,6 @@ public operator fun Short.not(): Short = (this.toInt().inv()).toShort()
 public operator fun Long.not(): Long = this.inv()
 
 public operator fun I128.not(): I128 = this.inv()
-
-public operator fun Nothing.not(): Nothing = when (this) {}
 
 /**
  * The bitwise AND operator .

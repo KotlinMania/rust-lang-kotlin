@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.unwind.libunwind.cinterop
-headers = libunwind_wrapper.h
-headerFilter = libunwind_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = libunwind_wrapper.a

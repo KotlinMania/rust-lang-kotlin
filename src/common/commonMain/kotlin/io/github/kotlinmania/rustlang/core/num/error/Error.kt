@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source num/error.rs
 package io.github.kotlinmania.rustlang.core.num.error
 
@@ -24,18 +25,20 @@ public open class TryFromIntError(
      */
     public open fun kind(): IntErrorKind = this.value
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        when (this.value) {
-            IntErrorKind.Empty, IntErrorKind.InvalidDigit -> error("unreachable")
-            IntErrorKind.PosOverflow -> "number too large to fit in target type"
-            IntErrorKind.NegOverflow -> "number too small to fit in target type"
-            IntErrorKind.Zero -> "number would be zero for non-zero type"
-            IntErrorKind.NotAPowerOfTwo -> "number is not a power of two"
-        }.fmt(f)
-
-    public companion object {
-        public fun from(never: Nothing): TryFromIntError = never
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
+        val msg =
+            when (this.value) {
+                IntErrorKind.Empty, IntErrorKind.InvalidDigit -> error("unreachable")
+                IntErrorKind.PosOverflow -> "number too large to fit in target type"
+                IntErrorKind.NegOverflow -> "number too small to fit in target type"
+                IntErrorKind.Zero -> "number would be zero for non-zero type"
+                IntErrorKind.NotAPowerOfTwo -> "number is not a power of two"
+            }
+        f.append(msg)
+        return Result.Ok<Unit, Unit>(Unit)
     }
+
+    public companion object
 }
 
 /**
@@ -64,8 +67,10 @@ public open class TryFromIntError(
  * ```
  */
 public open class ParseIntError(
-    public var kind: IntErrorKind,
+    kind: IntErrorKind,
 ) {
+    internal var kind: IntErrorKind = kind
+
     public open fun clone(): ParseIntError = ParseIntError(kind)
 
     /**
@@ -73,15 +78,19 @@ public open class ParseIntError(
      */
     public open fun kind(): IntErrorKind = this.kind
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
-        when (this.kind) {
-            IntErrorKind.Empty -> "cannot parse integer from empty string"
-            IntErrorKind.InvalidDigit -> "invalid digit found in string"
-            IntErrorKind.PosOverflow -> "number too large to fit in target type"
-            IntErrorKind.NegOverflow -> "number too small to fit in target type"
-            IntErrorKind.Zero -> "number would be zero for non-zero type"
-            IntErrorKind.NotAPowerOfTwo -> "number is not a power of two"
-        }.fmt(f)
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
+        val msg =
+            when (this.kind) {
+                IntErrorKind.Empty -> "cannot parse integer from empty string"
+                IntErrorKind.InvalidDigit -> "invalid digit found in string"
+                IntErrorKind.PosOverflow -> "number too large to fit in target type"
+                IntErrorKind.NegOverflow -> "number too small to fit in target type"
+                IntErrorKind.Zero -> "number would be zero for non-zero type"
+                IntErrorKind.NotAPowerOfTwo -> "number is not a power of two"
+            }
+        f.append(msg)
+        return Result.Ok<Unit, Unit>(Unit)
+    }
 
     public companion object
 }
@@ -109,6 +118,7 @@ public sealed class IntErrorKind {
      * This variant will be constructed when parsing an empty string.
      */
     public data object Empty : IntErrorKind()
+
     /**
      * Contains an invalid digit in its context.
      *
@@ -119,14 +129,17 @@ public sealed class IntErrorKind {
      * either on its own or in the middle of a number.
      */
     public data object InvalidDigit : IntErrorKind()
+
     /**
      * Integer is too large to store in target integer type.
      */
     public data object PosOverflow : IntErrorKind()
+
     /**
      * Integer is too small to store in target integer type.
      */
     public data object NegOverflow : IntErrorKind()
+
     /**
      * Value was Zero
      *
@@ -134,6 +147,7 @@ public sealed class IntErrorKind {
      * has a value of zero, which would be illegal for non-zero types.
      */
     public data object Zero : IntErrorKind()
+
     /**
      * Value is not a power of two.
      *
@@ -146,12 +160,12 @@ public sealed class IntErrorKind {
 
     private fun kmDiscriminant(): Int =
         when (this) {
-        Empty -> 0
-        InvalidDigit -> 1
-        PosOverflow -> 2
-        NegOverflow -> 3
-        Zero -> 4
-        NotAPowerOfTwo -> 5
+            Empty -> 0
+            InvalidDigit -> 1
+            PosOverflow -> 2
+            NegOverflow -> 3
+            Zero -> 4
+            NotAPowerOfTwo -> 5
         }
 
     public fun toByte(): Byte = kmDiscriminant().toByte()

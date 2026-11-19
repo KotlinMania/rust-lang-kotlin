@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source ptr/const_ptr.rs
 package io.github.kotlinmania.rustlang.core.ptr.constptr
 
@@ -5,17 +6,15 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
-import io.github.kotlinmania.rustlang.core.marker.Copy
+import io.github.kotlinmania.rustlang.core.intrinsics.ptrGuaranteedCmp
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
-import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
 import io.github.kotlinmania.rustlang.core.num.overflowingAdd
@@ -25,49 +24,29 @@ import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.alignOffset
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
+import io.github.kotlinmania.rustlang.core.ptr.metadata.Metadata
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.asUninitRef
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.asUninitSlice
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteAdd
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteOffset
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteOffsetFrom
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteOffsetFromUnsigned
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.byteSub
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.castInit
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.castSlice
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.castUninit
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.copyTo
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.copyToNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.exposeProvenance
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAligned
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.isAlignedTo
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.isNull
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.mapAddr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.mask
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.offset
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFrom
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.offsetFromUnsigned
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.toRawParts
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.withAddr
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.withMetadataOf
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingAdd
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteAdd
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteOffset
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingByteSub
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingOffset
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
 import io.github.kotlinmania.rustlang.core.ptr.readVolatile
 import io.github.kotlinmania.rustlang.core.ptr.sliceFromRawParts
-import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
 import io.github.kotlinmania.rustlang.core.slice.len
 import io.github.kotlinmania.rustlang.core.str.len
 
@@ -181,7 +160,7 @@ public fun <U> ConstPtr.tryCastAligned(typeLayoutU: TypeLayout<U> = UnresolvedTy
  * }
  * ```
  */
-public fun ConstPtr.withMetadataOf(meta: ConstPtr): ConstPtr = linearSliceView(ConstPtr(this.rawAddress, this.rawMeta), metadata(meta).toInt(), PrimitiveLayouts.UNIT)
+public fun ConstPtr.withMetadataOf(meta: ConstPtr): ConstPtr = ConstPtr(this.rawAddress, meta.rawMeta)
 
 /**
  * Changes constness without changing the type.
@@ -189,16 +168,9 @@ public fun ConstPtr.withMetadataOf(meta: ConstPtr): ConstPtr = linearSliceView(C
  * This is a bit safer than `as` because it wouldn't silently change the type if the code is
  * refactored.
  */
-public fun ConstPtr.castMut(): MutPtr = this
+public fun ConstPtr.castMut(): MutPtr = MutPtr(this.rawAddress, this.rawMeta)
 
-public fun ConstPtr.addr(): Int {
-    // A pointer-to-integer reinterpret currently has exactly the right semantics: it returns the
-    // address without exposing the provenance. Note that this is *not* a stable guarantee about
-    // reinterpret semantics, it relies on sysroot crates having special status.
-    // SAFETY: Pointer-to-integer transmutes are valid (if you are okay with losing the
-    // provenance).
-    return transmuteWithLayouts<MutPtr, Int>(ConstPtr((this).rawAddress), PrimitiveLayouts.mutPtrLayout(64L), PrimitiveLayouts.USIZE64)
-}
+public fun ConstPtr.addr(): Int = this.rawAddress.toInt()
 
 /**
  * Exposes the ["provenance"][ptr#provenance] part of the pointer for future use in
@@ -245,7 +217,7 @@ public fun ConstPtr.withAddr(addr: Int): ConstPtr {
     // provenance.
     val selfAddr = (this).rawAddress.toInt()
     val destAddr = addr
-    val offset = (destAddr - (selfAddr.toInt()))
+    val offset = destAddr - selfAddr
     return ConstPtr((this).rawAddress + ((offset).toLong()))
 }
 
@@ -399,9 +371,8 @@ public fun <T> ConstPtr.offset(count: Int, typeLayoutT: TypeLayout<T> = Unresolv
             !overflow
         }
     }
-    Unit
     // SAFETY: the caller must uphold the safety contract for `offset`.
-    return ConstPtr(this.rawAddress + (count).toLong() * 1L)
+    return ConstPtr(this.rawAddress + count.toLong() * typeLayoutT.strideBytes, this.rawMeta)
 }
 
 /**
@@ -484,7 +455,7 @@ public fun ConstPtr.byteOffset(count: Int): ConstPtr {
  */
 public fun <T> ConstPtr.wrappingOffset(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): ConstPtr {
     // SAFETY: the `arithOffset` intrinsic has no prerequisites to be called.
-    return ConstPtr(this.rawAddress + (count).toLong() * 1L)
+    return ConstPtr(this.rawAddress + count.toLong() * typeLayoutT.strideBytes, this.rawMeta)
 }
 
 /**
@@ -717,7 +688,6 @@ public fun ConstPtr.byteOffsetFrom(origin: ConstPtr): Int {
  */
 public fun <T> ConstPtr.offsetFromUnsigned(origin: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int {
     fun runtimePtrGe(thisRef: ConstPtr, origin1: ConstPtr): Boolean = ((thisRef).rawAddress.toULong() >= (origin1).rawAddress.toULong())
-    Unit
     val pointeeSize = sizeOf<T>(typeLayoutT = typeLayoutT)
     check(0 < pointeeSize && pointeeSize <= Int.MAX_VALUE)
     // SAFETY: the caller must uphold the safety contract for `ptrOffsetFromUnsigned`.
@@ -741,7 +711,7 @@ public fun <T> ConstPtr.offsetFromUnsigned(origin: ConstPtr, typeLayoutT: TypeLa
  */
 public fun ConstPtr.byteOffsetFromUnsigned(origin: ConstPtr): Int {
     // SAFETY: the caller must uphold the safety contract for `offsetFromUnsigned`.
-    return ConstPtr((this).rawAddress).offsetFromUnsigned(ConstPtr((origin).rawAddress))
+    return ConstPtr((this).rawAddress).offsetFromUnsigned<UByte>(ConstPtr((origin).rawAddress))
 }
 
 /**
@@ -827,9 +797,8 @@ public fun <T> ConstPtr.add(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedT
             byteOffset <= (Int.MAX_VALUE) && !overflow
         }
     }
-    Unit
     // SAFETY: the caller must uphold the safety contract for `offset`.
-    return ConstPtr(this.rawAddress + (count).toLong() * 1L)
+    return ConstPtr(this.rawAddress + count.toLong() * typeLayoutT.strideBytes, this.rawMeta)
 }
 
 /**
@@ -878,7 +847,6 @@ public fun <T> ConstPtr.sub(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedT
             byteOffset <= (Int.MAX_VALUE) && (thisRef).rawAddress.toInt() >= byteOffset
         }
     }
-    Unit
     return if (((typeLayoutT).sizeBytes == 0L)) {
         // Pointer arithmetic does nothing when the pointee is a ZST.
         this
@@ -886,7 +854,7 @@ public fun <T> ConstPtr.sub(count: Int, typeLayoutT: TypeLayout<T> = UnresolvedT
         // SAFETY: the caller must uphold the safety contract for `offset`.
         // Because the pointee is *not* a ZST, that means that `count` is
         // at most `Long.MAX`, and thus the negation cannot overflow.
-        ConstPtr(this.rawAddress + (((0) - (count))).toLong() * 1L)
+        ConstPtr(this.rawAddress + (0 - count).toLong() * typeLayoutT.strideBytes, this.rawMeta)
     }
 }
 
@@ -1065,7 +1033,7 @@ public fun ConstPtr.wrappingByteSub(count: Int): ConstPtr = ConstPtr((ConstPtr((
  */
 public fun <T> ConstPtr.read(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must uphold the safety contract for `read`.
-    return read(this)
+    return read(this, typeLayoutT)
 }
 
 /**
@@ -1082,7 +1050,7 @@ public fun <T> ConstPtr.read(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()
  */
 public fun <T> ConstPtr.readVolatile(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must uphold the safety contract for `readVolatile`.
-    return readVolatile(this)
+    return readVolatile(this, typeLayoutT)
 }
 
 /**
@@ -1097,7 +1065,7 @@ public fun <T> ConstPtr.readVolatile(typeLayoutT: TypeLayout<T> = UnresolvedType
  */
 public fun <T> ConstPtr.readUnaligned(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must uphold the safety contract for `readUnaligned`.
-    return readUnaligned(this)
+    return readUnaligned(this, typeLayoutT)
 }
 
 /**
@@ -1112,7 +1080,8 @@ public fun <T> ConstPtr.readUnaligned(typeLayoutT: TypeLayout<T> = UnresolvedTyp
  */
 public fun <T> ConstPtr.copyTo(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `copy`.
-    Copy(this, dest, count)
+    io.github.kotlinmania.rustlang.core.ptr
+        .copy(this, dest, count, typeLayoutT)
 }
 
 /**
@@ -1127,7 +1096,7 @@ public fun <T> ConstPtr.copyTo(dest: MutPtr, count: Int, typeLayoutT: TypeLayout
  */
 public fun <T> ConstPtr.copyToNonoverlapping(dest: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `copyNonoverlapping`.
-    copyNonoverlapping(this, dest, count)
+    copyNonoverlapping(this, dest, count, typeLayoutT)
 }
 
 /**
@@ -1179,7 +1148,7 @@ public fun <T> ConstPtr.alignOffset(align: Int, typeLayoutT: TypeLayout<T> = Unr
         error("align_offset: align is not a power-of-two")
     }
     // SAFETY: `align` has been checked to be a power of 2 above
-    val ret = alignOffset(this, align)
+    val ret = alignOffset<T>(this, align)
     return ret
 }
 
@@ -1290,7 +1259,7 @@ public fun ConstPtr.castUninit(): ConstPtr = this
  * }
  * ```
  */
-public fun ConstPtr.castSlice(len: Int): ConstPtr = sliceFromRawParts(this, len)
+public fun ConstPtr.castSlice(len: Int): ConstPtr = sliceFromRawParts<UByte>(this, len)
 
 /**
  * Casts from a maybe-uninitialized type to its initialized version.
@@ -1394,17 +1363,15 @@ public fun ConstPtr.asArray(n: Int = 0): ConstPtr? =
  * }
  * ```
  */
-public fun <Output, T, I> ConstPtr.getUnchecked(index: I): ConstPtr where I : SliceIndex<List<T>, Output> {
-    // SAFETY: the caller ensures that `self` is dereferenceable and `index` in-bounds.
-    return index.getUnchecked(this)
-}
+// getUnchecked(SliceIndex) removed (core.slice.index carved out).
 
-public fun <T> ConstPtr.asUninitSlice(): List<MaybeUninit<T>>? =
+public fun <T> ConstPtr.asUninitSlice(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<MaybeUninit<T>>? =
     if (((this).rawAddress == 0L)) {
         null
     } else {
         // SAFETY: the caller must uphold the safety contract for `asUninitSlice`.
-        io.github.kotlinmania.rustlang.core.slice.raw.fromRawParts(ConstPtr(this.rawAddress, this.rawMeta), this.len())
+        io.github.kotlinmania.rustlang.core.slice.raw
+            .fromRawParts<MaybeUninit<T>>(ConstPtr(this.rawAddress, this.rawMeta), this.len())
     }
 
 /**

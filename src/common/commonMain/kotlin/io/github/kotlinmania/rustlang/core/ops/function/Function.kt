@@ -1,7 +1,7 @@
+// rust-kotlin: manual
 // port-lint: source ops/function.rs
 package io.github.kotlinmania.rustlang.core.ops.function
 
-import io.github.kotlinmania.rustlang.core.ptr.constptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 
 // so that regex can rely that `String: !FnMut`

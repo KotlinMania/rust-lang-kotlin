@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source num/nonzero.rs
 package io.github.kotlinmania.rustlang.core.num.nonzero
 
@@ -6,21 +7,16 @@ import io.github.kotlinmania.rustlang.core.U128
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.clone.UseCloned
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.clamp
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtlzU8
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCtpopU8
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCttzU8
 import io.github.kotlinmania.rustlang.core.marker.Freeze
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.mem.linearSliceView
-import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.num.abs
 import io.github.kotlinmania.rustlang.core.num.castSigned
 import io.github.kotlinmania.rustlang.core.num.castUnsigned
 import io.github.kotlinmania.rustlang.core.num.checkedAbs
@@ -29,17 +25,17 @@ import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedNeg
 import io.github.kotlinmania.rustlang.core.num.checkedNextPowerOfTwo
 import io.github.kotlinmania.rustlang.core.num.checkedPow
+import io.github.kotlinmania.rustlang.core.num.clampMagnitude
 import io.github.kotlinmania.rustlang.core.num.countOnes
-import io.github.kotlinmania.rustlang.core.num.divCeil
 import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind
 import io.github.kotlinmania.rustlang.core.num.error.ParseIntError
 import io.github.kotlinmania.rustlang.core.num.error.TryFromIntError
 import io.github.kotlinmania.rustlang.core.num.ilog10
-import io.github.kotlinmania.rustlang.core.num.ilog2
-import io.github.kotlinmania.rustlang.core.num.imp.intlog10.u8
-import io.github.kotlinmania.rustlang.core.num.isPowerOfTwo
+import io.github.kotlinmania.rustlang.core.num.isNegative
+import io.github.kotlinmania.rustlang.core.num.isPositive
 import io.github.kotlinmania.rustlang.core.num.isqrt
 import io.github.kotlinmania.rustlang.core.num.midpoint
+import io.github.kotlinmania.rustlang.core.num.neg
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroCharInner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI128Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI16Inner
@@ -58,23 +54,78 @@ import io.github.kotlinmania.rustlang.core.num.overflowingNeg
 import io.github.kotlinmania.rustlang.core.num.reverseBits
 import io.github.kotlinmania.rustlang.core.num.rotateLeft
 import io.github.kotlinmania.rustlang.core.num.rotateRight
+import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixByte
+import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixI128
+import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixInt
+import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixLong
+import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixShort
+import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixU128
+import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixUByte
+import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixUInt
+import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixULong
+import io.github.kotlinmania.rustlang.core.num.rustFromStrRadixUShort
 import io.github.kotlinmania.rustlang.core.num.saturatingAbs
 import io.github.kotlinmania.rustlang.core.num.saturatingAdd
 import io.github.kotlinmania.rustlang.core.num.saturatingMul
+import io.github.kotlinmania.rustlang.core.num.saturatingPow
+import io.github.kotlinmania.rustlang.core.num.strictAdd
+import io.github.kotlinmania.rustlang.core.num.strictMul
+import io.github.kotlinmania.rustlang.core.num.strictNeg
+import io.github.kotlinmania.rustlang.core.num.strictPow
 import io.github.kotlinmania.rustlang.core.num.uncheckedAdd
 import io.github.kotlinmania.rustlang.core.num.uncheckedMul
+import io.github.kotlinmania.rustlang.core.num.unsignedAbs
 import io.github.kotlinmania.rustlang.core.num.wrappingAbs
 import io.github.kotlinmania.rustlang.core.num.wrappingNeg
-import io.github.kotlinmania.rustlang.core.ops.bit.BitOr
-import io.github.kotlinmania.rustlang.core.ops.bit.BitOrAssign
-import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.fromMut
-import io.github.kotlinmania.rustlang.core.ptr.fromRef
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.asPtr
-import kotlin.experimental.and
-import kotlin.experimental.or
+
+private fun isZeroPrimitive(v: Any?): Boolean =
+    when (v) {
+        is Byte -> v == 0.toByte()
+        is UByte -> v == 0u.toUByte()
+        is Short -> v == 0.toShort()
+        is UShort -> v == 0u.toUShort()
+        is Int -> v == 0
+        is UInt -> v == 0u
+        is Long -> v == 0L
+        is ULong -> v == 0uL
+        is Char -> v == '\u0000'
+        is U128 -> v == U128.ZERO
+        is I128 -> v == I128.ZERO
+        else -> false
+    }
+
+@PublishedApi
+internal fun bitwiseOrPrimitive(a: Any?, b: Any?): Any? =
+    when {
+        a is Byte && b is Byte -> (a.toInt() or b.toInt()).toByte()
+        a is UByte && b is UByte -> a or b
+        a is Short && b is Short -> (a.toInt() or b.toInt()).toShort()
+        a is UShort && b is UShort -> a or b
+        a is Int && b is Int -> a or b
+        a is UInt && b is UInt -> a or b
+        a is Long && b is Long -> a or b
+        a is ULong && b is ULong -> a or b
+        a is U128 && b is U128 -> a or b
+        a is I128 && b is I128 -> a or b
+        else -> error("Unsupported bitwise OR operand types")
+    }
+
+private fun <T, NonZeroInner> parseNonZeroResult(
+    parsed: Result<T, ParseIntError>,
+): Result<NonZero<T, NonZeroInner>, ParseIntError> =
+    when (parsed) {
+        is Result.Err -> Result.Err<NonZero<T, NonZeroInner>, ParseIntError>(parsed.errValue())
+        is Result.Ok -> {
+            val nz = NonZero.new<NonZeroInner, T>(parsed.okValue())
+            if (nz != null) {
+                Result.Ok<NonZero<T, NonZeroInner>, ParseIntError>(nz)
+            } else {
+                Result.Err<NonZero<T, NonZeroInner>, ParseIntError>(ParseIntError(kind = IntErrorKind.Zero))
+            }
+        }
+    }
 
 // Definitions of integer that is known not to equal zero.
 
@@ -144,73 +195,98 @@ public interface ZeroablePrimitive<out NonZeroInner>
  * only for concrete types.
  */
 public open class NonZero<T, NonZeroInner> internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<NonZeroInner> = UnresolvedTypeLayout(),
-) : Freeze, UseCloned<NonZero<T, NonZeroInner>>, TrivialClone<NonZero<T, NonZeroInner>>, StructuralPartialEq, BitOr<NonZero<T, NonZeroInner>, NonZero<T, NonZeroInner>>, BitOrAssign<NonZero<T, NonZeroInner>> {
-    public var field0: NonZeroInner
-        get() = value
-        set(v) {
-            value = v
+    @PublishedApi internal var innerValue: T,
+) : Freeze,
+    UseCloned<NonZero<T, NonZeroInner>>,
+    TrivialClone<NonZero<T, NonZeroInner>>,
+    StructuralPartialEq {
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(innerValue.toString())
+            Result.Ok<Unit, Unit>(Unit)
         }
 
-    public var value: NonZeroInner
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(innerValue.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    internal constructor(value: NonZeroInner, fieldLayout: TypeLayout<NonZeroInner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+    public open fun fmtBinary(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(innerValue.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public fun pointerLayout(): TypeLayout<NonZero<T, NonZeroInner>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> NonZero<T, NonZeroInner>(ptr, layout) }, { it.value })
+    public open fun fmtOctal(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(innerValue.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
+    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(innerValue.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
+    public open fun fmtUpperHex(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(innerValue.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtBinary(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
+    public open fun fmtLowerExp(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(innerValue.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtOctal(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
+    public open fun fmtUpperExp(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append(innerValue.toString())
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
-    public open fun fmtLowerHex(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
-
-    public open fun fmtUpperHex(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
-
-    public open fun fmtLowerExp(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
-
-    public open fun fmtUpperExp(f: StringBuilder): Result<Unit, Unit> = this.get().fmt(f)
-
-    public open fun clone(): NonZero<T, NonZeroInner> = NonZero(this.value)
+    public override fun clone(): NonZero<T, NonZeroInner> = NonZero(innerValue)
 
     public open fun eq(other: NonZero<T, NonZeroInner>): Boolean = this.get() == other.get()
 
     public open fun ne(other: NonZero<T, NonZeroInner>): Boolean = this.get() != other.get()
 
-    public open fun partialCmp(other: NonZero<T, NonZeroInner>): Ordering? = this.get().partialCmp(other.get())
+    public open fun partialCmp(other: NonZero<T, NonZeroInner>): Ordering? = cmp(other)
 
-    public open fun lt(other: NonZero<T, NonZeroInner>): Boolean = this.get() < other.get()
+    public open fun lt(other: NonZero<T, NonZeroInner>): Boolean = kmCompareValues(this.get(), other.get()) < 0
 
-    public open fun le(other: NonZero<T, NonZeroInner>): Boolean = this.get() <= other.get()
+    public open fun le(other: NonZero<T, NonZeroInner>): Boolean = kmCompareValues(this.get(), other.get()) <= 0
 
-    public open fun gt(other: NonZero<T, NonZeroInner>): Boolean = this.get() > other.get()
+    public open fun gt(other: NonZero<T, NonZeroInner>): Boolean = kmCompareValues(this.get(), other.get()) > 0
 
-    public open fun ge(other: NonZero<T, NonZeroInner>): Boolean = this.get() >= other.get()
+    public open fun ge(other: NonZero<T, NonZeroInner>): Boolean = kmCompareValues(this.get(), other.get()) >= 0
 
     // Note(constHack): the T: ~const Destruct should be inferred from the Self: ~const Destruct.
     // See https://github.com/rust-lang/rust/issues/144207
-    public open fun cmp(other: NonZero<T, NonZeroInner>): Ordering = this.get().cmp(other.get())
-
-    public open fun max(other: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> {
-        // SAFETY: The maximum of two non-zero values is still non-zero.
-        return NonZero.newUnchecked<NonZeroInner, T>(this.get().max(other.get()))
+    public open fun cmp(other: NonZero<T, NonZeroInner>): Ordering {
+        val c = kmCompareValues(this.get(), other.get())
+        return when {
+            c < 0 -> Ordering.Less
+            c > 0 -> Ordering.Greater
+            else -> Ordering.Equal
+        }
     }
 
-    public open fun min(other: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> {
-        // SAFETY: The minimum of two non-zero values is still non-zero.
-        return NonZero.newUnchecked<NonZeroInner, T>(this.get().min(other.get()))
-    }
+    public open fun max(other: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> =
+        if (kmCompareValues(this.get(), other.get()) >= 0) this else other
 
-    public open fun clamp(min: NonZero<T, NonZeroInner>, max: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> {
-        // SAFETY: A non-zero value clamped between two non-zero values is still non-zero.
-        return NonZero.newUnchecked<NonZeroInner, T>(this.get().clamp(min.get(), max.get()))
-    }
+    public open fun min(other: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> =
+        if (kmCompareValues(this.get(), other.get()) <= 0) this else other
+
+    public open fun clamp(min: NonZero<T, NonZeroInner>, max: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> =
+        when {
+            kmCompareValues(this.get(), min.get()) < 0 -> min
+            kmCompareValues(this.get(), max.get()) > 0 -> max
+            else -> this
+        }
 
     public override fun hashCode(): Int {
         var state = 0
@@ -218,72 +294,22 @@ public open class NonZero<T, NonZeroInner> internal constructor(
         return state
     }
 
-    public override fun bitor(rhs: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> {
-        // SAFETY: Bitwise OR of two non-zero values is still non-zero.
-        return NonZero.newUnchecked<NonZeroInner, T>(this.get() or rhs.get())
-    }
-
-    public override fun bitor(rhs: T): NonZero<T, NonZeroInner> {
-        // SAFETY: Bitwise OR of a non-zero value with anything is still non-zero.
-        return NonZero.newUnchecked<NonZeroInner, T>(this.get() or rhs)
-    }
-
-    public override fun bitorAssign(rhs: NonZero<T, NonZeroInner>) {
-        var selfMut = this
-        selfMut = selfMut or rhs
-    }
-
-    public override fun bitorAssign(rhs: T) {
-        var selfMut = this
-        selfMut = selfMut or rhs
-    }
-
     /**
      * Implementation of `From<NonZero<T>> for & T`.
      */
-    public open fun asRef(): T {
-        // SAFETY: `repr(transparent)` ensures that `NonZero<T>` has same layout as `T`
-        return (UnresolvedTypeLayout<T>()).readNative(((this)).rawAddress)
-    }
+    public open fun asRef(): T = innerValue
 
     /**
      * Returns the contained value as a primitive type.
      */
-    public open fun get(): T {
-        // Rustc can set range metadata only if it loads `self` from
-        // memory somewhere. If the value of `self` was from by-value argument
-        // of some not-inlined function, LLVM don't have range metadata
-        // to understand that the value cannot be zero.
-        //
-        // Using the reinterpret `assume`s the range at runtime.
-        //
-        // Even once LLVM supports `!range` metadata for function arguments
-        // (see <https://github.com/llvm/llvm-project/issues/76628>), this can't
-        // be `.0` because MCP#807 bans field-projecting into `scalarValidRange`
-        // types, and it arguably wouldn't want to be anyway because if this is
-        // MIR-inlined, there's no opportunity to put that argument metadata anywhere.
-        //
-        // The good answer here will eventually be pattern types, which will hopefully
-        // allow it to go back to `.0`, maybe with a cast of some sort.
-        //
-        // SAFETY: `ZeroablePrimitive` guarantees that the size and bit validity
-        // of `.0` is such that this reinterpret is sound.
-        return transmuteWithLayouts<NonZero<T, NonZeroInner>, T>(this, UnresolvedTypeLayout<NonZero<T, NonZeroInner>>(), UnresolvedTypeLayout<T>())
-    }
+    public open fun get(): T = innerValue
+
+    override fun equals(other: Any?): Boolean =
+        other is NonZero<*, *> && this.innerValue == other.innerValue
 
     public companion object {
-        public operator fun <T, NonZeroInner> invoke(value: NonZeroInner, fieldLayout: TypeLayout<NonZeroInner> = UnresolvedTypeLayout()): NonZero<T, NonZeroInner> = NonZero<T, NonZeroInner>(value, fieldLayout)
-
-        public fun <T, NonZeroInner> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroInner> = UnresolvedTypeLayout()): NonZero<T, NonZeroInner> = NonZero<T, NonZeroInner>(fieldStorage, fieldLayout)
-
-        /**
-         * Creates a non-zero if the given value is not zero.
-         */
-        public fun <NonZeroInner, T> new(n: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): NonZero<T, NonZeroInner>? {
-            // SAFETY: Memory layout optimization guarantees that `Option<NonZero<T>>` has
-            // the same layout and size as `T`, with `0` representing `None`.
-            return transmuteWithLayouts<T, NonZero<T, NonZeroInner>?>(n, typeLayoutT, UnresolvedTypeLayout<NonZero<T, NonZeroInner>?>())
-        }
+        public fun <NonZeroInner, T> new(n: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): NonZero<T, NonZeroInner>? =
+            if (isZeroPrimitive(n)) null else NonZero(n)
 
         /**
          * Creates a non-zero without checking whether the value is non-zero.
@@ -297,10 +323,7 @@ public open class NonZero<T, NonZeroInner> internal constructor(
             when (val matchVal = NonZero.new<NonZeroInner, T>(n)) {
                 null -> {
                     // SAFETY: The caller guarantees that `n` is non-zero, so this is unreachable.
-                    run {
-                        Unit
-                        error("Entered Rust intrinsics::unreachable")
-                    }
+                    error("Entered Rust intrinsics::unreachable")
                 }
                 else -> {
                     val n1 = matchVal
@@ -313,10 +336,19 @@ public open class NonZero<T, NonZeroInner> internal constructor(
          * if the referenced value is not zero.
          */
         public fun <NonZeroInner, T> fromMut(n: T): RustMutableReference<NonZero<T, NonZeroInner>>? {
-            // SAFETY: Memory layout optimization guarantees that `Option<NonZero<T>>` has
-            // the same layout and size as `T`, with `0` representing `None`.
-            val optN = RustMutableReference(MutPtr(((MutPtr((n).rawAddress))).rawAddress), UnresolvedTypeLayout<NonZero<T, NonZeroInner>?>())
-            return optN
+            var box = NonZero.new<NonZeroInner, T>(n) ?: return null
+            val boxLayout =
+                object : TypeLayout<NonZero<T, NonZeroInner>> {
+                    override val sizeBytes: Long get() = 8L
+                    override val alignBytes: Long get() = 8L
+
+                    override fun readNative(addr: Long): NonZero<T, NonZeroInner> = box
+
+                    override fun writeNative(addr: Long, value: NonZero<T, NonZeroInner>) {
+                        box = value
+                    }
+                }
+            return RustMutableReference(MutPtr(8L), boxLayout)
         }
 
         /**
@@ -329,13 +361,10 @@ public open class NonZero<T, NonZeroInner> internal constructor(
          * The referenced value must not be zero.
          */
         public fun <NonZeroInner, T> fromMutUnchecked(n: T): RustMutableReference<NonZero<T, NonZeroInner>> =
-            when (val matchVal = NonZero.fromMut(n)) {
+            when (val matchVal = NonZero.fromMut<NonZeroInner, T>(n)) {
                 null -> {
                     // SAFETY: The caller guarantees that `n` references a value that is non-zero, so this is unreachable.
-                    run {
-                        Unit
-                        error("Entered Rust intrinsics::unreachable")
-                    }
+                    error("Entered Rust intrinsics::unreachable")
                 }
                 else -> {
                     val n1 = matchVal
@@ -346,29 +375,54 @@ public open class NonZero<T, NonZeroInner> internal constructor(
         /**
          * Implementation of `TryFrom<T> for & NonZero<T>`.
          */
-        public fun <NonZeroInner, T> fromRef(n: T): NonZero<T, NonZeroInner>? {
-            // SAFETY: Memory layout optimization guarantees that `Option<NonZero<T>>` has
-            // the same layout and size as `T`, with `0` representing `None`.
-            val optN = (UnresolvedTypeLayout<NonZero<T, NonZeroInner>?>()).readNative(((ConstPtr((n).rawAddress))).rawAddress)
-            return optN
-        }
+        public fun <NonZeroInner, T> fromRef(n: T): NonZero<T, NonZeroInner>? = NonZero.new<NonZeroInner, T>(n)
 
         /**
          * Implementation of `TryFrom<[T]> for &[NonZero<T>]`.
          */
-        public fun <NonZeroInner, T> fromSlice(n: List<T>): List<NonZero<T, NonZeroInner>>? =
-            if (n.all({ x -> NonZero.new<NonZeroInner, T>(x) != null })) {
-                // SAFETY: We explicitly checked that all elements are nonzero, and because of `repr(transparent)`
-                // the layout remains unchanged
-                linearSliceView(ConstPtr((n.asPtr()).rawAddress), n.size, UnresolvedTypeLayout<NonZero<T, NonZeroInner>>())
-            } else {
-                null
+        public fun <NonZeroInner, T> fromSlice(n: List<T>): List<NonZero<T, NonZeroInner>>? {
+            val out = ArrayList<NonZero<T, NonZeroInner>>(n.size)
+            for (x in n) {
+                val nz = NonZero.new<NonZeroInner, T>(x) ?: return null
+                out.add(nz)
             }
+            return out
+        }
 
         /**
          * Implementation of `TryFrom<[T; N]> for [NonZero<T>; N]`.
          */
-        public fun <NonZeroInner, T> fromArray(n: List<T>): List<NonZero<T, NonZeroInner>>? = n.tryMap(NonZero::new)
+        public fun <NonZeroInner, T> fromArray(n: List<T>, len: Int = 0): List<NonZero<T, NonZeroInner>>? = fromSlice(n)
+    }
+}
+
+public inline fun <reified T, NonZeroInner> NonZero<T, NonZeroInner>.bitor(rhs: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> {
+    val res = bitwiseOrPrimitive(this.get(), rhs.get())
+    if (res is T) return NonZero.newUnchecked<NonZeroInner, T>(res)
+    error("Unsupported NonZero bitor operand type")
+}
+
+public inline infix fun <reified T, NonZeroInner> NonZero<T, NonZeroInner>.or(rhs: NonZero<T, NonZeroInner>): NonZero<T, NonZeroInner> = bitor(rhs)
+
+public inline fun <reified T, NonZeroInner> NonZero<T, NonZeroInner>.bitor(rhs: T): NonZero<T, NonZeroInner> {
+    val res = bitwiseOrPrimitive(this.get(), rhs)
+    if (res is T) return NonZero.newUnchecked<NonZeroInner, T>(res)
+    error("Unsupported NonZero bitor operand type")
+}
+
+public inline infix fun <reified T, NonZeroInner> NonZero<T, NonZeroInner>.or(rhs: T): NonZero<T, NonZeroInner> = bitor(rhs)
+
+public inline fun <reified T, NonZeroInner> NonZero<T, NonZeroInner>.bitorAssign(rhs: NonZero<T, NonZeroInner>) {
+    val res = bitwiseOrPrimitive(this.get(), rhs.get())
+    if (res is T) {
+        this.innerValue = res
+    }
+}
+
+public inline fun <reified T, NonZeroInner> NonZero<T, NonZeroInner>.bitorAssign(rhs: T) {
+    val res = bitwiseOrPrimitive(this.get(), rhs)
+    if (res is T) {
+        this.innerValue = res
     }
 }
 
@@ -405,31 +459,31 @@ public fun <NonZeroInner, T> fromT(nonzero: NonZero<T, NonZeroInner>): T {
 //
 public fun <NonZeroInner, T> fromTArrayn(nonzero: List<NonZero<T, NonZeroInner>>, n: Int = 0): List<T> = nonzero.intoZeroable()
 
-public fun tryFromNonZeroUByte(zeroable: UByte): Result<NonZero<UByte, NonZeroU8Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroUByte(zeroable: UByte): Result<NonZero<UByte, NonZeroU8Inner>, TryFromIntError> = (NonZero.fromRef<NonZeroU8Inner, UByte>(zeroable)?.let { Result.Ok<NonZero<UByte, NonZeroU8Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<UByte, NonZeroU8Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroUShort(zeroable: UShort): Result<NonZero<UShort, NonZeroU16Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroUShort(zeroable: UShort): Result<NonZero<UShort, NonZeroU16Inner>, TryFromIntError> = (NonZero.fromRef<NonZeroU16Inner, UShort>(zeroable)?.let { Result.Ok<NonZero<UShort, NonZeroU16Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<UShort, NonZeroU16Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroUInt(zeroable: UInt): Result<NonZero<UInt, NonZeroU32Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroUInt(zeroable: UInt): Result<NonZero<UInt, NonZeroU32Inner>, TryFromIntError> = (NonZero.fromRef<NonZeroU32Inner, UInt>(zeroable)?.let { Result.Ok<NonZero<UInt, NonZeroU32Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<UInt, NonZeroU32Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroULong(zeroable: ULong): Result<NonZero<ULong, NonZeroU64Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroULong(zeroable: ULong): Result<NonZero<ULong, NonZeroU64Inner>, TryFromIntError> = (NonZero.fromRef<NonZeroU64Inner, ULong>(zeroable)?.let { Result.Ok<NonZero<ULong, NonZeroU64Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<ULong, NonZeroU64Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroU128(zeroable: U128): Result<NonZero<U128, NonZeroU128Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroU128(zeroable: U128): Result<NonZero<U128, NonZeroU128Inner>, TryFromIntError> = (NonZero.fromRef<NonZeroU128Inner, U128>(zeroable)?.let { Result.Ok<NonZero<U128, NonZeroU128Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<U128, NonZeroU128Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroInt(zeroable: Int): Result<NonZero<Int, NonZeroUsizeInner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroInt(zeroable: Int): Result<NonZero<Int, NonZeroUsizeInner>, TryFromIntError> = (NonZero.fromRef<NonZeroUsizeInner, Int>(zeroable)?.let { Result.Ok<NonZero<Int, NonZeroUsizeInner>, TryFromIntError>(it) } ?: Result.Err<NonZero<Int, NonZeroUsizeInner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroByte(zeroable: Byte): Result<NonZero<Byte, NonZeroI8Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroByte(zeroable: Byte): Result<NonZero<Byte, NonZeroI8Inner>, TryFromIntError> = (NonZero.fromRef<NonZeroI8Inner, Byte>(zeroable)?.let { Result.Ok<NonZero<Byte, NonZeroI8Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<Byte, NonZeroI8Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroShort(zeroable: Short): Result<NonZero<Short, NonZeroI16Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroShort(zeroable: Short): Result<NonZero<Short, NonZeroI16Inner>, TryFromIntError> = (NonZero.fromRef<NonZeroI16Inner, Short>(zeroable)?.let { Result.Ok<NonZero<Short, NonZeroI16Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<Short, NonZeroI16Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroLong(zeroable: Long): Result<NonZero<Long, NonZeroI64Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroLong(zeroable: Long): Result<NonZero<Long, NonZeroI64Inner>, TryFromIntError> = (NonZero.fromRef<NonZeroI64Inner, Long>(zeroable)?.let { Result.Ok<NonZero<Long, NonZeroI64Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<Long, NonZeroI64Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroI128(zeroable: I128): Result<NonZero<I128, NonZeroI128Inner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroI128(zeroable: I128): Result<NonZero<I128, NonZeroI128Inner>, TryFromIntError> = (NonZero.fromRef<NonZeroI128Inner, I128>(zeroable)?.let { Result.Ok<NonZero<I128, NonZeroI128Inner>, TryFromIntError>(it) } ?: Result.Err<NonZero<I128, NonZeroI128Inner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun tryFromNonZeroChar(zeroable: Char): Result<NonZero<Char, NonZeroCharInner>, TryFromIntError> = (NonZero.fromRef(zeroable)?.let { Result.Ok<NonZero, TryFromIntError>(it) } ?: Result.Err<NonZero, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun tryFromNonZeroChar(zeroable: Char): Result<NonZero<Char, NonZeroCharInner>, TryFromIntError> = (NonZero.fromRef<NonZeroCharInner, Char>(zeroable)?.let { Result.Ok<NonZero<Char, NonZeroCharInner>, TryFromIntError>(it) } ?: Result.Err<NonZero<Char, NonZeroCharInner>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun <NonZeroInner, T> tryFromNonZeroTSlice(zeroable: List<T>): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromSlice(zeroable)?.let { Result.Ok<List<NonZero>, TryFromIntError>(it) } ?: Result.Err<List<NonZero>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun <NonZeroInner, T> tryFromNonZeroTSlice(zeroable: List<T>): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromSlice<NonZeroInner, T>(zeroable)?.let { Result.Ok<List<NonZero<T, NonZeroInner>>, TryFromIntError>(it) } ?: Result.Err<List<NonZero<T, NonZeroInner>>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
-public fun <NonZeroInner, T> tryFromNonZeroTArrayn(zeroable: List<T>, n: Int = 0): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromArray(zeroable, n)?.let { Result.Ok<List<NonZero>, TryFromIntError>(it) } ?: Result.Err<List<NonZero>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
+public fun <NonZeroInner, T> tryFromNonZeroTArrayn(zeroable: List<T>, n: Int = 0): Result<List<NonZero<T, NonZeroInner>>, TryFromIntError> = (NonZero.fromArray<NonZeroInner, T>(zeroable, n)?.let { Result.Ok<List<NonZero<T, NonZeroInner>>, TryFromIntError>(it) } ?: Result.Err<List<NonZero<T, NonZeroInner>>, TryFromIntError>(TryFromIntError(IntErrorKind.Zero)))
 
 /**
  * Implementation of `From<[NonZero<T>; N]> for [T; N]`.
@@ -461,8 +515,10 @@ public fun <NonZeroInner, T> List<NonZero<T, NonZeroInner>>.intoZeroable(n: Int 
  * ```kotlin
  * ```
  */
-public class NonZeroU8(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroU8Inner> = UnresolvedTypeLayout()) : NonZero<UByte, NonZeroU8Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroU8Inner, fieldLayout: TypeLayout<NonZeroU8Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroU8(
+    innerValue: UByte,
+) : NonZero<UByte, NonZeroU8Inner>(innerValue) {
+    public constructor(value: NonZeroU8Inner) : this(value.asInner())
     public companion object
 }
 
@@ -515,7 +571,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.trailingZeros(): UInt = kmCttzU8(this.
 public fun NonZero<UByte, NonZeroU8Inner>.isolateHighestOne(): NonZero<UByte, NonZeroU8Inner> =
     run {
         val bit = ((((((1.toUByte()).toUInt() shl ((8u - 1u).toInt())).toUByte())).toUInt() shr this.leadingZeros().toInt()).toUByte())
-        NonZero.newUnchecked<NonZeroU8Inner, UByte>(bit.toUByte())
+        NonZero.newUnchecked<NonZeroU8Inner, UByte>(bit)
     }
 
 /**
@@ -543,7 +599,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.isolateLowestOne(): NonZero<UByte, Non
  * ```kotlin
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.highestOne(): UInt = NonZero.BITS - 1u - this.leadingZeros()
+public fun NonZero<UByte, NonZeroU8Inner>.highestOne(): UInt = 8u - 1u - this.leadingZeros()
 
 /**
  * Returns the index of the lowest bit set to one in `self`.
@@ -752,7 +808,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.toLe(): NonZero<UByte, NonZeroU8Inner>
  * ```kotlin
  * ```
  */
-public val MIN: NonZero<UByte, NonZeroU8Inner> = NonZero.new(1)!!
+public val MIN: NonZero<UByte, NonZeroU8Inner> = (NonZero.new<NonZeroU8Inner, UByte>(1u))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -868,7 +924,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.uncheckedAdd(other: UByte): NonZero<UB
  * ```
  */
 public fun NonZero<UByte, NonZeroU8Inner>.divCeil(rhs: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> {
-    val v = (this.get() - 1u.toUByte()) / rhs.get() + 1u.toUByte()
+    val v = ((this.get() - 1u.toUByte()) / rhs.get() + 1u.toUByte()).toUByte()
     return NonZero.newUnchecked<NonZeroU8Inner, UByte>(v)
 }
 
@@ -911,7 +967,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.checkedNextPowerOfTwo(): NonZero<UByte
  * ```kotlin
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.ilog2(): UInt = NonZero.BITS - 1u - this.leadingZeros()
+public fun NonZero<UByte, NonZeroU8Inner>.ilog2(): UInt = 8u - 1u - this.leadingZeros()
 
 /**
  * Returns the base 10 logarithm of the number, rounded down.
@@ -925,7 +981,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.ilog2(): UInt = NonZero.BITS - 1u - th
  * ```kotlin
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.ilog10(): UInt = u8(this).toUInt()
+public fun NonZero<UByte, NonZeroU8Inner>.ilog10(): UInt = this.get().ilog10()
 
 /**
  * Calculates the midpoint (average) between `self` and `rhs`.
@@ -990,7 +1046,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.castSigned(): NonZero<Byte, NonZeroI8I
  * ```kotlin
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.bitWidth(): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked<NonZeroU32Inner, UInt>(NonZero.BITS - this.leadingZeros())
+public fun NonZero<UByte, NonZeroU8Inner>.bitWidth(): NonZero<UInt, NonZeroU32Inner> = NonZero.newUnchecked<NonZeroU32Inner, UInt>(8u - this.leadingZeros())
 
 /**
  * Multiplies two non-zero integers together.
@@ -1005,7 +1061,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.bitWidth(): NonZero<UInt, NonZeroU32In
  * ```
  */
 public fun NonZero<UByte, NonZeroU8Inner>.checkedMul(other: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner>? =
-    when (val matchVal = this.get().checkedMul(other.get().toUByte())) {
+    when (val matchVal = this.get().checkedMul(other.get())) {
         null -> {
             null
         }
@@ -1056,7 +1112,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.strictMul(other: NonZero<UByte, NonZer
  * check(max == four.saturatingMul(max))
  * ```
  */
-public fun NonZero<UByte, NonZeroU8Inner>.saturatingMul(other: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().saturatingMul(other.get().toUByte()))
+public fun NonZero<UByte, NonZeroU8Inner>.saturatingMul(other: NonZero<UByte, NonZeroU8Inner>): NonZero<UByte, NonZeroU8Inner> = NonZero.newUnchecked<NonZeroU8Inner, UByte>(this.get().saturatingMul(other.get()))
 
 /**
  * Multiplies two non-zero integers together,
@@ -1171,7 +1227,7 @@ public fun NonZero<UByte, NonZeroU8Inner>.saturatingPow(other: UInt): NonZero<UB
  * public fun doctestEntry() {}
  * ```
  */
-public fun NonZero.Companion.fromAsciiBytes(src: List<UByte>): Result<NonZero<UByte, NonZeroU8Inner>, ParseIntError> = NonZero.fromAsciiBytesRadixImpl(src, 10)
+public fun NonZero.Companion.fromAsciiBytes(src: List<UByte>): Result<NonZero<UByte, NonZeroU8Inner>, ParseIntError> = NonZero.fromAsciiBytesRadixImpl(src, 10u)
 
 /**
  * Parses a non-zero integer from an ASCII-byte slice with digits in a given base.
@@ -1209,26 +1265,8 @@ public fun NonZero.Companion.fromAsciiBytes(src: List<UByte>): Result<NonZero<UB
 public fun NonZero.Companion.fromAsciiBytesRadix(src: List<UByte>, radix: UInt): Result<NonZero<UByte, NonZeroU8Inner>, ParseIntError> = NonZero.fromAsciiBytesRadixImpl(src, radix)
 
 public fun NonZero.Companion.fromAsciiBytesRadixImpl(src: List<UByte>, radix: UInt): Result<NonZero<UByte, NonZeroU8Inner>, ParseIntError> {
-    val n1 =
-        run {
-            val matchVal = UByte.fromAsciiBytesRadixImpl(src, radix)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                val n = matchVal.okValue()
-                n
-            }; is Result.Err<*, *> -> {
-                val err = matchVal.errValue()
-                return Result.Err<NonZero<UByte, NonZeroU8Inner>, ParseIntError>(err)
-            } }
-        }
-    return when (val matchVal1 = NonZero.new<NonZeroU8Inner, UByte>(n1)) {
-        null -> {
-            Result.Err<NonZero<UByte, NonZeroU8Inner>, ParseIntError>(ParseIntError(kind = IntErrorKind.Zero))
-        }
-        else -> {
-            val n2 = matchVal1
-            Result.Ok<NonZero<UByte, NonZeroU8Inner>, ParseIntError>(n2)
-        }
-    }
+    val s = CharArray(src.size) { src[it].toInt().toChar() }.concatToString()
+    return parseNonZeroResult(rustFromStrRadixUByte(s, radix))
 }
 
 /**
@@ -1283,7 +1321,7 @@ public fun NonZero.Companion.fromStrRadix(src: String, radix: UInt): Result<NonZ
  * import std.num.NonZero; import std.String.FromStr;
  * ```
  */
-public fun fromStrNonZeroUByte(src: String): Result<NonZero<UByte, NonZeroU8Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
+public fun fromStrNonZeroUByte(src: String): Result<NonZero<UByte, NonZeroU8Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10u)
 
 /**
  * Same as `self / other.get()`, but because `other` is a `NonZero<_>`,
@@ -1303,7 +1341,7 @@ public operator fun UByte.div(other: NonZero<UByte, NonZeroU8Inner>): UByte = ((
  */
 public fun UByte.divAssign(other: NonZero<UByte, NonZeroU8Inner>) {
     var selfMut = this
-    selfMut = (selfMut / other).toUByte()
+    selfMut = selfMut / other
 }
 
 /**
@@ -1316,7 +1354,7 @@ public operator fun UByte.rem(other: NonZero<UByte, NonZeroU8Inner>): UByte = ((
  */
 public fun UByte.remAssign(other: NonZero<UByte, NonZeroU8Inner>) {
     var selfMut = this
-    selfMut = (selfMut % other).toUByte()
+    selfMut = selfMut % other
 }
 
 /**
@@ -1344,8 +1382,10 @@ public fun UByte.remAssign(other: NonZero<UByte, NonZeroU8Inner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroU16(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroU16Inner> = UnresolvedTypeLayout()) : NonZero<UShort, NonZeroU16Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroU16Inner, fieldLayout: TypeLayout<NonZeroU16Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroU16(
+    innerValue: UShort,
+) : NonZero<UShort, NonZeroU16Inner>(innerValue) {
+    public constructor(value: NonZeroU16Inner) : this(value.asInner())
     public companion object
 }
 
@@ -1368,7 +1408,7 @@ public val BITS1: UInt = 16u
  * ```kotlin
  * ```
  */
-public val MIN1: NonZero<UShort, NonZeroU16Inner> = NonZero.new(1)!!
+public val MIN1: NonZero<UShort, NonZeroU16Inner> = (NonZero.new<NonZeroU16Inner, UShort>(1u))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -1492,7 +1532,7 @@ public fun NonZero<UShort, NonZeroU16Inner>.uncheckedAdd(other: UShort): NonZero
  * import std.num.NonZero; import std.String.FromStr;
  * ```
  */
-public fun fromStrNonZeroUShort(src: String): Result<NonZero<UShort, NonZeroU16Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
+public fun fromStrNonZeroUShort(src: String): Result<NonZero<UShort, NonZeroU16Inner>, ParseIntError> = parseNonZeroResult(rustFromStrRadixUShort(src, 10u))
 
 /**
  * Same as `self / other.get()`, but because `other` is a `NonZero<_>`,
@@ -1512,7 +1552,7 @@ public operator fun UShort.div(other: NonZero<UShort, NonZeroU16Inner>): UShort 
  */
 public fun UShort.divAssign(other: NonZero<UShort, NonZeroU16Inner>) {
     var selfMut = this
-    selfMut = (selfMut / other).toUShort()
+    selfMut = selfMut / other
 }
 
 /**
@@ -1525,7 +1565,7 @@ public operator fun UShort.rem(other: NonZero<UShort, NonZeroU16Inner>): UShort 
  */
 public fun UShort.remAssign(other: NonZero<UShort, NonZeroU16Inner>) {
     var selfMut = this
-    selfMut = (selfMut % other).toUShort()
+    selfMut = selfMut % other
 }
 
 /**
@@ -1553,8 +1593,10 @@ public fun UShort.remAssign(other: NonZero<UShort, NonZeroU16Inner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroU32(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroU32Inner> = UnresolvedTypeLayout()) : NonZero<UInt, NonZeroU32Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroU32Inner, fieldLayout: TypeLayout<NonZeroU32Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroU32(
+    innerValue: UInt,
+) : NonZero<UInt, NonZeroU32Inner>(innerValue) {
+    public constructor(value: NonZeroU32Inner) : this(value.asInner())
     public companion object
 }
 
@@ -1577,7 +1619,7 @@ public val BITS2: UInt = 32u
  * ```kotlin
  * ```
  */
-public val MIN2: NonZero<UInt, NonZeroU32Inner> = NonZero.new(1)!!
+public val MIN2: NonZero<UInt, NonZeroU32Inner> = (NonZero.new<NonZeroU32Inner, UInt>(1u))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -1701,7 +1743,7 @@ public fun NonZero<UInt, NonZeroU32Inner>.uncheckedAdd(other: UInt): NonZero<UIn
  * import std.num.NonZero; import std.String.FromStr;
  * ```
  */
-public fun fromStrNonZeroUInt(src: String): Result<NonZero<UInt, NonZeroU32Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
+public fun fromStrNonZeroUInt(src: String): Result<NonZero<UInt, NonZeroU32Inner>, ParseIntError> = parseNonZeroResult(rustFromStrRadixUInt(src, 10u))
 
 /**
  * Same as `self / other.get()`, but because `other` is a `NonZero<_>`,
@@ -1762,8 +1804,10 @@ public fun UInt.remAssign(other: NonZero<UInt, NonZeroU32Inner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroU64(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroU64Inner> = UnresolvedTypeLayout()) : NonZero<ULong, NonZeroU64Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroU64Inner, fieldLayout: TypeLayout<NonZeroU64Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroU64(
+    innerValue: ULong,
+) : NonZero<ULong, NonZeroU64Inner>(innerValue) {
+    public constructor(value: NonZeroU64Inner) : this(value.asInner())
     public companion object
 }
 
@@ -1786,7 +1830,7 @@ public val BITS3: UInt = 64u
  * ```kotlin
  * ```
  */
-public val MIN3: NonZero<ULong, NonZeroU64Inner> = NonZero.new(1)!!
+public val MIN3: NonZero<ULong, NonZeroU64Inner> = (NonZero.new<NonZeroU64Inner, ULong>(1uL))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -1910,7 +1954,7 @@ public fun NonZero<ULong, NonZeroU64Inner>.uncheckedAdd(other: ULong): NonZero<U
  * import std.num.NonZero; import std.String.FromStr;
  * ```
  */
-public fun fromStrNonZeroULong(src: String): Result<NonZero<ULong, NonZeroU64Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
+public fun fromStrNonZeroULong(src: String): Result<NonZero<ULong, NonZeroU64Inner>, ParseIntError> = parseNonZeroResult(rustFromStrRadixULong(src, 10u))
 
 /**
  * Same as `self / other.get()`, but because `other` is a `NonZero<_>`,
@@ -1971,8 +2015,10 @@ public fun ULong.remAssign(other: NonZero<ULong, NonZeroU64Inner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroU128(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroU128Inner> = UnresolvedTypeLayout()) : NonZero<U128, NonZeroU128Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroU128Inner, fieldLayout: TypeLayout<NonZeroU128Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroU128(
+    innerValue: U128,
+) : NonZero<U128, NonZeroU128Inner>(innerValue) {
+    public constructor(value: NonZeroU128Inner) : this(value.asInner())
     public companion object
 }
 
@@ -1995,7 +2041,7 @@ public val BITS4: UInt = 128u
  * ```kotlin
  * ```
  */
-public val MIN4: NonZero<U128, NonZeroU128Inner> = NonZero.new(1)!!
+public val MIN4: NonZero<U128, NonZeroU128Inner> = (NonZero.new<NonZeroU128Inner, U128>(U128.ONE))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -2119,7 +2165,7 @@ public fun NonZero<U128, NonZeroU128Inner>.uncheckedAdd(other: U128): NonZero<U1
  * import std.num.NonZero; import std.String.FromStr;
  * ```
  */
-public fun fromStrNonZeroU128(src: String): Result<NonZero<U128, NonZeroU128Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
+public fun fromStrNonZeroU128(src: String): Result<NonZero<U128, NonZeroU128Inner>, ParseIntError> = parseNonZeroResult(rustFromStrRadixU128(src, 10u))
 
 /**
  * Same as `self / other.get()`, but because `other` is a `NonZero<_>`,
@@ -2180,8 +2226,10 @@ public fun U128.remAssign(other: NonZero<U128, NonZeroU128Inner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroUsize(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroUsizeInner> = UnresolvedTypeLayout()) : NonZero<Int, NonZeroUsizeInner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroUsizeInner, fieldLayout: TypeLayout<NonZeroUsizeInner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroUsize(
+    innerValue: Int,
+) : NonZero<Int, NonZeroUsizeInner>(innerValue) {
+    public constructor(value: NonZeroUsizeInner) : this(value.asInner())
     public companion object
 }
 
@@ -2204,7 +2252,7 @@ public val BITS5: UInt = 32u
  * ```kotlin
  * ```
  */
-public val MIN5: NonZero<Int, NonZeroUsizeInner> = NonZero.new(1)!!
+public val MIN5: NonZero<Int, NonZeroUsizeInner> = (NonZero.new<NonZeroUsizeInner, Int>(1))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -2215,7 +2263,7 @@ public val MIN5: NonZero<Int, NonZeroUsizeInner> = NonZero.new(1)!!
  * ```kotlin
  * ```
  */
-public val MAX5: NonZero<Int, NonZeroUsizeInner> = (NonZero.new<NonZeroI32Inner, Int>(Int.MAX_VALUE))!!
+public val MAX5: NonZero<Int, NonZeroUsizeInner> = (NonZero.new<NonZeroUsizeInner, Int>(Int.MAX_VALUE))!!
 
 /**
  * Adds an unsigned integer to a non-zero value.
@@ -2328,7 +2376,7 @@ public fun NonZero<Int, NonZeroUsizeInner>.uncheckedAdd(other: Int): NonZero<Int
  * import std.num.NonZero; import std.String.FromStr;
  * ```
  */
-public fun fromStrNonZeroInt(src: String): Result<NonZero<Int, NonZeroUsizeInner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
+public fun fromStrNonZeroInt(src: String): Result<NonZero<Int, NonZeroUsizeInner>, ParseIntError> = parseNonZeroResult(rustFromStrRadixInt(src, 10u))
 
 /**
  * Same as `self / other.get()`, but because `other` is a `NonZero<_>`,
@@ -2389,8 +2437,10 @@ public fun Int.remAssign(other: NonZero<Int, NonZeroUsizeInner>) {
  * ```kotlin
  * ```
  */
-public class NonZeroI8(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroI8Inner> = UnresolvedTypeLayout()) : NonZero<Byte, NonZeroI8Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroI8Inner, fieldLayout: TypeLayout<NonZeroI8Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroI8(
+    innerValue: Byte,
+) : NonZero<Byte, NonZeroI8Inner>(innerValue) {
+    public constructor(value: NonZeroI8Inner) : this(value.asInner())
     public companion object
 }
 
@@ -2643,7 +2693,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.saturatingNeg(): NonZero<Byte, NonZeroI
             return result
         }
     }
-    return NonZero.MAX
+    return MAX6
 }
 
 /**
@@ -2717,7 +2767,7 @@ public fun NonZero<Byte, NonZeroI8Inner>.clampMagnitude(limit: NonZero<UByte, No
  * import std.num.NonZero; import std.String.FromStr;
  * ```
  */
-public fun fromStrNonZeroByte(src: String): Result<NonZero<Byte, NonZeroI8Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
+public fun fromStrNonZeroByte(src: String): Result<NonZero<Byte, NonZeroI8Inner>, ParseIntError> = parseNonZeroResult(rustFromStrRadixByte(src, 10u))
 
 public fun NonZero<Byte, NonZeroI8Inner>.neg(): NonZero<Byte, NonZeroI8Inner> = NonZero.newUnchecked<NonZeroI8Inner, Byte>(this.get().neg())
 
@@ -2746,8 +2796,10 @@ public fun NonZero<Byte, NonZeroI8Inner>.neg(): NonZero<Byte, NonZeroI8Inner> = 
  * ```kotlin
  * ```
  */
-public class NonZeroI16(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroI16Inner> = UnresolvedTypeLayout()) : NonZero<Short, NonZeroI16Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroI16Inner, fieldLayout: TypeLayout<NonZeroI16Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroI16(
+    innerValue: Short,
+) : NonZero<Short, NonZeroI16Inner>(innerValue) {
+    public constructor(value: NonZeroI16Inner) : this(value.asInner())
     public companion object
 }
 
@@ -2812,7 +2864,7 @@ public val MAX7: NonZero<Short, NonZeroI16Inner> = (NonZero.new<NonZeroI16Inner,
  * import std.num.NonZero; import std.String.FromStr;
  * ```
  */
-public fun fromStrNonZeroShort(src: String): Result<NonZero<Short, NonZeroI16Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
+public fun fromStrNonZeroShort(src: String): Result<NonZero<Short, NonZeroI16Inner>, ParseIntError> = parseNonZeroResult(rustFromStrRadixShort(src, 10u))
 
 /**
  * This enables some memory layout optimization.
@@ -2839,8 +2891,10 @@ public fun fromStrNonZeroShort(src: String): Result<NonZero<Short, NonZeroI16Inn
  * ```kotlin
  * ```
  */
-public class NonZeroI32(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroI32Inner> = UnresolvedTypeLayout()) : NonZero<Int, NonZeroI32Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroI32Inner, fieldLayout: TypeLayout<NonZeroI32Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroI32(
+    innerValue: Int,
+) : NonZero<Int, NonZeroI32Inner>(innerValue) {
+    public constructor(value: NonZeroI32Inner) : this(value.asInner())
     public companion object
 }
 
@@ -2909,8 +2963,10 @@ public val MAX8: NonZero<Int, NonZeroI32Inner> = (NonZero.new<NonZeroI32Inner, I
  * ```kotlin
  * ```
  */
-public class NonZeroI64(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroI64Inner> = UnresolvedTypeLayout()) : NonZero<Long, NonZeroI64Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroI64Inner, fieldLayout: TypeLayout<NonZeroI64Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroI64(
+    innerValue: Long,
+) : NonZero<Long, NonZeroI64Inner>(innerValue) {
+    public constructor(value: NonZeroI64Inner) : this(value.asInner())
     public companion object
 }
 
@@ -2975,7 +3031,7 @@ public val MAX9: NonZero<Long, NonZeroI64Inner> = (NonZero.new<NonZeroI64Inner, 
  * import std.num.NonZero; import std.String.FromStr;
  * ```
  */
-public fun fromStrNonZeroLong(src: String): Result<NonZero<Long, NonZeroI64Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
+public fun fromStrNonZeroLong(src: String): Result<NonZero<Long, NonZeroI64Inner>, ParseIntError> = parseNonZeroResult(rustFromStrRadixLong(src, 10u))
 
 /**
  * This enables some memory layout optimization.
@@ -3002,8 +3058,10 @@ public fun fromStrNonZeroLong(src: String): Result<NonZero<Long, NonZeroI64Inner
  * ```kotlin
  * ```
  */
-public class NonZeroI128(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroI128Inner> = UnresolvedTypeLayout()) : NonZero<I128, NonZeroI128Inner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroI128Inner, fieldLayout: TypeLayout<NonZeroI128Inner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroI128(
+    innerValue: I128,
+) : NonZero<I128, NonZeroI128Inner>(innerValue) {
+    public constructor(value: NonZeroI128Inner) : this(value.asInner())
     public companion object
 }
 
@@ -3068,7 +3126,7 @@ public val MAX10: NonZero<I128, NonZeroI128Inner> = (NonZero.new<NonZeroI128Inne
  * import std.num.NonZero; import std.String.FromStr;
  * ```
  */
-public fun fromStrNonZeroI128(src: String): Result<NonZero<I128, NonZeroI128Inner>, ParseIntError> = NonZero.fromStrRadix(src, 10)
+public fun fromStrNonZeroI128(src: String): Result<NonZero<I128, NonZeroI128Inner>, ParseIntError> = parseNonZeroResult(rustFromStrRadixI128(src, 10u))
 
 /**
  * This enables some memory layout optimization.
@@ -3095,8 +3153,10 @@ public fun fromStrNonZeroI128(src: String): Result<NonZero<I128, NonZeroI128Inne
  * ```kotlin
  * ```
  */
-public class NonZeroIsize(fieldStorage: MutPtr, fieldLayout: TypeLayout<NonZeroIsizeInner> = UnresolvedTypeLayout()) : NonZero<Int, NonZeroIsizeInner>(fieldStorage, fieldLayout) {
-    public constructor(value: NonZeroIsizeInner, fieldLayout: TypeLayout<NonZeroIsizeInner> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
+public class NonZeroIsize(
+    innerValue: Int,
+) : NonZero<Int, NonZeroIsizeInner>(innerValue) {
+    public constructor(value: NonZeroIsizeInner) : this(value.asInner())
     public companion object
 }
 
@@ -3123,7 +3183,7 @@ public val BITS11: UInt = 32u
  * ```kotlin
  * ```
  */
-public val MIN11: NonZero<Int, NonZeroIsizeInner> = (NonZero.new<NonZeroI32Inner, Int>(Int.MIN_VALUE))!!
+public val MIN11: NonZero<Int, NonZeroIsizeInner> = (NonZero.new<NonZeroIsizeInner, Int>(Int.MIN_VALUE))!!
 
 /**
  * The largest value that can be represented by this non-zero
@@ -3138,4 +3198,4 @@ public val MIN11: NonZero<Int, NonZeroIsizeInner> = (NonZero.new<NonZeroI32Inner
  * ```kotlin
  * ```
  */
-public val MAX11: NonZero<Int, NonZeroIsizeInner> = (NonZero.new<NonZeroI32Inner, Int>(Int.MAX_VALUE))!!
+public val MAX11: NonZero<Int, NonZeroIsizeInner> = (NonZero.new<NonZeroIsizeInner, Int>(Int.MAX_VALUE))!!

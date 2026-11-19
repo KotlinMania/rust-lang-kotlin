@@ -1,8 +1,7 @@
+// rust-kotlin: manual
 // port-lint: source ops/range.rs
 package io.github.kotlinmania.rustlang.core.ops.range
 
-import io.github.kotlinmania.rustlang.core.cmp.max
-import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Excluded
 import io.github.kotlinmania.rustlang.core.ops.range.Bound.Included
@@ -48,7 +47,11 @@ import io.github.kotlinmania.rustlang.core.result.Result
 public open class RangeFull {
     public open fun clone(): RangeFull = RangeFull()
 
-    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> = run { fmt.append(".."); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> =
+        run {
+            fmt.append("..")
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     public companion object
 }
@@ -99,9 +102,9 @@ public open class Range<Idx>(
     public open fun clone(): Range<Idx> = Range(start, end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append(this.start)
         fmt.append("..")
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append(this.end)
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -123,7 +126,7 @@ public open class Range<Idx>(
      * check(!(Float.NaN until 1.0).contains(0.5))
      * ```
      */
-    public open fun <U> contains(item: U): Boolean = Range.contains(this, item)
+    public open fun <U> contains(item: U): Boolean = cmpLe(this.start, item) && cmpLt(item, this.end)
 
     /**
      * Returns `true` if the range contains no items.
@@ -194,7 +197,7 @@ public open class RangeFrom<Idx>(
     public open fun clone(): RangeFrom<Idx> = RangeFrom(start)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append(this.start)
         fmt.append("..")
         return Result.Ok<Unit, Unit>(Unit)
     }
@@ -213,7 +216,7 @@ public open class RangeFrom<Idx>(
      * check(!(Float.NaN until Int.MAX_VALUE).contains(0.5))
      * ```
      */
-    public open fun <U> contains(item: U): Boolean = RangeFrom.contains(this, item)
+    public open fun <U> contains(item: U): Boolean = cmpLe(this.start, item)
 
     public companion object
 }
@@ -267,7 +270,7 @@ public open class RangeTo<Idx>(
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
         fmt.append("..")
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append(this.end)
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -285,7 +288,7 @@ public open class RangeTo<Idx>(
      * check(!(0 until Float.NaN).contains(0.5))
      * ```
      */
-    public open fun <U> contains(item: U): Boolean = RangeTo.contains(this, item)
+    public open fun <U> contains(item: U): Boolean = cmpLt(item, this.end)
 
     public companion object
 }
@@ -330,8 +333,8 @@ public open class RangeInclusive<Idx>(
     // expose start/end, modifying them without changing (future/current)
     // private fields may lead to incorrect behavior, so we don't want to
     // support that mode.
-    public var start: Idx,
-    public var end: Idx,
+    start: Idx,
+    end: Idx,
     // This field represents an overflow flag for either bound (start or end):
     // - `false` upon construction
     // - `false` when iteration has yielded an element and
@@ -345,6 +348,9 @@ public open class RangeInclusive<Idx>(
     // This is required to support PartialEq and Hash without a PartialOrd bound or specialization.
     public var exhausted: Boolean,
 ) {
+    internal var start: Idx = start
+    internal var end: Idx = end
+
     public open fun clone(): RangeInclusive<Idx> = RangeInclusive(start, end, exhausted)
 
     /**
@@ -406,9 +412,9 @@ public open class RangeInclusive<Idx>(
     public open fun intoInner(): Pair<Idx, Idx> = Pair(this.start, this.end)
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
-        when (val tryResult = this.start.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append(this.start)
         fmt.append("..=")
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append(this.end)
         if (this.exhausted) {
             fmt.append(" (exhausted)")
         }
@@ -444,7 +450,7 @@ public open class RangeInclusive<Idx>(
      * check(!r.contains(3) && !r.contains(5))
      * ```
      */
-    public open fun <U> contains(item: U): Boolean = RangeInclusive.contains(this, item)
+    public open fun <U> contains(item: U): Boolean = !this.exhausted && cmpLe(this.start, item) && cmpLe(item, this.end)
 
     /**
      * Returns `true` if the range contains no items.
@@ -513,7 +519,7 @@ public fun RangeInclusive<Int>.intoSliceRange(): Range<Int> {
         } else {
             this.start
         }
-    return start until exclusiveEnd
+    return Range(start, exclusiveEnd)
 }
 
 /**
@@ -565,7 +571,7 @@ public open class RangeToInclusive<Idx>(
 
     public open fun fmt(fmt: StringBuilder): Result<Unit, Unit> {
         fmt.append("..=")
-        when (val tryResult = this.end.fmt(fmt)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Unit, Unit>(tryResult.errValue()) }
+        fmt.append(this.end)
         return Result.Ok<Unit, Unit>(Unit)
     }
 
@@ -583,7 +589,7 @@ public open class RangeToInclusive<Idx>(
      * check(!(0..Float.NaN).contains(0.5))
      * ```
      */
-    public open fun <U> contains(item: U): Boolean = RangeToInclusive.contains(this, item)
+    public open fun <U> contains(item: U): Boolean = cmpLe(item, this.end)
 
     public companion object
 }
@@ -631,15 +637,21 @@ public sealed class Bound<T> {
     /**
      * An inclusive bound.
      */
-    public data class Included<T>(public var value: T) : Bound<T>()
+    public data class Included<T>(
+        public var value: T,
+    ) : Bound<T>()
+
     /**
      * An exclusive bound.
      */
-    public data class Excluded<T>(public var value: T) : Bound<T>()
+    public data class Excluded<T>(
+        public var value: T,
+    ) : Bound<T>()
+
     /**
      * An infinite endpoint. Indicates that there is no bound in this direction.
      */
-    public class Unbounded<T>() : Bound<T>()
+    public class Unbounded<T> : Bound<T>()
 
     public fun rustEquals(other: Bound<T>): Boolean = this == other
 
@@ -821,28 +833,20 @@ public interface RangeBounds<T> {
      * ```
      */
     public fun <U> contains(item: U): Boolean =
-        (when (val matchVal = this.startBound()) {
-            is RangeBounds.Included<*> -> {
-                val (start) = matchVal
-                (kmCompareValues(start, item) <= 0)
+        (
+            when (val matchVal = this.startBound()) {
+                is Bound.Included<*> -> cmpLe(matchVal.value, item)
+                is Bound.Excluded<*> -> cmpLt(matchVal.value, item)
+                is Bound.Unbounded<*> -> true
             }
-            is RangeBounds.Excluded<*> -> {
-                val (start1) = matchVal
-                (kmCompareValues(start1, item) < 0)
-            }
-            is RangeBounds.Unbounded<*> -> true
-        }) &&
-            (when (val matchVal1 = this.endBound()) {
-                is RangeBounds.Included<*> -> {
-                    val (end) = matchVal1
-                    (kmCompareValues(item, end) <= 0)
+        ) &&
+            (
+                when (val matchVal1 = this.endBound()) {
+                    is Bound.Included<*> -> cmpLe(item, matchVal1.value)
+                    is Bound.Excluded<*> -> cmpLt(item, matchVal1.value)
+                    is Bound.Unbounded<*> -> true
                 }
-                is RangeBounds.Excluded<*> -> {
-                    val (end1) = matchVal1
-                    (kmCompareValues(item, end1) < 0)
-                }
-                is RangeBounds.Unbounded<*> -> true
-            })
+            )
 
     /**
      * Returns `true` if the range contains no items.
@@ -907,30 +911,15 @@ public interface RangeBounds<T> {
      */
     public fun isEmpty(): Boolean =
         !run {
-            val matchVal = Pair(this.startBound(), this.endBound())
+            val s = this.startBound()
+            val e = this.endBound()
             when {
-                matchVal.first is RangeBounds.Unbounded<*> -> true
-                matchVal.second is RangeBounds.Unbounded<*> -> true
-                matchVal.first is RangeBounds.Included<*> && matchVal.second is RangeBounds.Excluded<*> -> {
-                    val (start) = matchVal.first as RangeBounds.Included<T>
-                    val (end) = matchVal.second as RangeBounds.Excluded<T>
-                    (kmCompareValues(start, end) < 0)
-                }
-                matchVal.first is RangeBounds.Excluded<*> && matchVal.second is RangeBounds.Included<*> -> {
-                    val (start1) = matchVal.first as RangeBounds.Excluded<T>
-                    val (end1) = matchVal.second as RangeBounds.Included<T>
-                    (kmCompareValues(start1, end1) < 0)
-                }
-                matchVal.first is RangeBounds.Excluded<*> && matchVal.second is RangeBounds.Excluded<*> -> {
-                    val (start2) = matchVal.first as RangeBounds.Excluded<T>
-                    val (end2) = matchVal.second as RangeBounds.Excluded<T>
-                    (kmCompareValues(start2, end2) < 0)
-                }
-                else -> {
-                    val (start3) = matchVal.first as RangeBounds.Included<T>
-                    val (end3) = matchVal.second as RangeBounds.Included<T>
-                    (kmCompareValues(start3, end3) <= 0)
-                }
+                s is Bound.Unbounded<*> || e is Bound.Unbounded<*> -> true
+                s is Bound.Included<*> && e is Bound.Excluded<*> -> cmpLt(s.value, e.value)
+                s is Bound.Excluded<*> && e is Bound.Included<*> -> cmpLt(s.value, e.value)
+                s is Bound.Excluded<*> && e is Bound.Excluded<*> -> cmpLt(s.value, e.value)
+                s is Bound.Included<*> && e is Bound.Included<*> -> cmpLe(s.value, e.value)
+                else -> false
             }
         }
 }
@@ -999,91 +988,35 @@ public interface IntoBounds<T> : RangeBounds<T> {
     public fun <R> intersect(other: R): Pair<Bound<T>, Bound<T>> where R : IntoBounds<T> {
         val (selfStart, selfEnd) = this.intoBounds()
         val (otherStart, otherEnd) = other.intoBounds()
-        val start =
-            run {
-                val matchVal = Pair(selfStart, otherStart)
-                when {
-                    matchVal.first is Included<*> && matchVal.second is Included<*> -> {
-                        val (a) = matchVal.first as Included<T>
-                        val (b) = matchVal.second as Included<T>
-                        Included(a.max(b))
-                    }
-                    matchVal.first is Excluded<*> && matchVal.second is Excluded<*> -> {
-                        val (a1) = matchVal.first as Excluded<T>
-                        val (b1) = matchVal.second as Excluded<T>
-                        Excluded(a1.max(b1))
-                    }
-                    matchVal.first is Unbounded<*> && matchVal.second is Unbounded<*> -> Unbounded()
-                    matchVal.second is Unbounded<*> -> {
-                        val x = matchVal.first
-                        x
-                    }
-                    matchVal.first is Unbounded<*> -> {
-                        val x1 = matchVal.second
-                        x1
-                    }
-                    matchVal.first is Included<*> && matchVal.second is Excluded<*> -> {
-                        val (i) = matchVal.first as Included<T>
-                        val (e) = matchVal.second as Excluded<T>
-                        if (i > e) {
-                            Included(i)
-                        } else {
-                            Excluded(e)
-                        }
-                    }
-                    else -> {
-                        val (e1) = matchVal.first as Excluded<T>
-                        val (i1) = matchVal.second as Included<T>
-                        if (i1 > e1) {
-                            Included(i1)
-                        } else {
-                            Excluded(e1)
-                        }
-                    }
-                }
+        val start: Bound<T> =
+            when {
+                selfStart is Included && otherStart is Included ->
+                    Included(if (kmCompareValues(selfStart.value, otherStart.value) >= 0) selfStart.value else otherStart.value)
+                selfStart is Excluded && otherStart is Excluded ->
+                    Excluded(if (kmCompareValues(selfStart.value, otherStart.value) >= 0) selfStart.value else otherStart.value)
+                selfStart is Unbounded && otherStart is Unbounded -> Unbounded()
+                otherStart is Unbounded -> selfStart
+                selfStart is Unbounded -> otherStart
+                selfStart is Included && otherStart is Excluded ->
+                    if (kmCompareValues(selfStart.value, otherStart.value) > 0) Included(selfStart.value) else Excluded(otherStart.value)
+                selfStart is Excluded && otherStart is Included ->
+                    if (kmCompareValues(otherStart.value, selfStart.value) > 0) Included(otherStart.value) else Excluded(selfStart.value)
+                else -> selfStart
             }
-        val end =
-            run {
-                val matchVal1 = Pair(selfEnd, otherEnd)
-                when {
-                    matchVal1.first is Included<*> && matchVal1.second is Included<*> -> {
-                        val (a2) = matchVal1.first as Included<T>
-                        val (b2) = matchVal1.second as Included<T>
-                        Included(a2.min(b2))
-                    }
-                    matchVal1.first is Excluded<*> && matchVal1.second is Excluded<*> -> {
-                        val (a3) = matchVal1.first as Excluded<T>
-                        val (b3) = matchVal1.second as Excluded<T>
-                        Excluded(a3.min(b3))
-                    }
-                    matchVal1.first is Unbounded<*> && matchVal1.second is Unbounded<*> -> Unbounded()
-                    matchVal1.second is Unbounded<*> -> {
-                        val x2 = matchVal1.first
-                        x2
-                    }
-                    matchVal1.first is Unbounded<*> -> {
-                        val x3 = matchVal1.second
-                        x3
-                    }
-                    matchVal1.first is Included<*> && matchVal1.second is Excluded<*> -> {
-                        val (i2) = matchVal1.first as Included<T>
-                        val (e2) = matchVal1.second as Excluded<T>
-                        if (i2 < e2) {
-                            Included(i2)
-                        } else {
-                            Excluded(e2)
-                        }
-                    }
-                    else -> {
-                        val (e3) = matchVal1.first as Excluded<T>
-                        val (i3) = matchVal1.second as Included<T>
-                        if (i3 < e3) {
-                            Included(i3)
-                        } else {
-                            Excluded(e3)
-                        }
-                    }
-                }
+        val end: Bound<T> =
+            when {
+                selfEnd is Included && otherEnd is Included ->
+                    Included(if (kmCompareValues(selfEnd.value, otherEnd.value) <= 0) selfEnd.value else otherEnd.value)
+                selfEnd is Excluded && otherEnd is Excluded ->
+                    Excluded(if (kmCompareValues(selfEnd.value, otherEnd.value) <= 0) selfEnd.value else otherEnd.value)
+                selfEnd is Unbounded && otherEnd is Unbounded -> Unbounded()
+                otherEnd is Unbounded -> selfEnd
+                selfEnd is Unbounded -> otherEnd
+                selfEnd is Included && otherEnd is Excluded ->
+                    if (kmCompareValues(selfEnd.value, otherEnd.value) < 0) Included(selfEnd.value) else Excluded(otherEnd.value)
+                selfEnd is Excluded && otherEnd is Included ->
+                    if (kmCompareValues(otherEnd.value, selfEnd.value) < 0) Included(otherEnd.value) else Excluded(selfEnd.value)
+                else -> selfEnd
             }
         return Pair(start, end)
     }
@@ -1115,8 +1048,8 @@ public fun <T> Range<T>.intoBounds(): Pair<Bound<T>, Bound<T>> = Pair(Included(t
 
 public fun <T> RangeInclusive<T>.startBound(): Bound<T> = Included(this.start)
 
-public fun <T> RangeInclusive<T>.endBound(): Bound<T> {
-    return if (this.exhausted) {
+public fun <T> RangeInclusive<T>.endBound(): Bound<T> =
+    if (this.exhausted) {
         // When the iterator is exhausted, it might have overflowed,
         // but we want the range to appear empty, containing nothing.
         // So in that case, we return bounds which are always empty:
@@ -1125,7 +1058,6 @@ public fun <T> RangeInclusive<T>.endBound(): Bound<T> {
     } else {
         Included(this.end)
     }
-}
 
 public fun <T> RangeInclusive<T>.intoBounds(): Pair<Bound<T>, Bound<T>> {
     check(!this.exhausted) { "attempted to convert from an exhausted `RangeInclusive` (unspecified behavior)" }
@@ -1244,10 +1176,12 @@ public sealed class OneSidedRangeBound {
      * The range is bounded inclusively from below and is unbounded above.
      */
     public data object StartInclusive : OneSidedRangeBound()
+
     /**
      * The range is bounded exclusively from above and is unbounded below.
      */
     public data object End : OneSidedRangeBound()
+
     /**
      * The range is bounded inclusively from above and is unbounded below.
      */
@@ -1255,9 +1189,9 @@ public sealed class OneSidedRangeBound {
 
     private fun kmDiscriminant(): Int =
         when (this) {
-        StartInclusive -> 0
-        End -> 1
-        EndInclusive -> 2
+            StartInclusive -> 0
+            End -> 1
+            EndInclusive -> 2
         }
 
     public fun toByte(): Byte = kmDiscriminant().toByte()
@@ -1298,3 +1232,12 @@ public fun <T> RangeTo<T>.bound(): Pair<OneSidedRangeBound, T> = Pair(OneSidedRa
 public fun <T> RangeFrom<T>.bound(): Pair<OneSidedRangeBound, T> = Pair(OneSidedRangeBound.StartInclusive, this.start)
 
 public fun <T> RangeToInclusive<T>.bound(): Pair<OneSidedRangeBound, T> = Pair(OneSidedRangeBound.EndInclusive, this.end)
+
+private fun isNaNValue(v: Any?): Boolean =
+    (v is Float && v.isNaN()) || (v is Double && v.isNaN())
+
+private fun <A, B> cmpLe(a: A, b: B): Boolean =
+    if (isNaNValue(a) || isNaNValue(b)) false else kmCompareValues(a, b) <= 0
+
+private fun <A, B> cmpLt(a: A, b: B): Boolean =
+    if (isNaNValue(a) || isNaNValue(b)) false else kmCompareValues(a, b) < 0

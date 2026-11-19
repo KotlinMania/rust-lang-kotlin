@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source clone.rs
 package io.github.kotlinmania.rustlang.core.clone
 
@@ -5,12 +6,13 @@ import io.github.kotlinmania.rustlang.core.F128
 import io.github.kotlinmania.rustlang.core.F16
 import io.github.kotlinmania.rustlang.core.I128
 import io.github.kotlinmania.rustlang.core.U128
-import io.github.kotlinmania.rustlang.core.bytestr.ByteStr
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
+import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.constptr.withMetadataOf
+import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.withMetadataOf
+import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 // The `Clone` trait for types that cannot be implicitly copied'.
 //
@@ -245,7 +247,9 @@ public interface Clone<T> {
      * but can be overridden to reuse the resources of `a` to avoid unnecessary
      * allocations.
      */
-    public fun cloneFrom(source: T)
+    public fun cloneFrom(source: T) {
+        // Default no-op in reference semantics; override where mutable resource reuse applies.
+    }
 }
 
 // SAFETY:
@@ -409,17 +413,9 @@ public interface UseCloned<T> : Clone<T>
 // assert that every component of a type implements Clone or Copy.
 //
 // These structs should never appear in user code.
-public open class AssertParamIsClone<T : Clone<T>>(
-    public var field: Unit,
-) {
-    public companion object
-}
+public open class AssertParamIsClone<T : Clone<*>>
 
-public open class AssertParamIsCopy<T>(
-    public var field: Unit,
-) {
-    public companion object
-}
+public open class AssertParamIsCopy<T>
 
 // Note(#126799): when `Holder.clone` allows use of `CloneToUninit`, rewrite these examples with it
 // since `Rc` is a distraction.
@@ -580,20 +576,21 @@ public interface CloneToUninit {
     public fun cloneToUninit(dest: MutPtr)
 }
 
-public fun <T : Clone<T>> T.cloneToUninit(dest: MutPtr, cloneOneTFn: (T, MutPtr) -> Any?) {
+public fun <T> T.cloneToUninit(dest: MutPtr, cloneOneTFn: (T, MutPtr) -> Any?) {
     // SAFETY: we're calling a specialization with the same contract
     cloneOneTFn(this, MutPtr((dest).rawAddress))
 }
 
-public fun <T : Clone<T>> List<T>.cloneToUninit(dest: MutPtr, cloneSliceTFn: (List<T>, MutPtr) -> Any?) {
-    val dest1: MutPtr = dest.withMetadataOf(this)
+public fun <T> List<T>.cloneToUninit(dest: MutPtr, cloneSliceTFn: (List<T>, MutPtr) -> Any?) {
+    val dest1: MutPtr = dest.withMetadataOf(this.asPtr())
     // SAFETY: we're calling a specialization with the same contract
     cloneSliceTFn(this, dest1)
 }
 
 public fun String.cloneToUninit(dest: MutPtr) {
     // SAFETY: str is just a [u8] with UTF-8 invariant
-    this.encodeToByteArray().map { it.toUByte() }.cloneToUninit(dest)
+    val bytes = this.encodeToByteArray().map { it.toUByte() }
+    copyNonoverlapping(bytes.asPtr(), dest, bytes.size, PrimitiveLayouts.U8)
 }
 
 public fun CStr.cloneToUninit(dest: MutPtr) {
@@ -601,12 +598,8 @@ public fun CStr.cloneToUninit(dest: MutPtr) {
     // And we can cast [cChar] to [u8] on all supported platforms (see: toBytesWithNul).
     // The pointer metadata properly preserves the length (so NUL is also copied).
     // See: `cstrMetadataIsLengthWithNul` in tests.
-    this.toBytesWithNul().cloneToUninit(dest)
-}
-
-public fun ByteStr.cloneToUninit(dst: MutPtr) {
-    // SAFETY: ByteStr is a `@repr(transparent)` wrapper around `[UByte]`
-    this.asBytes().cloneToUninit(dst)
+    val bytes = this.toBytesWithNul()
+    copyNonoverlapping(bytes.asPtr(), dest, bytes.size, PrimitiveLayouts.U8)
 }
 
 public fun Int.clone(): Int = this
@@ -638,10 +631,6 @@ public fun Double.clone(): Double = this
 public fun F128.clone(): F128 = this
 
 public fun Boolean.clone(): Boolean = this
-
-public fun Char.clone(): Char = this
-
-public fun Nothing.clone(): Nothing = this
 
 public fun ConstPtr.clone(): ConstPtr = this
 

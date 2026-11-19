@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.std.sys.io.error.unix.cinterop
-headers = sys_io_error_unix_wrapper.h
-headerFilter = sys_io_error_unix_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = sys_io_error_unix_wrapper.a

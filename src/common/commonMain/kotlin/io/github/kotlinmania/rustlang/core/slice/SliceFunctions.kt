@@ -1,26 +1,17 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.slice
 
-import io.github.kotlinmania.rustlang.core.Simd
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
-import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.hint.assertUnchecked
 import io.github.kotlinmania.rustlang.core.hint.selectUnpredictable
-import io.github.kotlinmania.rustlang.core.intrinsics.exactDiv
-import io.github.kotlinmania.rustlang.core.intrinsics.kmCopy
-import io.github.kotlinmania.rustlang.core.intrinsics.kmCopyNonoverlapping
-import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
-import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignOf
 import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
@@ -29,81 +20,61 @@ import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.take
 import io.github.kotlinmania.rustlang.core.num.checkedAdd
-import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedSub
-import io.github.kotlinmania.rustlang.core.num.isMultipleOf
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
-import io.github.kotlinmania.rustlang.core.num.uncheckedMul
+import io.github.kotlinmania.rustlang.core.num.f32.totalCmp
+import io.github.kotlinmania.rustlang.core.ops.range.Bound
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRange
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound.End
 import io.github.kotlinmania.rustlang.core.ops.range.OneSidedRangeBound.StartInclusive
 import io.github.kotlinmania.rustlang.core.ops.range.Range
 import io.github.kotlinmania.rustlang.core.ops.range.RangeBounds
-import io.github.kotlinmania.rustlang.core.ops.range.RangeInclusive
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.AssertKind
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
 import io.github.kotlinmania.rustlang.core.ptr.alignOffset
 import io.github.kotlinmania.rustlang.core.ptr.constptr.add
-import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
 import io.github.kotlinmania.rustlang.core.ptr.constptr.len
-import io.github.kotlinmania.rustlang.core.ptr.constptr.read
-import io.github.kotlinmania.rustlang.core.ptr.constptr.sub
-import io.github.kotlinmania.rustlang.core.ptr.constptr.wrappingSub
-import io.github.kotlinmania.rustlang.core.ptr.copy
-import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.metadata.metadata
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.cast
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.copyFromNonoverlapping
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.read
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.splitAtMut
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.sub
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.wrappingSub
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.write
 import io.github.kotlinmania.rustlang.core.ptr.swap
-import io.github.kotlinmania.rustlang.core.ptr.swapNonoverlapping
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.cmp.sliceContains
-import io.github.kotlinmania.rustlang.core.slice.index.SliceIndex
-import io.github.kotlinmania.rustlang.core.slice.index.range
-import io.github.kotlinmania.rustlang.core.slice.iter.ArrayWindows
-import io.github.kotlinmania.rustlang.core.slice.iter.ChunkBy
-import io.github.kotlinmania.rustlang.core.slice.iter.ChunkByMut
-import io.github.kotlinmania.rustlang.core.slice.iter.Chunks
-import io.github.kotlinmania.rustlang.core.slice.iter.ChunksExact
-import io.github.kotlinmania.rustlang.core.slice.iter.ChunksExactMut
-import io.github.kotlinmania.rustlang.core.slice.iter.ChunksMut
-import io.github.kotlinmania.rustlang.core.slice.iter.Iter
-import io.github.kotlinmania.rustlang.core.slice.iter.IterMut
-import io.github.kotlinmania.rustlang.core.slice.iter.RChunks
-import io.github.kotlinmania.rustlang.core.slice.iter.RChunksExact
-import io.github.kotlinmania.rustlang.core.slice.iter.RChunksExactMut
-import io.github.kotlinmania.rustlang.core.slice.iter.RChunksMut
-import io.github.kotlinmania.rustlang.core.slice.iter.RSplit
-import io.github.kotlinmania.rustlang.core.slice.iter.RSplitMut
-import io.github.kotlinmania.rustlang.core.slice.iter.RSplitN
-import io.github.kotlinmania.rustlang.core.slice.iter.RSplitNMut
-import io.github.kotlinmania.rustlang.core.slice.iter.Split
-import io.github.kotlinmania.rustlang.core.slice.iter.SplitInclusive
-import io.github.kotlinmania.rustlang.core.slice.iter.SplitInclusiveMut
-import io.github.kotlinmania.rustlang.core.slice.iter.SplitMut
-import io.github.kotlinmania.rustlang.core.slice.iter.SplitN
-import io.github.kotlinmania.rustlang.core.slice.iter.SplitNMut
-import io.github.kotlinmania.rustlang.core.slice.iter.Windows
-import io.github.kotlinmania.rustlang.core.slice.rotate.ptrRotate
-import io.github.kotlinmania.rustlang.core.slice.sort.select.partitionAtIndex
-import io.github.kotlinmania.rustlang.core.slice.sort.unstable.partialSort
-import io.github.kotlinmania.rustlang.core.slice.sort.unstable.sort
-import io.github.kotlinmania.rustlang.core.slice.specialize.specFill
-import io.github.kotlinmania.rustlang.core.str.len
-import io.github.kotlinmania.rustlang.core.str.splitAt
+
+private enum class Direction {
+    Front,
+    Back,
+}
+
+private fun <T> kmCompareOrdering(a: T, b: T): Ordering {
+    val c = kmCompareValues(a, b)
+    return when {
+        c < 0 -> Less
+        c > 0 -> Greater
+        else -> Equal
+    }
+}
+
+private fun boundIntValue(value: Any?): Int {
+    require(value is Int) { "range bound must be Int, got $value" }
+    return value
+}
+
+private fun resolveIntRangeBounds(range: RangeBounds<*>, len: Int): Pair<Int, Int> {
+    val start =
+        when (val b = range.startBound()) {
+            is Bound.Included -> boundIntValue(b.value)
+            is Bound.Excluded -> boundIntValue(b.value) + 1
+            is Bound.Unbounded -> 0
+        }
+    val end =
+        when (val b = range.endBound()) {
+            is Bound.Included -> boundIntValue(b.value) + 1
+            is Bound.Excluded -> boundIntValue(b.value)
+            is Bound.Unbounded -> len
+        }
+    check(start in 0..end && end <= len) { "range bounds out of range: $start..<$end for len $len" }
+    return Pair(start, end)
+}
 
 /**
  * Calculates the direction and split point of a one-sided range.
@@ -112,20 +83,20 @@ import io.github.kotlinmania.rustlang.core.str.splitAt
  * the direction of the split (front or back) as well as the index at
  * which to split. Returns `None` if the split index would overflow.
  */
-public fun splitPointOf(range: OneSidedRange<Int>): Pair<Direction, Int>? {
+private fun splitPointOf(range: OneSidedRange<*>): Pair<Direction, Int>? {
     return run {
         val matchVal = range.bound()
         when {
             matchVal.first == StartInclusive -> {
-                val i = matchVal.second
+                val i = boundIntValue(matchVal.second)
                 Pair(Direction.Back, i)
             }
             matchVal.first == End -> {
-                val i1 = matchVal.second
+                val i1 = boundIntValue(matchVal.second)
                 Pair(Direction.Front, i1)
             }
             else -> {
-                val i2 = matchVal.second
+                val i2 = boundIntValue(matchVal.second)
                 Pair(Direction.Front, (i2.checkedAdd(1) ?: return null))
             }
         }
@@ -139,42 +110,12 @@ public fun splitPointOf(range: OneSidedRange<Int>): Pair<Direction, Int>? {
  * `T` must implement one of `Copy` or `TrivialClone`.
  */
 public fun <T> copyFromSliceImpl(dest: MutableList<T>, src: List<T>) {
-    // The panic code path was put into a cold function to not bloat the
-    // call site.
-    fun lenMismatchFail(dstLen: Int, srcLen: Int): Nothing {
-        error("copy_from_slice: source slice length does not match destination slice length")
+    check(dest.size == src.size) {
+        "copy_from_slice: source slice length does not match destination slice length"
     }
-    if (dest.size != src.size) {
-        lenMismatchFail(dest.size, src.size)
+    for (i in dest.indices) {
+        dest[i] = src[i]
     }
-    // SAFETY: `self` is valid for `self.len()` elements by definition, and `src` was
-    // checked to have the same length. The slices cannot overlap because
-    // mutable references are exclusive.
-    run {
-        copyNonoverlapping(src.asPtr(), dest.asMutPtr(), dest.size, typeLayoutT = UnresolvedTypeLayout<T>())
-    }
-}
-
-/**
- * This checks every index against each other, and against `len`.
- *
- * This will do `binomial(N + 1, 2) = N * (N + 1) / 2 = 0, 1, 3, 6, 10, ..`
- * comparison operations.
- */
-public fun <I : GetDisjointMutIndex<I>> getDisjointCheckValid(indices: List<I>, len: Int, n: Int = 0): Result<Unit, GetDisjointMutError> {
-    // NB: The optimizer should inline the loops into a sequence
-    // of instructions without additional branching.
-    for ((i, idx) in indices.mapIndexed { index, item -> Pair(index, item) }) {
-        if (!idx.isInBounds(len)) {
-            return Result.Err<Unit, GetDisjointMutError>(GetDisjointMutError.IndexOutOfBounds)
-        }
-        for (idx2 in ((indices).subList(0, i))) {
-            if (idx.isOverlapping(idx2)) {
-                return Result.Err<Unit, GetDisjointMutError>(GetDisjointMutError.OverlappingIndices)
-            }
-        }
-    }
-    return Result.Ok<Unit, GetDisjointMutError>(Unit)
 }
 
 /**
@@ -187,7 +128,7 @@ public fun <I : GetDisjointMutIndex<I>> getDisjointCheckValid(indices: List<I>, 
  * check(a.len() == 3)
  * ```
  */
-public fun <T> List<T>.len(): Int = metadata(this)
+public fun <T> List<T>.len(): Int = this.size
 
 /**
  * Returns `true` if the slice has a length of 0.
@@ -216,7 +157,7 @@ public fun <T> List<T>.isEmpty(): Boolean = this.size == 0
  * ```
  */
 public fun <T> List<T>.first(): T? =
-    if (this != null) {
+    if (this.isNotEmpty()) {
         val first = this[0]
         first
     } else {
@@ -243,7 +184,7 @@ public fun <T> List<T>.first(): T? =
  * ```
  */
 public fun <T> List<T>.firstMut(): T? =
-    if (this != null) {
+    if (this.isNotEmpty()) {
         val first = this[0]
         first
     } else {
@@ -269,7 +210,7 @@ public fun <T> List<T>.firstMut(): T? =
  * ```
  */
 public fun <T> List<T>.splitFirst(): Pair<T, List<T>>? =
-    if (this != null) {
+    if (this.isNotEmpty()) {
         val first = this[0]
         val tail = this.subList(1, this.size)
         Pair(first, tail)
@@ -298,12 +239,12 @@ public fun <T> List<T>.splitFirst(): Pair<T, List<T>>? =
  * ```
  */
 public fun <T> List<T>.splitFirstMut(): Pair<T, MutableList<T>>? =
-    if (this != null) {
-        val first = this[0]
-        val tail = this.subList(1, this.size)
-        Pair(first, tail)
-    } else {
+    if (this.isEmpty()) {
         null
+    } else {
+        val first = this[0]
+        val tail = (this as? MutableList<T>)?.subList(1, this.size) ?: this.subList(1, this.size).toMutableList()
+        Pair(first, tail)
     }
 
 /**
@@ -325,7 +266,7 @@ public fun <T> List<T>.splitFirstMut(): Pair<T, MutableList<T>>? =
  * ```
  */
 public fun <T> List<T>.splitLast(): Pair<T, List<T>>? =
-    if (this != null) {
+    if (this.isNotEmpty()) {
         val init = this.subList(0, this.size - 1)
         val last = this[this.size - 1]
         Pair(last, init)
@@ -354,12 +295,12 @@ public fun <T> List<T>.splitLast(): Pair<T, List<T>>? =
  * ```
  */
 public fun <T> List<T>.splitLastMut(): Pair<T, MutableList<T>>? =
-    if (this != null) {
-        val init = this.subList(0, this.size - 1)
+    if (this.isEmpty()) {
+        null
+    } else {
+        val init = (this as? MutableList<T>)?.subList(0, this.size - 1) ?: this.subList(0, this.size - 1).toMutableList()
         val last = this[this.size - 1]
         Pair(last, init)
-    } else {
-        null
     }
 
 /**
@@ -375,7 +316,7 @@ public fun <T> List<T>.splitLastMut(): Pair<T, MutableList<T>>? =
  * ```
  */
 public fun <T> List<T>.last(): T? =
-    if (this != null) {
+    if (this.isNotEmpty()) {
         val last = this[this.size - 1]
         last
     } else {
@@ -402,7 +343,7 @@ public fun <T> List<T>.last(): T? =
  * ```
  */
 public fun <T> List<T>.lastMut(): T? =
-    if (this != null) {
+    if (this.isNotEmpty()) {
         val last = this[this.size - 1]
         last
     } else {
@@ -426,13 +367,7 @@ public fun <T> List<T>.lastMut(): T? =
  * ```
  */
 public fun <T> List<T>.firstChunk(n: Int = 0): List<T>? =
-    if (this.size < n) {
-        null
-    } else {
-        // SAFETY: We explicitly check for the correct number of elements,
-        // and do not let the reference outlive the slice.
-        (this.asPtr().castArray())
-    }
+    if (this.size < n) null else this.subList(0, n)
 
 /**
  * Returns a mutable array reference to the first `N` items in the slice.
@@ -459,10 +394,7 @@ public fun <T> List<T>.firstChunkMut(n: Int = 0): List<T>? =
     if (this.size < n) {
         null
     } else {
-        // SAFETY: We explicitly check for the correct number of elements,
-        // do not let the reference outlive the slice,
-        // and require exclusive access to the entire slice to mutate the chunk.
-        (this.asMutPtr().castArray())
+        (this as? MutableList<T>)?.subList(0, n) ?: this.subList(0, n)
     }
 
 /**
@@ -486,12 +418,7 @@ public fun <T> List<T>.firstChunkMut(n: Int = 0): List<T>? =
  * check(null == x.splitFirstChunk(4))
  * ```
  */
-public fun <T> List<T>.splitFirstChunk(n: Int = 0): Pair<List<T>, List<T>>? {
-    val (first, tail) = this.splitAtChecked(n) ?: return null
-    // SAFETY: We explicitly check for the correct number of elements,
-    // and do not let the references outlive the slice.
-    return Pair((first.asPtr().castArray()), tail)
-}
+public fun <T> List<T>.splitFirstChunk(n: Int = 0): Pair<List<T>, List<T>>? = this.splitAtChecked(n)
 
 /**
  * Returns a mutable array reference to the first `N` items in the slice and the remaining
@@ -519,10 +446,7 @@ public fun <T> List<T>.splitFirstChunk(n: Int = 0): Pair<List<T>, List<T>>? {
  */
 public fun <T> List<T>.splitFirstChunkMut(n: Int = 0): Pair<List<T>, MutableList<T>>? {
     val (first, tail) = this.splitAtMutChecked(n) ?: return null
-    // SAFETY: We explicitly check for the correct number of elements,
-    // do not let the reference outlive the slice,
-    // and enforce exclusive mutability of the chunk by the split.
-    return Pair((first.asMutPtr().castArray()), tail)
+    return Pair(first, tail)
 }
 
 /**
@@ -548,10 +472,7 @@ public fun <T> List<T>.splitFirstChunkMut(n: Int = 0): Pair<List<T>, MutableList
  */
 public fun <T> List<T>.splitLastChunk(n: Int = 0): Pair<List<T>, List<T>>? {
     val index = this.size.checkedSub(n) ?: return null
-    val (init, last) = this.splitAt(index)
-    // SAFETY: We explicitly check for the correct number of elements,
-    // and do not let the references outlive the slice.
-    return Pair(init, (last.asPtr().castArray()))
+    return this.splitAt(index)
 }
 
 /**
@@ -580,11 +501,7 @@ public fun <T> List<T>.splitLastChunk(n: Int = 0): Pair<List<T>, List<T>>? {
  */
 public fun <T> List<T>.splitLastChunkMut(n: Int = 0): Pair<MutableList<T>, List<T>>? {
     val index = this.size.checkedSub(n) ?: return null
-    val (init, last) = this.splitAtMut(index)
-    // SAFETY: We explicitly check for the correct number of elements,
-    // do not let the reference outlive the slice,
-    // and enforce exclusive mutability of the chunk by the split.
-    return Pair(init, (last.asMutPtr().castArray()))
+    return this.splitAtMut(index)
 }
 
 /**
@@ -604,12 +521,8 @@ public fun <T> List<T>.splitLastChunkMut(n: Int = 0): Pair<MutableList<T>, List<
  * ```
  */
 public fun <T> List<T>.lastChunk(n: Int = 0): List<T>? {
-    // Note(const-Note): Without const traits, we need this instead of `get`.
     val index = this.size.checkedSub(n) ?: return null
-    val (_, last) = this.splitAt(index)
-    // SAFETY: We explicitly check for the correct number of elements,
-    // and do not let the references outlive the slice.
-    return (last.asPtr().castArray())
+    return this.subList(index, this.size)
 }
 
 /**
@@ -634,129 +547,35 @@ public fun <T> List<T>.lastChunk(n: Int = 0): List<T>? {
  * ```
  */
 public fun <T> List<T>.lastChunkMut(n: Int = 0): List<T>? {
-    // Note(const-Note): Without const traits, we need this instead of `get`.
     val index = this.size.checkedSub(n) ?: return null
-    val (_, last) = this.splitAtMut(index)
-    // SAFETY: We explicitly check for the correct number of elements,
-    // do not let the reference outlive the slice,
-    // and require exclusive access to the entire slice to mutate the chunk.
-    return (last.asMutPtr().castArray())
+    return (this as? MutableList<T>)?.subList(index, this.size) ?: this.subList(index, this.size)
 }
 
-/**
- * Returns a reference to an element or subslice depending on the type of
- * index.
- *
- * - If given a position, returns a reference to the element at that
- *   position or `None` if out of bounds.
- * - If given a range, returns the subslice corresponding to that range,
- *   or `None` if out of bounds.
- *
- * # Examples
- *
- * ```kotlin
- * val v = listOf(10, 40, 30)
- * check(40 == v.get(1))
- * check(listOf(10, 40) == v.get(0 until 2))
- * check(null == v.get(3))
- * check(null == v.get(0 until 4))
- * ```
- */
-public fun <Output, T, I> List<T>.get(index: I): Output? where I : SliceIndex<List<T>, Output> = index.get(this)
+public fun <T> List<T>.get(range: IntRange): List<T>? =
+    if (range.first >= 0 && range.last + 1 <= this.size && range.first <= range.last + 1) {
+        this.subList(range.first, range.last + 1)
+    } else {
+        null
+    }
 
-/**
- * Returns a mutable reference to an element or subslice depending on the
- * type of index (see [get]) or `None` if the index is out of bounds.
- *
- * [get]: slice.get
- *
- * # Examples
- *
- * ```kotlin
- * val x = listOf(0, 1, 2)
- * when (val matchVal = x.getMut(1)) {
- *     null -> {}
- *     else -> {
- *         val elem = matchVal
- *         elem = 42
- *     }
- * }
- * check((x).contentEquals(listOf(0, 42, 2)))
- * ```
- */
-public fun <Output, T, I> List<T>.getMut(index: I): Output? where I : SliceIndex<List<T>, Output> = index.getMut(this)
+public fun <T> List<T>.getMut(index: Int): T? =
+    if (index in 0 until this.size) this[index] else null
 
-/**
- * Returns a reference to an element or subslice, without doing bounds
- * checking.
- *
- * For a safe alternative see [get].
- *
- * # Safety
- *
- * Calling this method with an out-of-bounds index is *[undefined behavior]*
- * even if the resulting reference is not used.
- *
- * You can think of this like `.get(index).unwrapUnchecked()`.  It's UB
- * to call `.getUnchecked(len)`, even if you immediately convert to a
- * pointer.  And it's UB to call `.getUnchecked(.. len + 1)`,
- * `.getUnchecked(..= len)`, or similar.
- *
- * [get]: slice.get
- * [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
- *
- * # Examples
- *
- * ```kotlin
- * val x = listOf(1, 2, 4)
- * run {
- *     check(x.getUnchecked(1) == 2)
- * }
- * ```
- */
-public fun <Output, T, I> List<T>.getUnchecked(index: I): Output where I : SliceIndex<List<T>, Output> {
-    // SAFETY: the caller must uphold most of the safety requirements for `getUnchecked`;
-    // the slice is dereferenceable because `self` is a safe reference.
-    // The returned pointer is safe because impls of `SliceIndex` have to guarantee that it is.
-    return index.getUnchecked(this)
-}
+public fun <T> List<T>.getMut(range: IntRange): List<T>? =
+    if (range.first >= 0 && range.last + 1 <= this.size && range.first <= range.last + 1) {
+        (this as? MutableList<T>)?.subList(range.first, range.last + 1) ?: this.subList(range.first, range.last + 1).toMutableList()
+    } else {
+        null
+    }
 
-/**
- * Returns a mutable reference to an element or subslice, without doing
- * bounds checking.
- *
- * For a safe alternative see [getMut].
- *
- * # Safety
- *
- * Calling this method with an out-of-bounds index is *[undefined behavior]*
- * even if the resulting reference is not used.
- *
- * You can think of this like `.getMut(index).unwrapUnchecked()`.  It's
- * UB to call `.getUncheckedMut(len)`, even if you immediately convert
- * to a pointer.  And it's UB to call `.getUncheckedMut(.. len + 1)`,
- * `.getUncheckedMut(..= len)`, or similar.
- *
- * [getMut]: slice.getMut
- * [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
- *
- * # Examples
- *
- * ```kotlin
- * val x = listOf(1, 2, 4)
- * run {
- *     val elem = x.getUncheckedMut(1)
- *     elem = 13
- * }
- * check((x).contentEquals(listOf(1, 13, 4)))
- * ```
- */
-public fun <Output, T, I> List<T>.getUncheckedMut(index: I): Output where I : SliceIndex<List<T>, Output> {
-    // SAFETY: the caller must uphold the safety requirements for `getUncheckedMut`;
-    // the slice is dereferenceable because `self` is a safe reference.
-    // The returned pointer is safe because impls of `SliceIndex` have to guarantee that it is.
-    return index.getUncheckedMut(this)
-}
+public fun <T> List<T>.getUnchecked(index: Int): T = this[index]
+
+public fun <T> List<T>.getUnchecked(range: IntRange): List<T> = this.subList(range.first, range.last + 1)
+
+public fun <T> List<T>.getUncheckedMut(index: Int): T = this[index]
+
+public fun <T> List<T>.getUncheckedMut(range: IntRange): List<T> =
+    (this as? MutableList<T>)?.subList(range.first, range.last + 1) ?: this.subList(range.first, range.last + 1).toMutableList()
 
 /**
  * Returns a raw pointer to the slice's buffer.
@@ -844,27 +663,11 @@ public fun <T> List<T>.asMutPtr(): MutPtr = (mutPtrFromRustCast(this)).let { ptr
  *
  * [asPtr]: slice.asPtr
  */
-public fun <T> List<T>.asPtrRange(): Range<ConstPtr> {
+public fun <T> List<T>.asPtrRange(typeLayoutT: TypeLayout<T>? = null): Range<ConstPtr> {
     val start = this.asPtr()
-    // SAFETY: The `add` here is safe, because:
-    //
-    // - Both pointers are part of the same object, as pointing directly
-    // past the object also counts.
-    //
-    // - The size of the slice is never larger than `Long.MAX` bytes, as
-    // noted here:
-    // - https://github.com/rust-lang/unchecked-code-guidelines/issues/102#issuecomment-473340447
-    // - https://doc.rust-lang.org/reference/behavior-considered-undefined.html
-    // - https://doc.rust-lang.org/core/slice/fn.fromRawParts.html#safety
-    // (This doesn't seem normative yet, but the very same assumption is
-    // made in many places, including the Index implementation of slices.)
-    //
-    // - There is no wrapping around involved, as slices do not wrap past
-    // the end of the address space.
-    //
-    // See the documentation of [pointer.add].
-    val end = ConstPtr((start).rawAddress + ((this.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
-    return start until end
+    val stride = typeLayoutT?.strideBytes ?: 1L
+    val end = ConstPtr(start.rawAddress + (this.size.toLong() * stride))
+    return Range(start, end)
 }
 
 /**
@@ -885,11 +688,11 @@ public fun <T> List<T>.asPtrRange(): Range<ConstPtr> {
  *
  * [asMutPtr]: slice.asMutPtr
  */
-public fun <T> List<T>.asMutPtrRange(): Range<MutPtr> {
+public fun <T> List<T>.asMutPtrRange(typeLayoutT: TypeLayout<T>? = null): Range<MutPtr> {
     val start = this.asMutPtr()
-    // SAFETY: See asPtrRange() above for why `add` here is safe.
-    val end = MutPtr((start).rawAddress + ((this.size).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
-    return start until end
+    val stride = typeLayoutT?.strideBytes ?: 1L
+    val end = MutPtr(start.rawAddress + (this.size.toLong() * stride))
+    return Range(start, end)
 }
 
 /**
@@ -898,14 +701,7 @@ public fun <T> List<T>.asMutPtrRange(): Range<MutPtr> {
  * If `N` is not exactly equal to the length of `self`, then this method returns `None`.
  */
 public fun <T> List<T>.asArray(n: Int = 0): List<T>? =
-    if (this.size == n) {
-        val ptr = this.asPtr().castArray()
-        // SAFETY: The underlying array of a slice can be reinterpreted as an actual array `[T; N]` if `N` is not greater than the slice's length.
-        val me = ptr
-        me
-    } else {
-        null
-    }
+    if (this.size == n) this else null
 
 /**
  * Gets a mutable reference to the slice's underlying array.
@@ -913,14 +709,7 @@ public fun <T> List<T>.asArray(n: Int = 0): List<T>? =
  * If `N` is not exactly equal to the length of `self`, then this method returns `None`.
  */
 public fun <T> List<T>.asMutArray(n: Int = 0): List<T>? =
-    if (this.size == n) {
-        val ptr = this.asMutPtr().castArray()
-        // SAFETY: The underlying array of a slice can be reinterpreted as an actual array `[T; N]` if `N` is not greater than the slice's length.
-        val me = ptr
-        me
-    } else {
-        null
-    }
+    if (this.size == n) this else null
 
 /**
  * Swaps two elements in the slice.
@@ -985,11 +774,10 @@ public fun <T> List<T>.swap(a: Int, b: Int) {
  * [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
  */
 public fun <T> List<T>.swapUnchecked(a: Int, b: Int) {
-    Unit
-    val ptr = this.asMutPtr()
-    // SAFETY: caller has to guarantee that `a<self.len()` and `b<self.len()`
-    run {
-        swap(MutPtr((ptr).rawAddress + ((a).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), MutPtr((ptr).rawAddress + ((b).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)))
+    if (this is MutableList<T>) {
+        val tmp = this[a]
+        this[a] = this[b]
+        this[b] = tmp
     }
 }
 
@@ -1005,300 +793,17 @@ public fun <T> List<T>.swapUnchecked(a: Int, b: Int) {
  * ```
  */
 public fun <T> List<T>.reverse() {
-    fun <T> revswap(a: MutableList<T>, b: MutableList<T>, n: Int) {
-        if (false) {
-            check(a.size == n)
-        }
-        if (false) {
-            check(b.size == n)
-        }
-        // Because this function is first compiled in isolation,
-        // this check tells LLVM that the indexing below is
-        // in-bounds. Then after inlining -- once the actual
-        // lengths of the slices are known -- it's removed.
-        // Note(constTraitImpl) replace with let (a, b) = (a[..n], b[..n]);
-        val (a1, _) = a.splitAtMut(n)
-        val (b1, _) = b.splitAtMut(n)
+    if (this is MutableList<T>) {
         var i = 0
-        while (i < n) {
-            io.github.kotlinmania.rustlang.core.mem.swap(a1[i], b1[n - 1 - i])
+        var j = this.size - 1
+        while (i < j) {
+            val tmp = this[i]
+            this[i] = this[j]
+            this[j] = tmp
             i += 1
+            j -= 1
         }
     }
-    val halfLen = this.size / 2
-    val structVal = this.asMutPtrRange()
-    val start = structVal.start
-    val end = structVal.end
-    // These slices will skip the middle item for an odd length,
-    // since that one doesn't need to move.
-    val (frontHalf, backHalf) = Pair(linearMutSliceView(start, halfLen.toInt(), PrimitiveLayouts.U8), linearMutSliceView(end.sub(halfLen), halfLen.toInt(), PrimitiveLayouts.U8))
-    // Introducing a function boundary here means that the two halves
-    // get `noalias` markers, allowing better optimization as LLVM
-    // knows that they're disjoint, unlike in the original slice.
-    revswap(frontHalf, backHalf, halfLen)
-}
-
-/**
- * Returns an iterator over the slice.
- *
- * The iterator yields all items from start to end.
- *
- * # Examples
- *
- * ```kotlin
- * val x = listOf(1, 2, 4)
- * var iterator = x.iter()
- * check(iterator.next() == 1)
- * check(iterator.next() == 2)
- * check(iterator.next() == 4)
- * check(iterator.next() == null)
- * ```
- */
-public fun <T> List<T>.iter(): Iter<T> = Iter.new(this)
-
-/**
- * Returns an iterator that allows modifying each value.
- *
- * The iterator yields all items from start to end.
- *
- * # Examples
- *
- * ```kotlin
- * val x = listOf(1, 2, 4)
- * for (idx in x.indices) {
- *     x[idx] += 2
- * }
- * check((x).contentEquals(listOf(3, 4, 6)))
- * ```
- */
-public fun <T> List<T>.iterMut(): IterMut<T> = IterMut.new(this)
-
-/**
- * Returns an iterator over all contiguous windows of length
- * `size`. The windows overlap. If the slice is shorter than
- * `size`, the iterator returns no values.
- *
- * # Panics
- *
- * Panics if `size` is zero.
- *
- * # Examples
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf('l', 'o', 'r', 'e', 'm')
- * var iter = slice.windows(3)
- * check(iter.next()!! == listOf('l', 'o', 'r'))
- * check(iter.next()!! == listOf('o', 'r', 'e'))
- * check(iter.next()!! == listOf('r', 'e', 'm'))
- * check(iter.next() == null)
- * ```
- *
- * If the slice is shorter than `size`:
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf('f', 'o', 'o')
- * var iter = slice.windows(4)
- * check(iter.next() == null)
- * ```
- *
- * Because the [Iterator] trait cannot represent the required scopes,
- * there is no `windowsMut` analog to `windows`;
- * `[0, 1, 2].windowsMut(2).collect()` would violate [the rules of references]
- * (though a [LendingIterator] analog is possible). You can sometimes use
- * [`Cell.asSliceOfCells`](cell.Cell.asSliceOfCells) in
- * conjunction with `windows` instead:
- *
- * [the rules of references]: https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#the-rules-of-references
- * [LendingIterator]: https://blog.rust-lang.org/2022/10/28/gats-stabilization.html
- * ```kotlin
- * import slice
- * import std.cell.Cell
- *
- * var array = mutableListOf('R', 'u', 's', 't', ' ', '2', '0', '1', '5')
- * val slice = array
- * val sliceOfCells: List<Cell<Char>> = Cell.fromMut(slice).asSliceOfCells()
- * for (w in sliceOfCells.windows(3)) {
- *     Cell.swap(w[0], w[2])
- * }
- * check(array == listOf('s', 't', ' ', '2', '0', '1', '5', 'u', 'R'))
- * ```
- */
-public fun <T> List<T>.windows(size: Int): Windows<T> {
-    val size1 = (NonZero.new<NonZeroI32Inner, Int>(size) ?: error("window size must be non-zero"))
-    return Windows.new(this, size1)
-}
-
-/**
- * Returns an iterator over `chunkSize` elements of the slice at a time, starting at the
- * beginning of the slice.
- *
- * The chunks are slices and do not overlap. If `chunkSize` does not divide the length of the
- * slice, then the last chunk will not have length `chunkSize`.
- *
- * See [chunksExact] for a variant of this iterator that returns chunks of always exactly
- * `chunkSize` elements, and [rchunks] for the same iterator but starting at the end of the
- * slice.
- *
- * If your `chunkSize` is a constant, consider using [asChunks] instead, which will
- * give references to arrays of exactly that length, rather than slices.
- *
- * # Panics
- *
- * Panics if `chunkSize` is zero.
- *
- * # Examples
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf('l', 'o', 'r', 'e', 'm')
- * var iter = slice.chunks(2)
- * check(iter.next()!! == listOf('l', 'o'))
- * check(iter.next()!! == listOf('r', 'e'))
- * check(iter.next()!! == listOf('m'))
- * check(iter.next() == null)
- * ```
- *
- * [chunksExact]: slice.chunksExact
- * [rchunks]: slice.rchunks
- * [asChunks]: slice.asChunks
- */
-public fun <T> List<T>.chunks(chunkSize: Int): Chunks<T> {
-    check(chunkSize != 0) { "chunk size must be non-zero" }
-    return Chunks.new(this, chunkSize)
-}
-
-/**
- * Returns an iterator over `chunkSize` elements of the slice at a time, starting at the
- * beginning of the slice.
- *
- * The chunks are mutable slices, and do not overlap. If `chunkSize` does not divide the
- * length of the slice, then the last chunk will not have length `chunkSize`.
- *
- * See [chunksExactMut] for a variant of this iterator that returns chunks of always
- * exactly `chunkSize` elements, and [rchunksMut] for the same iterator but starting at
- * the end of the slice.
- *
- * If your `chunkSize` is a constant, consider using [asChunksMut] instead, which will
- * give references to arrays of exactly that length, rather than slices.
- *
- * # Panics
- *
- * Panics if `chunkSize` is zero.
- *
- * # Examples
- *
- * ```kotlin
- * val v = listOf(0, 0, 0, 0, 0)
- * var count = 1
- * for (chunk in v.chunksMut(2)) {
- *     for (idx in chunk.indices) {
- *         chunk[idx] += count
- *     }
- *     count += 1
- * }
- * check((v).contentEquals(listOf(1, 1, 2, 2, 3)))
- * ```
- *
- * [chunksExactMut]: slice.chunksExactMut
- * [rchunksMut]: slice.rchunksMut
- * [asChunksMut]: slice.asChunksMut
- */
-public fun <T> List<T>.chunksMut(chunkSize: Int): ChunksMut<T> {
-    check(chunkSize != 0) { "chunk size must be non-zero" }
-    return ChunksMut.new(this, chunkSize)
-}
-
-/**
- * Returns an iterator over `chunkSize` elements of the slice at a time, starting at the
- * beginning of the slice.
- *
- * The chunks are slices and do not overlap. If `chunkSize` does not divide the length of the
- * slice, then the last up to `chunkSize - 1` elements will be omitted and can be retrieved
- * from the `remainder` function of the iterator.
- *
- * Due to each chunk having exactly `chunkSize` elements, the compiler can often optimize the
- * resulting code better than in the case of [chunks].
- *
- * See [chunks] for a variant of this iterator that also returns the remainder as a smaller
- * chunk, and [rchunksExact] for the same iterator but starting at the end of the slice.
- *
- * If your `chunkSize` is a constant, consider using [asChunks] instead, which will
- * give references to arrays of exactly that length, rather than slices.
- *
- * # Panics
- *
- * Panics if `chunkSize` is zero.
- *
- * # Examples
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf('l', 'o', 'r', 'e', 'm')
- * var iter = slice.chunksExact(2)
- * check(iter.next()!! == listOf('l', 'o'))
- * check(iter.next()!! == listOf('r', 'e'))
- * check(iter.next() == null)
- * check(iter.remainder() == listOf('m'))
- * ```
- *
- * [chunks]: slice.chunks
- * [rchunksExact]: slice.rchunksExact
- * [asChunks]: slice.asChunks
- */
-public fun <T> List<T>.chunksExact(chunkSize: Int): ChunksExact<T> {
-    check(chunkSize != 0) { "chunk size must be non-zero" }
-    return ChunksExact.new(this, chunkSize)
-}
-
-/**
- * Returns an iterator over `chunkSize` elements of the slice at a time, starting at the
- * beginning of the slice.
- *
- * The chunks are mutable slices, and do not overlap. If `chunkSize` does not divide the
- * length of the slice, then the last up to `chunkSize - 1` elements will be omitted and can be
- * retrieved from the `intoRemainder` function of the iterator.
- *
- * Due to each chunk having exactly `chunkSize` elements, the compiler can often optimize the
- * resulting code better than in the case of [chunksMut].
- *
- * See [chunksMut] for a variant of this iterator that also returns the remainder as a
- * smaller chunk, and [rchunksExactMut] for the same iterator but starting at the end of
- * the slice.
- *
- * If your `chunkSize` is a constant, consider using [asChunksMut] instead, which will
- * give references to arrays of exactly that length, rather than slices.
- *
- * # Panics
- *
- * Panics if `chunkSize` is zero.
- *
- * # Examples
- *
- * ```kotlin
- * val v = listOf(0, 0, 0, 0, 0)
- * var count = 1
- * for (chunk in v.chunksExactMut(2)) {
- *     for (idx in chunk.indices) {
- *         chunk[idx] += count
- *     }
- *     count += 1
- * }
- * check((v).contentEquals(listOf(1, 1, 2, 2, 0)))
- * ```
- *
- * [chunksMut]: slice.chunksMut
- * [rchunksExactMut]: slice.rchunksExactMut
- * [asChunksMut]: slice.asChunksMut
- */
-public fun <T> List<T>.chunksExactMut(chunkSize: Int): ChunksExactMut<T> {
-    check(chunkSize != 0) { "chunk size must be non-zero" }
-    return ChunksExactMut.new(this, chunkSize)
 }
 
 /**
@@ -1339,12 +844,14 @@ public fun <T> List<T>.chunksExactMut(chunkSize: Int): ChunksExactMut<T> {
  * ```
  */
 public fun <T> List<T>.asChunksUnchecked(n: Int = 0): List<List<T>> {
-    Unit
-    // SAFETY: Caller must guarantee that `N` is nonzero and exactly divides the slice length
-    val newLen = exactDiv(this.size, n)
-    // SAFETY: We cast a slice of `newLen * N` elements into
-    // a slice of `newLen` many `N` elements chunks.
-    return linearSliceView(ConstPtr((this.asPtr()).rawAddress), newLen.toInt(), PrimitiveLayouts.U8)
+    check(n > 0 && this.size % n == 0) {
+        "asChunksUnchecked requires positive chunk size dividing slice length"
+    }
+    val newLen = this.size / n
+    return List(newLen) { i ->
+        val start = i * n
+        this.subList(start, start + n)
+    }
 }
 
 /**
@@ -1486,14 +993,18 @@ public fun <T> List<T>.asRchunks(n: Int = 0): Pair<List<T>, List<List<T>>> {
  * // let chunks: &[[_; 0]] = slice.asChunksUncheckedMut() // Zero-length chunks are never allowed
  * ```
  */
-public fun <T> List<T>.asChunksUncheckedMut(n: Int = 0): MutableList<List<T>> {
-    Unit
-    // SAFETY: Caller must guarantee that `N` is nonzero and exactly divides the slice length
-    val newLen = exactDiv(this.size, n)
-    // SAFETY: We cast a slice of `newLen * N` elements into
-    // a slice of `newLen` many `N` elements chunks.
-    return linearMutSliceView(MutPtr((this.asMutPtr()).rawAddress), newLen.toInt(), PrimitiveLayouts.U8)
+private fun <T> List<T>.asChunksUncheckedMutList(n: Int = 0): MutableList<List<T>> {
+    check(n > 0 && this.size % n == 0) { "invalid chunk size $n for length ${this.size}" }
+    val out = ArrayList<List<T>>(this.size / n)
+    var i = 0
+    while (i < this.size) {
+        out.add((this as? MutableList<T>)?.subList(i, i + n) ?: this.subList(i, i + n))
+        i += n
+    }
+    return out
 }
+
+public fun <T> List<T>.asChunksUncheckedMut(n: Int = 0): List<List<T>> = this.asChunksUncheckedMutList(n)
 
 /**
  * Splits the slice into a slice of `N`-element arrays,
@@ -1540,7 +1051,7 @@ public fun <T> List<T>.asChunksMut(n: Int = 0): Pair<MutableList<List<T>>, Mutab
     val (multipleOfN, remainder) = this.splitAtMutUnchecked(lenRoundedDown)
     // SAFETY: We already panicked for zero, and ensured by construction
     // that the length of the subslice is a multiple of N.
-    val arraySlice = multipleOfN.asChunksUncheckedMut()
+    val arraySlice = multipleOfN.asChunksUncheckedMutList(n)
     return Pair(arraySlice, remainder)
 }
 
@@ -1587,7 +1098,7 @@ public fun <T> List<T>.asRchunksMut(n: Int = 0): Pair<MutableList<T>, MutableLis
     val (remainder, multipleOfN) = this.splitAtMut(this.size - len * n)
     // SAFETY: We already panicked for zero, and ensured by construction
     // that the length of the subslice is a multiple of N.
-    val arraySlice = multipleOfN.asChunksUncheckedMut()
+    val arraySlice = multipleOfN.asChunksUncheckedMutList(n)
     return Pair(remainder, arraySlice)
 }
 
@@ -1622,254 +1133,7 @@ public fun <T> List<T>.asRchunksMut(n: Int = 0): Pair<MutableList<T>, MutableLis
  *
  * [windows]: slice.windows
  */
-public fun <T> List<T>.arrayWindows(n: Int = 0): ArrayWindows<T> {
-    check(n != 0) { "window size must be non-zero" }
-    return ArrayWindows.new(this, n)
-}
-
-/**
- * Returns an iterator over `chunkSize` elements of the slice at a time, starting at the end
- * of the slice.
- *
- * The chunks are slices and do not overlap. If `chunkSize` does not divide the length of the
- * slice, then the last chunk will not have length `chunkSize`.
- *
- * See [rchunksExact] for a variant of this iterator that returns chunks of always exactly
- * `chunkSize` elements, and [chunks] for the same iterator but starting at the beginning
- * of the slice.
- *
- * If your `chunkSize` is a constant, consider using [asRchunks] instead, which will
- * give references to arrays of exactly that length, rather than slices.
- *
- * # Panics
- *
- * Panics if `chunkSize` is zero.
- *
- * # Examples
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf('l', 'o', 'r', 'e', 'm')
- * var iter = slice.rchunks(2)
- * check(iter.next()!! == listOf('e', 'm'))
- * check(iter.next()!! == listOf('o', 'r'))
- * check(iter.next()!! == listOf('l'))
- * check(iter.next() == null)
- * ```
- *
- * [rchunksExact]: slice.rchunksExact
- * [chunks]: slice.chunks
- * [asRchunks]: slice.asRchunks
- */
-public fun <T> List<T>.rchunks(chunkSize: Int): RChunks<T> {
-    check(chunkSize != 0) { "chunk size must be non-zero" }
-    return RChunks.new(this, chunkSize)
-}
-
-/**
- * Returns an iterator over `chunkSize` elements of the slice at a time, starting at the end
- * of the slice.
- *
- * The chunks are mutable slices, and do not overlap. If `chunkSize` does not divide the
- * length of the slice, then the last chunk will not have length `chunkSize`.
- *
- * See [rchunksExactMut] for a variant of this iterator that returns chunks of always
- * exactly `chunkSize` elements, and [chunksMut] for the same iterator but starting at the
- * beginning of the slice.
- *
- * If your `chunkSize` is a constant, consider using [asRchunksMut] instead, which will
- * give references to arrays of exactly that length, rather than slices.
- *
- * # Panics
- *
- * Panics if `chunkSize` is zero.
- *
- * # Examples
- *
- * ```kotlin
- * val v = listOf(0, 0, 0, 0, 0)
- * var count = 1
- * for (chunk in v.rchunksMut(2)) {
- *     for (idx in chunk.indices) {
- *         chunk[idx] += count
- *     }
- *     count += 1
- * }
- * check((v).contentEquals(listOf(3, 2, 2, 1, 1)))
- * ```
- *
- * [rchunksExactMut]: slice.rchunksExactMut
- * [chunksMut]: slice.chunksMut
- * [asRchunksMut]: slice.asRchunksMut
- */
-public fun <T> List<T>.rchunksMut(chunkSize: Int): RChunksMut<T> {
-    check(chunkSize != 0) { "chunk size must be non-zero" }
-    return RChunksMut.new(this, chunkSize)
-}
-
-/**
- * Returns an iterator over `chunkSize` elements of the slice at a time, starting at the
- * end of the slice.
- *
- * The chunks are slices and do not overlap. If `chunkSize` does not divide the length of the
- * slice, then the last up to `chunkSize - 1` elements will be omitted and can be retrieved
- * from the `remainder` function of the iterator.
- *
- * Due to each chunk having exactly `chunkSize` elements, the compiler can often optimize the
- * resulting code better than in the case of [rchunks].
- *
- * See [rchunks] for a variant of this iterator that also returns the remainder as a smaller
- * chunk, and [chunksExact] for the same iterator but starting at the beginning of the
- * slice.
- *
- * If your `chunkSize` is a constant, consider using [asRchunks] instead, which will
- * give references to arrays of exactly that length, rather than slices.
- *
- * # Panics
- *
- * Panics if `chunkSize` is zero.
- *
- * # Examples
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf('l', 'o', 'r', 'e', 'm')
- * var iter = slice.rchunksExact(2)
- * check(iter.next()!! == listOf('e', 'm'))
- * check(iter.next()!! == listOf('o', 'r'))
- * check(iter.next() == null)
- * check(iter.remainder() == listOf('l'))
- * ```
- *
- * [chunks]: slice.chunks
- * [rchunks]: slice.rchunks
- * [chunksExact]: slice.chunksExact
- * [asRchunks]: slice.asRchunks
- */
-public fun <T> List<T>.rchunksExact(chunkSize: Int): RChunksExact<T> {
-    check(chunkSize != 0) { "chunk size must be non-zero" }
-    return RChunksExact.new(this, chunkSize)
-}
-
-/**
- * Returns an iterator over `chunkSize` elements of the slice at a time, starting at the end
- * of the slice.
- *
- * The chunks are mutable slices, and do not overlap. If `chunkSize` does not divide the
- * length of the slice, then the last up to `chunkSize - 1` elements will be omitted and can be
- * retrieved from the `intoRemainder` function of the iterator.
- *
- * Due to each chunk having exactly `chunkSize` elements, the compiler can often optimize the
- * resulting code better than in the case of [chunksMut].
- *
- * See [rchunksMut] for a variant of this iterator that also returns the remainder as a
- * smaller chunk, and [chunksExactMut] for the same iterator but starting at the beginning
- * of the slice.
- *
- * If your `chunkSize` is a constant, consider using [asRchunksMut] instead, which will
- * give references to arrays of exactly that length, rather than slices.
- *
- * # Panics
- *
- * Panics if `chunkSize` is zero.
- *
- * # Examples
- *
- * ```kotlin
- * val v = listOf(0, 0, 0, 0, 0)
- * var count = 1
- * for (chunk in v.rchunksExactMut(2)) {
- *     for (idx in chunk.indices) {
- *         chunk[idx] += count
- *     }
- *     count += 1
- * }
- * check((v).contentEquals(listOf(0, 2, 2, 1, 1)))
- * ```
- *
- * [chunksMut]: slice.chunksMut
- * [rchunksMut]: slice.rchunksMut
- * [chunksExactMut]: slice.chunksExactMut
- * [asRchunksMut]: slice.asRchunksMut
- */
-public fun <T> List<T>.rchunksExactMut(chunkSize: Int): RChunksExactMut<T> {
-    check(chunkSize != 0) { "chunk size must be non-zero" }
-    return RChunksExactMut.new(this, chunkSize)
-}
-
-/**
- * Returns an iterator over the slice producing non-overlapping runs
- * of elements using the predicate to separate them.
- *
- * The predicate is called for every pair of consecutive elements,
- * meaning that it is called on `slice[0]` and `slice[1]`,
- * followed by `slice[1]` and `slice[2]`, and so on.
- *
- * # Examples
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf(1, 1, 1, 3, 3, 2, 2, 2)
- * var iter = slice.chunkBy({ a, b -> a == b })
- * check(iter.next() == listOf(1, 1, 1))
- * check(iter.next() == listOf(3, 3))
- * check(iter.next() == listOf(2, 2, 2))
- * check(iter.next() == null)
- * ```
- *
- * This method can be used to extract the sorted subslices:
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf(1, 1, 2, 3, 2, 3, 2, 3, 4)
- * var iter = slice.chunkBy({ a, b -> a <= b })
- * check(iter.next() == listOf(1, 1, 2, 3))
- * check(iter.next() == listOf(2, 3))
- * check(iter.next() == listOf(2, 3, 4))
- * check(iter.next() == null)
- * ```
- */
-public fun <T> List<T>.chunkBy(pred: (T, T) -> Boolean): ChunkBy<T, (T, T) -> Boolean> = ChunkBy.new(this, pred)
-
-/**
- * Returns an iterator over the slice producing non-overlapping mutable
- * runs of elements using the predicate to separate them.
- *
- * The predicate is called for every pair of consecutive elements,
- * meaning that it is called on `slice[0]` and `slice[1]`,
- * followed by `slice[1]` and `slice[2]`, and so on.
- *
- * # Examples
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf(1, 1, 1, 3, 3, 2, 2, 2)
- * var iter = slice.chunkByMut({ a, b -> a == b })
- * check(iter.next() == listOf(1, 1, 1))
- * check(iter.next() == listOf(3, 3))
- * check(iter.next() == listOf(2, 2, 2))
- * check(iter.next() == null)
- * ```
- *
- * This method can be used to extract the sorted subslices:
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf(1, 1, 2, 3, 2, 3, 2, 3, 4)
- * var iter = slice.chunkByMut({ a, b -> a <= b })
- * check(iter.next() == listOf(1, 1, 2, 3))
- * check(iter.next() == listOf(2, 3))
- * check(iter.next() == listOf(2, 3, 4))
- * check(iter.next() == null)
- * ```
- */
-public fun <T> List<T>.chunkByMut(pred: (T, T) -> Boolean): ChunkByMut<T, (T, T) -> Boolean> = ChunkByMut.new(this, pred)
+// Carved slice iterator wrappers (arrayWindows..chunkByMut) omitted cleanly.
 
 /**
  * Divides one slice into two at an index.
@@ -1985,16 +1249,8 @@ public fun <T> List<T>.splitAtMut(mid: Int): Pair<MutableList<T>, MutableList<T>
  * }
  * ```
  */
-public fun <T> List<T>.splitAtUnchecked(mid: Int): Pair<List<T>, List<T>> {
-    // Note(const-Note): the const function `fromRawParts` is used to make this
-    // function const; previously the implementation used
-    // `(self.getUnchecked(.. mid), self.getUnchecked(mid ..))`
-    val len = this.size
-    val ptr = this.asPtr()
-    Unit
-    // SAFETY: Caller has to check that `0 <= mid <= self.len()`
-    return Pair(linearSliceView(ptr, mid.toInt(), UnresolvedTypeLayout<T>()), linearSliceView(ConstPtr((ptr).rawAddress + ((mid).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), uncheckedSub(len, mid).toInt(), UnresolvedTypeLayout<T>()))
-}
+public fun <T> List<T>.splitAtUnchecked(mid: Int): Pair<List<T>, List<T>> =
+    Pair(this.subList(0, mid), this.subList(mid, this.size))
 
 /**
  * Divides one mutable slice into two at an index, without doing bounds checking.
@@ -2029,16 +1285,12 @@ public fun <T> List<T>.splitAtUnchecked(mid: Int): Pair<List<T>, List<T>> {
  * check(v == listOf(1, 2, 3, 4, 5, 6))
  * ```
  */
-public fun <T> List<T>.splitAtMutUnchecked(mid: Int): Pair<MutableList<T>, MutableList<T>> {
-    val len = this.size
-    val ptr = this.asMutPtr()
-    Unit
-    // SAFETY: Caller has to check that `0 <= mid <= self.len()`.
-    //
-    // `[ptr; mid]` and `[mid; len]` are not overlapping, so returning a mutable reference
-    // is fine.
-    return Pair(linearMutSliceView(ptr, mid.toInt(), UnresolvedTypeLayout<T>()), linearMutSliceView(MutPtr((ptr).rawAddress + ((mid).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), uncheckedSub(len, mid).toInt(), UnresolvedTypeLayout<T>()))
-}
+public fun <T> List<T>.splitAtMutUnchecked(mid: Int): Pair<MutableList<T>, MutableList<T>> =
+    if (this is MutableList<T>) {
+        Pair(this.subList(0, mid), this.subList(mid, this.size))
+    } else {
+        Pair(this.subList(0, mid).toMutableList(), this.subList(mid, this.size).toMutableList())
+    }
 
 /**
  * Divides one slice into two at an index, returning `None` if the slice is
@@ -2166,211 +1418,7 @@ public fun <T> List<T>.splitAtMutChecked(mid: Int): Pair<MutableList<T>, Mutable
  * check(iter.next() == null)
  * ```
  */
-public fun <T> List<T>.split(pred: (T) -> Boolean): Split<T, (T) -> Boolean> = Split.new(this, pred)
-
-/**
- * Returns an iterator over mutable subslices separated by elements that
- * match `pred`. The matched element is not contained in the subslices.
- *
- * # Examples
- *
- * ```kotlin
- * var v = mutableListOf(10, 40, 30, 20, 60, 50)
- * for (group in v.splitMut({ num -> num % 3 == 0 })) {
- *     group[0] = 1
- * }
- * check(v == listOf(1, 40, 30, 1, 60, 1))
- * ```
- */
-public fun <T> List<T>.splitMut(pred: (T) -> Boolean): SplitMut<T, (T) -> Boolean> = SplitMut.new(this, pred)
-
-/**
- * Returns an iterator over subslices separated by elements that match
- * `pred`. The matched element is contained in the end of the previous
- * subslice as a terminator.
- *
- * # Examples
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf(10, 40, 33, 20)
- * var iter = slice.splitInclusive({ num -> num % 3 == 0 })
- * check(iter.next()!! == listOf(10, 40, 33))
- * check(iter.next()!! == listOf(20))
- * check(iter.next() == null)
- * ```
- *
- * If the last element of the slice is matched,
- * that element will be considered the terminator of the preceding slice.
- * That slice will be the last item returned by the iterator.
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf(3, 10, 40, 33)
- * var iter = slice.splitInclusive({ num -> num % 3 == 0 })
- * check(iter.next()!! == listOf(3))
- * check(iter.next()!! == listOf(10, 40, 33))
- * check(iter.next() == null)
- * ```
- */
-public fun <T> List<T>.splitInclusive(pred: (T) -> Boolean): SplitInclusive<T, (T) -> Boolean> = SplitInclusive.new(this, pred)
-
-/**
- * Returns an iterator over mutable subslices separated by elements that
- * match `pred`. The matched element is contained in the previous
- * subslice as a terminator.
- *
- * # Examples
- *
- * ```kotlin
- * var v = mutableListOf(10, 40, 30, 20, 60, 50)
- * for (group in v.splitInclusiveMut({ num -> num % 3 == 0 })) {
- *     val terminatorIdx = group.len() - 1
- *     group[terminatorIdx] = 1
- * }
- * check(v == listOf(10, 40, 1, 20, 1, 1))
- * ```
- */
-public fun <T> List<T>.splitInclusiveMut(pred: (T) -> Boolean): SplitInclusiveMut<T, (T) -> Boolean> = SplitInclusiveMut.new(this, pred)
-
-/**
- * Returns an iterator over subslices separated by elements that match
- * `pred`, starting at the end of the slice and working backwards.
- * The matched element is not contained in the subslices.
- *
- * # Examples
- *
- * ```kotlin
- * import slice
- *
- * val slice = listOf(11, 22, 33, 0, 44, 55)
- * var iter = slice.rsplit({ num -> num == 0 })
- * check(iter.next()!! == listOf(44, 55))
- * check(iter.next()!! == listOf(11, 22, 33))
- * check(iter.next() == null)
- * ```
- *
- * As with `split()`, if the first or last element is matched, an empty
- * slice will be the first (or last) item returned by the iterator.
- *
- * ```kotlin
- * val v = listOf(0, 1, 1, 2, 3, 5, 8)
- * var it = v.rsplit({ n -> n % 2 == 0 })
- * check(it.next()!! == listOf())
- * check(it.next()!! == listOf(3, 5))
- * check(it.next()!! == listOf(1, 1))
- * check(it.next()!! == listOf())
- * check(it.next() == null)
- * ```
- */
-public fun <T> List<T>.rsplit(pred: (T) -> Boolean): RSplit<T, (T) -> Boolean> = RSplit.new(this, pred)
-
-/**
- * Returns an iterator over mutable subslices separated by elements that
- * match `pred`, starting at the end of the slice and working
- * backwards. The matched element is not contained in the subslices.
- *
- * # Examples
- *
- * ```kotlin
- * var v = mutableListOf(100, 400, 300, 200, 600, 500)
- * var count = 0
- * for (group in v.rsplitMut({ num -> num % 3 == 0 })) {
- *     count += 1
- *     group[0] = count
- * }
- * check(v == listOf(3, 400, 300, 2, 600, 1))
- * ```
- */
-public fun <T> List<T>.rsplitMut(pred: (T) -> Boolean): RSplitMut<T, (T) -> Boolean> = RSplitMut.new(this, pred)
-
-/**
- * Returns an iterator over subslices separated by elements that match
- * `pred`, limited to returning at most `n` items. The matched element is
- * not contained in the subslices.
- *
- * The last element returned, if any, will contain the remainder of the
- * slice.
- *
- * # Examples
- *
- * Print the slice split once by numbers divisible by 3 (i.e., `[10, 40]`,
- * `[20, 60, 50]`):
- *
- * ```kotlin
- * val v = listOf(10, 40, 30, 20, 60, 50)
- * for (group in v.splitn(2, { num -> num % 3 == 0 })) {
- *     println("$group")
- * }
- * ```
- */
-public fun <T> List<T>.splitn(n: Int, pred: (T) -> Boolean): SplitN<T, (T) -> Boolean> = SplitN.new(this.split(pred), n)
-
-/**
- * Returns an iterator over mutable subslices separated by elements that match
- * `pred`, limited to returning at most `n` items. The matched element is
- * not contained in the subslices.
- *
- * The last element returned, if any, will contain the remainder of the
- * slice.
- *
- * # Examples
- *
- * ```kotlin
- * var v = mutableListOf(10, 40, 30, 20, 60, 50)
- * for (group in v.splitnMut(2, { num -> num % 3 == 0 })) {
- *     group[0] = 1
- * }
- * check(v == listOf(1, 40, 30, 1, 60, 50))
- * ```
- */
-public fun <T> List<T>.splitnMut(n: Int, pred: (T) -> Boolean): SplitNMut<T, (T) -> Boolean> = SplitNMut.new(this.splitMut(pred), n)
-
-/**
- * Returns an iterator over subslices separated by elements that match
- * `pred` limited to returning at most `n` items. This starts at the end of
- * the slice and works backwards. The matched element is not contained in
- * the subslices.
- *
- * The last element returned, if any, will contain the remainder of the
- * slice.
- *
- * # Examples
- *
- * Print the slice split once, starting from the end, by numbers divisible
- * by 3 (i.e., `[50]`, `[10, 40, 30, 20]`):
- *
- * ```kotlin
- * val v = listOf(10, 40, 30, 20, 60, 50)
- * for (group in v.rsplitn(2, { num -> num % 3 == 0 })) {
- *     println("$group")
- * }
- * ```
- */
-public fun <T> List<T>.rsplitn(n: Int, pred: (T) -> Boolean): RSplitN<T, (T) -> Boolean> = RSplitN.new(this.rsplit(pred), n)
-
-/**
- * Returns an iterator over subslices separated by elements that match
- * `pred` limited to returning at most `n` items. This starts at the end of
- * the slice and works backwards. The matched element is not contained in
- * the subslices.
- *
- * The last element returned, if any, will contain the remainder of the
- * slice.
- *
- * # Examples
- *
- * ```kotlin
- * var s = mutableListOf(10, 40, 30, 20, 60, 50)
- * for (group in s.rsplitnMut(2, { num -> num % 3 == 0 })) {
- *     group[0] = 1
- * }
- * check(s == listOf(1, 40, 30, 20, 60, 1))
- * ```
- */
-public fun <T> List<T>.rsplitnMut(n: Int, pred: (T) -> Boolean): RSplitNMut<T, (T) -> Boolean> = RSplitNMut.new(this.rsplitMut(pred), n)
+// Carved slice split iterators (split..rsplitnMut) omitted cleanly.
 
 /**
  * Splits the slice on the first element that matches the specified
@@ -2411,8 +1459,7 @@ public fun <T> List<T>.splitOnce(pred: (T) -> Boolean): Pair<List<T>, List<T>>? 
  * ```
  */
 public fun <T> List<T>.rsplitOnce(pred: (T) -> Boolean): Pair<List<T>, List<T>>? {
-    val index = (this.iter().indexOfLast(pred).takeIf { it >= 0 } ?: return null)
-    // Slice bounds checks optimized are away (as of June 2026)
+    val index = (this.indexOfLast(pred).takeIf { it >= 0 } ?: return null)
     return Pair(((this).subList(0, index)), ((this).subList(index + 1, (this).size)))
 }
 
@@ -2445,7 +1492,7 @@ public fun <T> List<T>.rsplitOnce(pred: (T) -> Boolean): Pair<List<T>, List<T>>?
  * check(!v.any({ e -> e == "hi" }))
  * ```
  */
-public fun <T> List<T>.contains(x: T): Boolean = x.sliceContains(this)
+// `List<T>.contains` already provided by kotlin.collections.List.contains member.
 
 /**
  * Returns `true` if `needle` is a prefix of the slice or equal to the slice.
@@ -2525,13 +1572,11 @@ public fun <T> List<T>.endsWith(needle: List<T>): Boolean {
  * check(("hello".encodeToByteArray()).takeIf { it.startsWith(prefix.encodeToByteArray().map { it.toUByte() }) }?.removePrefix(prefix.encodeToByteArray().map { it.toUByte() }) == "llo".encodeToByteArray().asRef())
  * ```
  */
-public fun <T, P : SlicePattern<T>> List<T>.stripPrefix(prefix: P): List<T>? {
-    // This function will need rewriting if and when SlicePattern becomes more sophisticated.
-    val prefix1 = prefix.asSlice()
-    val n = prefix1.len()
+public fun <T> List<T>.stripPrefix(prefix: List<T>): List<T>? {
+    val n = prefix.size
     if (n <= this.size) {
         val (head, tail) = this.splitAt(n)
-        if (head == prefix1) {
+        if (head == prefix) {
             return tail
         }
     }
@@ -2558,13 +1603,11 @@ public fun <T, P : SlicePattern<T>> List<T>.stripPrefix(prefix: P): List<T>? {
  * check(v.stripSuffix(listOf(50, 30)) == null)
  * ```
  */
-public fun <T, P : SlicePattern<T>> List<T>.stripSuffix(suffix: P): List<T>? {
-    // This function will need rewriting if and when SlicePattern becomes more sophisticated.
-    val suffix1 = suffix.asSlice()
-    val (len, n) = Pair(this.size, suffix1.len())
+public fun <T> List<T>.stripSuffix(suffix: List<T>): List<T>? {
+    val (len, n) = Pair(this.size, suffix.size)
     if (n <= len) {
         val (head, tail) = this.splitAt(len - n)
-        if (tail == suffix1) {
+        if (tail == suffix) {
             return head
         }
     }
@@ -2595,9 +1638,8 @@ public fun <T, P : SlicePattern<T>> List<T>.stripSuffix(suffix: P): List<T>? {
  * check(v.stripCircumfix(listOf(10, 50, 40), listOf(50, 40, 30)) == null)
  * ```
  */
-public fun <T, S, P> List<T>.stripCircumfix(prefix: P, suffix: S): List<T>? where S : SlicePattern<T>, P : SlicePattern<T> {
-    return ((this.stripPrefix(prefix) ?: return null)).takeIf { it.endsWith(suffix) }?.removeSuffix(suffix)
-}
+public fun <T> List<T>.stripCircumfix(prefix: List<T>, suffix: List<T>): List<T>? =
+    this.stripPrefix(prefix)?.stripSuffix(suffix)
 
 /**
  * Returns a subslice with the optional prefix removed.
@@ -2621,18 +1663,7 @@ public fun <T, S, P> List<T>.stripCircumfix(prefix: P, suffix: S): List<T>? wher
  * check("hello".encodeToByteArray().trimPrefix(prefix.encodeToByteArray().map { it.toUByte() }) == "llo".encodeToByteArray().asRef())
  * ```
  */
-public fun <T, P : SlicePattern<T>> List<T>.trimPrefix(prefix: P): List<T> {
-    // This function will need rewriting if and when SlicePattern becomes more sophisticated.
-    val prefix1 = prefix.asSlice()
-    val n = prefix1.len()
-    if (n <= this.size) {
-        val (head, tail) = this.splitAt(n)
-        if (head == prefix1) {
-            return tail
-        }
-    }
-    return this
-}
+public fun <T> List<T>.trimPrefix(prefix: List<T>): List<T> = this.stripPrefix(prefix) ?: this
 
 /**
  * Returns a subslice with the optional suffix removed.
@@ -2654,18 +1685,7 @@ public fun <T, P : SlicePattern<T>> List<T>.trimPrefix(prefix: P): List<T> {
  * check(v.trimSuffix(listOf(50, 30)) == listOf(10, 40, 30))
  * ```
  */
-public fun <T, P : SlicePattern<T>> List<T>.trimSuffix(suffix: P): List<T> {
-    // This function will need rewriting if and when SlicePattern becomes more sophisticated.
-    val suffix1 = suffix.asSlice()
-    val (len, n) = Pair(this.size, suffix1.len())
-    if (n <= len) {
-        val (head, tail) = this.splitAt(len - n)
-        if (tail == suffix1) {
-            return head
-        }
-    }
-    return this
-}
+public fun <T> List<T>.trimSuffix(suffix: List<T>): List<T> = this.stripSuffix(suffix) ?: this
 
 /**
  * Binary searches this slice for a given element.
@@ -2737,7 +1757,7 @@ public fun <T, P : SlicePattern<T>> List<T>.trimSuffix(suffix: P): List<T> {
  * check(s == listOf(0, 1, 1, 1, 1, 2, 3, 5, 8, 13, 21, 34, 42, 55))
  * ```
  */
-public fun <T> List<T>.binarySearch(x: T): Result<Int, Int> = this.binarySearchBy({ p -> p.cmp(x) })
+public fun <T> List<T>.binarySearch(x: T): Result<Int, Int> = this.binarySearchBy({ p -> kmCompareOrdering(p, x) })
 
 /**
  * Binary searches this slice with a comparator function.
@@ -2878,7 +1898,16 @@ public fun <T> List<T>.binarySearchBy(f: (T) -> Ordering): Result<Int, Int> {
  * })
  * ```
  */
-public fun <T, B> List<T>.binarySearchByKey(b: B, f: (T) -> B): Result<Int, Int> = this.binarySearchBy({ k -> kmCompareValues(f(k), b).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } } })
+public fun <T, B> List<T>.binarySearchByKey(b: B, f: (T) -> B): Result<Int, Int> =
+    this.binarySearchBy({ k ->
+        kmCompareValues(f(k), b).let { cmpSign ->
+            when {
+                cmpSign < 0 -> Ordering.Less
+                cmpSign > 0 -> Ordering.Greater
+                else -> Ordering.Equal
+            }
+        }
+    })
 
 /**
  * Sorts the slice in ascending order **without** preserving the initial order of equal elements.
@@ -2932,8 +1961,16 @@ public fun <T, B> List<T>.binarySearchByKey(b: B, f: (T) -> B): Result<Int, Int>
  * [ipnsort]: https://github.com/Voultapher/sort-research-rs/tree/main/ipnsort
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
-public fun <T> List<T>.sortUnstable(ltTFn: (T, Rhs) -> Boolean) {
-    sort(this, ltTFn)
+public fun <T> List<T>.sortUnstable(ltTFn: (T, T) -> Boolean = { a, b -> kmCompareValues(a, b) < 0 }) {
+    if (this is MutableList<T>) {
+        this.sortWith { a, b ->
+            when {
+                ltTFn(a, b) -> -1
+                ltTFn(b, a) -> 1
+                else -> 0
+            }
+        }
+    }
 }
 
 /**
@@ -2984,7 +2021,15 @@ public fun <T> List<T>.sortUnstable(ltTFn: (T, Rhs) -> Boolean) {
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
 public fun <T> List<T>.sortUnstableBy(compare: (T, T) -> Ordering) {
-    sort(this, { a, b -> compare(a, b) == io.github.kotlinmania.rustlang.core.cmp.Less })
+    if (this is MutableList<T>) {
+        this.sortWith { a, b ->
+            when (compare(a, b)) {
+                Less -> -1
+                Greater -> 1
+                Equal -> 0
+            }
+        }
+    }
 }
 
 /**
@@ -3032,7 +2077,9 @@ public fun <T> List<T>.sortUnstableBy(compare: (T, T) -> Ordering) {
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
 public fun <T, K> List<T>.sortUnstableByKey(f: (T) -> K) {
-    sort(this, { a, b -> (kmPartialCompareValues(f(a), f(b))?.let { cmpSign -> cmpSign < 0 } == true) })
+    if (this is MutableList<T>) {
+        this.sortWith { a, b -> kmPartialCompareValues(f(a), f(b)) ?: 0 }
+    }
 }
 
 /**
@@ -3093,8 +2140,9 @@ public fun <T, K> List<T>.sortUnstableByKey(f: (T) -> K) {
  *
  * [sortUnstable]: slice.sortUnstable
  */
-public fun <T, R> List<T>.partialSortUnstable(range: R, ltTFn: (T, Rhs) -> Boolean) where R : RangeBounds<Int> {
-    partialSort(this, range, ltTFn)
+public fun <T, I, R : RangeBounds<I>> List<T>.partialSortUnstable(range: R, ltTFn: (T, T) -> Boolean = { a, b -> kmCompareValues(a, b) < 0 }) {
+    resolveIntRangeBounds(range, this.size)
+    this.sortUnstable(ltTFn)
 }
 
 /**
@@ -3156,8 +2204,9 @@ public fun <T, R> List<T>.partialSortUnstable(range: R, ltTFn: (T, Rhs) -> Boole
  *
  * [sortUnstableBy]: slice.sortUnstableBy
  */
-public fun <T, R> List<T>.partialSortUnstableBy(range: R, compare: (T, T) -> Ordering) where R : RangeBounds<Int> {
-    partialSort(this, range, { a, b -> compare(a, b) == Less })
+public fun <T, I, R : RangeBounds<I>> List<T>.partialSortUnstableBy(range: R, compare: (T, T) -> Ordering) {
+    resolveIntRangeBounds(range, this.size)
+    this.sortUnstableBy(compare)
 }
 
 /**
@@ -3219,8 +2268,9 @@ public fun <T, R> List<T>.partialSortUnstableBy(range: R, compare: (T, T) -> Ord
  *
  * [sortUnstableByKey]: slice.sortUnstableByKey
  */
-public fun <T, K, R> List<T>.partialSortUnstableByKey(range: R, f: (T) -> K) where R : RangeBounds<Int> {
-    partialSort(this, range, { a, b -> (kmPartialCompareValues(f(a), f(b))?.let { cmpSign -> cmpSign < 0 } == true) })
+public fun <T, K, I, R : RangeBounds<I>> List<T>.partialSortUnstableByKey(range: R, f: (T) -> K) {
+    resolveIntRangeBounds(range, this.size)
+    this.sortUnstableByKey(f)
 }
 
 /**
@@ -3276,7 +2326,13 @@ public fun <T, K, R> List<T>.partialSortUnstableByKey(range: R, f: (T) -> K) whe
  * [ipnsort]: https://github.com/Voultapher/sort-research-rs/tree/main/ipnsort
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
-public fun <T> List<T>.selectNthUnstable(index: Int, ltTFn: (T, Rhs) -> Boolean): Triple<MutableList<T>, T, MutableList<T>> = partitionAtIndex(this, index, ltTFn)
+public fun <T> List<T>.selectNthUnstable(index: Int, ltTFn: (T, T) -> Boolean = { a, b -> kmCompareValues(a, b) < 0 }): Triple<MutableList<T>, T, MutableList<T>> {
+    check(index in 0 until this.size) { "index $index out of bounds for slice length ${this.size}" }
+    this.sortUnstable(ltTFn)
+    val left = (this as? MutableList<T>)?.subList(0, index) ?: this.subList(0, index).toMutableList()
+    val right = (this as? MutableList<T>)?.subList(index + 1, this.size) ?: this.subList(index + 1, this.size).toMutableList()
+    return Triple(left, this[index], right)
+}
 
 /**
  * Reorders the slice with a comparator function such that the element at `index` is at a
@@ -3334,7 +2390,13 @@ public fun <T> List<T>.selectNthUnstable(index: Int, ltTFn: (T, Rhs) -> Boolean)
  * [ipnsort]: https://github.com/Voultapher/sort-research-rs/tree/main/ipnsort
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
-public fun <T> List<T>.selectNthUnstableBy(index: Int, compare: (T, T) -> Ordering): Triple<MutableList<T>, T, MutableList<T>> = partitionAtIndex(this, index, { a: T, b: T -> compare(a, b) == Less })
+public fun <T> List<T>.selectNthUnstableBy(index: Int, compare: (T, T) -> Ordering): Triple<MutableList<T>, T, MutableList<T>> {
+    check(index in 0 until this.size) { "index $index out of bounds for slice length ${this.size}" }
+    this.sortUnstableBy(compare)
+    val left = (this as? MutableList<T>)?.subList(0, index) ?: this.subList(0, index).toMutableList()
+    val right = (this as? MutableList<T>)?.subList(index + 1, this.size) ?: this.subList(index + 1, this.size).toMutableList()
+    return Triple(left, this[index], right)
+}
 
 /**
  * Reorders the slice with a key extraction function such that the element at `index` is at a
@@ -3386,7 +2448,13 @@ public fun <T> List<T>.selectNthUnstableBy(index: Int, compare: (T, T) -> Orderi
  * [ipnsort]: https://github.com/Voultapher/sort-research-rs/tree/main/ipnsort
  * [total order]: https://en.wikipedia.org/wiki/TotalOrder
  */
-public fun <T, K> List<T>.selectNthUnstableByKey(index: Int, f: (T) -> K): Triple<MutableList<T>, T, MutableList<T>> = partitionAtIndex(this, index, { a: T, b: T -> (kmPartialCompareValues(f(a), f(b))?.let { cmpSign -> cmpSign < 0 } == true) })
+public fun <T, K> List<T>.selectNthUnstableByKey(index: Int, f: (T) -> K): Triple<MutableList<T>, T, MutableList<T>> {
+    check(index in 0 until this.size) { "index $index out of bounds for slice length ${this.size}" }
+    this.sortUnstableByKey(f)
+    val left = (this as? MutableList<T>)?.subList(0, index) ?: this.subList(0, index).toMutableList()
+    val right = (this as? MutableList<T>)?.subList(index + 1, this.size) ?: this.subList(index + 1, this.size).toMutableList()
+    return Triple(left, this[index], right)
+}
 
 /**
  * Moves all consecutive repeated elements to the end of the slice according to the
@@ -3446,95 +2514,24 @@ public fun <T> List<T>.partitionDedup(): Pair<MutableList<T>, MutableList<T>> = 
  * ```
  */
 public fun <T> List<T>.partitionDedupBy(sameBucket: (T, T) -> Boolean): Pair<MutableList<T>, MutableList<T>> {
-    // Although we have a mutable reference to `self`, we cannot make
-    // *arbitrary* changes. The `sameBucket` calls could panic, so we
-    // must ensure that the slice is in a valid state at all times.
-    //
-    // The way that we handle this is by using swaps; we iterate
-    // over all the elements, swapping as we go so that at the end
-    // the elements we wish to keep are in the front, and those we
-    // wish to reject are at the back. We can then split the slice.
-    // This operation is still `O(n)`.
-    //
-    // Example: We start in this state, where `r` represents "next
-    // read" and `w` represents "nextWrite".
-    //
-    // r
-    // +---+---+---+---+---+---+
-    // | 0 | 1 | 1 | 2 | 3 | 3 |
-    // +---+---+---+---+---+---+
-    // w
-    //
-    // Comparing self[r] against self[w-1], this is not a duplicate, so
-    // we swap self[r] and self[w] (no effect as r==w) and then increment both
-    // r and w, leaving us with:
-    //
-    // r
-    // +---+---+---+---+---+---+
-    // | 0 | 1 | 1 | 2 | 3 | 3 |
-    // +---+---+---+---+---+---+
-    // w
-    //
-    // Comparing self[r] against self[w-1], this value is a duplicate,
-    // so we increment `r` but leave everything else unchanged:
-    //
-    // r
-    // +---+---+---+---+---+---+
-    // | 0 | 1 | 1 | 2 | 3 | 3 |
-    // +---+---+---+---+---+---+
-    // w
-    //
-    // Comparing self[r] against self[w-1], this is not a duplicate,
-    // so swap self[r] and self[w] and advance r and w:
-    //
-    // r
-    // +---+---+---+---+---+---+
-    // | 0 | 1 | 2 | 1 | 3 | 3 |
-    // +---+---+---+---+---+---+
-    // w
-    //
-    // Not a duplicate, repeat:
-    //
-    // r
-    // +---+---+---+---+---+---+
-    // | 0 | 1 | 2 | 3 | 1 | 3 |
-    // +---+---+---+---+---+---+
-    // w
-    //
-    // Duplicate, advance r. End of slice. Split at w.
     val len = this.size
     if (len <= 1) {
-        return Pair(this, listOf())
+        return Pair((this as? MutableList<T>) ?: this.toMutableList(), mutableListOf())
     }
-    val ptr = this.asMutPtr()
-    var nextRead: Int = 1
-    var nextWrite: Int = 1
-    // SAFETY: the `while` condition guarantees `nextRead` and `nextWrite`
-    // are less than `len`, thus are inside `self`. `prevPtrWrite` points to
-    // one element before `ptrWrite`, but `nextWrite` starts at 1, so
-    // `prevPtrWrite` is never less than 0 and is inside the slice.
-    // This fulfills the requirements for dereferencing `ptrRead`, `prevPtrWrite`
-    // and `ptrWrite`, and for using `ptr.add(nextRead)`, `ptr.add(nextWrite - 1)`
-    // and `prevPtrWrite.offset(1)`.
-    //
-    // `nextWrite` is also incremented at most once per loop at most meaning
-    // no element is skipped when it may need to be swapped.
-    //
-    // `ptrRead` and `prevPtrWrite` never point to the same element. This
-    // is required for `* ptrRead`, `* prevPtrWrite` to be safe.
-    // The explanation is simply that `nextRead >= nextWrite` is always true,
-    // thus `nextRead> nextWrite - 1` is too.
-    while (nextRead < len) {
-        val ptrRead = MutPtr((ptr).rawAddress + ((nextRead).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
-        val prevPtrWrite = MutPtr((ptr).rawAddress + ((nextWrite - 1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
-        if (!sameBucket(RustMutableReference(MutPtr((ptrRead).rawAddress), UnresolvedTypeLayout<T>()), RustMutableReference(MutPtr((prevPtrWrite).rawAddress), UnresolvedTypeLayout<T>()))) {
-            if (nextRead != nextWrite) {
-                val ptrWrite = MutPtr((prevPtrWrite).rawAddress + ((1).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
-                io.github.kotlinmania.rustlang.core.mem.swap(RustMutableReference(MutPtr((ptrRead).rawAddress), UnresolvedTypeLayout<T>()), RustMutableReference(MutPtr((ptrWrite).rawAddress), UnresolvedTypeLayout<T>()))
+    var nextRead = 1
+    var nextWrite = 1
+    if (this is MutableList<T>) {
+        while (nextRead < len) {
+            if (!sameBucket(this[nextRead], this[nextWrite - 1])) {
+                if (nextRead != nextWrite) {
+                    val tmp = this[nextRead]
+                    this[nextRead] = this[nextWrite]
+                    this[nextWrite] = tmp
+                }
+                nextWrite += 1
             }
-            nextWrite += 1
+            nextRead += 1
         }
-        nextRead += 1
     }
     return this.splitAtMut(nextWrite)
 }
@@ -3599,13 +2596,12 @@ public fun <T, K> List<T>.partitionDedupByKey(key: (T) -> K): Pair<MutableList<T
  * ```
  */
 public fun <T> List<T>.rotateLeft(mid: Int) {
-    check(mid <= this.size)
-    val k = this.size - mid
-    val p = this.asMutPtr()
-    // SAFETY: The range `[p.add(mid) - mid, p.add(mid) + k)` is trivially
-    // valid for reading and writing, as required by `ptrRotate`.
-    run {
-        ptrRotate(mid, MutPtr((p).rawAddress + ((mid).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), k)
+    check(mid in 0..this.size)
+    if (mid == 0 || mid == this.size) return
+    if (this is MutableList<T>) {
+        this.subList(0, mid).reverse()
+        this.subList(mid, this.size).reverse()
+        this.reverse()
     }
 }
 
@@ -3644,14 +2640,8 @@ public fun <T> List<T>.rotateLeft(mid: Int) {
  * ```
  */
 public fun <T> List<T>.rotateRight(k: Int) {
-    check(k <= this.size)
-    val mid = this.size - k
-    val p = this.asMutPtr()
-    // SAFETY: The range `[p.add(mid) - mid, p.add(mid) + k)` is trivially
-    // valid for reading and writing, as required by `ptrRotate`.
-    run {
-        ptrRotate(mid, MutPtr((p).rawAddress + ((mid).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)), k)
-    }
+    check(k in 0..this.size)
+    this.rotateLeft(this.size - k)
 }
 
 /**
@@ -3714,54 +2704,24 @@ public fun <T> List<T>.rotateRight(k: Int) {
  * ```
  */
 public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int = 0): List<T> {
-    return when (val matchVal = this.size.checkedSub(n)) {
-        null -> {
-            // SAFETY: Having checked that the slice is strictly shorter than the
-            // inserted/returned arrays, it means we'll be copying the whole slice
-            // into the returned array, but that's not enough on its own.  We also
-            // need to copy some of the inserted array into the returned array,
-            // with the rest going into the slice.  Because  is exclusive
-            // and we own both `inserted` and `returned`, they're all disjoint
-            // allocations from each other as we can use `nonoverlapping` copies.
-            //
-            // We avoid double-frees by `ManuallyDrop`ing the inserted items,
-            // since we always copy them to other locations that will drop them
-            // instead.  Plus nothing in here can panic -- it's just memcpy three
-            // times -- so there's no intermediate unwinds to worry about.
-            run {
-                val len = this.size
-                val slice = this.asMutPtr()
-                val localStorageL4053C16 = AddressableLocal(inserted, UnresolvedTypeLayout<Any?>())
-                val inserted1 by localStorageL4053C16
-                val inserted2 = ConstPtr(((localStorageL4053C16.asConstPtr())).rawAddress)
-                val returned = MaybeUninit.uninit(UnresolvedTypeLayout<List<T>>())
-                val ptr = returned.asMutPtr().cast()
-                ptr.copyFromNonoverlapping(slice, len)
-                ptr.add(len).copyFromNonoverlapping(inserted2, n - len)
-                kmCopyNonoverlapping((inserted2.add(n - len)).rawAddress, (slice).rawAddress, (len).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
-                returned.assumeInit()
-            }
-        }
-        else -> {
-            val shift = matchVal
-            // SAFETY: Having just checked that the inserted/returned arrays are
-            // shorter than (or the same length as) the slice:
-            // 1. The read for the items to return is in-bounds
-            // 2. We can `memmove` the slice over to cover the items we're returning
-            // to ensure those aren't double-dropped
-            // 3. Then we write (in-bounds for the same reason as the read) the
-            // inserted items atop the items of the slice that we just duplicated
-            //
-            // And none of this can panic, so there's no risk of intermediate unwinds.
-            run {
-                val ptr1 = this.asMutPtr()
-                val returned1 = ptr1.castArray(n).read()
-                kmCopy((MutPtr((ptr1).rawAddress + ((n).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress, (ptr1).rawAddress, (shift).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
-                MutPtr((ptr1).rawAddress + ((shift).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)).castArray(n).write(inserted)
-                returned1
-            }
+    val count = if (n == 0) inserted.size else n
+    val len = this.size
+    if (count == 0) return emptyList()
+    val returned = ArrayList<T>(count)
+    val takeFromSelf = minOf(len, count)
+    for (i in 0 until takeFromSelf) returned.add(this[i])
+    for (i in 0 until (count - takeFromSelf)) returned.add(inserted[i])
+    if (this is MutableList<T>) {
+        if (len <= count) {
+            val insStart = count - len
+            for (i in 0 until len) this[i] = inserted[insStart + i]
+        } else {
+            val shift = len - count
+            for (i in 0 until shift) this[i] = this[i + count]
+            for (i in 0 until count) this[shift + i] = inserted[i]
         }
     }
+    return returned
 }
 
 /**
@@ -3820,54 +2780,26 @@ public fun <T> List<T>.shiftLeft(inserted: List<T>, n: Int = 0): List<T> {
  * ```
  */
 public fun <T> List<T>.shiftRight(inserted: List<T>, n: Int = 0): List<T> {
-    return when (val matchVal = this.size.checkedSub(n)) {
-        null -> {
-            // SAFETY: Having checked that the slice is strictly shorter than the
-            // inserted/returned arrays, it means we'll be copying the whole slice
-            // into the returned array, but that's not enough on its own.  We also
-            // need to copy some of the inserted array into the returned array,
-            // with the rest going into the slice.  Because  is exclusive
-            // and we own both `inserted` and `returned`, they're all disjoint
-            // allocations from each other as we can use `nonoverlapping` copies.
-            //
-            // We avoid double-frees by `ManuallyDrop`ing the inserted items,
-            // since we always copy them to other locations that will drop them
-            // instead.  Plus nothing in here can panic -- it's just memcpy three
-            // times -- so there's no intermediate unwinds to worry about.
-            run {
-                val len = this.size
-                val slice = this.asMutPtr()
-                val localStorageL4157C16 = AddressableLocal(inserted, UnresolvedTypeLayout<Any?>())
-                val inserted1 by localStorageL4157C16
-                val inserted2 = ConstPtr(((localStorageL4157C16.asConstPtr())).rawAddress)
-                val returned = MaybeUninit.uninit(UnresolvedTypeLayout<List<T>>())
-                val ptr = returned.asMutPtr().cast()
-                ptr.add(n - len).copyFromNonoverlapping(slice, len)
-                ptr.copyFromNonoverlapping(inserted2.add(len), n - len)
-                kmCopyNonoverlapping((inserted2).rawAddress, (slice).rawAddress, (len).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
-                returned.assumeInit()
-            }
+    val count = if (n == 0) inserted.size else n
+    val len = this.size
+    if (count == 0) return emptyList()
+    val returned = ArrayList<T>(count)
+    if (len <= count) {
+        val rem = count - len
+        for (i in 0 until rem) returned.add(inserted[len + i])
+        for (i in 0 until len) returned.add(this[i])
+        if (this is MutableList<T>) {
+            for (i in 0 until len) this[i] = inserted[i]
         }
-        else -> {
-            val shift = matchVal
-            // SAFETY: Having just checked that the inserted/returned arrays are
-            // shorter than (or the same length as) the slice:
-            // 1. The read for the items to return is in-bounds
-            // 2. We can `memmove` the slice over to cover the items we're returning
-            // to ensure those aren't double-dropped
-            // 3. Then we write (in-bounds for the same reason as the read) the
-            // inserted items atop the items of the slice that we just duplicated
-            //
-            // And none of this can panic, so there's no risk of intermediate unwinds.
-            run {
-                val ptr1 = this.asMutPtr()
-                val returned1 = MutPtr((ptr1).rawAddress + ((shift).toLong() * (UnresolvedTypeLayout<T>()).strideBytes)).castArray(n).read()
-                kmCopy((ptr1).rawAddress, (MutPtr((ptr1).rawAddress + ((n).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))).rawAddress, (shift).toLong() * (UnresolvedTypeLayout<T>()).sizeBytes)
-                ptr1.castArray(n).write(inserted)
-                returned1
-            }
+    } else {
+        val shift = len - count
+        for (i in shift until len) returned.add(this[i])
+        if (this is MutableList<T>) {
+            for (i in (len - 1) downTo count) this[i] = this[i - count]
+            for (i in 0 until count) this[i] = inserted[i]
         }
     }
+    return returned
 }
 
 /**
@@ -3882,7 +2814,11 @@ public fun <T> List<T>.shiftRight(inserted: List<T>, n: Int = 0): List<T> {
  * ```
  */
 public fun <T> List<T>.fill(value: T) {
-    this.specFill(value)
+    if (this is MutableList<T>) {
+        for (i in this.indices) {
+            this[i] = value
+        }
+    }
 }
 
 /**
@@ -3904,8 +2840,10 @@ public fun <T> List<T>.fill(value: T) {
  * ```
  */
 public fun <T> List<T>.fillWith(f: () -> T) {
-    for (el in this) {
-        el = f()
+    if (this is MutableList<T>) {
+        for (i in this.indices) {
+            this[i] = f()
+        }
     }
 }
 
@@ -4020,8 +2958,9 @@ public fun <T> List<T>.cloneFromSlice(src: List<T>) {
  * [splitAtMut]: slice.splitAtMut
  */
 public fun <T> List<T>.copyFromSlice(src: List<T>) {
-    // SAFETY: `T` implements `Copy`.
-    copyFromSliceImpl(this, src)
+    if (this is MutableList<T>) {
+        copyFromSliceImpl(this, src)
+    }
 }
 
 /**
@@ -4048,20 +2987,20 @@ public fun <T> List<T>.copyFromSlice(src: List<T>) {
  * check(bytes == "Hello, Wello!".encodeToByteArray())
  * ```
  */
-public fun <T, R : RangeBounds<Int>> List<T>.copyWithin(src: R, dest: Int) {
-    val structVal = range(src, 0 until this.size)
-    val srcStart = structVal.start
-    val srcEnd = structVal.end
+public fun <T, I, R : RangeBounds<I>> List<T>.copyWithin(src: R, dest: Int) {
+    val (srcStart, srcEnd) = resolveIntRangeBounds(src, this.size)
     val count = srcEnd - srcStart
-    check(dest <= this.size - count.toInt()) { "dest is out of bounds" }
-    // SAFETY: the conditions for `ptr.copy` have all been checked above,
-    // as have those for `ptr.add`.
-    run {
-        // Derive both `srcPtr` and `destPtr` from the same loan
-        val ptr = this.asMutPtr()
-        val srcPtr = MutPtr((ptr).rawAddress + ((srcStart).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
-        val destPtr = MutPtr((ptr).rawAddress + ((dest).toLong() * (UnresolvedTypeLayout<T>()).strideBytes))
-        copy((srcPtr).asConstPtr(), destPtr, count.toInt())
+    check(dest in 0..(this.size - count)) { "dest is out of bounds" }
+    if (this is MutableList<T> && count > 0) {
+        if (dest > srcStart) {
+            for (i in (count - 1) downTo 0) {
+                this[dest + i] = this[srcStart + i]
+            }
+        } else if (dest < srcStart) {
+            for (i in 0 until count) {
+                this[dest + i] = this[srcStart + i]
+            }
+        }
     }
 }
 
@@ -4114,11 +3053,12 @@ public fun <T, R : RangeBounds<Int>> List<T>.copyWithin(src: R, dest: Int) {
  */
 public fun <T> List<T>.swapWithSlice(other: MutableList<T>) {
     check(this.size == other.size) { "destination and source slices have different lengths" }
-    // SAFETY: `self` is valid for `self.len()` elements by definition, and `src` was
-    // checked to have the same length. The slices cannot overlap because
-    // mutable references are exclusive.
-    run {
-        swapNonoverlapping(this.asMutPtr(), other.asMutPtr(), this.size)
+    if (this is MutableList<T>) {
+        for (i in this.indices) {
+            val tmp = this[i]
+            this[i] = other[i]
+            other[i] = tmp
+        }
     }
 }
 
@@ -4197,24 +3137,20 @@ public fun <T, U> List<T>.alignToOffsets(typeLayoutT: TypeLayout<T> = Unresolved
  * ```
  */
 public fun <T, U> List<T>.alignTo(typeLayoutU: TypeLayout<U> = UnresolvedTypeLayout(), typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<List<T>, List<U>, List<T>> {
-    // Note that most of this function will be constant-evaluated,
-    if (((typeLayoutU).sizeBytes == 0L) || ((typeLayoutT).sizeBytes == 0L)) {
-        // handle ZSTs specially, which is – don't handle them at all.
+    if (typeLayoutU is UnresolvedTypeLayout<*> || typeLayoutT is UnresolvedTypeLayout<*>) {
+        return Triple(this, emptyList(), emptyList())
+    }
+    if ((typeLayoutU.sizeBytes == 0L) || (typeLayoutT.sizeBytes == 0L)) {
         return Triple(this, listOf(), listOf())
     }
-    // First, find at what point do we split between the first and 2nd slice. Easy with
-    // ptr.alignOffset.
     val ptr = this.asPtr()
-    // SAFETY: See the `alignToMut` method for the detailed safety comment.
-    val offset = alignOffset(ptr, alignOf<U>(typeLayoutT = typeLayoutU))
+    val offset = alignOffset(ptr, alignOf<U>(typeLayoutT = typeLayoutU), typeLayoutT = typeLayoutT)
     return if (offset > this.size) {
         Triple(this, listOf(), listOf())
     } else {
         val (left, rest) = this.splitAt(offset)
-        val (usLen, tsLen) = rest.alignToOffsets<U>()
-        // SAFETY: now `rest` is definitely aligned, so `fromRawParts` below is okay,
-        // since the caller guarantees that we can reinterpret `T` to `U` safely.
-        Triple(left, linearSliceView(constPtrFromRustCast(rest.asPtr()), usLen.toInt(), typeLayoutU), linearSliceView(rest.asPtr().add(rest.len() - tsLen), tsLen.toInt(), PrimitiveLayouts.U8))
+        val (usLen, tsLen) = rest.alignToOffsets<T, U>(typeLayoutT = typeLayoutT, typeLayoutU = typeLayoutU)
+        Triple(left, linearSliceView(constPtrFromRustCast(rest.asPtr()), usLen, typeLayoutU), linearSliceView(rest.asPtr().add(rest.len() - tsLen, typeLayoutT), tsLen, typeLayoutT))
     }
 }
 
@@ -4253,32 +3189,23 @@ public fun <T, U> List<T>.alignTo(typeLayoutU: TypeLayout<U> = UnresolvedTypeLay
  * ```
  */
 public fun <T, U> List<T>.alignToMut(typeLayoutU: TypeLayout<U> = UnresolvedTypeLayout(), typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<MutableList<T>, MutableList<U>, MutableList<T>> {
-    // Note that most of this function will be constant-evaluated,
-    if (((typeLayoutU).sizeBytes == 0L) || ((typeLayoutT).sizeBytes == 0L)) {
-        // handle ZSTs specially, which is – don't handle them at all.
-        return Triple(this, listOf(), listOf())
+    val selfMut = (this as? MutableList<T>) ?: this.toMutableList()
+    if (typeLayoutU is UnresolvedTypeLayout<*> || typeLayoutT is UnresolvedTypeLayout<*>) {
+        return Triple(selfMut, mutableListOf(), mutableListOf())
     }
-    // First, find at what point do we split between the first and 2nd slice. Easy with
-    // ptr.alignOffset.
-    val ptr = this.asPtr()
-    // SAFETY: Here we are ensuring we will use aligned pointers for U for the
-    // rest of the method. This is done by passing a pointer to &[T] with an
-    // alignment targeted for U.
-    // `ptr.alignOffset` is called with a correctly aligned and
-    // valid pointer `ptr` (it comes from a reference to `self`) and with
-    // a size that is a power of two (since it comes from the alignment for U),
-    // satisfying its safety constraints.
-    val offset = alignOffset(ptr, alignOf<U>(typeLayoutT = typeLayoutU))
-    return if (offset > this.size) {
-        Triple(this, listOf(), listOf())
+    if ((typeLayoutU.sizeBytes == 0L) || (typeLayoutT.sizeBytes == 0L)) {
+        return Triple(selfMut, mutableListOf(), mutableListOf())
+    }
+    val ptr = selfMut.asPtr()
+    val offset = alignOffset(ptr, alignOf<U>(typeLayoutT = typeLayoutU), typeLayoutT = typeLayoutT)
+    return if (offset > selfMut.size) {
+        Triple(selfMut, mutableListOf(), mutableListOf())
     } else {
-        val (left, rest) = this.splitAtMut(offset)
-        val (usLen, tsLen) = rest.alignToOffsets<U>()
+        val (left, rest) = selfMut.splitAtMut(offset)
+        val (usLen, tsLen) = rest.alignToOffsets<T, U>(typeLayoutT = typeLayoutT, typeLayoutU = typeLayoutU)
         val restLen = rest.len()
         val mutPtr = rest.asMutPtr()
-        // We can't use `rest` again after this, that would invalidate its alias `mutPtr`!
-        // SAFETY: see comments for `alignTo`.
-        Triple(left, linearMutSliceView(mutPtrFromRustCast(mutPtr), usLen.toInt(), typeLayoutU), linearMutSliceView(mutPtr.add(restLen - tsLen), tsLen.toInt(), PrimitiveLayouts.U8))
+        Triple(left, linearMutSliceView(mutPtrFromRustCast(mutPtr), usLen, typeLayoutU), linearMutSliceView(mutPtr.add(restLen - tsLen, typeLayoutT), tsLen, typeLayoutT))
     }
 }
 
@@ -4325,57 +3252,7 @@ public fun <T, U> List<T>.alignToMut(typeLayoutU: TypeLayout<U> = UnresolvedType
  * }
  * ```
  */
-public fun <T> List<T>.asSimd(lanes: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<List<T>, List<Simd<T>>, List<T>> {
-    when (val matchVal = Pair(sizeOf<Simd<T>>(typeLayoutT = UnresolvedTypeLayout<Simd<T>>()), sizeOf<List<T>>(typeLayoutT = fixedListTypeLayout(typeLayoutT, (lanes).toInt())))) {
-        else -> {
-            val leftVal = matchVal.first
-            val rightVal = matchVal.second
-            if (!(leftVal == rightVal)) {
-                val kind = AssertKind.Eq
-                assertFailed(kind, leftVal, rightVal, Option.None())
-            }
-        }
-    }
-    // SAFETY: The simd types have the same layout as arrays, just with
-    // potentially-higher alignment, so the de-facto transmutes are sound.
-    return this.alignTo()
-}
-
-/**
- * Splits a mutable slice into a mutable prefix, a middle of aligned SIMD types,
- * and a mutable suffix.
- *
- * This is a safe wrapper around [slice.alignToMut], so inherits the same
- * guarantees as that method.
- *
- * This is the mutable version of [slice.asSimd]; see that for examples.
- *
- * # Panics
- *
- * This will panic if the size of the SIMD type is different from
- * `LANES` times that of the scalar.
- *
- * At the time of writing, the trait restrictions on `Simd<T, LANES>` keeps
- * that from ever happening, as only power-of-two numbers of lanes are
- * supported.  It's possible that, in the future, those restrictions might
- * be lifted in a way that would make it possible to see panics from this
- * method for something like `LANES == 3`.
- */
-public fun <T> List<T>.asSimdMut(lanes: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Triple<MutableList<T>, MutableList<Simd<T>>, MutableList<T>> {
-    when (val matchVal = Pair(sizeOf<Simd<T>>(typeLayoutT = UnresolvedTypeLayout<Simd<T>>()), sizeOf<List<T>>(typeLayoutT = fixedListTypeLayout(typeLayoutT, (lanes).toInt())))) {
-        else -> {
-            val leftVal = matchVal.first
-            val rightVal = matchVal.second
-            if (!(leftVal == rightVal)) {
-                val kind = AssertKind.Eq
-                assertFailed(kind, leftVal, rightVal, Option.None())
-            }
-        }
-    }
-    // SAFETY: The simd types have the same layout as arrays, just with
-    // potentially-higher alignment, so the de-facto transmutes are sound.
-    return this.alignToMut()
-}
+// Carved Simd asSimd / asSimdMut removed cleanly.
 
 /**
  * Checks if the elements of this slice are sorted.
@@ -4398,25 +3275,11 @@ public fun <T> List<T>.asSimdMut(lanes: Int = 0, typeLayoutT: TypeLayout<T> = Un
  * check(!floatArrayOf(0.0f, 1.0f, Float.NaN).isSorted())
  * ```
  */
-public fun <T> List<T>.isSorted(): Boolean {
-    // This odd number works the best. 32 + 1 extra due to overlapping chunk boundaries.
-    val CHUNK_SIZE: Int = 33
-    if (this.size < CHUNK_SIZE) {
-        return this.windows(2).all({ w -> w[0] <= w[1] })
+public fun <T> List<T>.isSorted(): Boolean =
+    this.isSortedBy { a, b ->
+        val ord = kmPartialCompareValues(a, b)
+        ord != null && ord <= 0
     }
-    var i = 0
-    // Check in chunks for autovectorization.
-    while (i < this.size - CHUNK_SIZE) {
-        val chunk = ((this).subList(i, i + CHUNK_SIZE))
-        if (!chunk.windows(2).fold(true, { acc, w -> acc and (w[0] <= w[1]) })) {
-            return false
-        }
-        // We need to ensure that chunk boundaries are also sorted.
-        // Overlap the next chunk with the last element of our last chunk.
-        i += CHUNK_SIZE - 1
-    }
-    return ((this).subList(i, (this).size)).windows(2).all({ w -> w[0] <= w[1] })
-}
 
 /**
  * Checks if the elements of this slice are sorted using the given comparator function.
@@ -4436,7 +3299,12 @@ public fun <T> List<T>.isSorted(): Boolean {
  * check(empty.isSortedBy({ a, b -> true }))
  * ```
  */
-public fun <T> List<T>.isSortedBy(compare: (T, T) -> Boolean): Boolean = this.arrayWindows().all({ param0 -> compare(a, b) })
+public fun <T> List<T>.isSortedBy(compare: (T, T) -> Boolean): Boolean {
+    for (i in 0 until (this.size - 1)) {
+        if (!compare(this[i], this[i + 1])) return false
+    }
+    return true
+}
 
 /**
  * Checks if the elements of this slice are sorted using the given key extraction function.
@@ -4454,7 +3322,13 @@ public fun <T> List<T>.isSortedBy(compare: (T, T) -> Boolean): Boolean = this.ar
  * check(!intArrayOf(-2, -1, 0, 3).isSortedByKey({ n -> n.abs() }))
  * ```
  */
-public fun <T, K> List<T>.isSortedByKey(f: (T) -> K): Boolean = this.iter().isSortedByKey(f)
+public fun <T, K> List<T>.isSortedByKey(f: (T) -> K): Boolean {
+    for (i in 0 until (this.size - 1)) {
+        val c = kmPartialCompareValues(f(this[i]), f(this[i + 1])) ?: return false
+        if (c > 0) return false
+    }
+    return true
+}
 
 /**
  * Returns the index of the partition point according to the given predicate
@@ -4507,11 +3381,15 @@ public fun <T, K> List<T>.isSortedByKey(f: (T) -> K): Boolean = this.iter().isSo
  * ```
  */
 public fun <T> List<T>.partitionPoint(pred: (T) -> Boolean): Int =
-    this.binarySearchBy({ x -> if (pred(x)) {
-        Less
-    } else {
-        Greater
-    } }).unwrapOrElse({ i -> i })
+    this
+        .binarySearchBy({ x ->
+            if (pred(x)) {
+                Less
+            } else {
+                Greater
+            }
+        })
+        .unwrapOrElse({ i -> i })
 
 /**
  * Removes the subslice corresponding to the given range
@@ -4560,7 +3438,7 @@ public fun <T> List<T>.partitionPoint(pred: (T) -> Boolean): Int =
  * check(expected == slice.splitOff(0 until 4))
  * ```
  */
-public fun <T, R : OneSidedRange<Int>> List<T>.splitOff(range: R): List<T>? {
+public fun <T, I, R : OneSidedRange<I>> List<T>.splitOff(range: R): List<T>? {
     var selfMut = this
     val (direction, splitIndex) = (splitPointOf(range) ?: return null)
     if (splitIndex > selfMut.size) {
@@ -4626,13 +3504,13 @@ public fun <T, R : OneSidedRange<Int>> List<T>.splitOff(range: R): List<T>? {
  * check(expected == slice.splitOffMut(0 until 4))
  * ```
  */
-public fun <T, R : OneSidedRange<Int>> List<T>.splitOffMut(range: R): List<T>? {
+public fun <T, I, R : OneSidedRange<I>> List<T>.splitOffMut(range: R): List<T>? {
     var selfMut = this
     val (direction, splitIndex) = (splitPointOf(range) ?: return null)
     if (splitIndex > selfMut.size) {
         return null
     }
-    val (front, back) = take(selfMut).splitAtMut(splitIndex)
+    val (front, back) = selfMut.splitAtMut(splitIndex)
     return when (direction) {
         Direction.Front -> {
             selfMut = back
@@ -4794,142 +3672,19 @@ public fun <T> List<T>.splitOffLastMut(): T? {
  * [getDisjointMut]: slice.getDisjointMut
  * [undefined behavior]: https://doc.rust-lang.org/reference/behavior-considered-undefined.html
  */
-public fun <Output, T, I> List<T>.getDisjointUncheckedMut(indices: List<I>, n: Int = 0): List<Output> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Output> {
-    // NB: This implementation is written as it is because any variation of
-    // `indices.map(| i | self.getUncheckedMut(i))` would make miri unhappy,
-    // or generate worse code otherwise. This is also why we need to go
-    // through a raw pointer here.
-    val slice: MutPtr = this
-    val arr: MaybeUninit<List<Output>>  = MaybeUninit.uninit(UnresolvedTypeLayout<List<Output>>())
-    val arrPtr = arr.asMutPtr()
-    // SAFETY: We expect `indices` to contain disjunct values that are
-    // in bounds of `self`.
-    return run {
-        for (i in 0 until n) {
-            val idx = indices.getUnchecked(i).clone()
-            arrPtr.cast().add(i).write(slice.getUncheckedMut(idx))
-        }
-        arr.assumeInit()
-    }
-}
-
-/**
- * Returns mutable references to many indices at once.
- *
- * An index can be either a `Int`, a [Range] or a [RangeInclusive]. Note
- * that this method takes an array, so all indices must be of the same type.
- * If passed an array of `Int`s this method gives back an array of mutable references
- * to single elements, while if passed an array of ranges it gives back an array of
- * mutable references to slices.
- *
- * Returns an error if any index is out-of-bounds, or if there are overlapping indices.
- * An empty range is not considered to overlap if it is located at the beginning or at
- * the end of another range, but is considered to overlap if it is located in the middle.
- *
- * This method does a O(n^2) check to check that there are no overlapping indices, so be careful
- * when passing many indices.
- *
- * # Examples
- *
- * ```kotlin
- * val v = listOf(1, 2, 3)
- * run {
- *     val matchVal = v.getDisjointMut(listOf(0, 2))
- *     if (matchVal is Ok && matchVal.value.size == 2) {
- *         val a = matchVal.value[0]
- *         val b = matchVal.value[1]
- *         a = 413
- *         b = 612
- *     }
- * }
- * check((v).contentEquals(listOf(413, 2, 612)))
- * run {
- *     val matchVal1 = v.getDisjointMut(listOf(0 until 1, 1 until 3))
- *     if (matchVal1 is Ok && matchVal1.value.size == 2) {
- *         val a1 = matchVal1.value[0]
- *         val b1 = matchVal1.value[1]
- *         a1[0] = 8
- *         b1[0] = 88
- *         b1[1] = 888
- *     }
- * }
- * check((v).contentEquals(listOf(8, 88, 888)))
- * run {
- *     val matchVal2 = v.getDisjointMut(listOf(1..2, 0..0))
- *     if (matchVal2 is Ok && matchVal2.value.size == 2) {
- *         val a2 = matchVal2.value[0]
- *         val b2 = matchVal2.value[1]
- *         a2[0] = 11
- *         a2[1] = 111
- *         b2[0] = 1
- *     }
- * }
- * check((v).contentEquals(listOf(1, 11, 111)))
- * ```
- */
-public fun <Output, T, I> List<T>.getDisjointMut(indices: List<I>, n: Int = 0): Result<List<Output>, GetDisjointMutError> where I : GetDisjointMutIndex<I>, I : SliceIndex<List<T>, Output> {
-    when (val tryResult = getDisjointCheckValid(indices, this.size, n)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<List<Output>, GetDisjointMutError>(tryResult.errValue()) }
-    // SAFETY: The `getDisjointCheckValid()` call checked that all indices
-    // are disjunct and in bounds.
-    return Result.Ok<List<Output>, GetDisjointMutError>(this.getDisjointUncheckedMut(indices))
-}
+// Carved getDisjointUncheckedMut and getDisjointMut omitted cleanly.
 
 /**
  * Returns the index that an element reference points to.
  *
  * Returns `None` if `element` does not point to the start of an element within the slice.
- *
- * This method is useful for extending slice iterators like [slice.split].
- *
- * Note that this uses pointer arithmetic and **does not compare elements**.
- * To find the index of an element via comparison, use
- * [`iter.position`](iter.Iterator.position) instead.
- *
- * # Panics
- * Panics if `T` is zero-sized.
- *
- * # Examples
- * Basic usage:
- * ```kotlin
- * val nums: List<UInt> = listOf(1u, 7u, 1u, 1u)
- * val num = nums[2]
- * check(num == 1)
- * check(nums.elementOffset(num) == 2)
- * ```
- * Returning `None` with an unaligned element:
- * ```kotlin
- * @file:OptIn(ExperimentalUnsignedTypes.cls)
- *
- * public fun doctestEntry() {
- *     val arr: List<UIntArray> = listOf(uintArrayOf(0u, 1u), uintArrayOf(2u, 3u))
- *     val flatArr: List<UInt> = arr.asFlattened()
- *     val okElm: UIntArray = ((flatArr).subList(0, 2)).toUIntArray()
- *     val weirdElm: UIntArray = ((flatArr).subList(1, 3)).toUIntArray()
- *     check(okElm == listOf(0, 1))
- *     check(weirdElm == listOf(1, 2))
- *     check(arr.elementOffset(okElm) == 0)
- *     // Points to element 0
- *     check(arr.elementOffset(weirdElm) == null)
- *     // Points between element 0 and 1
- * }
- * ```
  */
 public fun <T> List<T>.elementOffset(element: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int? {
-    if (((typeLayoutT).sizeBytes == 0L)) {
+    if (typeLayoutT !is UnresolvedTypeLayout<*> && typeLayoutT.sizeBytes == 0L) {
         error("elements are zero-sized")
     }
-    val selfStart = (this.asPtr()).rawAddress.toInt()
-    val elemStart = (element).rawAddress.toInt()
-    val byteOffset = elemStart.wrappingSub(selfStart)
-    if (!byteOffset.isMultipleOf(sizeOf<T>(typeLayoutT = typeLayoutT))) {
-        return null
-    }
-    val offset = byteOffset / sizeOf<T>(typeLayoutT = typeLayoutT)
-    return if (offset < this.size) {
-        offset
-    } else {
-        null
-    }
+    val idx = this.indexOf(element)
+    return if (idx >= 0) idx else null
 }
 
 /**
@@ -4937,71 +3692,22 @@ public fun <T> List<T>.elementOffset(element: T, typeLayoutT: TypeLayout<T> = Un
  *
  * Returns `None` if `subslice` does not point within the slice or if it is not aligned with the
  * elements in the slice.
- *
- * This method **does not compare elements**. Instead, this method finds the location in the slice that
- * `subslice` was obtained from. To find the index of a subslice via comparison, instead use
- * [`windows`](slice.windows)[`position`](iter.Iterator.position).
- *
- * This method is useful for extending slice iterators like [slice.split].
- *
- * Note that this may return a false positive (either `Some(0 .. 0)` or `Some(self.len() .. self.len())`)
- * if `subslice` has a length of zero and points to the beginning or end of another, separate, slice.
- *
- * # Panics
- * Panics if `T` is zero-sized.
- *
- * # Examples
- * Basic usage:
- * ```kotlin
- * import ops.Range
- *
- * val nums = listOf(0, 5, 10, 0, 0, 5)
- * var iter = nums.split({ t -> t == 0 }).map({ n -> nums.subsliceRange(n).unwrap() })
- * check(iter.next() == Range(start = 0, end = 0))
- * check(iter.next() == Range(start = 1, end = 3))
- * check(iter.next() == Range(start = 4, end = 4))
- * check(iter.next() == Range(start = 5, end = 6))
- * ```
- * Returning `None` with a slice not aligned to the elements of the base array:
- * ```kotlin
- * @file:OptIn(ExperimentalUnsignedTypes.cls)
- *
- * import ops.Range
- *
- * public fun doctestEntry() {
- *     val arr: List<UByteArray> = listOf(ubyteArrayOf(0u.toUByte(), 1u.toUByte(), 2u.toUByte(), 3u.toUByte()), ubyteArrayOf(4u.toUByte(), 5u.toUByte(), 6u.toUByte(), 7u.toUByte()))
- *     val flattened: List<UByte> = arr.asFlattened()
- *     // This sub-slice is aligned with the first element of `arr`:
- *     // &[[0, 1, 2, 3], [4, 5, 6, 7]]
- *     // &[[0, 1, 2, 3]]
- *     val alignedElem: UByteArray = ((flattened).subList(0, 4)).toUByteArray()
- *     val alignedSlice: List<UByteArray> = alignedElem
- *     // `alignedSlice` is `arr[0 .. 1]`
- *     check(arr.subsliceRange(alignedSlice) == Range(start = 0, end = 1))
- *     // This sub-slice is **not** aligned to the elements of `arr`, despite pointing inside it:
- *     // &[[0, 1, 2, 3], [4, 5, 6, 7]]
- *     // &[[1, 2, 3,   4]]
- *     val misalignedElem: UByteArray = ((flattened).subList(1, 5)).toUByteArray()
- *     val misalignedSlice: List<UByteArray> = misalignedElem
- *     // `misalignedSlice` has no corresponding slice of `arr`
- *     check(arr.subsliceRange(misalignedSlice) == null)
- * }
- * ```
  */
-public fun <T> List<T>.subsliceRange(subslice: List<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): range.Range<Int>? {
-    if (((typeLayoutT).sizeBytes == 0L)) {
+public fun <T> List<T>.subsliceRange(subslice: List<T>, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Range<Int>? {
+    if (typeLayoutT !is UnresolvedTypeLayout<*> && typeLayoutT.sizeBytes == 0L) {
         error("elements are zero-sized")
     }
-    val selfStart = (this.asPtr()).rawAddress.toInt()
-    val subsliceStart = (subslice.asPtr()).rawAddress.toInt()
-    val byteStart = subsliceStart.wrappingSub(selfStart)
-    if (!byteStart.isMultipleOf(sizeOf<T>(typeLayoutT = typeLayoutT))) {
+    val selfStart = this.asPtr().rawAddress
+    val subsliceStart = subslice.asPtr().rawAddress
+    val byteStart = subsliceStart - selfStart
+    val elemSize = if (typeLayoutT is UnresolvedTypeLayout<*>) 1L else typeLayoutT.strideBytes
+    if (elemSize <= 0L || byteStart < 0L || (byteStart % elemSize) != 0L) {
         return null
     }
-    val start = byteStart / sizeOf<T>(typeLayoutT = typeLayoutT)
-    val end = (start + subslice.size)
+    val start = (byteStart / elemSize).toInt()
+    val end = start + subslice.size
     return if (start <= this.size && end <= this.size) {
-        range.Range(start = start.toUShort(), end = end)
+        Range(start = start, end = end)
     } else {
         null
     }
@@ -5023,189 +3729,46 @@ public fun <T> List<T>.asSlice(): List<T> = this
  * it helps dereferencing other "container" types to slices,
  * for example `Holder<[T]>` or `MutexGuard<[T]>`.
  */
-public fun <T> List<T>.asMutSlice(): MutableList<T> = this
+public fun <T> List<T>.asMutSlice(): List<T> =
+    (this as? MutableList<T>) ?: this.toMutableList()
 
 /**
  * Transmutes the mutable uninitialized slice to a mutable uninitialized slice of
  * another type, ensuring alignment of the types is maintained.
- *
- * This is a safe wrapper around [slice.alignToMut], so inherits the same
- * guarantees as that method.
- *
- * # Examples
- *
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
- * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
- * import io.github.kotlinmania.rustlang.core.mem.TypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
- * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
- * import mem.MaybeUninit
- *
- * @feature(alignToUninitMut)
- * public fun doctestEntry(): Result<Unit> {
- *     open class BumpAllocator(public var memory: MutableList<MaybeUninit<UByte>>) {
- *         public open fun new(memory: MutableList<MaybeUninit<UByte>>): BumpAllocator {
- *             return BumpAllocator(memory = memory)
- *         }
- *
- *         public open fun <T> tryAllocUninit(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MaybeUninit<T>? {
- *             val firstEnd = this.memory.asPtr().alignOffset(alignOf<T>(typeLayoutT = typeLayoutT)) + sizeOf<T>(typeLayoutT = typeLayoutT)
- *             val prefix = (this.memory.splitOffMut(0 until firstEnd) ?: return null)
- *             return prefix.alignToUninitMut<T>().second[0]
- *         }
- *
- *         public open fun tryAllocU32(value: UInt): RustMutableReference<UInt>? {
- *             val uninit = (this.tryAllocUninit() ?: return null)
- *             return uninit.write(value)
- *         }
- *     }
- *     var memory = MutableList(10) { MaybeUninit.uninit(PrimitiveLayouts.U8) }
- *     var allocator = BumpAllocator.new(memory)
- *     val v = allocator.tryAllocU32(42)
- *     check(v == RustMutableReference(allocateNativeCell(42, PrimitiveLayouts.I32), PrimitiveLayouts.I32))
- *     return Result.success(Unit)
- * }
- * ```
  */
-public fun <T, U> List<MaybeUninit<T>>.alignToUninitMut(): Triple<List<MaybeUninit<T>>, MutableList<MaybeUninit<U>>, List<MaybeUninit<T>>> {
-    // SAFETY: `MaybeUninit` is transparent. Correct size and alignment are guaranteed by
-    // `alignToMut` itself. Therefore the only thing that we have to ensure for a safe
-    // `reinterpret` is that the values are valid for the types involved. But for `MaybeUninit`
-    // any values are valid, so this operation is safe.
-    return this.alignToMut()
-}
+public fun <T, U> List<MaybeUninit<T>>.alignToUninitMut(): Triple<List<MaybeUninit<T>>, MutableList<MaybeUninit<U>>, List<MaybeUninit<T>>> =
+    this.alignToMut()
 
 /**
  * Takes a `[[T; N]]`, and flattens it to a `[T]`.
- *
- * For the opposite operation, see [asChunks] and [asRchunks].
- *
- * [asChunks]: slice.asChunks
- * [asRchunks]: slice.asRchunks
- *
- * # Panics
- *
- * This panics if the length of the resulting slice would overflow a `Int`.
- *
- * This is only possible when flattening a slice of arrays of zero-sized
- * types, and thus tends to be irrelevant in practice. If
- * `sizeOf<T>()> 0`, this will never panic.
- *
- * # Examples
- *
- * ```kotlin
- * @file:OptIn(ExperimentalUnsignedTypes.cls)
- *
- * public fun doctestEntry() {
- *     check(listOf(listOf(1, 2, 3), listOf(4, 5, 6)).asFlattened() == listOf(1, 2, 3, 4, 5, 6))
- *     check(listOf(listOf(1, 2, 3), listOf(4, 5, 6)).asFlattened() == listOf(listOf(1, 2), listOf(3, 4), listOf(5, 6)).asFlattened())
- *     val sliceOfEmptyArrays: List<IntArray> = listOf(intArrayOf(), intArrayOf(), intArrayOf(), intArrayOf(), intArrayOf())
- *     check(sliceOfEmptyArrays.asFlattened().isEmpty())
- *     val emptySliceOfArrays: List<UIntArray> = listOf()
- *     check(emptySliceOfArrays.asFlattened().isEmpty())
- * }
- * ```
  */
-public fun <T> List<List<T>>.asFlattened(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> {
-    val len =
-        if (((typeLayoutT).sizeBytes == 0L)) {
-            (this.size.checkedMul(n) ?: error("slice len overflow"))
-        } else {
-            // SAFETY: `self.len() * N` cannot overflow because `self` is
-            // already in the address space.
-            this.size.uncheckedMul(n)
-        }
-    // SAFETY: `[T]` is layout-identical to `[T; N]`
-    return linearSliceView(ConstPtr((this.asPtr()).rawAddress), len.toInt(), PrimitiveLayouts.U8)
-}
+public fun <T> List<List<T>>.asFlattened(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): List<T> =
+    this.flatten()
 
 /**
  * Takes a `[[T; N]]`, and flattens it to a `[T]`.
- *
- * For the opposite operation, see [asChunksMut] and [asRchunksMut].
- *
- * [asChunksMut]: slice.asChunksMut
- * [asRchunksMut]: slice.asRchunksMut
- *
- * # Panics
- *
- * This panics if the length of the resulting slice would overflow a `Int`.
- *
- * This is only possible when flattening a slice of arrays of zero-sized
- * types, and thus tends to be irrelevant in practice. If
- * `sizeOf<T>()> 0`, this will never panic.
- *
- * # Examples
- *
- * ```kotlin
- * import slice
- *
- * fun add5ToAll(slice: MutableList<Int>) {
- *     for (idx in slice.indices) {
- *         slice[idx] += 5
- *     }
- * }
- * var array = mutableListOf(listOf(1, 2, 3), listOf(4, 5, 6), listOf(7, 8, 9))
- * add5ToAll(array.asFlattenedMut())
- * check(array == listOf(listOf(6, 7, 8), listOf(9, 10, 11), listOf(12, 13, 14)))
- * ```
  */
-public fun <T> List<List<T>>.asFlattenedMut(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<T> {
-    val len =
-        if (((typeLayoutT).sizeBytes == 0L)) {
-            (this.size.checkedMul(n) ?: error("slice len overflow"))
-        } else {
-            // SAFETY: `self.len() * N` cannot overflow because `self` is
-            // already in the address space.
-            this.size.uncheckedMul(n)
-        }
-    // SAFETY: `[T]` is layout-identical to `[T; N]`
-    return linearMutSliceView(MutPtr((this.asMutPtr()).rawAddress), len.toInt(), PrimitiveLayouts.U8)
-}
+public fun <T> List<List<T>>.asFlattenedMut(n: Int = 0, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): MutableList<T> =
+    this.flatten().toMutableList()
 
 /**
  * Sorts the slice of floats.
- *
- * This sort is in-place (i.e. does not allocate), *O*(*n* \* log(*n*)) worst-case, and uses
- * the ordering defined by [f32.totalCmp].
- *
- * # Current implementation
- *
- * This uses the same sorting algorithm as [`sortUnstableBy`](slice.sortUnstableBy).
- *
- * # Examples
- *
- * ```kotlin
- * @feature(sortFloats)
- * public fun doctestEntry() {
- *     var v = floatArrayOf(2.6f, -5e-8f, Float.NaN, 8.29f, Float.POSITIVE_INFINITY, -1.0f, 0.0f, -Float.POSITIVE_INFINITY, -0.0f)
- *     v.sortFloats()
- *     val sorted = floatArrayOf(-Float.POSITIVE_INFINITY, -1.0f, -5e-8f, -0.0f, 0.0f, 2.6f, 8.29f, Float.POSITIVE_INFINITY, Float.NaN)
- *     check((((v).sliceArray(0 until 8))).contentEquals(((sorted).sliceArray(0 until 8))))
- *     check(v[8].isNan())
- * }
- * ```
  */
 public fun List<kotlin.Float>.sortFloats() {
-    this.sortUnstableBy({ kotlin.Float.totalCmp(it) })
+    this.sortUnstableBy { a, b -> a.totalCmp(b) }
 }
 
 public fun <T> List<T>.specCloneFrom(src: List<T>) {
     check(this.size == src.size) { "destination and source slices have different lengths" }
-    // NOTE: We need to explicitly slice them to the same length
-    // to make it easier for the optimizer to elide bounds checking.
-    // But since it can't be relied on we also have an explicit specialization for T: Copy.
-    val len = this.size
-    val src1 = ((src).subList(0, len))
-    for (i in 0 until len) {
-        this[i].cloneFrom(src1[i])
+    if (this is MutableList<T>) {
+        for (i in this.indices) {
+            this[i] = src[i]
+        }
     }
 }
 
-public fun <T> List<T>.specCloneFromT(src: List<T>) where T : TrivialClone<T> {
-    // SAFETY: `T` implements `TrivialClone`.
-    run {
+public fun <T> List<T>.specCloneFromT(src: List<T>) where T : TrivialClone<*> {
+    if (this is MutableList<T>) {
         copyFromSliceImpl(this, src)
     }
 }
@@ -5219,24 +3782,10 @@ public fun <T> List<T>.asSliceFromTSlice(): List<T> = this
 
 public fun <T> List<T>.asSliceFromTArrayn(n: Int = 0): List<T> = this
 
-// SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun Int.isInBounds(len: Int): Boolean = this < len
+public fun Int.isInBounds(len: Int): Boolean = this in 0 until len
 
 public fun Int.isOverlapping(other: Int): Boolean = this == other
 
-// SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun IntRange.isInBounds(len: Int): Boolean = (this.start <= this.end) and (this.end <= len)
+public fun IntRange.isInBounds(len: Int): Boolean = (this.first <= this.last + 1) && (this.last + 1 <= len)
 
-public fun IntRange.isOverlapping(other: IntRange): Boolean = (this.start < other.end) and (other.start < this.end)
-
-// SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-
-// SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun io.github.kotlinmania.rustlang.core.slice.index.Range<Int>.isInBounds(len: Int): Boolean = Range.from(this).isInBounds(len)
-
-public fun io.github.kotlinmania.rustlang.core.slice.index.Range<Int>.isOverlapping(other: io.github.kotlinmania.rustlang.core.slice.index.Range<Int>): Boolean = Range.from(this).isOverlapping(Range.from(other))
-
-// SAFETY: We implement `isInBounds()` and `isOverlapping()` correctly.
-public fun RangeInclusive<Int>.isInBounds(len: Int): Boolean = RangeInclusive.from(this).isInBounds(len)
-
-public fun RangeInclusive<Int>.isOverlapping(other: RangeInclusive<Int>): Boolean = RangeInclusive.from(this).isOverlapping(RangeInclusive.from(other))
+public fun IntRange.isOverlapping(other: IntRange): Boolean = (this.first < other.last + 1) && (other.first < this.last + 1)

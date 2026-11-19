@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.convert
 
 import io.github.kotlinmania.rustlang.core.result.Result
@@ -65,7 +66,7 @@ public fun <T> identity(x: T): T = x
  * That is, this conversion is whatever the implementation of
  * <code>[From]&lt;T&gt; for U</code> chooses to do.
  */
-public fun <T, U> T.into(fromUFn: (T) -> U): U where U : From<T, U> = fromUFn(this)
+public fun <T, U> T.into(fromUFn: (T) -> U): U where U : From<T, *> = fromUFn(this)
 
 // From (and thus Into) is reflexive
 
@@ -75,7 +76,7 @@ public fun <T, U> T.into(fromUFn: (T) -> U): U where U : From<T, U> = fromUFn(th
 public fun <T> fromT(t: T): T = t
 
 // TryFrom implies TryInto
-public fun <Error, T, U> T.tryInto(tryFromUFn: (T) -> Result<U, Error>): Result<U, Error> where U : TryFrom<T, U, Error> = tryFromUFn(this)
+public fun <Error, T, U> T.tryInto(tryFromUFn: (T) -> Result<U, Error>): Result<U, Error> where U : TryFrom<T, *, Error> = tryFromUFn(this)
 
 // Infallible conversions are semantically equivalent to fallible conversions
 // with an uninhabited error type.
@@ -86,12 +87,8 @@ public fun <T, U> tryFromT(value: U, intoUFn: (U) -> T): Result<T, kotlin.Nothin
 // ///////////////////////////////////////////////////////////////////////////
 public fun <T> List<T>.asRef(): List<T> = this
 
-public fun <T> List<T>.asMut(): MutableList<T> = this
+public fun <T> List<T>.asMut(): List<T> = if (this is MutableList<T>) this else this.toMutableList()
 
 public fun String.asRef(): String = this
 
 public fun String.asMut(): String = this
-
-public fun <T> kotlin.Nothing.asRef(): T = this
-
-public fun <T> kotlin.Nothing.asMut(): T = this

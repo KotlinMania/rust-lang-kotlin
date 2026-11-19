@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.intrinsics
 
 import kotlin.math.abs
@@ -407,7 +408,7 @@ internal object KmLinearMemoryArena {
         return sum
     }
 
-private fun roundTiesAwayF32(x: Float): Float {
+    private fun roundTiesAwayF32(x: Float): Float {
         if (x.isNaN() || x.isInfinite()) return x
         val t = truncate(x)
         return if (abs(x - t) >= 0.5f) t + 1.0f.withSign(x) else t
