@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source cmp.rs
 package io.github.kotlinmania.rustlang.core.cmp
 
@@ -12,23 +13,14 @@ import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
 import io.github.kotlinmania.rustlang.core.intrinsics.integerMax
 import io.github.kotlinmania.rustlang.core.intrinsics.integerMin
-import io.github.kotlinmania.rustlang.core.intrinsics.threeWayCompare
-import io.github.kotlinmania.rustlang.core.mem.component10
-import io.github.kotlinmania.rustlang.core.mem.component11
-import io.github.kotlinmania.rustlang.core.mem.component12
-import io.github.kotlinmania.rustlang.core.mem.component6
-import io.github.kotlinmania.rustlang.core.mem.component7
-import io.github.kotlinmania.rustlang.core.mem.component8
-import io.github.kotlinmania.rustlang.core.mem.component9
+import io.github.kotlinmania.rustlang.core.intrinsics.threeWayCompareChar
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
-import kotlin.experimental.and
-import kotlin.experimental.or
 
 // Utilities for comparing and ordering values.
 //
@@ -401,7 +393,7 @@ public interface PartialEq<Rhs> {
  * }
  * ```
  */
-public interface Eq : PartialEq<Eq> {
+public interface Eq {
     public fun assertReceiverIsTotalEq() {}
 
     public fun assertFieldsAreEq() {}
@@ -411,11 +403,7 @@ public interface Eq : PartialEq<Eq> {
 // assert that every component of a type implements Eq.
 //
 // This struct should never appear in user code.
-public open class AssertParamIsEq<T : Eq>(
-    public var field: Unit,
-) {
-    public companion object
-}
+public open class AssertParamIsEq<T : Eq>
 
 // This is a lang item only so that `BinOp.Cmp` in MIR can return it.
 // It has no special behavior, but does require that the three variants
@@ -441,10 +429,12 @@ public sealed class Ordering(
      * An ordering where a compared value is less than another.
      */
     public data object Less : Ordering((-1).toByte())
+
     /**
      * An ordering where a compared value is equal to another.
      */
     public data object Equal : Ordering(0)
+
     /**
      * An ordering where a compared value is greater than another.
      */
@@ -470,7 +460,7 @@ public sealed class Ordering(
 
     public open fun asRaw(): Byte {
         // Note(const-Note): just use `PartialOrd` against `Equal` once that's const
-        return discriminantValue(this)
+        return this.value
     }
 
     /**
@@ -702,17 +692,31 @@ public open class Reverse<T>(
     public companion object
 }
 
-public fun <T : PartialOrd<T>> Reverse<T>.partialCmp(other: Reverse<T>): Ordering? = other.value.partialCmp(this.value)
+public fun <T> Reverse<T>.partialCmp(other: Reverse<T>): Ordering? =
+    kmPartialCompareValues(other.value, this.value)?.let {
+        when {
+            it < 0 -> Less
+            it > 0 -> Greater
+            else -> Equal
+        }
+    }
 
-public fun <T : PartialOrd<T>> Reverse<T>.lt(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) < 0)
+public fun <T> Reverse<T>.lt(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) < 0)
 
-public fun <T : PartialOrd<T>> Reverse<T>.le(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) <= 0)
+public fun <T> Reverse<T>.le(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) <= 0)
 
-public fun <T : PartialOrd<T>> Reverse<T>.gt(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) > 0)
+public fun <T> Reverse<T>.gt(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) > 0)
 
-public fun <T : PartialOrd<T>> Reverse<T>.ge(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) >= 0)
+public fun <T> Reverse<T>.ge(other: Reverse<T>): Boolean = (kmCompareValues(other.value, this.value) >= 0)
 
-public fun <T : Ord<T>> Reverse<T>.cmp(other: Reverse<T>): Ordering = other.value.cmp(this.value)
+public fun <T> Reverse<T>.cmp(other: Reverse<T>): Ordering =
+    kmCompareValues(other.value, this.value).let {
+        when {
+            it < 0 -> Less
+            it > 0 -> Greater
+            else -> Equal
+        }
+    }
 
 /**
  * A pair where ordering and equality work on only the `key`, ignoring the `value`.
@@ -728,21 +732,35 @@ public open class KeyAndValue<K, V>(
     public companion object
 }
 
-public fun <K : PartialEq<K>, V> KeyAndValue<K, V>.eq(other: KeyAndValue<K, V>): Boolean = this.key == other.key
+public fun <K, V> KeyAndValue<K, V>.eq(other: KeyAndValue<K, V>): Boolean = this.key == other.key
 
-public fun <K : PartialEq<K>, V> KeyAndValue<K, V>.ne(other: KeyAndValue<K, V>): Boolean = this.key != other.key
+public fun <K, V> KeyAndValue<K, V>.ne(other: KeyAndValue<K, V>): Boolean = this.key != other.key
 
-public fun <K : PartialOrd<K>, V> KeyAndValue<K, V>.partialCmp(other: KeyAndValue<K, V>): Ordering? = this.key.partialCmp(other.key)
+public fun <K, V> KeyAndValue<K, V>.partialCmp(other: KeyAndValue<K, V>): Ordering? =
+    kmPartialCompareValues(this.key, other.key)?.let {
+        when {
+            it < 0 -> Less
+            it > 0 -> Greater
+            else -> Equal
+        }
+    }
 
-public fun <K : PartialOrd<K>, V> KeyAndValue<K, V>.lt(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) < 0)
+public fun <K, V> KeyAndValue<K, V>.lt(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) < 0)
 
-public fun <K : PartialOrd<K>, V> KeyAndValue<K, V>.le(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) <= 0)
+public fun <K, V> KeyAndValue<K, V>.le(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) <= 0)
 
-public fun <K : PartialOrd<K>, V> KeyAndValue<K, V>.gt(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) > 0)
+public fun <K, V> KeyAndValue<K, V>.gt(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) > 0)
 
-public fun <K : PartialOrd<K>, V> KeyAndValue<K, V>.ge(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) >= 0)
+public fun <K, V> KeyAndValue<K, V>.ge(other: KeyAndValue<K, V>): Boolean = (kmCompareValues(this.key, other.key) >= 0)
 
-public fun <K : Ord<K>, V> KeyAndValue<K, V>.cmp(other: KeyAndValue<K, V>): Ordering = this.key.cmp(other.key)
+public fun <K, V> KeyAndValue<K, V>.cmp(other: KeyAndValue<K, V>): Ordering =
+    kmCompareValues(this.key, other.key).let {
+        when {
+            it < 0 -> Less
+            it > 0 -> Greater
+            else -> Equal
+        }
+    }
 
 /**
  * Trait for types that form a [total order](https://en.wikipedia.org/wiki/TotalOrder).
@@ -975,7 +993,9 @@ public fun <K : Ord<K>, V> KeyAndValue<K, V>.cmp(other: KeyAndValue<K, V>): Orde
  *
  * [cmp]: Ord.cmp
  */
-public interface Ord<T> : Eq, PartialOrd<T> {
+public interface Ord<T> :
+    Eq,
+    PartialOrd<T> {
     /**
      * This method returns an [Ordering] between `self` and `other`.
      *
@@ -1112,8 +1132,9 @@ public interface Ord<T> : Eq, PartialOrd<T> {
      * }
      * ```
      */
-    public fun <R> clampTo(range: R): T where R : ClampBounds<T> = range.clamp(this)
 }
+
+public fun <T, R : ClampBounds<T>> T.clampTo(range: R): T = range.clamp(this)
 
 // Note(sizedHierarchy): remove this
 
@@ -1398,7 +1419,7 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check(2.0 < 1.0 == false)
      * ```
      */
-    public fun lt(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd({ it.isLt() })
+    public fun lt(other: Rhs): Boolean = this.partialCmp(other)?.let { it.isLt() } == true
 
     /**
      * Tests less than or equal to (for `self` and `other`) and is used by the
@@ -1412,7 +1433,7 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check(2.0 <= 1.0 == false)
      * ```
      */
-    public fun le(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd({ it.isLe() })
+    public fun le(other: Rhs): Boolean = this.partialCmp(other)?.let { it.isLe() } == true
 
     /**
      * Tests greater than (for `self` and `other`) and is used by the `>`
@@ -1426,7 +1447,7 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check(2.0 > 1.0 == true)
      * ```
      */
-    public fun gt(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd({ it.isGt() })
+    public fun gt(other: Rhs): Boolean = this.partialCmp(other)?.let { it.isGt() } == true
 
     /**
      * Tests greater than or equal to (for `self` and `other`) and is used by
@@ -1440,7 +1461,7 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check(2.0 >= 1.0 == true)
      * ```
      */
-    public fun ge(other: Rhs): Boolean = this.partialCmp(other).isSomeAnd({ it.isGe() })
+    public fun ge(other: Rhs): Boolean = this.partialCmp(other)?.let { it.isGe() } == true
 
     /**
      * If `self == other`, returns `Continue(())`.
@@ -1453,15 +1474,15 @@ public interface PartialOrd<Rhs> : PartialEq<Rhs> {
      * check `==` and `<` separately to do rather than needing to calculate
      * (then optimize out) the three-way `Ordering` result.
      */
-    public fun chainingLess(other: Rhs): ControlFlow<Boolean, Unit> = defaultChainingImpl(this, other, { it.isLt() })
+    public fun chainingLess(other: Rhs): ControlFlow<Boolean, Unit> = defaultChainingImpl(this, other, { it.isLt() }, { a, b -> a.partialCmp(b) })
 
     /**
      * Same as `__chaining_less`, but for `>`/`>=` instead of `<`/`<=`.
      */
-    public fun chainingGreater(other: Rhs): ControlFlow<Boolean, Unit> = defaultChainingImpl(this, other, { it.isGt() })
+    public fun chainingGreater(other: Rhs): ControlFlow<Boolean, Unit> = defaultChainingImpl(this, other, { it.isGt() }, { a, b -> a.partialCmp(b) })
 }
 
-public fun <T, U> defaultChainingImpl(lhs: T, rhs: U, p: (Ordering) -> Boolean, partialCmpTFn: (T, Rhs) -> Ordering?): ControlFlow<Boolean, Unit> where T : PartialOrd<U> {
+public fun <T, U> defaultChainingImpl(lhs: T, rhs: U, p: (Ordering) -> Boolean, partialCmpTFn: (T, U) -> Ordering?): ControlFlow<Boolean, Unit> where T : PartialOrd<U> {
     // It's important that this only call `partialCmp` once, not call `eq` then
     // one of the relational operators.  We don't want to `bcmp`-then-`memcp` a
     // `String`, for example, or similarly for other data structures (#108157).
@@ -1518,7 +1539,7 @@ public fun <T, U> defaultChainingImpl(lhs: T, rhs: U, p: (Ordering) -> Boolean, 
  * check(minOf(Equal("v1"), Equal("v2")).first == "v1")
  * ```
  */
-public fun <T : Ord<T>> min(v1: T, v2: T): T = v1.min(v2)
+public fun <T> min(v1: T, v2: T): T = if (kmCompareValues(v2, v1) < 0) v2 else v1
 
 /**
  * Returns the minimum of two values with respect to the specified comparison function.
@@ -1567,7 +1588,7 @@ public fun <T> minBy(v1: T, v2: T, compare: (T, T) -> Ordering): T =
  * check(result2 == 1)
  * ```
  */
-public fun <T, K> minByKey(v1: T, v2: T, f: (T) -> K): T where K : Ord<K> =
+public fun <T, K> minByKey(v1: T, v2: T, f: (T) -> K): T =
     if ((kmCompareValues(f(v2), f(v1)) < 0)) {
         v2
     } else {
@@ -1614,7 +1635,7 @@ public fun <T, K> minByKey(v1: T, v2: T, f: (T) -> K): T where K : Ord<K> =
  * check(cmp.max(Equal("v1"), Equal("v2")).first == "v2")
  * ```
  */
-public fun <T : Ord<T>> max(v1: T, v2: T): T = v1.max(v2)
+public fun <T> max(v1: T, v2: T): T = if (kmCompareValues(v2, v1) >= 0) v2 else v1
 
 /**
  * Returns the maximum of two values with respect to the specified comparison function.
@@ -1663,7 +1684,7 @@ public fun <T> maxBy(v1: T, v2: T, compare: (T, T) -> Ordering): T =
  * check(result2 == -1)
  * ```
  */
-public fun <T, K> maxByKey(v1: T, v2: T, f: (T) -> K): T where K : Ord<K> =
+public fun <T, K> maxByKey(v1: T, v2: T, f: (T) -> K): T =
     if ((kmCompareValues(f(v2), f(v1)) < 0)) {
         v1
     } else {
@@ -1718,7 +1739,7 @@ public fun <T, K> maxByKey(v1: T, v2: T, f: (T) -> K): T where K : Ord<K> =
  * }
  * ```
  */
-public fun <T> minmax(v1: T, v2: T): List<T> where T : Ord<T> =
+public fun <T> minmax(v1: T, v2: T): List<T> =
     if ((kmCompareValues(v2, v1) < 0)) {
         listOf(v2, v1)
     } else {
@@ -1779,7 +1800,7 @@ public fun <T> minmaxBy(v1: T, v2: T, compare: (T, T) -> Ordering): List<T> =
  * }
  * ```
  */
-public fun <T, K> minmaxByKey(v1: T, v2: T, f: (T) -> K): List<T> where K : Ord<K> =
+public fun <T, K> minmaxByKey(v1: T, v2: T, f: (T) -> K): List<T> =
     if ((kmCompareValues(f(v2), f(v1)) < 0)) {
         listOf(v2, v1)
     } else {
@@ -1850,7 +1871,7 @@ public interface HomogeneousTuple<T>
  * In a future iteration of the feature, this function may be removed in favour of
  * making [min] itself variadic instead.
  */
-public fun <T : Ord<T>> smallest(v1: T, args: SmallestArgs<T>): T = SmallestArgs.smallest(v1, args)
+public fun <T> smallest(v1: T, vararg args: T): T = args.fold(v1) { acc, item -> min(acc, item) }
 
 /**
  * Implementation detail for [smallest].
@@ -1862,66 +1883,21 @@ public interface SmallestArgs<T, SelfType> : HomogeneousTuple<T> {
     public fun smallest(v1: T, args: SelfType): T
 }
 
-public fun <T> smallestArgsSmallest(v1: T, tupleArg1: Unit): T where T : Ord<T> = v1
+public fun <T> smallestArgsSmallest(v1: T): T = v1
 
-public fun <T> smallestArgsSmallestT(v1: T, tupleArg1: T): T where T : Ord<T> {
+public fun <T> smallestArgsSmallestT(v1: T, tupleArg1: T): T {
     val x11 = tupleArg1
-    return v1.min(x11)
+    return min(v1, x11)
 }
 
-public fun <T> smallestArgsSmallestTT(v1: T, tupleArg1: Pair<T, T>): T where T : Ord<T> {
+public fun <T> smallestArgsSmallestTT(v1: T, tupleArg1: Pair<T, T>): T {
     val (x10, x11) = tupleArg1
-    return v1.min(x10).min(x11)
+    return min(min(v1, x10), x11)
 }
 
-public fun <T> smallestArgsSmallestTTT(v1: T, tupleArg1: Triple<T, T, T>): T where T : Ord<T> {
+public fun <T> smallestArgsSmallestTTT(v1: T, tupleArg1: Triple<T, T, T>): T {
     val (x9, x10, x11) = tupleArg1
-    return v1.min(x9).min(x10).min(x11)
-}
-
-public fun <T> smallestArgsSmallestTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x8, x9, x10, x11) = tupleArg1
-    return v1.min(x8).min(x9).min(x10).min(x11)
-}
-
-public fun <T> smallestArgsSmallestTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x7, x8, x9, x10, x11) = tupleArg1
-    return v1.min(x7).min(x8).min(x9).min(x10).min(x11)
-}
-
-public fun <T> smallestArgsSmallestTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
-}
-
-public fun <T> smallestArgsSmallestTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
-}
-
-public fun <T> smallestArgsSmallestTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
-}
-
-public fun <T> smallestArgsSmallestTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
-}
-
-public fun <T> smallestArgsSmallestTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.min(x2).min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
-}
-
-public fun <T> smallestArgsSmallestTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.min(x1).min(x2).min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
-}
-
-public fun <T> smallestArgsSmallestTTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.min(x0).min(x1).min(x2).min(x3).min(x4).min(x5).min(x6).min(x7).min(x8).min(x9).min(x10).min(x11)
+    return min(min(min(v1, x9), x10), x11)
 }
 
 // Note: splat interacts poorly with the double linking of `core` in tests
@@ -1980,7 +1956,7 @@ public fun <T> smallestArgsSmallestTTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T
  * In a future iteration of the feature, this function may be removed in favour of
  * making [max] itself variadic instead.
  */
-public fun <T : Ord<T>> largest(v1: T, args: LargestArgs<T>): T = LargestArgs.largest(v1, args)
+public fun <T> largest(v1: T, vararg args: T): T = args.fold(v1) { acc, item -> max(acc, item) }
 
 /**
  * Implementation detail for [largest].
@@ -1992,75 +1968,30 @@ public interface LargestArgs<T, SelfType> : HomogeneousTuple<T> {
     public fun largest(v1: T, args: SelfType): T
 }
 
-public fun <T> largestArgsLargest(v1: T, tupleArg1: Unit): T where T : Ord<T> = v1
+public fun <T> largestArgsLargest(v1: T): T = v1
 
-public fun <T> largestArgsLargestT(v1: T, tupleArg1: T): T where T : Ord<T> {
+public fun <T> largestArgsLargestT(v1: T, tupleArg1: T): T {
     val x11 = tupleArg1
-    return v1.max(x11)
+    return max(v1, x11)
 }
 
-public fun <T> largestArgsLargestTT(v1: T, tupleArg1: Pair<T, T>): T where T : Ord<T> {
+public fun <T> largestArgsLargestTT(v1: T, tupleArg1: Pair<T, T>): T {
     val (x10, x11) = tupleArg1
-    return v1.max(x10).max(x11)
+    return max(max(v1, x10), x11)
 }
 
-public fun <T> largestArgsLargestTTT(v1: T, tupleArg1: Triple<T, T, T>): T where T : Ord<T> {
+public fun <T> largestArgsLargestTTT(v1: T, tupleArg1: Triple<T, T, T>): T {
     val (x9, x10, x11) = tupleArg1
-    return v1.max(x9).max(x10).max(x11)
-}
-
-public fun <T> largestArgsLargestTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x8, x9, x10, x11) = tupleArg1
-    return v1.max(x8).max(x9).max(x10).max(x11)
-}
-
-public fun <T> largestArgsLargestTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x7, x8, x9, x10, x11) = tupleArg1
-    return v1.max(x7).max(x8).max(x9).max(x10).max(x11)
-}
-
-public fun <T> largestArgsLargestTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
-}
-
-public fun <T> largestArgsLargestTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
-}
-
-public fun <T> largestArgsLargestTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
-}
-
-public fun <T> largestArgsLargestTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
-}
-
-public fun <T> largestArgsLargestTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.max(x2).max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
-}
-
-public fun <T> largestArgsLargestTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.max(x1).max(x2).max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
-}
-
-public fun <T> largestArgsLargestTTTTTTTTTTTT(v1: T, tupleArg1: List<Any?>): T where T : Ord<T> {
-    val (x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11) = tupleArg1
-    return v1.max(x0).max(x1).max(x2).max(x3).max(x4).max(x5).max(x6).max(x7).max(x8).max(x9).max(x10).max(x11)
+    return max(max(max(v1, x9), x10), x11)
 }
 
 public fun Boolean.eq(other: Boolean): Boolean = this == other
 
 public fun Boolean.ne(other: Boolean): Boolean = this != other
 
-public fun Char.eq(other: Char): Boolean = this == other
+public fun Char.charEq(other: Char): Boolean = this == other
 
-public fun Char.ne(other: Char): Boolean = this != other
+public fun Char.charNe(other: Char): Boolean = this != other
 
 public fun Int.eq(other: Int): Boolean = this == other
 
@@ -2117,12 +2048,6 @@ public fun Double.ne(other: Double): Boolean = this != other
 public fun F128.eq(other: F128): Boolean = this == other
 
 public fun F128.ne(other: F128): Boolean = this != other
-
-public fun Unit.eq(other: Unit): Boolean = true
-
-public fun Unit.ne(other: Unit): Boolean = false
-
-public fun Unit.partialCmp(arg0: Unit): Ordering? = Equal
 
 public fun Boolean.partialCmp(other: Boolean): Ordering? = this.cmp(other)
 
@@ -2300,16 +2225,14 @@ public fun F128.chainingGreater(other: F128): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun Unit.cmp(other: Unit): Ordering = Equal
-
 public fun Boolean.cmp(other: Boolean): Ordering {
     // Casting to i8's and converting the difference to an Ordering generates
     // more optimal assembly.
     // See <https://github.com/rust-lang/rust/issues/66780> for more info.
     return when (((if (this) 1 else 0).toByte()) - ((if (other) 1 else 0).toByte())) {
-        -1.toByte() -> Less
-        0.toByte() -> Equal
-        1.toByte() -> Greater
+        -1 -> Less
+        0 -> Equal
+        1 -> Greater
         // SAFETY: bool as i8 returns 0 or 1, so the difference can't be anything else
         else -> unreachableUnchecked()
     }
@@ -2324,17 +2247,17 @@ public fun Boolean.clamp(min: Boolean, max: Boolean): Boolean {
     return this.max(min).min(max)
 }
 
-public fun Char.partialCmp(other: Char): Ordering? = threeWayCompare(this, other)
+public fun Char.charPartialCmp(other: Char): Ordering? = threeWayCompareChar(this, other)
 
-public fun Char.lt(other: Char): Boolean = this < other
+public fun Char.charLt(other: Char): Boolean = this < other
 
-public fun Char.le(other: Char): Boolean = this <= other
+public fun Char.charLe(other: Char): Boolean = this <= other
 
-public fun Char.gt(other: Char): Boolean = this > other
+public fun Char.charGt(other: Char): Boolean = this > other
 
-public fun Char.ge(other: Char): Boolean = this >= other
+public fun Char.charGe(other: Char): Boolean = this >= other
 
-public fun Char.chainingLess(other: Char): ControlFlow<Boolean, Unit> {
+public fun Char.charChainingLess(other: Char): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue(Unit)
@@ -2343,7 +2266,7 @@ public fun Char.chainingLess(other: Char): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun Char.chainingGreater(other: Char): ControlFlow<Boolean, Unit> {
+public fun Char.charChainingGreater(other: Char): ControlFlow<Boolean, Unit> {
     val (lhs, rhs) = Pair(this, other)
     return if (lhs == rhs) {
         Continue(Unit)
@@ -2352,9 +2275,9 @@ public fun Char.chainingGreater(other: Char): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun Char.cmp(other: Char): Ordering = threeWayCompare(this, other)
+public fun Char.charCmp(other: Char): Ordering = threeWayCompareChar(this, other)
 
-public fun Char.clamp(min: Char, max: Char): Char {
+public fun Char.charClamp(min: Char, max: Char): Char {
     check(min <= max) { "min > max" }
     return if (this < min) {
         min
@@ -2365,17 +2288,26 @@ public fun Char.clamp(min: Char, max: Char): Char {
     }
 }
 
-public fun Char.min(other: Char): Char {
+public fun Char.charMin(other: Char): Char {
     val c = minOf(this.code.toUInt(), other.code.toUInt())
-    return Char.fromU32Unchecked(c)
+    return Char(c.toInt())
 }
 
-public fun Char.max(other: Char): Char {
+public fun Char.charMax(other: Char): Char {
     val c = maxOf(this.code.toUInt(), other.code.toUInt())
-    return Char.fromU32Unchecked(c)
+    return Char(c.toInt())
 }
 
-public fun Int.partialCmp(other: Int): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun Int.partialCmp(other: Int): Ordering? =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun Int.lt(other: Int): Boolean = this < other
 
@@ -2403,7 +2335,16 @@ public fun Int.chainingGreater(other: Int): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun Int.cmp(other: Int): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun Int.cmp(other: Int): Ordering =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun Int.clamp(min: Int, max: Int): Int {
     check(min <= max) { "min > max" }
@@ -2420,7 +2361,16 @@ public fun Int.min(other: Int): Int = integerMin(this, other)
 
 public fun Int.max(other: Int): Int = integerMax(this, other)
 
-public fun UByte.partialCmp(other: UByte): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun UByte.partialCmp(other: UByte): Ordering? =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun UByte.lt(other: UByte): Boolean = this < other
 
@@ -2448,7 +2398,16 @@ public fun UByte.chainingGreater(other: UByte): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun UByte.cmp(other: UByte): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun UByte.cmp(other: UByte): Ordering =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun UByte.clamp(min: UByte, max: UByte): UByte {
     check(min <= max) { "min > max" }
@@ -2465,7 +2424,16 @@ public fun UByte.min(other: UByte): UByte = integerMin(this, other)
 
 public fun UByte.max(other: UByte): UByte = integerMax(this, other)
 
-public fun UShort.partialCmp(other: UShort): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun UShort.partialCmp(other: UShort): Ordering? =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun UShort.lt(other: UShort): Boolean = this < other
 
@@ -2493,7 +2461,16 @@ public fun UShort.chainingGreater(other: UShort): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun UShort.cmp(other: UShort): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun UShort.cmp(other: UShort): Ordering =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun UShort.clamp(min: UShort, max: UShort): UShort {
     check(min <= max) { "min > max" }
@@ -2510,7 +2487,16 @@ public fun UShort.min(other: UShort): UShort = integerMin(this, other)
 
 public fun UShort.max(other: UShort): UShort = integerMax(this, other)
 
-public fun UInt.partialCmp(other: UInt): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun UInt.partialCmp(other: UInt): Ordering? =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun UInt.lt(other: UInt): Boolean = this < other
 
@@ -2538,7 +2524,16 @@ public fun UInt.chainingGreater(other: UInt): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun UInt.cmp(other: UInt): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun UInt.cmp(other: UInt): Ordering =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun UInt.clamp(min: UInt, max: UInt): UInt {
     check(min <= max) { "min > max" }
@@ -2555,7 +2550,16 @@ public fun UInt.min(other: UInt): UInt = integerMin(this, other)
 
 public fun UInt.max(other: UInt): UInt = integerMax(this, other)
 
-public fun ULong.partialCmp(other: ULong): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun ULong.partialCmp(other: ULong): Ordering? =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun ULong.lt(other: ULong): Boolean = this < other
 
@@ -2583,7 +2587,16 @@ public fun ULong.chainingGreater(other: ULong): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun ULong.cmp(other: ULong): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun ULong.cmp(other: ULong): Ordering =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun ULong.clamp(min: ULong, max: ULong): ULong {
     check(min <= max) { "min > max" }
@@ -2600,7 +2613,16 @@ public fun ULong.min(other: ULong): ULong = integerMin(this, other)
 
 public fun ULong.max(other: ULong): ULong = integerMax(this, other)
 
-public fun U128.partialCmp(other: U128): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun U128.partialCmp(other: U128): Ordering? =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun U128.lt(other: U128): Boolean = this < other
 
@@ -2628,7 +2650,16 @@ public fun U128.chainingGreater(other: U128): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun U128.cmp(other: U128): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun U128.cmp(other: U128): Ordering =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun U128.clamp(min: U128, max: U128): U128 {
     check(min <= max) { "min > max" }
@@ -2645,7 +2676,16 @@ public fun U128.min(other: U128): U128 = integerMin(this, other)
 
 public fun U128.max(other: U128): U128 = integerMax(this, other)
 
-public fun Byte.partialCmp(other: Byte): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun Byte.partialCmp(other: Byte): Ordering? =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun Byte.lt(other: Byte): Boolean = this < other
 
@@ -2673,7 +2713,16 @@ public fun Byte.chainingGreater(other: Byte): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun Byte.cmp(other: Byte): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun Byte.cmp(other: Byte): Ordering =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun Byte.clamp(min: Byte, max: Byte): Byte {
     check(min <= max) { "min > max" }
@@ -2690,7 +2739,16 @@ public fun Byte.min(other: Byte): Byte = integerMin(this, other)
 
 public fun Byte.max(other: Byte): Byte = integerMax(this, other)
 
-public fun Short.partialCmp(other: Short): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun Short.partialCmp(other: Short): Ordering? =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun Short.lt(other: Short): Boolean = this < other
 
@@ -2718,7 +2776,16 @@ public fun Short.chainingGreater(other: Short): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun Short.cmp(other: Short): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun Short.cmp(other: Short): Ordering =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun Short.clamp(min: Short, max: Short): Short {
     check(min <= max) { "min > max" }
@@ -2735,7 +2802,16 @@ public fun Short.min(other: Short): Short = integerMin(this, other)
 
 public fun Short.max(other: Short): Short = integerMax(this, other)
 
-public fun Long.partialCmp(other: Long): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun Long.partialCmp(other: Long): Ordering? =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun Long.lt(other: Long): Boolean = this < other
 
@@ -2763,7 +2839,16 @@ public fun Long.chainingGreater(other: Long): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun Long.cmp(other: Long): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun Long.cmp(other: Long): Ordering =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun Long.clamp(min: Long, max: Long): Long {
     check(min <= max) { "min > max" }
@@ -2780,7 +2865,16 @@ public fun Long.min(other: Long): Long = integerMin(this, other)
 
 public fun Long.max(other: Long): Long = integerMax(this, other)
 
-public fun I128.partialCmp(other: I128): Ordering? = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun I128.partialCmp(other: I128): Ordering? =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun I128.lt(other: I128): Boolean = this < other
 
@@ -2808,7 +2902,16 @@ public fun I128.chainingGreater(other: I128): ControlFlow<Boolean, Unit> {
     }
 }
 
-public fun I128.cmp(other: I128): Ordering = run { val lhs = this; val rhs = other; when { lhs < rhs -> Ordering.Less; lhs > rhs -> Ordering.Greater; else -> Ordering.Equal } }
+public fun I128.cmp(other: I128): Ordering =
+    run {
+        val lhs = this
+        val rhs = other
+        when {
+            lhs < rhs -> Ordering.Less
+            lhs > rhs -> Ordering.Greater
+            else -> Ordering.Equal
+        }
+    }
 
 public fun I128.clamp(min: I128, max: I128): I128 {
     check(min <= max) { "min > max" }
@@ -2825,8 +2928,19 @@ public fun I128.min(other: I128): I128 = integerMin(this, other)
 
 public fun I128.max(other: I128): I128 = integerMax(this, other)
 
-public fun Nothing.eq(arg0: Nothing): Boolean = this
+public fun List<UByte>.partialCmp(other: List<UByte>): Ordering? = cmp(other)
 
-public fun Nothing.partialCmp(arg0: Nothing): Ordering? = this
-
-public fun Nothing.cmp(arg0: Nothing): Ordering = this
+public fun List<UByte>.cmp(other: List<UByte>): Ordering {
+    val n = minOf(this.size, other.size)
+    for (i in 0 until n) {
+        val a = this[i]
+        val b = other[i]
+        if (a < b) return Ordering.Less
+        if (a > b) return Ordering.Greater
+    }
+    return when {
+        this.size < other.size -> Ordering.Less
+        this.size > other.size -> Ordering.Greater
+        else -> Ordering.Equal
+    }
+}

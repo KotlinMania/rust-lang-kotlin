@@ -1,21 +1,19 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.mem
 
-import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
 import io.github.kotlinmania.rustlang.core.intrinsics.KmForgettableResource
 import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
+import io.github.kotlinmania.rustlang.core.intrinsics.kmAllocZeroed
+import io.github.kotlinmania.rustlang.core.intrinsics.kmDealloc
 import io.github.kotlinmania.rustlang.core.intrinsics.readViaCopy
 import io.github.kotlinmania.rustlang.core.intrinsics.typedSwapNonoverlapping
 import io.github.kotlinmania.rustlang.core.intrinsics.writeViaMove
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.ops.drop.Drop
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.ptr.readUnaligned
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
-import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
 /**
  * Takes ownership and "forgets" about the value **without running its destructor**.
@@ -687,7 +685,7 @@ public inline fun <reified T> uninitialized(): T {
         // Fill memory with 0x01, as an imperfect mitigation for old code that uses this function on
         // bool, nonnull, and noundef types. But don't do this if we actively want to detect UB.
         if (!false) {
-            value.asMutPtr().writeBytes(0x01, 1)
+            value.asMutPtr().writeBytes<UByte>(0x01u.toUByte(), 1, PrimitiveLayouts.U8)
         }
         value.assumeInit()
     }
@@ -914,7 +912,10 @@ public fun <T> replace(dest: T, src: T, typeLayoutT: TypeLayout<T> = UnresolvedT
  * ```
  */
 public fun <T> drop(x: T) {
-    if (x is AutoCloseable) x.close()
+    when (x) {
+        is Drop -> x.drop()
+        is AutoCloseable -> x.close()
+    }
 }
 
 /**
@@ -1006,7 +1007,6 @@ public fun <T> copy(x: T): T = x
 public fun <Src, Dst> transmuteCopy(src: Src, typeLayoutDst: TypeLayout<Dst> = UnresolvedTypeLayout(), typeLayoutSrc: TypeLayout<Src> = UnresolvedTypeLayout()): Dst {
     // library UB because it's possible for the `Src` to be only a subset of the allocation
     // and thus for a failure to not be immediate language UB
-    Unit
     // If Dst has a higher alignment requirement, src might not be suitably aligned.
     return if (alignOf<Dst>(typeLayoutT = typeLayoutDst) > alignOfVal<Src>(src, typeLayoutT = typeLayoutSrc)) {
         // SAFETY: `src` is a reference which is guaranteed to be valid for reads.
@@ -1069,23 +1069,19 @@ public fun <Src, Dst> transmuteCopy(src: Src, typeLayoutDst: TypeLayout<Dst> = U
  * ```
  */
 public fun <Src, Dst> transmutePrefix(src: Src, typeLayoutSrc: TypeLayout<Src> = UnresolvedTypeLayout(), typeLayoutDst: TypeLayout<Dst> = UnresolvedTypeLayout()): Dst {
-    open class Transmute<A, B>(
-        public var a: A? = null,
-        public var b: B? = null,
-    )
-    return when (kmCompareValues((typeLayoutSrc).sizeBytes.toInt(), (typeLayoutDst).sizeBytes.toInt()).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }) {
-        // SAFETY: When Dst is bigger, the union is the size of Dst
-        Ordering.Less -> run {
-            val a = transmuteNeo(src, typeLayoutSrc = typeLayoutSrc)
-            transmuteWithLayouts<Transmute, Dst>(Transmute(a = a), UnresolvedTypeLayout<Transmute>(), typeLayoutDst)
-        }
-        // SAFETY: When they're the same size, we can use the MIR primitive
-        Ordering.Equal -> transmuteWithLayouts<Src, Dst>(src, typeLayoutSrc, typeLayoutDst)
-        // SAFETY: When Src is bigger, the union is the size of Src
-        Ordering.Greater -> run {
-            val u: Transmute<Src, Dst> = transmuteWithLayouts<Src, Transmute<Src, Dst>>(src, typeLayoutSrc, UnresolvedTypeLayout<Transmute<Src, Dst>>())
-            transmuteNeo(u.b, typeLayoutSrc = UnresolvedTypeLayout<B>())
-        }
+    val srcSize = maxOf(0L, typeLayoutSrc.sizeBytes)
+    val dstSize = maxOf(0L, typeLayoutDst.sizeBytes)
+    if (srcSize == dstSize) {
+        return transmuteWithLayouts<Src, Dst>(src, typeLayoutSrc, typeLayoutDst)
+    }
+    val scratchSize = maxOf(1L, maxOf(srcSize, dstSize))
+    val scratchAlign = maxOf(1L, maxOf(typeLayoutSrc.alignBytes, typeLayoutDst.alignBytes))
+    val scratchPtr = kmAllocZeroed(scratchSize, scratchAlign)
+    return try {
+        typeLayoutSrc.writeNative(scratchPtr, src)
+        typeLayoutDst.readNative(scratchPtr)
+    } finally {
+        kmDealloc(scratchPtr, scratchSize, scratchAlign)
     }
 }
 
@@ -1245,7 +1241,14 @@ public fun <Src, Dst> transmuteNeo(src: Src, typeLayoutSrc: TypeLayout<Src> = Un
  * // assertEq(0, unchecked ( std.mem.reinterpret::<_, u8>(std.mem.discriminant(&unitLike)) ));
  * ```
  */
-public fun <T> discriminant(v: T): Discriminant<T> = Discriminant(discriminantValue(v))
+public data class Discriminant<T>(
+    public val value: Int,
+)
+
+public fun <T> discriminant(v: T): Discriminant<T> {
+    val raw = discriminantValue(v)
+    return Discriminant(if (raw is Int) raw else raw.hashCode())
+}
 
 /**
  * Returns the number of variants in the enum type `T`.

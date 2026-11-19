@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.alloc.collections
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
@@ -12,10 +13,13 @@ public sealed class TryReserveErrorKind {
      * (usually `Long.MAX` bytes).
      */
     public data object CapacityOverflow : TryReserveErrorKind()
+
     /**
      * The memory allocator returned an error
      */
-    public data class AllocError(public var layout: Layout, public var nonExhaustive: Unit) : TryReserveErrorKind()
+    public data class AllocError(
+        public var layout: Layout,
+    ) : TryReserveErrorKind()
 
     public fun rustEquals(other: TryReserveErrorKind): Boolean = this == other
 
@@ -23,8 +27,8 @@ public sealed class TryReserveErrorKind {
         when (this) {
             TryReserveErrorKind.CapacityOverflow -> TryReserveErrorKind.CapacityOverflow
             is TryReserveErrorKind.AllocError -> {
-                val layout = (this as TryReserveErrorKind.AllocError).layout
-                TryReserveErrorKind.AllocError(layout = layout, nonExhaustive = Unit)
+                val layout = this.layout
+                TryReserveErrorKind.AllocError(layout = layout)
             }
         }
 

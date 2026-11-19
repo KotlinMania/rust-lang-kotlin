@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.num
 
 import io.github.kotlinmania.rustlang.core.num.error.IntErrorKind.*
@@ -31,17 +32,20 @@ public sealed class FpCategory {
      * of NaN.
      */
     public data object Nan : FpCategory()
+
     /**
      * Positive or negative infinity, which often results from dividing a nonzero number
      * by zero.
      */
     public data object Infinite : FpCategory()
+
     /**
      * Positive or negative zero.
      *
      * See [the documentation for `Float`](f32) for more information on the signedness of zeroes.
      */
     public data object Zero : FpCategory()
+
     /**
      * “Subnormal” or “denormal” floating point representation (less precise, relative to
      * their magnitude, than [Normal]).
@@ -53,6 +57,7 @@ public sealed class FpCategory {
      * [Zero]: Self.Zero
      */
     public data object Subnormal : FpCategory()
+
     /**
      * A regular floating point number, not any of the exceptional categories.
      *
@@ -67,11 +72,11 @@ public sealed class FpCategory {
 
     private fun kmDiscriminant(): Int =
         when (this) {
-        Nan -> 0
-        Infinite -> 1
-        Zero -> 2
-        Subnormal -> 3
-        Normal -> 4
+            Nan -> 0
+            Infinite -> 1
+            Zero -> 2
+            Subnormal -> 3
+            Normal -> 4
         }
 
     public fun toByte(): Byte = kmDiscriminant().toByte()

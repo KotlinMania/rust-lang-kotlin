@@ -1,20 +1,10 @@
+// rust-kotlin: manual
 // port-lint: source error.rs
 package io.github.kotlinmania.rustlang.core.error
 
 import io.github.kotlinmania.rustlang.core.RustTypeId
-import io.github.kotlinmania.rustlang.core.fmt.Formatter
-import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
-import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
-import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
-import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.constptr.add
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 private class DebugStruct(
@@ -129,7 +119,7 @@ public interface Error {
     /**
      * Gets the `TypeId` of `self`.
      */
-    public fun typeId(arg0: Internal): RustTypeId = RustTypeId.of<Error>()
+    public fun typeId(): RustTypeId = RustTypeId.of<Error>()
 
     /**
      * ```kotlin
@@ -241,78 +231,29 @@ public interface Error {
      * }
      * ```
      */
-    public fun provide(request: RustMutableReference<Request>) {}
+    public fun provide(request: Request) {}
 }
-
-// This is a Note to prevent `typeId` from being overridden by `Error`
-// implementations, since that can enable unsound downcasting.
-public open class Internal {
-    public companion object {
-        public fun typeLayout(): TypeLayout<Internal> =
-            object : TypeLayout<Internal> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): Internal =
-                    Internal()
-                override fun writeNative(addr: Long, value: Internal) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): Internal =
-                    Internal()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: Internal) {
-                }
-            }
-    }
-}
-
-public fun <E : Error> errorTypeId(err: E, typeIdEFn: (E, Internal) -> RustTypeId): RustTypeId = typeIdEFn(err, Internal())
 
 // Copied from `any.rs`.
 
 /**
  * Returns `true` if the inner type is the same as `T`.
  */
-public fun <T : Error> Error.isMatch(): Boolean {
-    // Get `TypeId` of the type this function is instantiated with.
-    val t = RustTypeId.of<T>()
-    // Get `TypeId` of the type in the trait object (`self`).
-    val concrete = errorTypeId<Error>(this)
-    // Compare both `TypeId`s on equality.
-    return t == concrete
-}
+public inline fun <reified T : Error> Error.isMatch(): Boolean = this is T
 
 /**
  * Returns some reference to the inner value if it is of type `T`, or
  * `None` if it isn't.
  */
-public fun <T : Error> Error.downcastRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? =
-    if (this.isMatch<T>()) {
-        // SAFETY: `is` ensures this type cast is correct
-        (typeLayoutT).readNative((((constPtrFromRustCast(this)).let { ptrSrc -> ConstPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress)
-    } else {
-        null
-    }
+public inline fun <reified T : Error> Error.downcastRef(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? =
+    if (this is T) this else null
 
 /**
  * Returns some mutable reference to the inner value if it is of type `T`, or
  * `None` if it isn't.
  */
-public fun <T : Error> Error.downcastMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? =
-    if (this.isMatch<T>()) {
-        // SAFETY: `is` ensures this type cast is correct
-        RustMutableReference(MutPtr((((mutPtrFromRustCast(this)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), typeLayoutT)
-    } else {
-        null
-    }
-
-/**
- * Forwards to the method defined on the type `dynamic Error`.
- */
-public inline fun <reified T : Error> Error.downcastRef(): T? = Error.downcastRef<T>(this)
-
-/**
- * Forwards to the method defined on the type `dynamic Error`.
- */
-public inline fun <reified T : Error> Error.downcastMut(): T? = Error.downcastMut<T>(this)
+public inline fun <reified T : Error> Error.downcastMut(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T? =
+    if (this is T) this else null
 
 /**
  * Returns an iterator starting with the current error and continuing with
@@ -394,7 +335,7 @@ public fun Error.sources(): Source {
  * }
  * ```
  */
-public inline fun <reified T> requestValue(err: Error): T? = requestByTypeTag<Value<T>>(err)
+public inline fun <reified T> requestValue(err: Error): T? = requestByTypeTag<T, Value<T>>(err)
 
 /**
  * Requests a reference of type `T` from the given `implementation Error`.
@@ -415,15 +356,23 @@ public inline fun <reified T> requestValue(err: Error): T? = requestByTypeTag<Va
  * }
  * ```
  */
-public inline fun <reified T> requestRef(err: Error): T? = requestByTypeTag<Ref<MaybeSizedValue<T>>>(err)
+public inline fun <reified T> requestRef(err: Error): T? = requestByTypeTag<T, Ref<T, MaybeSizedValue<T>>>(err)
 
 /**
  * Request a specific value by tag from the `Error`.
  */
-public fun <Reified, I> requestByTypeTag(err: Error): Reified? where I : Type<Reified> {
-    val tagged = Tagged(tagId = RustTypeId.of<I>(), value = TaggedOption(null, fieldLayout = UnresolvedTypeLayout<Reified?>()))
+public inline fun <reified Reified, reified I : TypeTag<Reified>> requestByTypeTag(err: Error): Reified? {
+    val slot =
+        TaggedOption<I, Reified>(
+            value = null,
+            fieldLayout = UnresolvedTypeLayout(),
+            validator = { candidate ->
+                if (candidate is Reified) Pair(true, candidate) else Pair(false, null)
+            },
+        )
+    val tagged = Tagged<Erased>(tagId = RustTypeId.of<I>(), value = slot, payloadTypeId = RustTypeId.of<Reified>())
     err.provide(tagged.asRequest())
-    return tagged.value.first
+    return slot.value
 }
 
 // //////////////////////////////////////////////////////////////////////////
@@ -528,22 +477,10 @@ public fun <Reified, I> requestByTypeTag(err: Error): Reified? where I : Type<Re
  * ```
  */
 public open class Request internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout(),
+    public val value: Tagged<Erased>,
 ) {
-    public var field0: Tagged<Erased>
+    public val field0: Tagged<Erased>
         get() = value
-        set(v) {
-            value = v
-        }
-
-    public var value: Tagged<Erased>
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        internal set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
-
-    public fun pointerLayout(): TypeLayout<Request> = TransparentTypeLayout(fieldLayout, { ptr, layout -> Request(ptr, layout) }, { it.value })
 
     /**
      * Provides a value or other type with only static scopes.
@@ -569,7 +506,7 @@ public open class Request internal constructor(
      * }
      * ```
      */
-    public open fun <T> provideValue(value: T): RustMutableReference<Request> = this.provide<Value<T>>(value)
+    public inline fun <reified T> provideValue(value: T): Request = this.provide<T, Value<T>>(value)
 
     /**
      * Provides a value or other type with only static scopes computed using a closure.
@@ -595,7 +532,7 @@ public open class Request internal constructor(
      * }
      * ```
      */
-    public open fun <T> provideValueWith(fulfil: () -> T): RustMutableReference<Request> = this.provideWith<Value<T>>(fulfil)
+    public inline fun <reified T> provideValueWith(fulfil: () -> T): Request = this.provideWith<T, Value<T>>(fulfil)
 
     /**
      * Provides a reference. The referee type must be bounded by `static`,
@@ -622,7 +559,7 @@ public open class Request internal constructor(
      * }
      * ```
      */
-    public open fun <T> provideRef(value: T): RustMutableReference<Request> = this.provide<Ref<MaybeSizedValue<T>>>(value)
+    public inline fun <reified T> provideRef(value: T): Request = this.provide<T, Ref<T, MaybeSizedValue<T>>>(value)
 
     /**
      * Provides a reference computed using a closure. The referee type
@@ -658,19 +595,14 @@ public open class Request internal constructor(
      * }
      * ```
      */
-    public open fun <T> provideRefWith(fulfil: () -> T): RustMutableReference<Request> = this.provideWith<Ref<MaybeSizedValue<T>>>(fulfil)
+    public inline fun <reified T> provideRefWith(fulfil: () -> T): Request = this.provideWith<T, Ref<T, MaybeSizedValue<T>>>(fulfil)
 
     /**
      * Provides a value with the given `Type` tag.
      */
-    public open fun <Reified, I> provide(value: Reified): RustMutableReference<Request> where I : Type<Reified> {
-        run {
-            val matchVal = this.value.downcastMut<I>()
-            if (matchVal != null && matchVal is TaggedOption && matchVal.value == null) {
-                val res = matchVal
-                val (None) = matchVal as TaggedOption
-                res.value = value
-            }
+    public inline fun <reified Reified, reified I : TypeTag<Reified>> provide(value: Reified): Request {
+        if (this.value.tagId == RustTypeId.of<I>() && this.value.payloadTypeId == RustTypeId.of<Reified>() && this.value.value.isEmptySlot()) {
+            this.value.value.writeRawValue(value)
         }
         return this
     }
@@ -678,14 +610,9 @@ public open class Request internal constructor(
     /**
      * Provides a value with the given `Type` tag, using a closure to prevent unnecessary work.
      */
-    public open fun <Reified, I> provideWith(fulfil: () -> Reified): RustMutableReference<Request> where I : Type<Reified> {
-        run {
-            val matchVal = this.value.downcastMut<I>()
-            if (matchVal != null && matchVal is TaggedOption && matchVal.value == null) {
-                val res = matchVal
-                val (None) = matchVal as TaggedOption
-                res.value = fulfil()
-            }
+    public inline fun <reified Reified, reified I : TypeTag<Reified>> provideWith(fulfil: () -> Reified): Request {
+        if (this.value.tagId == RustTypeId.of<I>() && this.value.payloadTypeId == RustTypeId.of<Reified>() && this.value.value.isEmptySlot()) {
+            this.value.value.writeRawValue(fulfil())
         }
         return this
     }
@@ -766,7 +693,7 @@ public open class Request internal constructor(
      * }
      * ```
      */
-    public open fun <T> wouldBeSatisfiedByValueOf(): Boolean = this.wouldBeSatisfiedBy<Value<T>>()
+    public inline fun <reified T> wouldBeSatisfiedByValueOf(): Boolean = this.wouldBeSatisfiedBy<T, Value<T>>()
 
     /**
      * Checks if the `Request` would be satisfied if provided with a
@@ -845,26 +772,21 @@ public open class Request internal constructor(
      * }
      * ```
      */
-    public open fun <T> wouldBeSatisfiedByRefOf(): Boolean = this.wouldBeSatisfiedBy<Ref<MaybeSizedValue<T>>>()
+    public inline fun <reified T> wouldBeSatisfiedByRefOf(): Boolean = this.wouldBeSatisfiedBy<T, Ref<T, MaybeSizedValue<T>>>()
 
-    public open fun <Reified, I> wouldBeSatisfiedBy(): Boolean where I : Type<Reified> =
+    public inline fun <reified Reified, reified I : TypeTag<Reified>> wouldBeSatisfiedBy(): Boolean =
+        this.value.tagId == RustTypeId.of<I>() &&
+            this.value.payloadTypeId == RustTypeId.of<Reified>() &&
+            this.value.value.isEmptySlot()
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         run {
-            val matchVal = this.value.downcast<I>()
-            when {
-                matchVal != null && matchVal is TaggedOption && matchVal.value == null -> {
-                    val (None) = matchVal as TaggedOption
-                    true
-                }
-                else -> false
-            }
+            DebugStruct(f, "Request").finishNonExhaustive()
+            Result.Ok<Unit, Unit>(Unit)
         }
 
-    public open fun fmt(f: Formatter): Result<Unit, Unit> = run { DebugStruct(f, "Request").finishNonExhaustive(); Result.Ok<Unit, Unit>(Unit) }
-
     public companion object {
-        public operator fun invoke(value: Tagged<Erased>, fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout()): Request = Request(value, fieldLayout)
-
-        public fun fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Tagged<Erased>> = UnresolvedTypeLayout()): Request = Request(fieldStorage, fieldLayout)
+        internal operator fun invoke(value: Tagged<Erased>): Request = Request(value)
     }
 }
 
@@ -876,7 +798,7 @@ public open class Request internal constructor(
  * module, although crates may also implement their own tags for more
  * complex types with internal scopes.
  */
-public interface Type<out Reified>
+public interface TypeTag<out Reified>
 
 /**
  * Similar to the [Type] trait, but represents a type which may be unsized (i.e., has a
@@ -887,30 +809,14 @@ public interface MaybeSizedType<out Reified>
 /**
  * Type-based tag for types bounded by `static`, i.e., with no borrowed elements.
  */
-public open class Value<T>(
-    public var value: Unit,
-) : Type<T> {
-    public var field0: Unit
-        get() = value
-        set(v) {
-            value = v
-        }
-
+public open class Value<T> : TypeTag<T> {
     public companion object
 }
 
 /**
  * Type-based tag similar to [Value] but which may be unsized (i.e., has a `? Sized` bound).
  */
-public open class MaybeSizedValue<T>(
-    public var value: Unit,
-) : MaybeSizedType<T> {
-    public var field0: Unit
-        get() = value
-        set(v) {
-            value = v
-        }
-
+public open class MaybeSizedValue<T> : MaybeSizedType<T> {
     public companion object
 }
 
@@ -918,15 +824,7 @@ public open class MaybeSizedValue<T>(
  * Type-based tag for reference types (`T`, where T is represented by
  * `<I as MaybeSizedType<>>.Reified`.
  */
-public open class Ref<I>(
-    public var value: Unit,
-) : Type<Reified> {
-    public var field0: Unit
-        get() = value
-        set(v) {
-            value = v
-        }
-
+public open class Ref<Reified, I : MaybeSizedType<Reified>> : TypeTag<Reified> {
     public companion object
 }
 
@@ -937,48 +835,64 @@ public open class Ref<I>(
  * option. The type can be checked dynamically using `Tagged.tagId` and since this is statically
  * checked for the concrete type, there is some degree of type safety.
  */
-public open class TaggedOption<I : Type<Reified>, Reified> internal constructor(
-    public val fieldStorage: MutPtr,
-    public val fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout(),
-) : Erased {
-    public var field0: Reified?
-        get() = value
-        set(v) {
-            value = v
+public open class TaggedOption<I : TypeTag<Reified>, Reified>
+    @PublishedApi
+    internal constructor(
+        public var value: Reified?,
+        public val fieldLayout: TypeLayout<Reified?>,
+        private val validator: (Any?) -> Pair<Boolean, Reified?>,
+    ) : Erased {
+        public constructor(
+            value: Reified? = null,
+            fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout(),
+        ) : this(value, fieldLayout, { Pair(false, null) })
+        public var field0: Reified?
+            get() = value
+            set(v) {
+                value = v
+            }
+
+        public override fun isEmptySlot(): Boolean = this.value == null
+
+        public override fun rawValue(): Any? = this.value
+
+        public override fun writeRawValue(newValue: Any?): Boolean {
+            val (ok, typed) = validator(newValue)
+            if (!ok) return false
+            this.value = typed
+            return true
         }
 
-    public var value: Reified?
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
-
-    internal constructor(value: Reified?, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()) : this(allocateNativeCell(value, fieldLayout), fieldLayout)
-
-    public fun pointerLayout(): TypeLayout<TaggedOption<I, Reified>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> TaggedOption<I, Reified>(ptr, layout) }, { it.value })
-
-    public companion object {
-        public operator fun <I : Type<Reified>, Reified> invoke(value: Reified?, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption<I, Reified>(value, fieldLayout)
-
-        public fun <I : Type<Reified>, Reified> fromFieldStorage(fieldStorage: MutPtr, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption<I, Reified>(fieldStorage, fieldLayout)
+        public companion object {
+            public operator fun <I : TypeTag<Reified>, Reified> invoke(value: Reified?, fieldLayout: TypeLayout<Reified?> = UnresolvedTypeLayout()): TaggedOption<I, Reified> = TaggedOption(value = value, fieldLayout = fieldLayout)
+        }
     }
+
+public fun <Reified, I : TypeTag<Reified>> Tagged<TaggedOption<I, Reified>>.asRequest(): Request {
+    val erased = Tagged<Erased>(tagId = this.tagId, value = this.value, payloadTypeId = this.payloadTypeId)
+    return Request(erased)
 }
 
-public fun <Reified, I : Type<Reified>> Tagged<TaggedOption<I, Reified>>.asRequest(): RustMutableReference<Request> {
-    val erased = ((this as Any?) as Tagged<Erased>)
-    // SAFETY: transmuting `Tagged<dynamic Erased<> + >` to `Request<>` is safe since
-    // `Request` is repr(transparent).
-    return RustMutableReference(MutPtr((((mutPtrFromRustCast(erased)).let { ptrSrc -> MutPtr(ptrSrc.rawAddress, ptrSrc.rawMeta) })).rawAddress), UnresolvedTypeLayout<Request>())
-}
+@kotlin.jvm.JvmName("asRequestErased")
+public fun Tagged<Erased>.asRequest(): Request = Request(this)
 
 /**
  * Represents a type-erased but identifiable object.
  *
  * This trait is exclusively implemented by the `TaggedOption` type.
  */
-public interface Erased
+public interface Erased {
+    public fun isEmptySlot(): Boolean
+
+    public fun rawValue(): Any?
+
+    public fun writeRawValue(newValue: Any?): Boolean
+}
 
 public open class Tagged<E>(
     public var tagId: RustTypeId,
     public var value: E,
+    public var payloadTypeId: RustTypeId = RustTypeId.of<Unit>(),
 ) {
     public companion object
 }
@@ -987,10 +901,14 @@ public open class Tagged<E>(
  * Returns some reference to the dynamic value if it is tagged with `I`,
  * or `None` otherwise.
  */
-public fun <Reified, I> Tagged<Erased>.downcast(): TaggedOption<I, Reified>? where I : Type<Reified> =
-    if (this.tagId == RustTypeId.of<I>()) {
-        // SAFETY: Just checked whether we're pointing to an I.
-        (UnresolvedTypeLayout<Tagged<TaggedOption<I, Reified>>>()).readNative((ConstPtr(((constPtrFromRustCast(this))).rawAddress)).rawAddress).value
+public inline fun <reified Reified, reified I : TypeTag<Reified>> Tagged<Erased>.downcast(): TaggedOption<I, Reified>? =
+    if (this.tagId == RustTypeId.of<I>() && this.payloadTypeId == RustTypeId.of<Reified>()) {
+        val raw = this.value.rawValue()
+        when {
+            raw == null -> TaggedOption(null)
+            raw is Reified -> TaggedOption(raw)
+            else -> null
+        }
     } else {
         null
     }
@@ -999,12 +917,8 @@ public fun <Reified, I> Tagged<Erased>.downcast(): TaggedOption<I, Reified>? whe
  * Returns some mutable reference to the dynamic value if it is tagged with `I`,
  * or `None` otherwise.
  */
-public fun <Reified, I> Tagged<Erased>.downcastMut(): RustMutableReference<TaggedOption<I, Reified>>? where I : Type<Reified> =
-    if (this.tagId == RustTypeId.of<I>()) {
-        RustMutableReference(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress)).rawAddress), UnresolvedTypeLayout<Tagged<TaggedOption<I, Reified>>>()).value
-    } else {
-        null
-    }
+public inline fun <reified Reified, reified I : TypeTag<Reified>> Tagged<Erased>.downcastMut(): TaggedOption<I, Reified>? =
+    this.downcast<Reified, I>()
 
 /**
  * An iterator over an [Error] and its sources.
@@ -1015,20 +929,21 @@ public fun <Reified, I> Tagged<Erased>.downcastMut(): RustMutableReference<Tagge
 public open class Source(
     public var current: Error?,
 ) : Iterable<Error> {
-    override fun iterator(): Iterator<Error> = object : AbstractIterator<Error>() {
-        override fun computeNext() {
-            when (val v = this@Source.next()) {
-                null -> done()
-                else -> setNext(v)
+    override fun iterator(): Iterator<Error> =
+        object : AbstractIterator<Error>() {
+            override fun computeNext() {
+                when (val v = this@Source.next()) {
+                    null -> done()
+                    else -> setNext(v)
+                }
             }
         }
-    }
 
     public open fun clone(): Source = Source(current)
 
     public open fun next(): Error? {
         val current = this.current
-        this.current = this.current?.let({ Error.source(it) })
+        this.current = this.current?.source()
         return current
     }
 

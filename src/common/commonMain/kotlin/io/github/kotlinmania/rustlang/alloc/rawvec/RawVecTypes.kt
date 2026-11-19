@@ -1,12 +1,14 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.alloc.rawvec
 
-import io.github.kotlinmania.rustlang.alloc.collections.TryReserveErrorKind.*
+import io.github.kotlinmania.rustlang.core.num.nichetypes.UsizeNoHighBit
 
 public sealed class AllocInit {
     /**
      * The contents of the new memory are uninitialized.
      */
     public data object Uninitialized : AllocInit()
+
     /**
      * The new memory is guaranteed to be zeroed.
      */
@@ -14,8 +16,8 @@ public sealed class AllocInit {
 
     private fun kmDiscriminant(): Int =
         when (this) {
-        Uninitialized -> 0
-        Zeroed -> 1
+            Uninitialized -> 0
+            Zeroed -> 1
         }
 
     public fun toByte(): Byte = kmDiscriminant().toByte()

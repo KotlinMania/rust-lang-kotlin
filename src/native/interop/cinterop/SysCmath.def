@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.std.sys.cmath.cinterop
-headers = sys_cmath_wrapper.h
-headerFilter = sys_cmath_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = sys_cmath_wrapper.a

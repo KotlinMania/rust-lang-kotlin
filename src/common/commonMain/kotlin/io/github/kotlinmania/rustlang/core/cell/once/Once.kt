@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source cell/once.rs
 package io.github.kotlinmania.rustlang.core.cell.once
 
@@ -6,10 +7,7 @@ import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.mem.TransparentTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
 import io.github.kotlinmania.rustlang.core.result.Result
 
 private class DebugTuple(
@@ -67,11 +65,22 @@ public open class OnceCell<T> internal constructor(
     public val fieldStorage: MutPtr,
     public val fieldLayout: TypeLayout<UnsafeCell<T?>> = UnresolvedTypeLayout(),
 ) {
-    public var inner: UnsafeCell<T?>
-        get() = fieldLayout.readNative(fieldStorage.rawAddress)
-        set(value) { fieldLayout.writeNative(fieldStorage.rawAddress, value) }
+    private var heapInner: UnsafeCell<T?>? = null
 
-    internal constructor(inner: UnsafeCell<T?>, fieldLayout: TypeLayout<UnsafeCell<T?>> = UnresolvedTypeLayout()) : this(allocateNativeCell(inner, fieldLayout), fieldLayout)
+    public var inner: UnsafeCell<T?>
+        get() = heapInner ?: fieldLayout.readNative(fieldStorage.rawAddress)
+        set(value) {
+            val h = heapInner
+            if (h != null) {
+                h.value = value.value
+            } else {
+                fieldLayout.writeNative(fieldStorage.rawAddress, value)
+            }
+        }
+
+    internal constructor(inner: UnsafeCell<T?>, fieldLayout: TypeLayout<UnsafeCell<T?>> = UnresolvedTypeLayout()) : this(MutPtr(0L), fieldLayout) {
+        this.heapInner = inner
+    }
 
     public fun pointerLayout(): TypeLayout<OnceCell<T>> = TransparentTypeLayout(fieldLayout, { ptr, layout -> OnceCell<T>(ptr, layout) }, { it.inner })
 
@@ -82,7 +91,7 @@ public open class OnceCell<T> internal constructor(
      */
     public open fun get(): T? {
         // SAFETY: Safe due to `inner`s invariant
-        return this.inner.get().asRef()
+        return this.inner.asRefUnchecked()
     }
 
     /**
@@ -90,7 +99,7 @@ public open class OnceCell<T> internal constructor(
      *
      * Returns `None` if the cell is uninitialized.
      */
-    public open fun getMut(): T? = this.inner.getMut()
+    public open fun getMut(): T? = this.inner.asMutUnchecked()
 
     /**
      * Initializes the contents of the cell to `value`.
@@ -115,12 +124,15 @@ public open class OnceCell<T> internal constructor(
     public open fun set(value: T): Result<Unit, T> =
         run {
             val matchVal = this.tryInsert(value)
-            when (matchVal) { is Result.Ok<*, *> -> {
-                Result.Ok<Unit, T>(Unit)
-            }; is Result.Err<*, *> -> {
-                val value1 = matchVal.errValue().second
-                Result.Err<Unit, T>(value1)
-            } }
+            when (matchVal) {
+                is Result.Ok<*, *> -> {
+                    Result.Ok<Unit, T>(Unit)
+                }
+                is Result.Err<*, *> -> {
+                    val value1 = matchVal.errValue().second
+                    Result.Err<Unit, T>(value1)
+                }
+            }
         }
 
     /**
@@ -159,8 +171,8 @@ public open class OnceCell<T> internal constructor(
         // due to reentrancy/concurrency are possible, and we've
         // checked that slot is currently `None`, so this write
         // maintains the `inner`s invariant.
-        val slot = this.inner.get()
-        return Result.Ok<T, Pair<T, T>>(slot.insert(value))
+        this.inner.value = value
+        return Result.Ok<T, Pair<T, T>>(value)
     }
 
     /**
@@ -189,10 +201,8 @@ public open class OnceCell<T> internal constructor(
      */
     public open fun getOrInit(f: () -> T): T =
         when (val matchVal = this.getOrTryInit({ Result.Ok<T, Nothing>(f()) })) {
-            is Result.Ok<*, *> -> {
-                val value = matchVal.okValue()
-                value
-            }
+            is Result.Ok -> matchVal.value
+            is Result.Err -> error("unreachable")
         }
 
     /**
@@ -223,10 +233,8 @@ public open class OnceCell<T> internal constructor(
      */
     public open fun getMutOrInit(f: () -> T): T =
         when (val matchVal = this.getMutOrTryInit({ Result.Ok<T, Nothing>(f()) })) {
-            is Result.Ok<*, *> -> {
-                val value = matchVal.okValue()
-                value
-            }
+            is Result.Ok -> matchVal.value
+            is Result.Err -> error("unreachable")
         }
 
     /**
@@ -305,7 +313,10 @@ public open class OnceCell<T> internal constructor(
      */
     public open fun <E> getMutOrTryInit(f: () -> Result<T, E>): Result<T, E> {
         if (this.get() == null) {
-            when (val tryResult = this.tryInit(f)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<T, E>(tryResult.errValue()) }
+            when (val tryResult = this.tryInit(f)) {
+                is Result.Ok -> tryResult.value
+                is Result.Err -> return Result.Err<T, E>(tryResult.value)
+            }
         }
         return Result.Ok<T, E>(this.getMut()!!)
     }
@@ -313,19 +324,18 @@ public open class OnceCell<T> internal constructor(
     // Avoid inlining the initialization closure into the common path that fetches
     // the already initialized value
     public open fun <E> tryInit(f: () -> Result<T, E>): Result<T, E> {
-        val value = when (val tryResult = f()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<T, E>(tryResult.errValue()) }
+        val value =
+            when (val tryResult = f()) {
+                is Result.Ok -> tryResult.value
+                is Result.Err -> return Result.Err<T, E>(tryResult.value)
+            }
         // Note that *some* forms of reentrant initialization might lead to
         // UB (see `reentrantInit` test). I believe that just removing this
         // `panic`, while keeping `tryInsert` would be sound, but it seems
         // better to panic, rather than to silently use an old value.
         return when (val matchVal = this.tryInsert(value)) {
-            is Result.Ok<*, *> -> {
-                val value1 = matchVal.okValue()
-                Result.Ok<T, E>(value1)
-            }
-            else -> {
-                error("reentrant init")
-            }
+            is Result.Ok -> Result.Ok<T, E>(matchVal.value)
+            is Result.Err -> error("reentrant init")
         }
     }
 
@@ -372,7 +382,11 @@ public open class OnceCell<T> internal constructor(
      * check(cell1.get() == null)
      * ```
      */
-    public open fun take(): T? = io.github.kotlinmania.rustlang.core.mem.take(this).intoInner()
+    public open fun take(): T? {
+        val prev = this.inner.value
+        this.inner.value = null
+        return prev
+    }
 
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
         val d = DebugTuple(f, "OnceCell")
@@ -383,7 +397,10 @@ public open class OnceCell<T> internal constructor(
                 d.field(v)
             }
         }
-        return run { d.finish(); Result.Ok<Unit, Unit>(Unit) }
+        return run {
+            d.finish()
+            Result.Ok<Unit, Unit>(Unit)
+        }
     }
 
     public open fun clone(): OnceCell<T> =

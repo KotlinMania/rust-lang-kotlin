@@ -1,14 +1,16 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.alloc.collections
 
-import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
  * The error type for `tryReserve` methods.
  */
 public open class TryReserveError(
-    public var kind: TryReserveErrorKind,
+    kind: TryReserveErrorKind,
 ) {
+    internal var kind: TryReserveErrorKind = kind
+
     public open fun clone(): TryReserveError = TryReserveError(kind)
 
     /**
@@ -27,7 +29,10 @@ public open class TryReserveError(
                     " because the memory allocator returned an error"
                 }
             }
-        return run { fmt.append(reason); Result.Ok<Unit, Error>(Unit) }
+        return run {
+            fmt.append(reason)
+            Result.Ok<Unit, Error>(Unit)
+        }
     }
 
     public companion object {

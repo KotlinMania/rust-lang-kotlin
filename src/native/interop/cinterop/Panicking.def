@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.std.panicking.cinterop
-headers = panicking_wrapper.h
-headerFilter = panicking_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = panicking_wrapper.a

@@ -1,23 +1,19 @@
+// rust-kotlin: manual
 // port-lint: source alloc/layout.rs
 package io.github.kotlinmania.rustlang.core.alloc.layout
 
-import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedAdd
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedMul
 import io.github.kotlinmania.rustlang.core.intrinsics.uncheckedSub
-import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.alignment.Alignment
 import io.github.kotlinmania.rustlang.core.mem.sizeOfVal
 import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
-import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.checkedMul
 import io.github.kotlinmania.rustlang.core.num.checkedSub
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.withoutProvenance
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -38,7 +34,7 @@ import io.github.kotlinmania.rustlang.core.result.Result
  */
 public open class Layout(
     // size of the requested block of memory, measured in bytes.
-    public var size: Int,
+    size: Int,
     // alignment of the requested block of memory, measured in bytes.
     // we ensure that this is always a power-of-two, because API's
     // like `posixMemalign` require it and it is a reasonable
@@ -46,8 +42,11 @@ public open class Layout(
     //
     // (However, we do not analogously require `align >= sizeof(void *)`,
     // even though that is *also* a requirement of `posixMemalign`.)
-    public var align: Alignment,
+    align: Alignment,
 ) {
+    internal var size: Int = size
+    internal var align: Alignment = align
+
     public open fun clone(): Layout = Layout(size, align)
 
     /**
@@ -230,19 +229,31 @@ public open class Layout(
     public open fun repeat(n: Int): Result<Pair<Layout, Int>, LayoutError> {
         // Note(const-Note): the following could be way shorter with `?`
         val padded = this.padToAlign()
-        val result = when (val tryResult1 = (when (val matchVal = n.checkedSub(1)) {
-            null -> {
-                if (false) {
-                    check(n == 0)
-                }
-                this.repeatPacked(0)
+        val result =
+            when (
+                val tryResult1 = (
+                    when (val matchVal = n.checkedSub(1)) {
+                        null -> {
+                            if (false) {
+                                check(n == 0)
+                            }
+                            this.repeatPacked(0)
+                        }
+                        else -> {
+                            val k = matchVal
+                            val repeated =
+                                when (val tryResult = padded.repeatPacked(k)) {
+                                    is Result.Ok<*, *> -> tryResult.okValue()
+                                    is Result.Err<*, *> -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError())
+                                }
+                            repeated.extendPacked(this)
+                        }
+                    }
+                )
+            ) {
+                is Result.Ok<*, *> -> tryResult1.okValue()
+                is Result.Err<*, *> -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError())
             }
-            else -> {
-                val k = matchVal
-                val repeated = when (val tryResult = padded.repeatPacked(k)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
-                repeated.extendPacked(this)
-            }
-        })) { is Result.Ok<*, *> -> tryResult1.okValue(); is Result.Err<*, *> -> return Result.Err<Pair<Layout, Int>, LayoutError>(LayoutError()) }
         return Result.Ok<Pair<Layout, Int>, LayoutError>(Pair(result, padded.size()))
     }
 
@@ -363,7 +374,7 @@ public open class Layout(
         public fun fromSizeAlign(size: Int, align: Int): Result<Layout, LayoutError> =
             if (Layout.isSizeAlignValid(size, align)) {
                 // SAFETY: Layout.isSizeAlignValid checks the preconditions for this call.
-                Result.Ok<Layout, LayoutError>(Layout(size = size, align = transmuteWithLayouts<Int, Alignment>(align, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<Alignment>())))
+                Result.Ok<Layout, LayoutError>(Layout(size = size, align = Alignment.newUnchecked(align)))
             } else {
                 Result.Err<Layout, LayoutError>(LayoutError())
             }
@@ -420,9 +431,8 @@ public open class Layout(
          * [Layout.fromSizeAlign].
          */
         public fun fromSizeAlignUnchecked(size: Int, align: Int): Layout {
-            Unit
             // SAFETY: the caller is required to uphold the preconditions.
-            return Layout(size = size, align = transmuteWithLayouts<Int, Alignment>(align, PrimitiveLayouts.USIZE64, UnresolvedTypeLayout<Alignment>()))
+            return Layout(size = size, align = Alignment.newUnchecked(align))
         }
 
         /**
@@ -434,7 +444,6 @@ public open class Layout(
          * [Layout.fromSizeAlignment].
          */
         public fun fromSizeAlignmentUnchecked(size: Int, alignment: Alignment): Layout {
-            Unit
             // SAFETY: the caller is required to uphold the preconditions.
             return Layout(size = size, align = alignment)
         }
@@ -492,7 +501,7 @@ public open class Layout(
          */
         public fun forValueRaw(value: ConstPtr): Layout {
             // SAFETY: we pass along the prerequisites of these functions to the caller
-            val (size, alignment) = Pair(sizeOfValRaw(value), Alignment.ofValRaw(value))
+            val (size, alignment) = Pair(sizeOfValRaw<Unit>(value), Alignment.ofValRaw(value))
             // SAFETY: see rationale in `new` for why this is using the unchecked variant
             return Layout.fromSizeAlignmentUnchecked(size, alignment)
         }
@@ -544,7 +553,11 @@ public open class LayoutError {
     public open fun clone(): LayoutError = LayoutError()
 
     // (we need this for downstream impl of trait Error)
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("invalid parameters to Layout::from_size_align"); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append("invalid parameters to Layout::from_size_align")
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     public companion object {
         public fun typeLayout(): TypeLayout<LayoutError> =

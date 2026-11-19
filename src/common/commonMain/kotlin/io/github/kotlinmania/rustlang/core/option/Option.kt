@@ -1,52 +1,30 @@
+// rust-kotlin: manual
 // port-lint: source option.rs
 package io.github.kotlinmania.rustlang.core.option
 
-import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Greater
-import io.github.kotlinmania.rustlang.core.cmp.Ordering.Less
-import io.github.kotlinmania.rustlang.core.convert.identity
+import io.github.kotlinmania.rustlang.core.convert.Into
 import io.github.kotlinmania.rustlang.core.hint.unreachableUnchecked
-import io.github.kotlinmania.rustlang.core.intrinsics.discriminantValue
-import io.github.kotlinmania.rustlang.core.iter.adapters.tryProcess
-import io.github.kotlinmania.rustlang.core.iter.traits.collect.IntoIterator
-import io.github.kotlinmania.rustlang.core.iter.traits.marker.TrustedLen
 import io.github.kotlinmania.rustlang.core.marker.StructuralPartialEq
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
 import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
-import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
-import io.github.kotlinmania.rustlang.core.mem.linearSliceView
-import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.replace
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
-import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Break
 import io.github.kotlinmania.rustlang.core.ops.controlflow.ControlFlow.Continue
 import io.github.kotlinmania.rustlang.core.ops.deref.Deref
 import io.github.kotlinmania.rustlang.core.ops.deref.DerefMut
-import io.github.kotlinmania.rustlang.core.ops.deref.derefMut
 import io.github.kotlinmania.rustlang.core.ops.trytrait.FromResidual
-import io.github.kotlinmania.rustlang.core.ops.trytrait.Residual
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Try
 import io.github.kotlinmania.rustlang.core.ops.trytrait.Yeet
 import io.github.kotlinmania.rustlang.core.panicking.panic
 import io.github.kotlinmania.rustlang.core.panicking.panicDisplay
 import io.github.kotlinmania.rustlang.core.pin.Pin
-import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
-import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
-import io.github.kotlinmania.rustlang.core.ptr.constptr.len
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.asMut
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.asRef
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
+import io.github.kotlinmania.rustlang.core.pin.getRef
+import io.github.kotlinmania.rustlang.core.pin.getUncheckedMut
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.len
-import io.github.kotlinmania.rustlang.core.str.len
 
 // Optional values.
 //
@@ -617,15 +595,21 @@ public typealias TryType<T> = Option<T>
 /**
  * The `Option` type. See [the module level documentation](self) for more.
  */
-public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<Nothing>>, FromResidual<Option<Nothing>, Option<T>> {
+public sealed class Option<T> :
+    StructuralPartialEq,
+    Try<Option<T>, T, Option<Nothing>>,
+    FromResidual<Option<Nothing>, Option<T>> {
     /**
      * No value.
      */
-    public class None<T>() : Option<T>()
+    public class None<T> : Option<T>()
+
     /**
      * Some value of type `T`.
      */
-    public data class Some<T>(public var value: T) : Option<T>()
+    public data class Some<T>(
+        public var value: T,
+    ) : Option<T>()
 
     // ////////////////////////////////////////////////////////////////////////
     // Type implementation
@@ -671,7 +655,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      */
     public open fun isSomeAnd(f: (T) -> Boolean): Boolean =
         when (this) {
-            null -> false
+            is None<*> -> false
             is Some<*> -> {
                 val (x) = this as Some<T>
                 f(x)
@@ -711,7 +695,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      */
     public open fun isNoneOr(f: (T) -> Boolean): Boolean =
         when (this) {
-            null -> true
+            is None<*> -> true
             is Some<*> -> {
                 val (x) = this as Some<T>
                 f(x)
@@ -750,7 +734,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 Some(x)
             }
-            null -> None()
+            is None<*> -> None()
         }
 
     /**
@@ -776,7 +760,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 Some(x)
             }
-            null -> None()
+            is None<*> -> None()
         }
 
     /**
@@ -784,41 +768,13 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      *
      * [&]: reference "shared reference"
      */
-    public open fun asPinRef(): Option<Pin<T>> {
-        // Note(const-Note): use `map` once that is possible
-        return when (val matchVal = Pin.getRef(this).asRef()) {
-            // SAFETY: `x` is guaranteed to be pinned because it comes from `self`
-            // which is pinned.
-            is Some<*> -> {
-                val (x) = matchVal
-                Some(Pin.newUnchecked(x))
-            }
-            null -> None()
-        }
-    }
+    // asPinRef / asPinMut moved to Pin<Option<T>> extensions.
 
-    /**
-     * Converts from <code>[Pin]<[&mut] Option\<T>></code> to <code>Option<[Pin]<[&mut] T>></code>.
-     *
-     * [&mut]: reference "mutable reference"
-     */
-    public open fun asPinMut(): Option<Pin<T>> {
-        // SAFETY: `getUncheckedMut` is never used to move the `Option` inside `self`.
-        // `x` is guaranteed to be pinned because it comes from `self` which is pinned.
-        return when (val matchVal = Pin.getUncheckedMut(this).asMut()) {
-            is Some<*> -> {
-                val (x) = matchVal
-                Some(Pin.newUnchecked(x))
-            }
-            null -> None()
+    public open fun len(): Int =
+        when (this) {
+            is Some<*> -> 1
+            is None<*> -> 0
         }
-    }
-
-    public open fun len(): Int {
-        // Using the intrinsic avoids emitting a branch to get the 0 or 1.
-        val discriminant: Int = discriminantValue(this)
-        return discriminant
-    }
 
     /**
      * Returns a slice of the contained value, if any. If this is `None`, an
@@ -843,19 +799,11 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      * }
      * ```
      */
-    public open fun asSlice(): List<T> {
-        // SAFETY: When the `Option` is `Some`, we're using the actual pointer
-        // to the payload, with a length of 1, so this is equivalent to
-        // `slice.fromRef`, and thus is safe.
-        // When the `Option` is `None`, the length used is 0, so to be safe it
-        // just needs to be aligned, which it is because `self` is aligned and
-        // the offset used is a multiple of alignment.
-        //
-        // Here we assume that `offsetOf` always returns an offset to an
-        // in-bounds and correctly aligned position for a `T` (even if in the
-        // `None` case it's just padding).
-        return linearSliceView(ConstPtr((ConstPtr(((constPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), UnresolvedTypeLayout<Option<T>>())
-    }
+    public open fun asSlice(): List<T> =
+        when (this) {
+            is Some -> listOf(this.value)
+            is None -> emptyList()
+        }
 
     /**
      * Returns a mutable slice of the contained value, if any. If this is
@@ -892,21 +840,11 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      * check(123.asMutSlice().firstMut() == RustMutableReference(allocateNativeCell(123, PrimitiveLayouts.I32), PrimitiveLayouts.I32))
      * ```
      */
-    public open fun asMutSlice(): MutableList<T> {
-        // SAFETY: When the `Option` is `Some`, we're using the actual pointer
-        // to the payload, with a length of 1, so this is equivalent to
-        // `slice.fromMut`, and thus is safe.
-        // When the `Option` is `None`, the length used is 0, so to be safe it
-        // just needs to be aligned, which it is because `self` is aligned and
-        // the offset used is a multiple of alignment.
-        //
-        // In the new version, the intrinsic creates a `* const T` from a
-        // mutable reference  so it is safe to cast back to a mutable pointer
-        // here. As with `asSlice`, the intrinsic always returns a pointer to
-        // an in-bounds and correctly aligned position for a `T` (even if in
-        // the `None` case it's just padding).
-        return linearMutSliceView(MutPtr((MutPtr(((mutPtrFromRustCast(this))).rawAddress + ((0).toLong()))).rawAddress), this.len().toInt(), UnresolvedTypeLayout<Option<T>>())
-    }
+    public open fun asMutSlice(): List<T> =
+        when (this) {
+            is Some -> listOf(this.value)
+            is None -> emptyList()
+        }
 
     // ////////////////////////////////////////////////////////////////////
     // Getting to contained values
@@ -957,7 +895,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (value) = this as Some<T>
                 value
             }
-            null -> expectFailed(msg)
+            is None<*> -> expectFailed(msg)
         }
 
     /**
@@ -1001,7 +939,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (value) = this as Some<T>
                 value
             }
-            null -> unwrapFailed()
+            is None<*> -> unwrapFailed()
         }
 
     /**
@@ -1026,7 +964,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 x
             }
-            null -> default
+            is None<*> -> default
         }
 
     /**
@@ -1046,7 +984,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 x
             }
-            null -> f()
+            is None<*> -> f()
         }
 
     /**
@@ -1074,7 +1012,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 x
             }
-            null -> defaultTFn()
+            is None<*> -> defaultTFn()
         }
 
     /**
@@ -1107,7 +1045,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 value
             }
             // SAFETY: the safety contract must be upheld by the caller.
-            null -> unreachableUnchecked()
+            is None<*> -> unreachableUnchecked()
         }
 
     // ////////////////////////////////////////////////////////////////////
@@ -1138,7 +1076,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 Some(f(x))
             }
-            null -> None()
+            is None<*> -> None()
         }
 
     /**
@@ -1158,7 +1096,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      */
     public open fun inspect(f: (T) -> Unit): Option<T> {
         if (this is Some<*>) {
-            val (x) = this
+            val (x) = this as Some<T>
             f(x)
         }
         return this
@@ -1189,7 +1127,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (t) = this as Some<T>
                 f(t)
             }
-            null -> default
+            is None<*> -> default
         }
 
     /**
@@ -1225,7 +1163,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (t) = this as Some<T>
                 f(t)
             }
-            null -> default()
+            is None<*> -> default()
         }
 
     /**
@@ -1250,7 +1188,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (t) = this as Some<T>
                 f(t)
             }
-            null -> defaultUFn()
+            is None<*> -> defaultUFn()
         }
 
     /**
@@ -1281,7 +1219,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (v) = this as Some<T>
                 Result.Ok<T, E>(v)
             }
-            null -> Result.Err<T, E>(err)
+            is None<*> -> Result.Err<T, E>(err)
         }
 
     /**
@@ -1307,7 +1245,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (v) = this as Some<T>
                 Result.Ok<T, E>(v)
             }
-            null -> Result.Err<T, E>(err())
+            is None<*> -> Result.Err<T, E>(err())
         }
 
     /**
@@ -1325,64 +1263,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      * check(x1 == null)
      * ```
      */
-    public open fun asDeref(): Option<Target> = this.asRef().map(Deref::deref)
-
-    /**
-     * Converts from `Option<T>` (or `Option<T>`) to `Option<T.Target>`.
-     *
-     * Leaves the original `Option` in-place, creating a new one containing a mutable reference to
-     * the inner type's [Deref.Target] type.
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * var x: String? = "hey".toOwned()
-     * check(x?.let({ x1 ->
-     *     x1.makeAsciiUppercase()
-     *     x1
-     * }) == "HEY".toOwned().asMutStr())
-     * ```
-     */
-    public open fun asDerefMut(): Option<Target> = this.asMut().map({ DerefMut.derefMut(it) })
-
-    // ////////////////////////////////////////////////////////////////////
-    // Iterator constructors
-    // ////////////////////////////////////////////////////////////////////
-
-    /**
-     * Returns an iterator over the possibly contained value.
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * val x = 4
-     * check(x.iter().next() == 4)
-     * val x1: UInt? = null
-     * check(x1.iter().next() == null)
-     * ```
-     */
-    public open fun iter(): Iter<T> = Iter(inner = Item(opt = this.asRef()))
-
-    /**
-     * Returns a mutable iterator over the possibly contained value.
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * var x = 4
-     * when (val matchVal = x.iterMut().next()) {
-     *     null -> {}
-     *     else -> {
-     *         val v = matchVal
-     *         v = 42
-     *     }
-     * }
-     * check(x == 42)
-     * var x1: UInt? = null
-     * check(x1.iterMut().next() == null)
-     * ```
-     */
-    public open fun iterMut(): IterMut<T> = IterMut(inner = Item(opt = this.asMut()))
+    // asDeref / asDerefMut moved to constrained top-level extensions.
 
     // ////////////////////////////////////////////////////////////////////
     // Boolean operations on the values, eager and lazy
@@ -1417,7 +1298,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
     public open fun <U> and(optb: Option<U>): Option<U> =
         when (this) {
             is Some<*> -> optb
-            null -> None()
+            is None<*> -> None()
         }
 
     /**
@@ -1454,7 +1335,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (x) = this as Some<T>
                 f(x)
             }
-            null -> None()
+            is None<*> -> None()
         }
 
     /**
@@ -1484,7 +1365,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      */
     public open fun filter(predicate: (T) -> Boolean): Option<T> {
         if (this is Some<*>) {
-            val (x) = this
+            val (x) = this as Some<T>
             if (predicate(x)) {
                 return Some(x)
             }
@@ -1524,7 +1405,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val x = this
                 x
             }
-            null -> optb
+            is None<*> -> optb
         }
 
     /**
@@ -1551,7 +1432,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val x = this
                 x
             }
-            null -> f()
+            is None<*> -> f()
         }
 
     /**
@@ -1575,19 +1456,10 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      * ```
      */
     public open fun xor(optb: Option<T>): Option<T> =
-        run {
-            val matchVal = Pair(this, optb)
-            when {
-                matchVal.first is Some<*> && matchVal.second == null -> {
-                    val a = matchVal.first
-                    a
-                }
-                matchVal.first == null && matchVal.second is Some<*> -> {
-                    val b = matchVal.second
-                    b
-                }
-                else -> None()
-            }
+        when {
+            this is Some && optb is None -> this
+            this is None && optb is Some -> optb
+            else -> None()
         }
 
     // ////////////////////////////////////////////////////////////////////
@@ -1684,7 +1556,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      * ```
      */
     public open fun getOrInsertWith(f: () -> T): T {
-        if (this == null) {
+        if (this is None<*>) {
             // The effect of the following statement is identical to
             // *self = Some(f());
             // except that it does not drop the old value of `* self`. This is not a leak, because
@@ -1733,15 +1605,11 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      * }
      * ```
      */
-    public open fun <Residual, R> getOrTryInsertWith(f: () -> R): TryType where R : Try<R, T, Residual> {
-        var selfMut = this
-        if (selfMut == null) {
-            selfMut = Some(when (val tryResult = f()) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err(tryResult.errValue()); else -> error("Unexpected Result variant: $tryResult") })
+    public open fun <E> getOrTryInsertWith(f: () -> Result<T, E>): Result<T, E> =
+        when (this) {
+            is Some<*> -> Result.Ok((this as Some<T>).value)
+            is None<*> -> f()
         }
-        // SAFETY: a `None` variant for `self` would have been replaced by a `Some`
-        // variant in the code above.
-        return Try.fromOutput(selfMut.asMut().unwrapUnchecked())
-    }
 
     // ////////////////////////////////////////////////////////////////////
     // Misc
@@ -1793,8 +1661,8 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      * ```
      */
     public open fun takeIf(predicate: (T) -> Boolean): Option<T> =
-        if (this.asMut().isSomeAnd(predicate)) {
-            this.also { this = null }
+        if (this is Some<*> && predicate((this as Some<T>).value)) {
+            this
         } else {
             None()
         }
@@ -1817,7 +1685,9 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      * check(old1 == null)
      * ```
      */
-    public open fun replace(value: T): Option<T> = io.github.kotlinmania.rustlang.core.mem.replace(this, Some(value))
+    public open fun replace(value: T): Option<T> =
+        io.github.kotlinmania.rustlang.core.mem
+            .replace(this, Some(value))
 
     /**
      * Makes a tuple of the value in `self` and the value in another `Option`.
@@ -1841,7 +1711,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
             when {
                 matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (a) = matchVal.first as Some<T>
-                    val (b) = matchVal.second as Some<T>
+                    val (b) = matchVal.second as Some<U>
                     Some(Pair(a, b))
                 }
                 else -> None()
@@ -1877,7 +1747,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
             when {
                 matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (a) = matchVal.first as Some<T>
-                    val (b) = matchVal.second as Some<T>
+                    val (b) = matchVal.second as Some<U>
                     Some(f(a, b))
                 }
                 else -> None()
@@ -1907,92 +1777,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
      * }
      * ```
      */
-    public open fun <U, R> reduce(other: Option<U>, f: (T, U) -> R): Option<R> =
-        run {
-            val matchVal = Pair(this, other)
-            when {
-                matchVal.first is Some<*> && matchVal.second is Some<*> -> {
-                    val (a) = matchVal.first as Some<T>
-                    val (b) = matchVal.second as Some<T>
-                    Some(f(a, b))
-                }
-                matchVal.first is Some<*> -> {
-                    val (a1) = matchVal.first as Some<T>
-                    Some(a1.into())
-                }
-                matchVal.second is Some<*> -> {
-                    val (b1) = matchVal.second as Some<T>
-                    Some(b1.into())
-                }
-                else -> None()
-            }
-        }
-
-    /**
-     * Transforms an optional iterator into an iterator.
-     *
-     * If `self` is `None`, the resulting iterator is empty.
-     * Otherwise, an iterator is made from the `Some` value and returned.
-     * # Examples
-     * ```kotlin
-     * @feature(optionIntoFlatIter)
-     * public fun doctestEntry() {
-     *     val o1 = listOf(1, 2)
-     *     val o2 = null
-     *     check(o1.intoFlatIter().collect<Vec>() == listOf(1, 2))
-     *     check(o2.intoFlatIter().collect<Vec>() == mutableListOf())
-     * }
-     * ```
-     */
-    public open fun intoFlatIter(): OptionFlatten<IntoIter> = OptionFlatten(iter = this.map(IntoIterator::intoIter))
-
-    // ////////////////////////////////////////////////////////////////////////
-    // Trait implementations
-    // ////////////////////////////////////////////////////////////////////////
-    // Note(constHack): the T: [const] Destruct should be inferred from the Self: [const] Destruct in cloneFrom.
-    // See https://github.com/rust-lang/rust/issues/144207
-    public open fun clone(cloneTFn: (T) -> T = { it }): Option<T> =
-        when (this) {
-            is Some<*> -> {
-                val (x) = this as Some<T>
-                Some(cloneTFn(x))
-            }
-            null -> None()
-        }
-
-    public open fun cloneFrom(source: Option<T>, cloneTFn: (T) -> T = { it }) {
-        run {
-            val matchVal = Pair(this, source)
-            when {
-                matchVal.first is Some<*> && matchVal.second is Some<*> -> {
-                    val (to) = matchVal.first as Some<T>
-                    val (from) = matchVal.second as Some<T>
-                    to.cloneFrom(from)
-                }
-                else -> {
-                    val to1 = matchVal.first
-                    val from1 = matchVal.second
-                    to1 = from1.clone()
-                }
-            }
-        }
-    }
-
-    /**
-     * Returns a consuming iterator over the possibly contained value.
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * val x = "string"
-     * val v: List<String> = x.intoIter().toMutableList()
-     * check(v == listOf("string"))
-     * val x1 = null
-     * val v1: List<String> = ArrayDeque(listOfNotNull(x1)).toMutableList()
-     * check(v1.isEmpty())
-     * ```
-     */
-    public open fun intoIter(): IntoIter<T> = IntoIter(inner = Item(opt = this))
+    // reduce moved to constrained top-level Option.reduce; intoFlatIter/cloneFrom/intoIter removed (core.iter carved out).
 
     // Ideally, LLVM should be able to optimize our derive code to this.
     // Once https://github.com/llvm/llvm-project/issues/52622 is fixed, we can
@@ -2009,8 +1794,8 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                     val (r) = matchVal.second as Some<T>
                     l == r
                 }
-                matchVal.first is Some<*> && matchVal.second == null -> false
-                matchVal.first == null && matchVal.second is Some<*> -> false
+                matchVal.first is Some<*> && matchVal.second is None<*> -> false
+                matchVal.first is None<*> && matchVal.second is Some<*> -> false
                 else -> true
             }
         }
@@ -2031,10 +1816,18 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (l) = matchVal.first as Some<T>
                     val (r) = matchVal.second as Some<T>
-                    kmPartialCompareValues(l, r)?.let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }
+                    kmPartialCompareValues(l, r)?.let { cmpSign ->
+                        Some(
+                            when {
+                                cmpSign < 0 -> Ordering.Less
+                                cmpSign > 0 -> Ordering.Greater
+                                else -> Ordering.Equal
+                            },
+                        )
+                    } ?: None()
                 }
-                matchVal.first is Some<*> && matchVal.second == null -> Some(Ordering.Greater)
-                matchVal.first == null && matchVal.second is Some<*> -> Some(Ordering.Less)
+                matchVal.first is Some<*> && matchVal.second is None<*> -> Some(Ordering.Greater)
+                matchVal.first is None<*> && matchVal.second is Some<*> -> Some(Ordering.Less)
                 else -> Some(Ordering.Equal)
             }
         }
@@ -2046,13 +1839,23 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 matchVal.first is Some<*> && matchVal.second is Some<*> -> {
                     val (l) = matchVal.first as Some<T>
                     val (r) = matchVal.second as Some<T>
-                    kmCompareValues(l, r).let { cmpSign -> when { cmpSign < 0 -> Ordering.Less; cmpSign > 0 -> Ordering.Greater; else -> Ordering.Equal } }
+                    kmCompareValues(l, r).let { cmpSign ->
+                        when {
+                            cmpSign < 0 -> Ordering.Less
+                            cmpSign > 0 -> Ordering.Greater
+                            else -> Ordering.Equal
+                        }
+                    }
                 }
-                matchVal.first is Some<*> && matchVal.second == null -> Ordering.Greater
-                matchVal.first == null && matchVal.second is Some<*> -> Ordering.Less
+                matchVal.first is Some<*> && matchVal.second is None<*> -> Ordering.Greater
+                matchVal.first is None<*> && matchVal.second is Some<*> -> Ordering.Less
                 else -> Ordering.Equal
             }
         }
+
+    public override fun fromOutput(output: T): Option<T> = Option.fromOutput(output)
+
+    public override fun fromResidual(residual: Option<Nothing>): Option<T> = Option.fromResidual(residual)
 
     public override fun branch(): ControlFlow<Option<Nothing>, T> =
         when (this) {
@@ -2060,7 +1863,7 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
                 val (v) = this as Some<T>
                 ControlFlow.Continue(v)
             }
-            null -> ControlFlow.Break(None())
+            is None<*> -> ControlFlow.Break(None())
         }
 
     public companion object {
@@ -2092,10 +1895,37 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
 
         public fun <T> fromResidual(residual: Option<Nothing>): Option<T> =
             when (residual) {
-                null -> None()
+                is None<*> -> None()
+                is Some<*> -> error("Option.Some<Nothing> residual is unreachable")
             }
 
         public fun <T> fromResidual(destructuredArg0: Yeet<Unit>): Option<T> = None()
+    }
+}
+
+public fun <T : Deref<Target>, Target> Option<T>.asDeref(): Option<Target> =
+    this.asRef().map { it.deref() }
+
+public fun <T : DerefMut<Target>, Target> Option<T>.asDerefMut(): Option<Target> =
+    this.asMut().map { it.derefMut() }
+
+public fun <T : Into<R>, U : Into<R>, R> Option<T>.reduce(other: Option<U>, f: (T, U) -> R): Option<R> {
+    val matchVal = Pair(this, other)
+    return when {
+        matchVal.first is Option.Some<*> && matchVal.second is Option.Some<*> -> {
+            val a = (matchVal.first as Option.Some<T>).value
+            val b = (matchVal.second as Option.Some<U>).value
+            Option.Some(f(a, b))
+        }
+        matchVal.first is Option.Some<*> -> {
+            val a1 = (matchVal.first as Option.Some<T>).value
+            Option.Some(a1.into())
+        }
+        matchVal.second is Option.Some<*> -> {
+            val b1 = (matchVal.second as Option.Some<U>).value
+            Option.Some(b1.into())
+        }
+        else -> Option.None()
     }
 }
 
@@ -2116,12 +1946,8 @@ public sealed class Option<T> : StructuralPartialEq, Try<Option<T>, T, Option<No
  */
 public fun <T, U> Option<Pair<T, U>>.unzip(): Pair<Option<T>, Option<U>> =
     when (this) {
-        is Some<*> -> {
-            val a = (this as Some<T>).value.first
-            val b = (this as Some<T>).value.second
-            Pair(Some(a), Some(b))
-        }
-        null -> Pair(None(), None())
+        is Option.Some -> Pair(Option.Some(this.value.first), Option.Some(this.value.second))
+        is Option.None -> Pair(Option.None(), Option.None())
     }
 
 /**
@@ -2142,11 +1968,11 @@ public fun <T> Option<T>.copied(): Option<T> {
     // Note(const-Note): this implementation, which sidesteps using `Option.map` since it's not const
     // ready yet, should be reverted when possible to avoid code repetition
     return when (this) {
-        is Some<*> -> {
-            val (v) = this as Some<T>
-            Some(v)
+        is Option.Some<*> -> {
+            val (v) = this as Option.Some<T>
+            Option.Some(v)
         }
-        null -> None()
+        is Option.None<*> -> Option.None()
     }
 }
 
@@ -2167,27 +1993,6 @@ public fun <T> Option<T>.copied(): Option<T> {
 public fun <T> Option<T>.cloned(cloneTFn: (T) -> T = { it }): Option<T> = this.map(cloneTFn)
 
 /**
- * Maps an `Option<T>` to an `Option<T>` by cloning the contents of the
- * option.
- *
- * # Examples
- *
- * ```kotlin
- * import io.github.kotlinmania.rustlang.core.mem.AddressableLocal
- * import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
- * import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
- * import io.github.kotlinmania.rustlang.core.mem.allocateNativeCell
- *
- * val localStorageL3C0 = AddressableLocal(12, PrimitiveLayouts.I32)
- * val optX = RustMutableReference(localStorageL3C0.asMutPtr(), localStorageL3C0.layout)
- * check(optX == RustMutableReference(allocateNativeCell(12, PrimitiveLayouts.I32), PrimitiveLayouts.I32))
- * val cloned = optX.cloned()
- * check(cloned == 12)
- * ```
- */
-public fun <T> Option<T>.cloned(): Option<T> = this.asDeref().cloned()
-
-/**
  * Transposes an `Option` of a [Result] into a [Result] of an `Option`.
  *
  * <code>[Some]\([Ok]\(\_))</code> is mapped to <code>[Ok]\([Some]\(\_))</code>,
@@ -2204,16 +2009,13 @@ public fun <T> Option<T>.cloned(): Option<T> = this.asDeref().cloned()
  * ```
  */
 public fun <T, E> Option<Result<T, E>>.transpose(): Result<Option<T>, E> =
-    when {
-        this is Some<*> && (this as Some<T>).value is Result.Ok<*, *> -> {
-            val x = ((this as Some<T>).value).okValue()
-            Result.Ok<Option<T>, E>(Some(x))
-        }
-        this is Some<*> && (this as Some<T>).value is Result.Err<*, *> -> {
-            val e = ((this as Some<T>).value).errValue()
-            Result.Err<Option<T>, E>(e)
-        }
-        else -> Result.Ok<Option<T>, E>(None())
+    when (this) {
+        is Option.Some ->
+            when (val inner = this.value) {
+                is Result.Ok -> Result.Ok(Option.Some(inner.value))
+                is Result.Err -> Result.Err(inner.value)
+            }
+        is Option.None -> Result.Ok(Option.None())
     }
 
 public fun unwrapFailed(): Nothing = panic("called `Option::unwrap()` on a `None` value")
@@ -2243,316 +2045,17 @@ public fun expectFailed(msg: String): Nothing = panicDisplay(msg)
  */
 public fun <T> fromOptionT(o: Option<T>): Option<T> = o.asRef()
 
-// ////////////////////////////////////////////////////////////////////////
-// The Option Iterators
-// ////////////////////////////////////////////////////////////////////////
-public open class Item<A>(
-    public var opt: Option<A>,
-) : TrustedLen, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@Item.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
+public fun <T> Pin<Option<T>>.asPinRef(): Option<Pin<T>> =
+    when (val matchVal = this.getRef().asRef()) {
+        is Option.Some<*> -> Option.Some(Pin.newUnchecked((matchVal as Option.Some<T>).value, UnresolvedTypeLayout()))
+        is Option.None<*> -> Option.None()
     }
 
-    public open fun clone(): Item<A> = Item(opt)
-
-    public open fun next(): Option<A> = this.opt.also { this.opt = null }
-
-    public open fun sizeHint(): Pair<Int, Option<Int>> {
-        val len = this.opt.len()
-        return Pair(len, Some(len))
+public fun <T> Pin<Option<T>>.asPinMut(): Option<Pin<T>> =
+    when (val matchVal = this.getUncheckedMut().asMut()) {
+        is Option.Some<*> -> Option.Some(Pin.newUnchecked((matchVal as Option.Some<T>).value, UnresolvedTypeLayout()))
+        is Option.None<*> -> Option.None()
     }
-
-    public open fun nextBack(): Option<A> = this.opt.also { this.opt = null }
-
-    public open fun len(): Int = this.opt.len()
-
-    public companion object
-}
-
-/**
- * An iterator over a reference to the [Some] variant of an [Option].
- *
- * The iterator yields one value if the [Option] is a [Some], otherwise none.
- *
- * This `class` is created by the [Option.iter] function.
- */
-public open class Iter<A>(
-    public var inner: Item<A>,
-) : TrustedLen, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@Iter.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
-    public open fun next(): Option<A> = this.inner.next()
-
-    public open fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
-
-    public open fun nextBack(): Option<A> = this.inner.nextBack()
-
-    public open fun clone(): Iter<A> = Iter(inner = this.inner.clone())
-
-    public companion object
-}
-
-/**
- * An iterator over a mutable reference to the [Some] variant of an [Option].
- *
- * The iterator yields one value if the [Option] is a [Some], otherwise none.
- *
- * This `class` is created by the [Option.iterMut] function.
- */
-public open class IterMut<A>(
-    public var inner: Item<A>,
-) : TrustedLen, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@IterMut.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
-    public open fun next(): Option<A> = this.inner.next()
-
-    public open fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
-
-    public open fun nextBack(): Option<A> = this.inner.nextBack()
-
-    public companion object
-}
-
-/**
- * An iterator over the value in [Some] variant of an [Option].
- *
- * The iterator yields one value if the [Option] is a [Some], otherwise none.
- *
- * This `class` is created by the [Option.intoIter] function.
- */
-public open class IntoIter<A>(
-    public var inner: Item<A>,
-) : TrustedLen, Iterable<A> {
-    override fun iterator(): Iterator<A> = object : AbstractIterator<A>() {
-        override fun computeNext() {
-            when (val v = this@IntoIter.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
-    public open fun clone(): IntoIter<A> = IntoIter(inner)
-
-    public open fun next(): Option<A> = this.inner.next()
-
-    public open fun sizeHint(): Pair<Int, Option<Int>> = this.inner.sizeHint()
-
-    public open fun nextBack(): Option<A> = this.inner.nextBack()
-
-    public companion object
-}
-
-/**
- * The iterator produced by [Option.intoFlatIter]. See its documentation for more.
- */
-public open class OptionFlatten<A>(
-    public var iter: Option<A>,
-) : Iterable<Item> {
-    override fun iterator(): Iterator<Item> = object : AbstractIterator<Item>() {
-        override fun computeNext() {
-            when (val v = this@OptionFlatten.next()) {
-                null -> done()
-                else -> setNext(v)
-            }
-        }
-    }
-
-    public open fun clone(): OptionFlatten<A> = OptionFlatten(iter)
-
-    public open fun next(): Option<Item> =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.next()
-            }
-            null -> None()
-        }
-
-    public open fun sizeHint(): Pair<Int, Option<Int>> =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.sizeHint()
-            }
-            null -> Pair(0, Some(0))
-        }
-
-    public open fun advanceBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.advanceBy(n)
-            }
-            null -> NonZero.new<NonZeroUsizeInner, Int>(n).mapOr(Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit), { Result.Err(it) })
-        }
-
-    public open fun nth(n: Int): Option<Item> =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.nth(n)
-            }
-            null -> None()
-        }
-
-    public open fun <Acc> fold(init: Acc, fold: (Acc, Item) -> Acc): Acc =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.fold(init, fold)
-            }
-            null -> init
-        }
-
-    public open fun <Residual, Acc, R> tryFold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.tryFold(init, fold)
-            }
-            null -> init
-        }
-
-    public open fun count(): Int =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.count()
-            }
-            null -> 0
-        }
-
-    public open fun last(): Option<Item> =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.last()
-            }
-            null -> None()
-        }
-
-    public open fun nextBack(): Option<Item> =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.nextBack()
-            }
-            null -> None()
-        }
-
-    public open fun advanceBackBy(n: Int): Result<Unit, NonZero<Int, NonZeroUsizeInner>> =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.advanceBackBy(n)
-            }
-            null -> NonZero.new<NonZeroUsizeInner, Int>(n).mapOr(Result.Ok<Unit, NonZero<Int, NonZeroUsizeInner>>(Unit), { Result.Err(it) })
-        }
-
-    public open fun nthBack(n: Int): Option<Item> =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.nthBack(n)
-            }
-            null -> None()
-        }
-
-    public open fun <Acc> rfold(init: Acc, fold: (Acc, Item) -> Acc): Acc =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.rfold(init, fold)
-            }
-            null -> init
-        }
-
-    public open fun <Residual, Acc, R> tryRfold(init: Acc, fold: (Acc, Item) -> R): R where R : Try<R, Acc, Residual> =
-        when (val matchVal = this.iter) {
-            is Some<*> -> {
-                val (iter) = matchVal
-                iter.tryRfold(init, fold)
-            }
-            null -> init
-        }
-
-    public companion object
-}
-
-// ////////////////////////////////////////////////////////////////////////
-// FromIterator
-// ////////////////////////////////////////////////////////////////////////
-
-/**
- * Takes each element in the [Iterator]: if it is [`None`][Option.None],
- * no further elements are taken, and the [`None`][Option.None] is
- * returned. Should no [`None`][Option.None] occur, a container of type
- * `V` containing the values of each [Option] is returned.
- *
- * # Examples
- *
- * Here is an example which increments every integer in a vector.
- * We use the checked variant of `add` that returns `None` when the
- * calculation would result in an overflow.
- *
- * ```kotlin
- * val items = mutableListOf(0u.toUShort(), 1, 2)
- * val res: List<UShort>? = ArrayDeque((ArrayDeque(items)).map({ x -> x.checkedAdd(1) })).toMutableList()
- * check(res == mutableListOf(1u.toUShort(), 2u.toUShort(), 3u.toUShort()))
- * ```
- *
- * As you can see, this will return the expected, valid items.
- *
- * Here is another example that tries to subtract one from another list
- * of integers, this time checking for underflow:
- *
- * ```kotlin
- * val items = mutableListOf(2u.toUShort(), 1, 0)
- * val res: List<UShort>? = ArrayDeque((ArrayDeque(items)).map({ x -> x.checkedSub(1) })).toMutableList()
- * check(res == null)
- * ```
- *
- * Since the last element is zero, it would underflow. Thus, the resulting
- * value is `None`.
- *
- * Here is a variation on the previous example, showing that no
- * further elements are taken from `iter` after the first `None`.
- *
- * ```kotlin
- * val items = mutableListOf(3u.toUShort(), 2, 1, 10)
- * var shared = 0
- * val res: List<UShort>? = ArrayDeque((ArrayDeque(items)).map({ x ->
- *     shared += x
- *     x.checkedSub(2)
- * })).toMutableList()
- * check(res == null)
- * check(shared == 6)
- * ```
- *
- * Since the third element caused an underflow, no further elements were taken,
- * so the final value of `shared` is 6 (= `3 + 2 + 1`), not 16.
- */
-public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I): Option<V> = tryProcess(iter.iterator(), { i -> i.collect() })
 
 /**
  * Converts from `Option<Option<T>>` to `Option<T>`.
@@ -2581,11 +2084,11 @@ public fun <T, V, I : Iterable<Option<T>>> fromIteratorFromIterOptionV(iter: I):
 public fun <T> Option<Option<T>>.flatten(): Option<T> {
     // Note(const-Note): could be written with `andThen`
     return when (this) {
-        is Some<*> -> {
-            val (inner) = this as Some<T>
+        is Option.Some<*> -> {
+            val (inner) = this as Option.Some<Option<T>>
             inner
         }
-        null -> None()
+        is Option.None<*> -> Option.None()
     }
 }
 
@@ -2610,11 +2113,11 @@ public fun <T> Option<Option<T>>.flatten(): Option<T> {
  */
 public fun <T> Option<Option<T>>.flattenRef(): Option<T> =
     when (this) {
-        is Some<*> -> {
-            val (inner) = this as Some<T>
+        is Option.Some<*> -> {
+            val (inner) = this as Option.Some<Option<T>>
             inner.asRef()
         }
-        null -> None()
+        is Option.None<*> -> Option.None()
     }
 
 /**
@@ -2644,11 +2147,11 @@ public fun <T> Option<Option<T>>.flattenRef(): Option<T> =
  */
 public fun <T> Option<Option<T>>.flattenMut(): Option<T> =
     when (this) {
-        is Some<*> -> {
-            val (inner) = this as Some<T>
+        is Option.Some<*> -> {
+            val (inner) = this as Option.Some<Option<T>>
             inner.asMut()
         }
-        null -> None()
+        is Option.None<*> -> Option.None()
     }
 
 /**
@@ -2670,4 +2173,13 @@ public fun <T> Option<Option<T>>.flattenMut(): Option<T> =
  * }
  * ```
  */
-public fun <T> List<Option<T>>.transpose(n: Int = 0): Option<List<T>> = this.tryMap(identity)
+public fun <T> List<Option<T>>.transpose(n: Int = 0): Option<List<T>> {
+    val out = mutableListOf<T>()
+    for (o in this) {
+        when (o) {
+            is Option.Some<*> -> out.add((o as Option.Some<T>).value)
+            is Option.None<*> -> return Option.None()
+        }
+    }
+    return Option.Some(out)
+}

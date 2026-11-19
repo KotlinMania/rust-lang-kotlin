@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.alloc.vec
 
 import io.github.kotlinmania.rustlang.alloc.alloc.Global
@@ -8,11 +9,9 @@ import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.fixedListTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.num.trailingZeros
-import io.github.kotlinmania.rustlang.core.ptr.constptr.len
 import io.github.kotlinmania.rustlang.core.ptr.read
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.len
-import io.github.kotlinmania.rustlang.core.str.len
+import io.github.kotlinmania.rustlang.core.slice.getUnchecked
 
 public fun <T> dedupSimdChunkSize(typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): Int? {
     // The minimal SIMD width on supported platforms
@@ -20,9 +19,10 @@ public fun <T> dedupSimdChunkSize(typeLayoutT: TypeLayout<T> = UnresolvedTypeLay
     val size = sizeOf<T>(typeLayoutT = typeLayoutT)
     // We only have SIMD implementations for these element sizes.
     if (!when (size) {
-        1, 2, 4, 8 -> true
-        else -> false
-    }) {
+            1, 2, 4, 8 -> true
+            else -> false
+        }
+    ) {
         return null
     }
     val simdWidth: Int? = SIMD_WIDTH
@@ -46,7 +46,7 @@ public fun <T> findFirstDuplicate(v: List<T>, chunkSize: Int): Int? {
         for (j in 0 until chunkSize1) {
             // SAFETY: start + j always in range [1..v.len())
             val eq = v1.getUnchecked(start + j) == v1.getUnchecked(start + j - 1)
-            mask = mask or ((eq.toUInt()) shl j.toInt())
+            mask = mask or ((if (eq) 1u else 0u) shl j)
         }
         if (mask != 0u) {
             return start + mask.trailingZeros().toInt()
@@ -108,9 +108,9 @@ public fun <T> findFirstDuplicate(v: List<T>, chunkSize: Int): Int? {
 // time when we didn't have the ability to gate internal methods used by public macros.
 // NOTE: the real deprecation version is the same as the stabilization version.
 // I.e. it should never have been used even in version 1.0.
-public fun <T> fromElem(elem: T, n: Int): Vec<T, Global> = fromElemGlobal(elem, n)
-
 public fun <T> fromElemGlobal(elem: T, n: Int, fromElemTFn: (T, Int, Global) -> Vec<T, Global>): Vec<T, Global> = fromElemTFn(elem, n, Global())
+
+public fun <T> fromElem(elem: T, n: Int): Vec<T, Global> = Vec.fromElem(elem, n)
 
 public fun <T, A : Allocator> fromElemIn(elem: T, n: Int, alloc: A, fromElemTFn: (T, Int, A) -> Vec<T, A>): Vec<T, A> = fromElemTFn(elem, n, alloc)
 
@@ -182,6 +182,6 @@ public fun <T, A : Allocator> tryFromTArrayn(vec: Vec<T, A>, n: Int = 0, typeLay
     // We checked earlier that we have sufficient items.
     // The items will not double-drop as the `setLen`
     // tells the `List` not to also drop them.
-    val array = read(constPtrFromRustCast(vec.asPtr()), typeLayoutT = fixedListTypeLayout(typeLayoutT, (n).toInt()))
+    val array = read(constPtrFromRustCast(vec.asPtr()), typeLayoutT = fixedListTypeLayout(typeLayoutT, n))
     return Result.Ok<List<T>, Vec<T, A>>(array)
 }

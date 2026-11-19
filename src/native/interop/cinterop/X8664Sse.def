@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.x8664.cinterop
-headers = x8664_sse_wrapper.h
-headerFilter = x8664_sse_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = x8664_sse_wrapper.a

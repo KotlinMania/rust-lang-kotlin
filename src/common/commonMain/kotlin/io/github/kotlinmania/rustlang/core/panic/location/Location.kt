@@ -1,18 +1,20 @@
+// rust-kotlin: manual
 // port-lint: source panic/location.rs
 package io.github.kotlinmania.rustlang.core.panic.location
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.cmp
 import io.github.kotlinmania.rustlang.core.ffi.cstr.CStr
 import io.github.kotlinmania.rustlang.core.intrinsics.callerLocation
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.linearSliceView
 import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
 import io.github.kotlinmania.rustlang.core.num.uncheckedAdd
-import io.github.kotlinmania.rustlang.core.ptr.constptr.add
-import io.github.kotlinmania.rustlang.core.ptr.constptr.asRef
 import io.github.kotlinmania.rustlang.core.ptr.constptr.cast
+import io.github.kotlinmania.rustlang.core.ptr.mutptr.castConst
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
+import io.github.kotlinmania.rustlang.core.str.cmp
 
 private class DebugStruct(
     private val out: StringBuilder,
@@ -73,9 +75,11 @@ private class DebugStruct(
  */
 public open class Location internal constructor(
     filenameCtorArg: NonNull,
-    public var line: UInt,
+    line: UInt,
     public var col: UInt,
 ) {
+    internal var line: UInt = line
+
     // A raw pointer is used rather than a reference because the pointer is valid for one more byte
     // than the length stored in this pointer; the additional byte is the NUL-terminator used by
     // `Location.fileAsCStr`.
@@ -90,7 +94,12 @@ public open class Location internal constructor(
         return this.col == other.col && this.line == other.line && this.file() == other.file()
     }
 
-    public open fun cmp(other: Location): Ordering = this.file().cmp(other.file()).thenWith({ this.line.cmp(other.line) }).thenWith({ this.col.cmp(other.col) })
+    public open fun cmp(other: Location): Ordering =
+        this
+            .file()
+            .cmp(other.file())
+            .thenWith({ this.line.cmp(other.line) })
+            .thenWith({ this.col.cmp(other.col) })
 
     public open fun partialCmp(other: Location): Ordering? = this.cmp(other)
 
@@ -102,7 +111,15 @@ public open class Location internal constructor(
         return state
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugStruct(f, "Location").field("file", this.file()).field("line", this.line).field("column", this.col).finish(); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            DebugStruct(f, "Location")
+                .field("file", this.file())
+                .field("line", this.line)
+                .field("column", this.col)
+                .finish()
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     /**
      * Returns the name of the source file from which the panic originated.
@@ -157,9 +174,9 @@ public open class Location internal constructor(
         val filename = this.filename.asPtr()
         // SAFETY: The filename is valid for `filenameLen + 1` bytes, so this addition can't
         // overflow.
-        val cstrLen = sizeOfValRaw(filename).uncheckedAdd(1)
+        val cstrLen = sizeOfValRaw<Unit>(filename.castConst()).uncheckedAdd(1)
         // SAFETY: The filename is valid for `filenameLen + 1` bytes.
-        val slice = linearSliceView(filename.cast(), cstrLen.toInt(), PrimitiveLayouts.U8)
+        val slice = linearSliceView(filename.castConst().cast(), cstrLen, PrimitiveLayouts.U8)
         // SAFETY: The filename is guaranteed to have a trailing nul byte and no interior nul bytes.
         return CStr.fromBytesWithNulUnchecked(slice)
     }
@@ -212,18 +229,23 @@ public open class Location internal constructor(
      */
     public open fun column(): UInt = this.col
 
-    public open fun fmtDisplay(formatter: StringBuilder): Result<Unit, Unit> = run { formatter.append("${this.file()}:${this.line}:${this.col}"); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmtDisplay(formatter: StringBuilder): Result<Unit, Unit> =
+        run {
+            formatter.append("${this.file()}:${this.line}:${this.col}")
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     public companion object {
         public operator fun invoke(
             filename: NonNull,
             line: UInt,
             col: UInt,
-        ): Location = Location(
-            filenameCtorArg = filename,
-            line = line,
-            col = col,
-        )
+        ): Location =
+            Location(
+                filenameCtorArg = filename,
+                line = line,
+                col = col,
+            )
 
         /**
          * Returns the source location of the caller of this function. If that function's caller is

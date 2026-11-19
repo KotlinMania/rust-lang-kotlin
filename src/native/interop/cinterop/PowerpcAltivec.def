@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.powerpc.cinterop
-headers = powerpc_altivec_wrapper.h
-headerFilter = powerpc_altivec_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = powerpc_altivec_wrapper.a

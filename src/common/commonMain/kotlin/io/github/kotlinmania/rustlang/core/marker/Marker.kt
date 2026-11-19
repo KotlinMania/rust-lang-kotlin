@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source marker.rs
 package io.github.kotlinmania.rustlang.core.marker
 
@@ -5,8 +6,6 @@ import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
 import io.github.kotlinmania.rustlang.core.cmp.Ordering.Equal
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 
 // Primitive traits and types representing basic properties of types.
 //
@@ -544,16 +543,22 @@ public interface Sync
  *
  * [drop check]: Drop#drop-check
  */
-public open class PhantomData<T> : Copy, TrivialClone<PhantomData<T>>, StructuralPartialEq, Freeze, UnsafeUnpin, Move {
+public open class PhantomData<T> :
+    Copy,
+    TrivialClone<PhantomData<T>>,
+    StructuralPartialEq,
+    Freeze,
+    UnsafeUnpin,
+    Move {
     public override fun hashCode(): Int = 0
 
     public open fun eq(other: PhantomData<T>): Boolean = true
 
-    public open fun partialCmp(other: PhantomData<T>): Ordering? = Option.Some(Ordering.Equal)
+    public open fun partialCmp(other: PhantomData<T>): Ordering? = Ordering.Equal
 
     public open fun cmp(other: PhantomData<T>): Ordering = Ordering.Equal
 
-    public open fun clone(): PhantomData<T> = PhantomData()
+    public override fun clone(): PhantomData<T> = PhantomData()
 
     public companion object {
         public fun <T> typeLayout(): TypeLayout<PhantomData<T>> =
@@ -570,7 +575,7 @@ public open class PhantomData<T> : Copy, TrivialClone<PhantomData<T>>, Structura
                 }
             }
 
-        public fun <T> default(): PhantomData<T> = PhantomData
+        public fun <T> default(): PhantomData<T> = PhantomData()
     }
 }
 
@@ -724,22 +729,20 @@ public interface Destruct
 public interface Tuple
 
 // Note(khyperia): if this is missing, the gca macro's `impliedBy = "gcaAdts"` emits an error
-public open class HackGcaAdtsFeature {
-    public companion object {
-        public fun typeLayout(): TypeLayout<HackGcaAdtsFeature> =
-            object : TypeLayout<HackGcaAdtsFeature> {
-                override val alignBytes: Long = 1L
-                override val sizeBytes: Long = 0L
-                override fun readNative(addr: Long): HackGcaAdtsFeature =
-                    HackGcaAdtsFeature()
-                override fun writeNative(addr: Long, value: HackGcaAdtsFeature) {
-                }
-                override fun readBytes(buf: ByteArray, offset: Int): HackGcaAdtsFeature =
-                    HackGcaAdtsFeature()
-                override fun writeBytes(buf: ByteArray, offset: Int, value: HackGcaAdtsFeature) {
-                }
+public object HackGcaAdtsFeature {
+    public fun typeLayout(): TypeLayout<HackGcaAdtsFeature> =
+        object : TypeLayout<HackGcaAdtsFeature> {
+            override val alignBytes: Long = 1L
+            override val sizeBytes: Long = 0L
+            override fun readNative(addr: Long): HackGcaAdtsFeature =
+                HackGcaAdtsFeature
+            override fun writeNative(addr: Long, value: HackGcaAdtsFeature) {
             }
-    }
+            override fun readBytes(buf: ByteArray, offset: Int): HackGcaAdtsFeature =
+                HackGcaAdtsFeature
+            override fun writeBytes(buf: ByteArray, offset: Int, value: HackGcaAdtsFeature) {
+            }
+        }
 }
 
 // We name this differently than the derive macro so that the `adtConstParams` can

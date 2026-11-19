@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 // port-lint: source str/error.rs
 package io.github.kotlinmania.rustlang.core.str.error
 
@@ -50,9 +51,12 @@ import io.github.kotlinmania.rustlang.core.result.Result
  * ```
  */
 public open class Utf8Error(
-    public var validUpTo: Int,
-    public var errorLen: UByte?,
+    validUpTo: Int,
+    errorLen: UByte?,
 ) {
+    internal var validUpTo: Int = validUpTo
+    internal var errorLen: UByte? = errorLen
+
     public open fun clone(): Utf8Error = Utf8Error(validUpTo, errorLen)
 
     /**
@@ -110,11 +114,17 @@ public open class Utf8Error(
     public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
         when (val matchVal = this.errorLen) {
             null -> {
-                run { f.append("incomplete utf-8 byte sequence from index ${this.validUpTo}"); Result.Ok<Unit, Unit>(Unit) }
+                run {
+                    f.append("incomplete utf-8 byte sequence from index ${this.validUpTo}")
+                    Result.Ok<Unit, Unit>(Unit)
+                }
             }
             else -> {
                 val errorLen = matchVal
-                run { f.append("invalid utf-8 sequence of $errorLen bytes from index ${this.validUpTo}"); Result.Ok<Unit, Unit>(Unit) }
+                run {
+                    f.append("invalid utf-8 sequence of $errorLen bytes from index ${this.validUpTo}")
+                    Result.Ok<Unit, Unit>(Unit)
+                }
             }
         }
 
@@ -127,7 +137,11 @@ public open class Utf8Error(
 public open class ParseBoolError {
     public open fun clone(): ParseBoolError = ParseBoolError()
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("provided string was not `true` or `false`"); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append("provided string was not `true` or `false`")
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     public companion object
 }

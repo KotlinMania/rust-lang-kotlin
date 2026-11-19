@@ -1,11 +1,12 @@
+// rust-kotlin: manual
 // port-lint: source num/f32.rs
 @file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core.num.f32
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.cmp.clamp
-import io.github.kotlinmania.rustlang.core.cmp.clamp.ClampBounds
+import io.github.kotlinmania.rustlang.core.cmp.clamp.FloatClampBounds
+import io.github.kotlinmania.rustlang.core.cmp.cmp
 import io.github.kotlinmania.rustlang.core.cmp.max
 import io.github.kotlinmania.rustlang.core.cmp.min
 import io.github.kotlinmania.rustlang.core.intrinsics.kmCeilf32
@@ -21,14 +22,17 @@ import io.github.kotlinmania.rustlang.core.intrinsics.kmRoundf32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmSqrtf32
 import io.github.kotlinmania.rustlang.core.intrinsics.kmTruncf32
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.floatBinaryWithLayout
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.num.FpCategory
-import io.github.kotlinmania.rustlang.core.num.imp.libm.cbrtf
-import io.github.kotlinmania.rustlang.core.num.imp.libm.fdimf
-import io.github.kotlinmania.rustlang.core.num.midpoint
-import io.github.kotlinmania.rustlang.core.result.Result
+import kotlin.reflect.KClass
+import kotlin.math.cbrt as kotlinCbrt
+
+internal const val FLOAT_SIGN_MASK: UInt = 0x8000_0000u
+internal const val FLOAT_EXPONENT_MASK: UInt = 0x7F80_0000u
+internal const val FLOAT_MANTISSA_MASK: UInt = 0x007F_FFFFu
+internal const val FLOAT_TINY_BITS: UInt = 0x1u
+internal const val FLOAT_NEG_TINY_BITS: UInt = 0x8000_0001u
 
 // Constants for the `Float` single-precision floating point type.
 //
@@ -523,12 +527,12 @@ public fun kotlin.Float.classify(): FpCategory {
     // version, so now we are back to the naive version.
     val b = this.toRawBits().toUInt()
     return run {
-        val matchVal = Pair(b and kotlin.Float.MANTISSA_MASK, b and kotlin.Float.EXPONENT_MASK)
+        val matchVal = Pair(b and FLOAT_MANTISSA_MASK, b and FLOAT_EXPONENT_MASK)
         when {
-            matchVal.first == 0 && matchVal.second == kotlin.Float.EXPONENT_MASK -> FpCategory.Infinite
-            matchVal.second == kotlin.Float.EXPONENT_MASK -> FpCategory.Nan
-            matchVal.first == 0 && matchVal.second == 0 -> FpCategory.Zero
-            matchVal.second == 0 -> FpCategory.Subnormal
+            matchVal.first == 0u && matchVal.second == FLOAT_EXPONENT_MASK -> FpCategory.Infinite
+            matchVal.second == FLOAT_EXPONENT_MASK -> FpCategory.Nan
+            matchVal.first == 0u && matchVal.second == 0u -> FpCategory.Zero
+            matchVal.second == 0u -> FpCategory.Subnormal
             else -> FpCategory.Normal
         }
     }
@@ -612,19 +616,19 @@ public fun kotlin.Float.nextUp(): kotlin.Float {
     // denormals to zero. This is in general unsound and unsupported, but here
     // we do our best to still produce the correct result on such targets.
     val bits = this.toRawBits().toUInt()
-    if (this.isNaN() || bits == kotlin.Float.POSITIVE_INFINITY.toBits().toUInt()) {
+    if (this.isNaN() || bits == kotlin.Float.POSITIVE_INFINITY.toBits()) {
         return this
     }
-    val abs = bits and kotlin.Float.SIGN_MASK.inv()
+    val abs = bits and FLOAT_SIGN_MASK.inv()
     val nextBits =
         if (abs == 0u) {
-            kotlin.Float.TINY_BITS
+            FLOAT_TINY_BITS
         } else if (bits == abs) {
             bits + 1u
         } else {
             bits - 1u
         }
-    return kotlin.Float.fromBits(nextBits)
+    return kotlin.Float.fromBits(nextBits.toInt())
 }
 
 /**
@@ -661,19 +665,19 @@ public fun kotlin.Float.nextDown(): kotlin.Float {
     // denormals to zero. This is in general unsound and unsupported, but here
     // we do our best to still produce the correct result on such targets.
     val bits = this.toRawBits().toUInt()
-    if (this.isNaN() || bits == kotlin.Float.NEGATIVE_INFINITY.toBits().toUInt()) {
+    if (this.isNaN() || bits == kotlin.Float.NEGATIVE_INFINITY.toBits()) {
         return this
     }
-    val abs = bits and kotlin.Float.SIGN_MASK.inv()
+    val abs = bits and FLOAT_SIGN_MASK.inv()
     val nextBits =
         if (abs == 0u) {
-            kotlin.Float.NEG_TINY_BITS
+            FLOAT_NEG_TINY_BITS
         } else if (bits == abs) {
             bits - 1u
         } else {
             bits + 1u
         }
-    return kotlin.Float.fromBits(nextBits)
+    return kotlin.Float.fromBits(nextBits.toInt())
 }
 
 /**
@@ -864,11 +868,64 @@ public fun kotlin.Float.midpoint(other: kotlin.Float): kotlin.Float = ((this.toD
  * * Not be infinite
  * * Be representable in the return type `Int`, after truncating off its fractional part
  */
-public inline fun <reified Int> kotlin.Float.toIntUnchecked(): Int {
-    // SAFETY: the caller must uphold the safety contract for
-    // `FloatToInt.toIntUnchecked`.
-    return this.toIntUnchecked()
+public fun dispatchFloatToIntUnchecked(v: kotlin.Float, cls: KClass<*>): Any =
+    when (cls) {
+        Byte::class -> v.toInt().toByte()
+        UByte::class -> v.toInt().toUByte()
+        Short::class -> v.toInt().toShort()
+        UShort::class -> v.toInt().toUShort()
+        Int::class -> v.toInt()
+        UInt::class -> v.toUInt()
+        Long::class -> v.toLong()
+        ULong::class -> v.toULong()
+        else -> error("unsupported float target $cls")
+    }
+
+public fun dispatchFloatToIntChecked(v: kotlin.Float, cls: KClass<*>): Any? {
+    if (v.isNaN() || v.isInfinite()) return null
+    val d = v.toDouble()
+    return when (cls) {
+        Byte::class -> if (d > -129.0 && d < 128.0) v.toInt().toByte() else null
+        UByte::class -> if (d > -1.0 && d < 256.0) v.toInt().toUByte() else null
+        Short::class -> if (d > -32769.0 && d < 32768.0) v.toInt().toShort() else null
+        UShort::class -> if (d > -1.0 && d < 65536.0) v.toInt().toUShort() else null
+        Int::class -> if (d >= -2147483648.0 && d < 2147483648.0) v.toInt() else null
+        UInt::class -> if (d > -1.0 && d < 4294967296.0) v.toUInt() else null
+        Long::class -> if (d >= -9223372036854775808.0 && d < 9223372036854775808.0) v.toLong() else null
+        ULong::class -> if (d > -1.0 && d < 18446744073709551616.0) v.toULong() else null
+        else -> null
+    }
 }
+
+public fun dispatchFloatToIntSaturating(v: kotlin.Float, cls: KClass<*>): Any {
+    if (v.isNaN()) {
+        return when (cls) {
+            Byte::class -> 0.toByte()
+            UByte::class -> 0u.toUByte()
+            Short::class -> 0.toShort()
+            UShort::class -> 0u.toUShort()
+            Int::class -> 0
+            UInt::class -> 0u
+            Long::class -> 0L
+            ULong::class -> 0uL
+            else -> error("unsupported float target $cls")
+        }
+    }
+    return when (cls) {
+        Byte::class -> v.toInt().coerceIn(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt()).toByte()
+        UByte::class -> v.toInt().coerceIn(0, UByte.MAX_VALUE.toInt()).toUByte()
+        Short::class -> v.toInt().coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
+        UShort::class -> v.toInt().coerceIn(0, UShort.MAX_VALUE.toInt()).toUShort()
+        Int::class -> v.toInt()
+        UInt::class -> v.toUInt()
+        Long::class -> v.toLong()
+        ULong::class -> v.toULong()
+        else -> error("unsupported float target $cls")
+    }
+}
+
+public inline fun <reified Target> kotlin.Float.toIntUnchecked(): Target =
+    dispatchFloatToIntUnchecked(this, Target::class) as Target
 
 /**
  * Converts to the target float type, rounding as defined in IEEE 754.
@@ -884,7 +941,12 @@ public inline fun <reified Int> kotlin.Float.toIntUnchecked(): Int {
  * }
  * ```
  */
-public inline fun <reified Flt> kotlin.Float.cast(): Flt = this.cast()
+public inline fun <reified Target> kotlin.Float.cast(): Target =
+    when (Target::class) {
+        kotlin.Float::class -> this as Target
+        Double::class -> this.toDouble() as Target
+        else -> dispatchFloatToIntSaturating(this, Target::class) as Target
+    }
 
 /**
  * Rounds toward zero and converts to any primitive integer type, saturating
@@ -902,7 +964,8 @@ public inline fun <reified Flt> kotlin.Float.cast(): Flt = this.cast()
  * }
  * ```
  */
-public inline fun <reified Int> kotlin.Float.toIntSaturating(): Int = this.toIntSaturating()
+public inline fun <reified Target> kotlin.Float.toIntSaturating(): Target =
+    dispatchFloatToIntSaturating(this, Target::class) as Target
 
 /**
  * Rounds toward zero and converts to any primitive integer type, returning
@@ -917,7 +980,8 @@ public inline fun <reified Int> kotlin.Float.toIntSaturating(): Int = this.toInt
  * }
  * ```
  */
-public inline fun <reified Int> kotlin.Float.toIntChecked(): Int? = this.toIntChecked()
+public inline fun <reified Target> kotlin.Float.toIntChecked(): Target? =
+    dispatchFloatToIntChecked(this, Target::class) as Target?
 
 /**
  * Rounds toward zero and converts to any primitive integer type.
@@ -958,7 +1022,7 @@ public inline fun <reified Int> kotlin.Float.toIntStrict(): Int = (this.toIntChe
  */
 public fun kotlin.Float.toBits(): UInt {
     // SAFETY: `UInt` is a plain old datatype so we can always reinterpret to it.
-    return transmuteWithLayouts<kotlin.Float, UInt>(this, UnresolvedTypeLayout<kotlin.Float>(), PrimitiveLayouts.U32)
+    return this.toRawBits().toUInt()
 }
 
 /**
@@ -999,7 +1063,7 @@ public fun kotlin.Float.toBits(): UInt {
  * check(v == 12.5f.toFloat())
  * ```
  */
-public fun kotlin.Float.Companion.fromBits(v: UInt): kotlin.Float {
+public fun f32FromBits(v: UInt): kotlin.Float {
     // It turns out the safety issues with sNaN were overblown! Hooray!
     // SAFETY: `UInt` is a plain old datatype so we can always reinterpret from it.
     return transmuteWithLayouts<UInt, kotlin.Float>(v, PrimitiveLayouts.U32, PrimitiveLayouts.F32)
@@ -1023,7 +1087,11 @@ public fun kotlin.Float.Companion.fromBits(v: UInt): kotlin.Float {
  * }
  * ```
  */
-public fun kotlin.Float.toBeBytes(): UByteArray = run { val rawBits = this.toRawBits().toUInt(); ubyteArrayOf((rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte()) }
+public fun kotlin.Float.toBeBytes(): UByteArray =
+    run {
+        val rawBits = this.toRawBits().toUInt()
+        ubyteArrayOf((rawBits shr 24).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 8).toUByte(), rawBits.toUByte())
+    }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -1043,7 +1111,11 @@ public fun kotlin.Float.toBeBytes(): UByteArray = run { val rawBits = this.toRaw
  * }
  * ```
  */
-public fun kotlin.Float.toLeBytes(): UByteArray = run { val rawBits = this.toRawBits().toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
+public fun kotlin.Float.toLeBytes(): UByteArray =
+    run {
+        val rawBits = this.toRawBits().toUInt()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
+    }
 
 /**
  * Returns the memory representation of this floating point number as a byte array in
@@ -1073,7 +1145,11 @@ public fun kotlin.Float.toLeBytes(): UByteArray = run { val rawBits = this.toRaw
  * }
  * ```
  */
-public fun kotlin.Float.toNeBytes(): UByteArray = run { val rawBits = this.toRawBits().toUInt(); ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte()) }
+public fun kotlin.Float.toNeBytes(): UByteArray =
+    run {
+        val rawBits = this.toRawBits().toUInt()
+        ubyteArrayOf(rawBits.toUByte(), (rawBits shr 8).toUByte(), (rawBits shr 16).toUByte(), (rawBits shr 24).toUByte())
+    }
 
 /**
  * Creates a floating point value from its representation as a byte array in big endian.
@@ -1092,7 +1168,13 @@ public fun kotlin.Float.toNeBytes(): UByteArray = run { val rawBits = this.toRaw
  * }
  * ```
  */
-public fun kotlin.Float.Companion.fromBeBytes(bytes: UByteArray): kotlin.Float = kotlin.Float.fromBits(run { val bytesTmp0 = bytes; ((bytesTmp0[0].toUInt() shl 24) or (bytesTmp0[1].toUInt() shl 16) or (bytesTmp0[2].toUInt() shl 8) or bytesTmp0[3].toUInt()) })
+public fun f32FromBeBytes(bytes: UByteArray): kotlin.Float =
+    f32FromBits(
+        run {
+            val bytesTmp0 = bytes
+            ((bytesTmp0[0].toUInt() shl 24) or (bytesTmp0[1].toUInt() shl 16) or (bytesTmp0[2].toUInt() shl 8) or bytesTmp0[3].toUInt())
+        },
+    )
 
 /**
  * Creates a floating point value from its representation as a byte array in little endian.
@@ -1111,7 +1193,13 @@ public fun kotlin.Float.Companion.fromBeBytes(bytes: UByteArray): kotlin.Float =
  * }
  * ```
  */
-public fun kotlin.Float.Companion.fromLeBytes(bytes: UByteArray): kotlin.Float = kotlin.Float.fromBits(run { val bytesTmp1 = bytes; ((bytesTmp1[3].toUInt() shl 24) or (bytesTmp1[2].toUInt() shl 16) or (bytesTmp1[1].toUInt() shl 8) or bytesTmp1[0].toUInt()) })
+public fun f32FromLeBytes(bytes: UByteArray): kotlin.Float =
+    f32FromBits(
+        run {
+            val bytesTmp1 = bytes
+            ((bytesTmp1[3].toUInt() shl 24) or (bytesTmp1[2].toUInt() shl 16) or (bytesTmp1[1].toUInt() shl 8) or bytesTmp1[0].toUInt())
+        },
+    )
 
 /**
  * Creates a floating point value from its representation as a byte array in native endian.
@@ -1141,7 +1229,13 @@ public fun kotlin.Float.Companion.fromLeBytes(bytes: UByteArray): kotlin.Float =
  * }
  * ```
  */
-public fun kotlin.Float.Companion.fromNeBytes(bytes: UByteArray): kotlin.Float = kotlin.Float.fromBits(run { val bytesTmp2 = bytes; ((bytesTmp2[3].toUInt() shl 24) or (bytesTmp2[2].toUInt() shl 16) or (bytesTmp2[1].toUInt() shl 8) or bytesTmp2[0].toUInt()) })
+public fun f32FromNeBytes(bytes: UByteArray): kotlin.Float =
+    f32FromBits(
+        run {
+            val bytesTmp2 = bytes
+            ((bytesTmp2[3].toUInt() shl 24) or (bytesTmp2[2].toUInt() shl 16) or (bytesTmp2[1].toUInt() shl 8) or bytesTmp2[0].toUInt())
+        },
+    )
 
 /**
  * Returns the ordering between `self` and `other`.
@@ -1317,7 +1411,7 @@ public fun kotlin.Float.clampMagnitude(limit: kotlin.Float): kotlin.Float {
  * }
  * ```
  */
-public fun <R> kotlin.Float.clampTo(range: R): kotlin.Float where R : ClampBounds<kotlin.Float> = range.clamp(this)
+public fun kotlin.Float.clampTo(range: FloatClampBounds): kotlin.Float = range.clamp(this)
 
 /**
  * Computes the absolute value of `self`.
@@ -1803,7 +1897,14 @@ public fun sqrt(x: kotlin.Float): kotlin.Float = kmSqrtf32(x)
  *
  * [f32.absSub]: ../../../std/primitive.f32.html#method.absSub
  */
-public fun absSub(x: kotlin.Float, other: kotlin.Float): kotlin.Float = fdimf(x, other)
+public fun absSub(x: kotlin.Float, other: kotlin.Float): kotlin.Float =
+    if (x.isNaN() || other.isNaN()) {
+        kotlin.Float.NaN
+    } else if (x > other) {
+        x - other
+    } else {
+        0.0f
+    }
 
 /**
  * Experimental version of `cbrt` in `core`. See [f32.cbrt] for details.
@@ -1832,4 +1933,4 @@ public fun absSub(x: kotlin.Float, other: kotlin.Float): kotlin.Float = fdimf(x,
  *
  * [f32.cbrt]: ../../../std/primitive.f32.html#method.cbrt
  */
-public fun cbrt(x: kotlin.Float): kotlin.Float = cbrtf(x)
+public fun cbrt(x: kotlin.Float): kotlin.Float = kotlinCbrt(x)

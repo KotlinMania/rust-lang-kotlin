@@ -1,7 +1,0 @@
-package = io.github.kotlinmania.rustlang.libc.unix.bsd.cinterop
-headers = unix_bsd_wrapper.h
-headerFilter = unix_bsd_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = unix_bsd_wrapper.a
-linkerOpts.mingw = -lws2_32
-noStringConversion = libcUnixBsdStrerrorR libcUnixBsdSetlogin libcUnixBsdUnmount libcUnixBsdSetprogname libcUnixBsdGlob libcUnixBsdShmUnlink libcUnixBsdMkstemps libcUnixBsdGetgrgidR libcUnixBsdGetgrnamR libcUnixBsdSemOpen libcUnixBsdGetgrnam libcUnixBsdSemUnlink libcUnixBsdGetpwnamR libcUnixBsdGetpwuidR libcUnixBsdPopen libcUnixBsdFaccessat libcUnixBsdAcct libcUnixBsdRegcomp libcUnixBsdRegexec libcUnixBsdRegerror libcUnixBsdGetoptLong libcUnixBsdStrftime libcUnixBsdStrftimeL

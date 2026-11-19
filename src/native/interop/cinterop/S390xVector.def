@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.corearch.s390x.vector.cinterop
-headers = s390x_vector_wrapper.h
-headerFilter = s390x_vector_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = s390x_vector_wrapper.a

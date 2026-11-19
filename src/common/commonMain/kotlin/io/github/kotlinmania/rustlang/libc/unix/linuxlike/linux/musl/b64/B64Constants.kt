@@ -1,9 +1,0 @@
-package io.github.kotlinmania.rustlang.libc.unix.linuxlike.linux.musl.b64
-
-import io.github.kotlinmania.rustlang.libc.*
-
-public val SIZEOF_PTHREAD_RWLOCK_T: Int = 56
-
-public val SIZEOF_PTHREAD_MUTEX_T: Int = 40
-
-public val SIZEOF_PTHREAD_BARRIER_T: Int = 32

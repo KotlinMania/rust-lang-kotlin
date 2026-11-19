@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 @file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core
@@ -62,6 +63,20 @@ public class U128(
 
     public operator fun div(other: U128): U128 = divRem(other).first
     public operator fun rem(other: U128): U128 = divRem(other).second
+
+    public fun countOnes(): UInt = (high.countOneBits() + low.countOneBits()).toUInt()
+
+    public fun pow(exp: UInt): U128 {
+        var acc = ONE
+        var b = this
+        var e = exp
+        while (e > 0u) {
+            if ((e and 1u) != 0u) acc *= b
+            e = e shr 1
+            if (e > 0u) b *= b
+        }
+        return acc
+    }
 
     private fun divRem(divisor: U128): Pair<U128, U128> {
         if (divisor.high == 0uL && divisor.low == 0uL) throw ArithmeticException("/ by zero")
@@ -287,6 +302,20 @@ public class I128(
     public fun toBeBytes(): UByteArray = U128(high.toULong(), low).toBeBytes()
     public fun toLeBytes(): UByteArray = U128(high.toULong(), low).toLeBytes()
     public fun toNeBytes(): UByteArray = U128(high.toULong(), low).toNeBytes()
+
+    public fun countOnes(): UInt = toU128().countOnes()
+
+    public fun pow(exp: UInt): I128 {
+        var acc = ONE
+        var b = this
+        var e = exp
+        while (e > 0u) {
+            if ((e and 1u) != 0u) acc *= b
+            e = e shr 1
+            if (e > 0u) b *= b
+        }
+        return acc
+    }
 
     public operator fun compareTo(other: I128): Int {
         val hc = high.compareTo(other.high)

@@ -1,18 +1,15 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.alloc
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
-import io.github.kotlinmania.rustlang.core.ptr.constptr.len
+import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.copyNonoverlapping
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.len
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.writeBytes
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.asMutPtr
+import io.github.kotlinmania.rustlang.core.ptr.nonnull.asNonNullPtr
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
-import io.github.kotlinmania.rustlang.core.slice.len
-import io.github.kotlinmania.rustlang.core.str.len
 
 // NOTE: the above bound on allocating methods not unwinding, alongside the similar
 // bound on `AllocatorClone`, are currently load-bearing in std! see the below issues
@@ -259,9 +256,13 @@ public interface Allocator {
      * [handleAllocError]: ../../alloc/alloc/fn.handleAllocError.html
      */
     public fun allocateZeroed(layout: Layout): Result<NonNull, AllocError> {
-        val ptr = when (val tryResult = this.allocate(layout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
+        val ptr =
+            when (val tryResult = this.allocate(layout)) {
+                is Result.Ok<*, *> -> tryResult.okValue()
+                is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue())
+            }
         // SAFETY: `alloc` returns a valid memory block
-        ptr.asNonNullPtr().asPtr().writeBytes(0, ptr.len())
+        ptr.asNonNullPtr().asPtr().writeBytes<UByte>(0u.toUByte(), layout.size(), PrimitiveLayouts.U8)
         return Result.Ok<NonNull, AllocError>(ptr)
     }
 
@@ -330,14 +331,18 @@ public interface Allocator {
         if (false) {
             check(newLayout.size() >= oldLayout.size()) { "`new_layout.size()` must be greater than or equal to `old_layout.size()`" }
         }
-        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
+        val newPtr =
+            when (val tryResult = this.allocate(newLayout)) {
+                is Result.Ok<*, *> -> tryResult.okValue()
+                is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue())
+            }
         // SAFETY: because `newLayout.size()` must be greater than or equal to
         // `oldLayout.size()`, both the old and new memory allocation are valid for reads and
         // writes for `oldLayout.size()` bytes. Also, because the old allocation wasn't yet
         // deallocated, it cannot overlap `newPtr`. Thus, the call to `copyNonoverlapping` is
         // safe. The safety contract for `dealloc` must be upheld by the caller.
         run {
-            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), oldLayout.size(), typeLayoutT = PrimitiveLayouts.U8)
+            copyNonoverlapping(ConstPtr(ptr.rawAddress, ptr.rawMeta), newPtr.asMutPtr(), oldLayout.size(), typeLayoutT = PrimitiveLayouts.U8)
             this.deallocate(ptr, oldLayout)
         }
         return Result.Ok<NonNull, AllocError>(newPtr)
@@ -383,14 +388,18 @@ public interface Allocator {
         if (false) {
             check(newLayout.size() >= oldLayout.size()) { "`new_layout.size()` must be greater than or equal to `old_layout.size()`" }
         }
-        val newPtr = when (val tryResult = this.allocateZeroed(newLayout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
+        val newPtr =
+            when (val tryResult = this.allocateZeroed(newLayout)) {
+                is Result.Ok<*, *> -> tryResult.okValue()
+                is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue())
+            }
         // SAFETY: because `newLayout.size()` must be greater than or equal to
         // `oldLayout.size()`, both the old and new memory allocation are valid for reads and
         // writes for `oldLayout.size()` bytes. Also, because the old allocation wasn't yet
         // deallocated, it cannot overlap `newPtr`. Thus, the call to `copyNonoverlapping` is
         // safe. The safety contract for `dealloc` must be upheld by the caller.
         run {
-            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), oldLayout.size(), typeLayoutT = PrimitiveLayouts.U8)
+            copyNonoverlapping(ConstPtr(ptr.rawAddress, ptr.rawMeta), newPtr.asMutPtr(), oldLayout.size(), typeLayoutT = PrimitiveLayouts.U8)
             this.deallocate(ptr, oldLayout)
         }
         return Result.Ok<NonNull, AllocError>(newPtr)
@@ -441,14 +450,18 @@ public interface Allocator {
         if (false) {
             check(newLayout.size() <= oldLayout.size()) { "`new_layout.size()` must be smaller than or equal to `old_layout.size()`" }
         }
-        val newPtr = when (val tryResult = this.allocate(newLayout)) { is Result.Ok<*, *> -> tryResult.okValue(); is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue()) }
+        val newPtr =
+            when (val tryResult = this.allocate(newLayout)) {
+                is Result.Ok<*, *> -> tryResult.okValue()
+                is Result.Err<*, *> -> return Result.Err<NonNull, AllocError>(tryResult.errValue())
+            }
         // SAFETY: because `newLayout.size()` must be lower than or equal to
         // `oldLayout.size()`, both the old and new memory allocation are valid for reads and
         // writes for `newLayout.size()` bytes. Also, because the old allocation wasn't yet
         // deallocated, it cannot overlap `newPtr`. Thus, the call to `copyNonoverlapping` is
         // safe. The safety contract for `dealloc` must be upheld by the caller.
         run {
-            copyNonoverlapping((ptr.asPtr()).asConstPtr(), newPtr.asMutPtr(), newLayout.size(), typeLayoutT = PrimitiveLayouts.U8)
+            copyNonoverlapping(ConstPtr(ptr.rawAddress, ptr.rawMeta), newPtr.asMutPtr(), newLayout.size(), typeLayoutT = PrimitiveLayouts.U8)
             this.deallocate(ptr, oldLayout)
         }
         return Result.Ok<NonNull, AllocError>(newPtr)

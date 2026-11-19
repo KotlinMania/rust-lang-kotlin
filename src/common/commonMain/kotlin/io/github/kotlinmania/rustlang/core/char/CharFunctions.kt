@@ -1,28 +1,17 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.char
 
-import io.github.kotlinmania.rustlang.core.char.decode.DecodeUtf16
+/**
+ * Converts a `UInt` to a `Char`.
+ */
+public fun fromU32(i: UInt): RustChar? = RustChar.fromU32(i)
 
 /**
- * Creates an iterator over the UTF-16 encoded code points in `iter`, returning
- * unpaired surrogates as `Err`s. Use [char.decodeUtf16] instead.
+ * Converts a `UInt` to a [RustChar].
  */
-public fun <I : Iterable<UShort>> decodeUtf16(iter: I): DecodeUtf16<IntoIter> = DecodeUtf16(iter)
+public fun fromU32Unchecked(i: UInt): RustChar = RustChar.fromU32Unchecked(i)
 
 /**
- * Converts a `UInt` to a `char`. Use [char.fromU32] instead.
+ * Converts a digit in the given radix to a [RustChar].
  */
-public fun fromU32(i: UInt): Char? = io.github.kotlinmania.rustlang.core.char.convert.fromU32(i)
-
-/**
- * Converts a `UInt` to a `char`, ignoring validity. Use [char.fromU32Unchecked]
- * instead.
- */
-public fun fromU32Unchecked(i: UInt): Char {
-    // SAFETY: the safety contract must be upheld by the caller.
-    return io.github.kotlinmania.rustlang.core.char.convert.fromU32Unchecked(i)
-}
-
-/**
- * Converts a digit in the given radix to a `char`. Use [char.fromDigit] instead.
- */
-public fun fromDigit(num: UInt, radix: UInt): Char? = io.github.kotlinmania.rustlang.core.char.convert.fromDigit(num, radix)
+public fun fromDigit(num: UInt, radix: UInt): RustChar? = RustChar.fromDigit(num, radix)

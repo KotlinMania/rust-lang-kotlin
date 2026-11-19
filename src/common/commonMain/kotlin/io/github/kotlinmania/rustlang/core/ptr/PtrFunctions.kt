@@ -1,9 +1,10 @@
+// rust-kotlin: manual
 @file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core.ptr
 
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
-import io.github.kotlinmania.rustlang.core.fmt.pointerFmtInner
+import io.github.kotlinmania.rustlang.core.cmp.cmp
 import io.github.kotlinmania.rustlang.core.intrinsics.assume
 import io.github.kotlinmania.rustlang.core.intrinsics.cttzNonzero
 import io.github.kotlinmania.rustlang.core.intrinsics.exactDiv
@@ -22,28 +23,21 @@ import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.RustMutableReference
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.linearMutSliceView
-import io.github.kotlinmania.rustlang.core.mem.linearSliceView
+import io.github.kotlinmania.rustlang.core.mem.constPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
+import io.github.kotlinmania.rustlang.core.mem.mutPtrFromRustCast
 import io.github.kotlinmania.rustlang.core.mem.sizeOf
-import io.github.kotlinmania.rustlang.core.mem.sizeOfValRaw
 import io.github.kotlinmania.rustlang.core.mem.transmuteNeo
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
-import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroI32Inner
 import io.github.kotlinmania.rustlang.core.num.nichetypes.NonZeroUsizeInner
 import io.github.kotlinmania.rustlang.core.num.nonzero.NonZero
 import io.github.kotlinmania.rustlang.core.ops.function.FnPtr
-import io.github.kotlinmania.rustlang.core.option.Option
-import io.github.kotlinmania.rustlang.core.panicking.AssertKind
-import io.github.kotlinmania.rustlang.core.panicking.assertFailed
 import io.github.kotlinmania.rustlang.core.ptr.constptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawParts
 import io.github.kotlinmania.rustlang.core.ptr.metadata.fromRawPartsMut
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.addr
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
-import io.github.kotlinmania.rustlang.core.slice.asMutPtr
-import io.github.kotlinmania.rustlang.core.slice.asPtr
 
 // Some functions are defined here because they accidentally got made
 // available in this module on stable. See <https://github.com/rust-lang/rust/issues/15702>.
@@ -131,7 +125,6 @@ import io.github.kotlinmania.rustlang.core.slice.asPtr
  * [Vec.append]: ../../std/vec/struct.Vec.html#method.append
  */
 public fun <T> copyNonoverlapping(src: ConstPtr, dst: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
-    Unit
     // SAFETY: the safety contract for `copyNonoverlapping` must be
     // upheld by the caller.
     kmCopyNonoverlapping(dst.rawAddress, src.rawAddress, (count).toLong() * (typeLayoutT).sizeBytes)
@@ -212,10 +205,7 @@ public fun <T> copyNonoverlapping(src: ConstPtr, dst: MutPtr, count: Int, typeLa
  */
 public fun <T> copy(src: ConstPtr, dst: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the safety contract for `copy` must be upheld by the caller.
-    run {
-        Unit
-        kmCopy(dst.rawAddress, src.rawAddress, (count).toLong() * (typeLayoutT).sizeBytes)
-    }
+    kmCopy(dst.rawAddress, src.rawAddress, (count).toLong() * (typeLayoutT).sizeBytes)
 }
 
 // even without panics, this helps for Miri backtraces
@@ -279,10 +269,7 @@ public fun <T> copy(src: ConstPtr, dst: MutPtr, count: Int, typeLayoutT: TypeLay
  */
 public fun <T> writeBytes(dst: MutPtr, value: UByte, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the safety contract for `writeBytes` must be upheld by the caller.
-    run {
-        Unit
-        kmWriteBytes(dst.rawAddress, (value).toUByte(), (count).toLong() * (typeLayoutT).sizeBytes)
-    }
+    kmWriteBytes(dst.rawAddress, value, (count).toLong() * (typeLayoutT).sizeBytes)
 }
 
 // Note: say something more useful than "almost the same"?
@@ -405,7 +392,7 @@ public fun <T> dropGlue(arg0: T) {
  * // this pointer has the address 0
  * ```
  */
-public fun nullVal(): ConstPtr = fromRawParts(withoutProvenance<Unit>(0), Unit)
+public fun nullVal(): ConstPtr = fromRawParts(withoutProvenance(0), 0)
 
 /**
  * Creates a null mutable raw pointer.
@@ -426,7 +413,7 @@ public fun nullVal(): ConstPtr = fromRawParts(withoutProvenance<Unit>(0), Unit)
  * // this pointer has the address 0
  * ```
  */
-public fun nullMut(): MutPtr = fromRawPartsMut(withoutProvenanceMut<Unit>(0), Unit)
+public fun nullMut(): MutPtr = fromRawPartsMut(withoutProvenanceMut(0), 0)
 
 /**
  * Creates a pointer with the given address and no [provenance][ptr#provenance].
@@ -443,7 +430,7 @@ public fun nullMut(): MutPtr = fromRawPartsMut(withoutProvenanceMut<Unit>(0), Un
  *
  * This is a [Strict Provenance][ptr#strict-provenance] API.
  */
-public fun withoutProvenance(addr: Int): ConstPtr = withoutProvenanceMut(addr)
+public fun withoutProvenance(addr: Int): ConstPtr = ConstPtr(withoutProvenanceMut(addr).rawAddress, 0L)
 
 /**
  * Creates a new pointer that is dangling, but non-null and well-aligned.
@@ -456,7 +443,7 @@ public fun withoutProvenance(addr: Int): ConstPtr = withoutProvenanceMut(addr)
  * as a "not yet initialized" sentinel value.
  * Types that lazily allocate must track initialization by some other means.
  */
-public fun dangling(): ConstPtr = danglingMut()
+public fun dangling(): ConstPtr = ConstPtr(danglingMut().rawAddress, danglingMut().rawMeta)
 
 // Expected semantics here.
 
@@ -618,7 +605,13 @@ public fun withExposedProvenanceMut(addr: Int): MutPtr = MutPtr(addr.toLong())
  * p.read()
  * ```
  */
-public fun <T> fromRef(r: T): ConstPtr = r
+public fun <T> fromRef(r: T): ConstPtr =
+    when (r) {
+        is ConstPtr -> r
+        is MutPtr -> ConstPtr(r.rawAddress, r.rawMeta)
+        is RustMutableReference<*> -> ConstPtr(r.pointer.rawAddress, r.pointer.rawMeta)
+        else -> constPtrFromRustCast(r as Any)
+    }
 
 /**
  * Converts a mutable reference to a raw pointer.
@@ -659,7 +652,12 @@ public fun <T> fromRef(r: T): ConstPtr = r
  * p.write(T.default())
  * ```
  */
-public fun <T> fromMut(r: T): MutPtr = r
+public fun <T> fromMut(r: T): MutPtr =
+    when (r) {
+        is MutPtr -> r
+        is RustMutableReference<*> -> MutPtr(r.pointer.rawAddress, r.pointer.rawMeta)
+        else -> mutPtrFromRustCast(r as Any)
+    }
 
 /**
  * Forms a raw slice from a pointer and a length.
@@ -695,7 +693,7 @@ public fun <T> fromMut(r: T): MutPtr = r
  * }
  * ```
  */
-public fun <T> sliceFromRawParts(data: ConstPtr, len: Int): ConstPtr = linearSliceView(data, len.toInt(), UnresolvedTypeLayout<T>())
+public fun <T> sliceFromRawParts(data: ConstPtr, len: Int): ConstPtr = ConstPtr(data.rawAddress, len.toLong())
 
 /**
  * Forms a raw mutable slice from a pointer and a length.
@@ -736,7 +734,7 @@ public fun <T> sliceFromRawParts(data: ConstPtr, len: Int): ConstPtr = linearSli
  * }
  * ```
  */
-public fun <T> sliceFromRawPartsMut(data: MutPtr, len: Int): MutPtr = linearMutSliceView(data, len.toInt(), UnresolvedTypeLayout<T>())
+public fun <T> sliceFromRawPartsMut(data: MutPtr, len: Int): MutPtr = MutPtr(data.rawAddress, len.toLong())
 
 /**
  * Swaps the values at two mutable locations of the same type, without
@@ -827,7 +825,7 @@ public fun <T> swap(x: MutPtr, y: MutPtr, typeLayoutT: TypeLayout<T> = Unresolve
         copyNonoverlapping((x).asConstPtr(), tmp.asMutPtr(), 1, typeLayoutT = typeLayoutT)
         copy((y).asConstPtr(), x, 1, typeLayoutT = typeLayoutT)
         // `x` and `y` may overlap
-        copyNonoverlapping(tmp.asPtr(), y, 1)
+        copyNonoverlapping(tmp.asPtr(), y, 1, typeLayoutT = typeLayoutT)
     }
 }
 
@@ -877,18 +875,11 @@ public fun <T> swap(x: MutPtr, y: MutPtr, typeLayoutT: TypeLayout<T> = Unresolve
  * check(y == intArrayOf(1, 2, 9))
  * ```
  */
-public fun <T> swapNonoverlapping(x: MutPtr, y: MutPtr, count: Int) {
-    Unit
-    run {
-        val slice = sliceFromRawPartsMut(x, count)
-        val bytes = sizeOfValRaw<List<T>>(slice)
-        when (val matchVal = NonZero.new<NonZeroI32Inner, Int>(bytes)) {
-            null -> {}
-            else -> {
-                val bytes1 = matchVal
-                swapNonoverlappingBytes(x, y, bytes1)
-            }
-        }
+public fun <T> swapNonoverlapping(x: MutPtr, y: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
+    val bytes = if (typeLayoutT.sizeBytes >= 0L) (count * typeLayoutT.sizeBytes.toInt()) else count
+    when (val matchVal = NonZero.new<NonZeroUsizeInner, Int>(bytes)) {
+        null -> {}
+        else -> swapNonoverlappingBytes(x, y, matchVal)
     }
 }
 
@@ -898,100 +889,41 @@ public fun <T> swapNonoverlapping(x: MutPtr, y: MutPtr, count: Int) {
 public fun <T> swapNonoverlappingConst(x: MutPtr, y: MutPtr, count: Int, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     var i = 0
     while (i < count) {
-        // SAFETY: By precondition, `i` is in-bounds because it's below `n`
         val x1 = MutPtr((x).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes))
-        // SAFETY: By precondition, `i` is in-bounds because it's below `n`
-        // and it's distinct from `x` since the ranges are non-overlapping
         val y1 = MutPtr((y).rawAddress + ((i).toLong() * (typeLayoutT).strideBytes))
-        // SAFETY: we're only ever given pointers that are valid to read/write,
-        // including being aligned, and nothing here panics so it's drop-safe.
         run {
-            // Note that it's critical that these use `copyNonoverlapping`,
-            // rather than `read`/`write`, to avoid #134713 if T has padding.
             val temp = MaybeUninit.uninit(typeLayoutT)
-            copyNonoverlapping(x1, temp.asMutPtr(), 1)
-            copyNonoverlapping(y1, x1, 1)
-            copyNonoverlapping(temp.asPtr(), y1, 1)
+            copyNonoverlapping(ConstPtr(x1.rawAddress, x1.rawMeta), temp.asMutPtr(), 1, typeLayoutT = typeLayoutT)
+            copyNonoverlapping(ConstPtr(y1.rawAddress, y1.rawMeta), x1, 1, typeLayoutT = typeLayoutT)
+            copyNonoverlapping(temp.asPtr(), y1, 1, typeLayoutT = typeLayoutT)
         }
         i += 1
     }
 }
 
-// Don't let MIR inline this, because we really want it to keep its noalias metadata
-public fun swapChunk(x: MaybeUninit<UByteArray>, y: MaybeUninit<UByteArray>, n: Int = 0) {
-    var x1 = x
-    var y1 = y
-    val a = x1
-    val b = y1
-    x1 = b
-    y1 = a
+public fun swapChunk(x: MutPtr, y: MutPtr, byteCount: Int = 1) {
+    if (byteCount <= 0 || x.rawAddress == y.rawAddress) return
+    for (i in 0 until byteCount) {
+        val px = MutPtr(x.rawAddress + i.toLong())
+        val py = MutPtr(y.rawAddress + i.toLong())
+        val a = PrimitiveLayouts.U8.readNative(px.rawAddress)
+        val b = PrimitiveLayouts.U8.readNative(py.rawAddress)
+        PrimitiveLayouts.U8.writeNative(px.rawAddress, b)
+        PrimitiveLayouts.U8.writeNative(py.rawAddress, a)
+    }
 }
 
 public fun swapNonoverlappingBytes(x: MutPtr, y: MutPtr, bytes: NonZero<Int, NonZeroUsizeInner>) {
-    // Same as `swapNonoverlapping<[UByte; N]>`.
-    fun swapNonoverlappingChunks(x1: MutPtr, y1: MutPtr, chunks: NonZero<Int, NonZeroUsizeInner>, n: Int = 0) {
-        val chunks1 = chunks.get()
-        for (i in 0 until chunks1) {
-            // SAFETY: i is in [0, chunks) so the adds and dereferences are in-bounds.
-            swapChunk(RustMutableReference(MutPtr((MutPtr((x1).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<MaybeUninit<UByteArray>>()).strideBytes))).rawAddress), UnresolvedTypeLayout<MaybeUninit<UByteArray>>()), RustMutableReference(MutPtr((MutPtr((y1).rawAddress + ((i).toLong() * (UnresolvedTypeLayout<MaybeUninit<UByteArray>>()).strideBytes))).rawAddress), UnresolvedTypeLayout<MaybeUninit<UByteArray>>()), n)
-        }
+    val total = bytes.get()
+    val chunkSize = sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L)).coerceAtLeast(1)
+    val chunks = total / chunkSize
+    val tail = total % chunkSize
+    if (chunks > 0) {
+        swapChunk(x, y, chunks * chunkSize)
     }
-    // Same as `swapNonoverlappingBytes`, but accepts at most 1+2+4=7 bytes
-    fun swapNonoverlappingShort(x1: MutPtr, y1: MutPtr, bytes1: NonZero<Int, NonZeroUsizeInner>) {
-        // Tail handling for auto-vectorized code sometimes has element-at-a-time behaviour,
-        // see <https://github.com/rust-lang/rust/issues/134946>.
-        // By swapping as different sizes, rather than as a loop over bytes,
-        // we make sure not to end up with, say, seven byte-at-a-time copies.
-        val bytes2 = bytes1.get()
-        var i = 0
-        if ((bytes2 and 4) != 0) {
-            swapChunk(MutPtr((x1).rawAddress + ((i).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((y1).rawAddress + ((i).toLong() * (PrimitiveLayouts.U8).strideBytes)), 4)
-            i = i or 4
-        }
-        if ((bytes2 and 2) != 0) {
-            swapChunk(MutPtr((x1).rawAddress + ((i).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((y1).rawAddress + ((i).toLong() * (PrimitiveLayouts.U8).strideBytes)), 2)
-            i = i or 2
-        }
-        if ((bytes2 and 1) != 0) {
-            swapChunk(MutPtr((x1).rawAddress + ((i).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((y1).rawAddress + ((i).toLong() * (PrimitiveLayouts.U8).strideBytes)), 1)
-            i = i or 1
-        }
-        if (false) {
-            when (val matchVal = Pair(i, bytes2)) {
-                else -> {
-                    val leftVal = matchVal.first
-                    val rightVal = matchVal.second
-                    if (!(leftVal == rightVal)) {
-                        val kind = AssertKind.Eq
-                        assertFailed(kind, leftVal, rightVal, Option.None())
-                    }
-                }
-            }
-        }
-    }
-    val CHUNK_SIZE: Int = sizeOf<ConstPtr>(typeLayoutT = PrimitiveLayouts.constPtrLayout(64L))
-    val bytes1 = bytes.get()
-    val chunks = bytes1 / CHUNK_SIZE
-    val tail = bytes1 % CHUNK_SIZE
-    when (val matchVal = NonZero.new(chunks)) {
-        null -> {}
-        else -> {
-            val chunks1 = matchVal
-            // SAFETY: this is bytes/CHUNK_SIZE*CHUNK_SIZE bytes, which is <= bytes,
-            // so it's within the range of our non-overlapping bytes.
-            swapNonoverlappingChunks(x, y, chunks1, CHUNK_SIZE)
-        }
-    }
-    when (val matchVal1 = NonZero.new(tail)) {
-        null -> {}
-        else -> {
-            val tail1 = matchVal1
-            check(CHUNK_SIZE <= 8)
-            val delta = chunks * CHUNK_SIZE
-            // SAFETY: the tail length is below CHUNK SIZE because of the remainder,
-            // and CHUNK_SIZE is at most 8 by the const assert, so tail <= 7
-            swapNonoverlappingShort(MutPtr((x).rawAddress + ((delta).toLong() * (PrimitiveLayouts.U8).strideBytes)), MutPtr((y).rawAddress + ((delta).toLong() * (PrimitiveLayouts.U8).strideBytes)), tail1)
-        }
+    if (tail > 0) {
+        val delta = (chunks * chunkSize).toLong()
+        swapChunk(MutPtr(x.rawAddress + delta), MutPtr(y.rawAddress + delta), tail)
     }
 }
 
@@ -1031,22 +963,14 @@ public fun swapNonoverlappingBytes(x: MutPtr, y: MutPtr, bytes: NonZero<Int, Non
  * check(rust == listOf('r', 'u', 's', 't'))
  * ```
  */
-public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
-    // SAFETY: the caller must guarantee that `dst` is valid to be
-    // cast to a mutable reference (valid for writes, aligned, initialized),
-    // and cannot overlap `src` since `dst` must point to a distinct
-    // allocation. We are excluding null (with a ZST check) before creating a reference.
-    return run {
-        Unit
-        if (((typeLayoutT).sizeBytes == 0L)) {
-            // If `T` is a ZST, `dst` is allowed to be null. However, we also don't have to actually
-            // do anything since there isn't actually any data to be copied anyway. All values of
-            // type `T` are bit-identical, so we can just return `src` here.
-            return src
-        }
-        io.github.kotlinmania.rustlang.core.mem.replace(RustMutableReference(MutPtr((dst).rawAddress), typeLayoutT), src)
+public fun <T> replace(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T =
+    if (typeLayoutT.sizeBytes == 0L) {
+        src
+    } else {
+        val old = read(ConstPtr(dst.rawAddress, dst.rawMeta), typeLayoutT)
+        write(dst, src, typeLayoutT)
+        old
     }
-}
 
 /**
  * Reads the value from `src` without moving it. This leaves the
@@ -1173,10 +1097,7 @@ public fun <T> read(src: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLa
     // Future enhancements to MIR optimizations might well allow this to return
     // to the previous implementation, rather than using an intrinsic.
     // SAFETY: the caller must guarantee that `src` is valid for reads.
-    return run {
-        Unit
-        (typeLayoutT).readNative(src.rawAddress)
-    }
+    return (typeLayoutT).readNative(src.rawAddress)
 }
 
 /**
@@ -1350,10 +1271,7 @@ public fun <T> write(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T> = Unresolve
     // SAFETY: the caller must guarantee that `dst` is valid for writes.
     // `dst` cannot overlap `src` because the caller has mutable access
     // to `dst` while `src` is owned by this function.
-    run {
-        Unit
-        (typeLayoutT).writeNative(dst.rawAddress, src)
-    }
+    (typeLayoutT).writeNative(dst.rawAddress, src)
 }
 
 /**
@@ -1531,10 +1449,7 @@ public fun <T> writeUnaligned(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T> = 
  */
 public fun <T> readVolatile(src: ConstPtr, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()): T {
     // SAFETY: the caller must uphold the safety contract for `volatileLoad`.
-    return run {
-        Unit
-        (typeLayoutT).readVolatileNative(src.rawAddress)
-    }
+    return (typeLayoutT).readVolatileNative(src.rawAddress)
 }
 
 /**
@@ -1627,10 +1542,7 @@ public fun <T> readVolatile(src: ConstPtr, typeLayoutT: TypeLayout<T> = Unresolv
  */
 public fun <T> writeVolatile(dst: MutPtr, src: T, typeLayoutT: TypeLayout<T> = UnresolvedTypeLayout()) {
     // SAFETY: the caller must uphold the safety contract for `volatileStore`.
-    run {
-        Unit
-        (typeLayoutT).writeVolatileNative(dst.rawAddress, src)
-    }
+    (typeLayoutT).writeVolatileNative(dst.rawAddress, src)
 }
 
 /**
@@ -1671,6 +1583,7 @@ public fun <T> alignOffset(p: ConstPtr, a: Int, typeLayoutT: TypeLayout<T> = Unr
          * `0⁻¹ mod 16`, `2⁻¹ mod 16`, etc.)
          */
         val INV_TABLE_MOD_16: UByteArray = ubyteArrayOf(1u.toUByte(), 11u.toUByte(), 13u.toUByte(), 7u.toUByte(), 9u.toUByte(), 3u.toUByte(), 5u.toUByte(), 15u.toUByte())
+
         /**
          * Modulo for which the `INV_TABLE_MOD_16` is intended.
          */
@@ -1946,7 +1859,7 @@ public fun addrEq(p: ConstPtr, q: ConstPtr): Boolean = (((ConstPtr(p.rawAddress,
  * This can never introduce undefined behavior because it only skips executing some of the
  * registered callbacks.
  */
-public fun <T : FnPtr<T>, U : FnPtr<U>> fnAddrEq(f: T, g: U): Boolean = f.addr() == g.addr()
+public fun <T : FnPtr<*>, U : FnPtr<*>> fnAddrEq(f: T, g: U): Boolean = f.addr() == g.addr()
 
 /**
  * Hash a raw pointer.
@@ -1973,18 +1886,17 @@ public fun <T : FnPtr<T>, U : FnPtr<U>> fnAddrEq(f: T, g: U): Boolean = f.addr()
  * check(actual == expected)
  * ```
  */
-public fun <S> hash(hashee: ConstPtr, into: S) {
-    hashee.hash(into)
-}
+public fun <S> hash(hashee: ConstPtr, into: S): Int = hashee.rawAddress.hashCode()
 
-public fun <F : FnPtr<F>> F.eq(other: F): Boolean = this.addr() == other.addr()
+public fun <F : FnPtr<*>> F.eq(other: F): Boolean = this.addr() == other.addr()
 
-public fun <F : FnPtr<F>> F.partialCmp(other: F): Ordering? = this.addr().partialCmp(other.addr())
+public fun <F : FnPtr<*>> F.partialCmp(other: F): Ordering? = this.addr().cmp(other.addr())
 
-public fun <F : FnPtr<F>> F.cmp(other: F): Ordering = this.addr().cmp(other.addr())
+public fun <F : FnPtr<*>> F.cmp(other: F): Ordering = this.addr().cmp(other.addr())
 
-public fun <F : FnPtr<F>, HH> F.hash(state: HH) {
-    state.writeUsize(this.addr())
-}
-
-public fun <F : FnPtr<F>> F.fmt(f: StringBuilder): Result<Unit, Unit> = pointerFmtInner(this.addr(), f)
+public fun <F : FnPtr<*>> F.fmt(f: StringBuilder): Result<Unit, Unit> =
+    run {
+        f.append("0x")
+        f.append(this.addr().toUInt().toString(16))
+        Result.Ok<Unit, Unit>(Unit)
+    }

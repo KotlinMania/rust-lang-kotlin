@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 @file:OptIn(ExperimentalUnsignedTypes::class)
 
 package io.github.kotlinmania.rustlang.core.intrinsics
@@ -888,12 +889,14 @@ public actual fun kmDoubleToU128Unchecked(v: Double): U128ValueOutcome =
     }
 
 @JsName("FinalizationRegistry")
-private external class KmJsFinalizationRegistry(callback: (Int) -> Unit) {
+private external class KmJsFinalizationRegistry(
+    callback: (Int) -> Unit,
+) {
     fun register(target: Any, heldValue: Int, unregisterToken: Any)
     fun unregister(unregisterToken: Any): Boolean
 }
 
-private class KmJsCleanToken
+internal class KmJsCleanToken
 
 private object KmJsCleanerRegistry {
     private var nextTokenId: Int = 1
@@ -928,7 +931,7 @@ private object KmJsCleanerRegistry {
     }
 }
 
-public actual class KmResourceCleaner internal constructor() : KmForgettableResource {
+public actual class KmResourceCleaner internal actual constructor() : KmForgettableResource {
     private var tokenId: Int = 0
     private var token: KmJsCleanToken? = null
 

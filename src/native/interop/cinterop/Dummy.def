@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.panicunwind.dummy.cinterop
-headers = dummy_wrapper.h
-headerFilter = dummy_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = dummy_wrapper.a

@@ -1,5 +1,0 @@
-package = io.github.kotlinmania.rustlang.std.sys.pal.windows.c.cinterop
-headers = sys_pal_windows_c_wrapper.h
-headerFilter = sys_pal_windows_c_wrapper.h
-compilerOpts = -Isrc/native/interop/cinterop
-staticLibraries = sys_pal_windows_c_wrapper.a

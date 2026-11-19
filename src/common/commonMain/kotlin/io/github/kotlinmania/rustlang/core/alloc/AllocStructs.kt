@@ -1,7 +1,7 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.alloc
 
 import io.github.kotlinmania.rustlang.core.mem.TypeLayout
-import io.github.kotlinmania.rustlang.core.ptr.writeBytes
 import io.github.kotlinmania.rustlang.core.result.Result
 
 /**
@@ -14,7 +14,11 @@ public open class AllocError {
     public open fun clone(): AllocError = AllocError()
 
     // (we need this for downstream impl of trait Error)
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { f.append("memory allocation failed"); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            f.append("memory allocation failed")
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     public companion object {
         public fun typeLayout(): TypeLayout<AllocError> =

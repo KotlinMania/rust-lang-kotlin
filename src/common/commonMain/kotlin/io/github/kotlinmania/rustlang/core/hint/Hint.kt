@@ -1,15 +1,13 @@
+// rust-kotlin: manual
 // port-lint: source hint.rs
 package io.github.kotlinmania.rustlang.core.hint
 
-import io.github.kotlinmania.rustlang.core.X8664
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
 import io.github.kotlinmania.rustlang.core.mem.forget
 import io.github.kotlinmania.rustlang.core.mem.maybeuninit.MaybeUninit
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.dropInPlace
 import io.github.kotlinmania.rustlang.core.ptr.mutptr.dropInPlace
-import io.github.kotlinmania.rustlang.core.slice.asMutPtr
 
 // Hints to compiler that affects how code should be emitted or optimized.
 //
@@ -100,7 +98,6 @@ import io.github.kotlinmania.rustlang.core.slice.asMutPtr
  * ```
  */
 public fun unreachableUnchecked(): Nothing {
-    Unit
     // SAFETY: the safety contract for `intrinsics.unreachable` must
     // be upheld by the caller.
     error("Entered Rust intrinsics::unreachable")
@@ -247,8 +244,7 @@ public fun assertUnchecked(cond: Boolean) {
  * [thread.yieldNow]: ../../std/thread/fn.yieldNow.html
  */
 public fun spinLoop() {
-    // SAFETY: the `cfg` attr ensures that we only execute this on x8664 targets.
-    X8664.mmPause()
+    // Portable multiplatform pause hint (no CPU-specific instruction emitted).
 }
 
 /**
@@ -703,7 +699,7 @@ public fun coldPath() {}
  * ```
  */
 public fun <T> selectUnpredictable(condition: Boolean, trueVal: T, falseVal: T): T {
-    open class DropOnPanic<T>(
+    open class DropOnPanic(
         // Invariant: valid pointer and points to an initialized value that is not further used,
         // i.e. it can be dropped by this guard.
         public var inner: MutPtr,
@@ -739,7 +735,7 @@ public fun <T> selectUnpredictable(condition: Boolean, trueVal: T, falseVal: T):
         // Note that it is important to use the values here. Reading from the pointer we got makes
         // LLVM forget the !unpredictable annotation sometimes (in tests, integer sized values in
         // particular seemed to confuse it, also observed in llvm/llvm-project #82340).
-        if (condition) trueVal1 else falseVal1.assumeInit()
+        if (condition) trueVal1.assumeInit() else falseVal1.assumeInit()
     }
 }
 
@@ -760,12 +756,14 @@ public sealed class Locality {
      * Typically prefetches into L3 cache (if the CPU supports it).
      */
     public data object L3 : Locality()
+
     /**
      * Data is expected to be reused in the near future.
      *
      * Typically prefetches into L2 cache.
      */
     public data object L2 : Locality()
+
     /**
      * Data is expected to be reused very soon.
      *
@@ -777,9 +775,9 @@ public sealed class Locality {
 
     private fun kmDiscriminant(): Int =
         when (this) {
-        L3 -> 0
-        L2 -> 1
-        L1 -> 2
+            L3 -> 0
+            L2 -> 1
+            L1 -> 2
         }
 
     public fun toByte(): Byte = kmDiscriminant().toByte()

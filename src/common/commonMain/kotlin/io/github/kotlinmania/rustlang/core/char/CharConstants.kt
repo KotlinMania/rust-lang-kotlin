@@ -1,3 +1,4 @@
+// rust-kotlin: manual
 package io.github.kotlinmania.rustlang.core.char
 
 // UTF-8 ranges and tags for encoding characters
@@ -57,10 +58,10 @@ public val MAX: Char = Char.MAX_VALUE
  * `U + FFFD REPLACEMENT CHARACTER` (�) is used in Unicode to represent a
  * decoding error. Use [char.ReplacementCharacter] instead.
  */
-public val REPLACEMENT_CHARACTER: Char = Char.REPLACEMENT_CHARACTER
+public val REPLACEMENT_CHARACTER: Char = '\uFFFD'
 
 /**
  * The version of [Unicode](https://www.unicode.org/) that the Unicode parts of
  * `char` and `String` methods are based on. Use [char.UnicodeVersion] instead.
  */
-public val UNICODE_VERSION: Triple<UByte, UByte, UByte> = Char.UNICODE_VERSION
+public val UNICODE_VERSION: Triple<UByte, UByte, UByte> = Triple(16u.toUByte(), 0u.toUByte(), 0u.toUByte())

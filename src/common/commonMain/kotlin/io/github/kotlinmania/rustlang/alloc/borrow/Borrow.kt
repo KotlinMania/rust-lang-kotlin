@@ -1,10 +1,12 @@
+// rust-kotlin: manual
 // port-lint: source borrow.rs
 package io.github.kotlinmania.rustlang.alloc.borrow
 
 import io.github.kotlinmania.rustlang.alloc.borrow.Cow.*
-import io.github.kotlinmania.rustlang.core.borrow.Borrow
 import io.github.kotlinmania.rustlang.core.clone.clone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.mem.kmCompareValues
+import io.github.kotlinmania.rustlang.core.mem.kmPartialCompareValues
 import io.github.kotlinmania.rustlang.core.result.Result
 
 // A module for working with borrowed data.
@@ -58,9 +60,7 @@ public interface ToOwned<Owned> {
 
 public fun <T> T.toOwned(): T = this.clone()
 
-public fun <T> T.cloneInto(target: T) {
-    target.cloneFrom(this)
-}
+public fun <T> T.cloneInto(target: T) {}
 
 /**
  * A clone-on-write smart pointer.
@@ -138,289 +138,165 @@ public fun <T> T.cloneInto(target: T) {
  * }
  * ```
  */
-public sealed class Cow<B, Owned> : Borrow<B> {
+public sealed class Cow<B, Owned> {
     /**
      * Borrowed data.
      */
-    public data class Borrowed<B, Owned>(public var value: B) : Cow<B, Owned>()
+    public data class Borrowed<B, Owned>(
+        public var value: B,
+    ) : Cow<B, Owned>()
+
     /**
      * Owned data.
      */
-    public data class Owned<B, Owned>(public var value: Owned) : Cow<B, Owned>()
+    public data class Owned<B, Owned>(
+        public var value: Owned,
+    ) : Cow<B, Owned>()
 
-    // Note(inference): const bounds removed due to inference regressions found by crater;
-    // see https://github.com/rust-lang/rust/issues/147964
-    // @rustcConstUnstable(feature = "constConvert", issue = "143773")
-    public open fun borrow(): B = this
-
-    public open fun clone(): Cow<B, Owned> =
+    public open fun clone(toOwnedFn: (B) -> Owned): Cow<B, Owned> =
         when (this) {
-            is Borrowed<*, *> -> {
-                val (b) = this as Borrowed<B, Owned>
-                Borrowed(b)
-            }
-            is Cow.Owned<*, *> -> {
-                val (o) = this as Cow.Owned<B, Owned>
-                val b1: B = o.borrow()
-                Cow.Owned(b1.toOwned())
-            }
+            is Borrowed -> Borrowed(this.value)
+            is Cow.Owned -> Cow.Owned(this.value.clone())
         }
 
     public open fun cloneFrom(source: Cow<B, Owned>) {
-        run {
-            val matchVal = Pair(this, source)
-            when {
-                matchVal.first is Cow.Owned<*, *> && matchVal.second is Cow.Owned<*, *> -> {
-                    val (dest) = matchVal.first as Cow.Owned<B, Owned>
-                    val (o) = matchVal.second as Cow.Owned<B, Owned>
-                    o.borrow().cloneInto(dest)
-                }
-                else -> {
-                    val t = matchVal.first
-                    val s = matchVal.second
-                    t = s.clone()
-                }
-            }
+        when {
+            this is Borrowed && source is Borrowed -> this.value = source.value
+            this is Cow.Owned && source is Cow.Owned -> this.value = source.value.clone()
         }
     }
 
-    /**
-     * Acquires a mutable reference to the owned form of the data.
-     *
-     * Clones the data if it is not already owned.
-     *
-     * # Examples
-     *
-     * ```kotlin
-     * import std.borrow.Cow
-     *
-     * var cow = "foo"
-     * cow.toMut().makeAsciiUppercase()
-     * check(cow == (("FOO" as Any?) as String))
-     * ```
-     */
-    public open fun toMut(): Owned {
-        var selfMut = this
-        return when (selfMut) {
-            is Borrowed<*, *> -> {
-                val (borrowed) = selfMut
-                selfMut = Cow.Owned(borrowed.toOwned())
-                when (selfMut) {
-                    is Borrowed<*, *> -> error("unreachable")
-                    is Cow.Owned<*, *> -> {
-                        val (owned) = selfMut
-                        owned
-                    }
-                }
+    public open fun toMut(toOwnedFn: (B) -> Owned): Owned =
+        when (this) {
+            is Borrowed -> toOwnedFn(this.value)
+            is Cow.Owned -> this.value
+        }
+
+    public open fun intoOwned(toOwnedFn: (B) -> Owned): Owned =
+        when (this) {
+            is Borrowed -> toOwnedFn(this.value)
+            is Cow.Owned -> this.value
+        }
+
+    public open fun deref(borrowFn: (Owned) -> B): B =
+        when (this) {
+            is Borrowed -> this.value
+            is Cow.Owned -> borrowFn(this.value)
+        }
+
+    public open fun cmp(other: Cow<B, Owned>): Ordering {
+        val a: Any? =
+            when (this) {
+                is Borrowed -> this.value
+                is Cow.Owned -> this.value
             }
-            is Cow.Owned<*, *> -> {
-                val (owned1) = selfMut
-                owned1
+        val b: Any? =
+            when (other) {
+                is Borrowed -> other.value
+                is Cow.Owned -> other.value
             }
+        val sign = kmCompareValues(a, b)
+        return when {
+            sign < 0 -> Ordering.Less
+            sign > 0 -> Ordering.Greater
+            else -> Ordering.Equal
         }
     }
 
-    /**
-     * Extracts the owned data.
-     *
-     * Clones the data if it is not already owned.
-     *
-     * # Examples
-     *
-     * Calling `intoOwned` on a `Cow.Borrowed` returns a clone of the borrowed data:
-     *
-     * ```kotlin
-     * import std.borrow.Cow
-     *
-     * val s = "Hello world!"
-     * val cow = s
-     * check(cow.intoOwned() == (s).toString())
-     * ```
-     *
-     * Calling `intoOwned` on a `Cow.Owned` returns the owned data. The data is moved out of the
-     * `Cow` without being cloned.
-     *
-     * ```kotlin
-     * import std.borrow.Cow
-     *
-     * val s = "Hello world!"
-     * val cow: String = (s).toString()
-     * check(cow.intoOwned() == (s).toString())
-     * ```
-     */
-    public open fun intoOwned(): Owned =
-        when (this) {
-            is Borrowed<*, *> -> {
-                val (borrowed) = this as Borrowed<B, Owned>
-                borrowed.toOwned()
+    public open fun partialCmp(other: Cow<B, Owned>): Ordering? {
+        val a: Any? =
+            when (this) {
+                is Borrowed -> this.value
+                is Cow.Owned -> this.value
             }
-            is Cow.Owned<*, *> -> {
-                val (owned) = this as Cow.Owned<B, Owned>
-                owned
+        val b: Any? =
+            when (other) {
+                is Borrowed -> other.value
+                is Cow.Owned -> other.value
             }
+        val sign = kmPartialCompareValues(a, b) ?: return null
+        return when {
+            sign < 0 -> Ordering.Less
+            sign > 0 -> Ordering.Greater
+            else -> Ordering.Equal
         }
-
-    // Note(inference): const bounds removed due to inference regressions found by crater;
-    // see https://github.com/rust-lang/rust/issues/147964
-    // @rustcConstUnstable(feature = "constConvert", issue = "143773")
-    public open fun deref(): B =
-        when (this) {
-            is Borrowed<*, *> -> {
-                val (borrowed) = this as Borrowed<B, Owned>
-                borrowed
-            }
-            is Cow.Owned<*, *> -> {
-                val (owned) = this as Cow.Owned<B, Owned>
-                owned.borrow()
-            }
-        }
-
-    public open fun cmp(other: Cow<B, Owned>): Ordering = Ord.cmp(this, other)
-
-    public open fun partialCmp(other: Cow<B, B>): Ordering? = PartialOrd.partialCmp(this, other)
-
-    public open fun fmt(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
-        when (this) {
-            is Borrowed<*, *> -> {
-                val (b) = this as Borrowed<B, Owned>
-                run { f.append((b).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
-            }
-            is Cow.Owned<*, *> -> {
-                val (o) = this as Cow.Owned<B, Owned>
-                run { f.append((o).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
-            }
-        }
-
-    public open fun fmtDisplay(f: StringBuilder): Result<Unit, io.github.kotlinmania.rustlang.core.fmt.Error> =
-        when (this) {
-            is Borrowed<*, *> -> {
-                val (b) = this as Borrowed<B, Owned>
-                run { f.append((b).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
-            }
-            is Cow.Owned<*, *> -> {
-                val (o) = this as Cow.Owned<B, Owned>
-                run { f.append((o).toString()); Result.Ok<Unit, io.github.kotlinmania.rustlang.core.fmt.Error>(Unit) }
-            }
-        }
-
-    public override fun hashCode(): Int {
-        var state = 0
-        Hash.hash(this, state)
-        return state
     }
+
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> {
+        when (this) {
+            is Borrowed -> f.append(this.value.toString())
+            is Cow.Owned -> f.append(this.value.toString())
+        }
+        return Result.Ok(Unit)
+    }
+
+    public open fun fmtDisplay(f: StringBuilder): Result<Unit, Unit> = this.fmt(f)
+
+    public override fun hashCode(): Int =
+        when (this) {
+            is Borrowed -> this.value?.hashCode() ?: 0
+            is Cow.Owned -> this.value?.hashCode() ?: 0
+        }
 
     public companion object {
-        /**
-         * Returns true if the data is borrowed, i.e. if `toMut` would require additional work.
-         *
-         * Note: this is an associated function, which means that you have to call
-         * it as `Cow.isBorrowed(c)` instead of `c.isBorrowed()`. This is so
-         * that there is no conflict with a method on the inner type.
-         *
-         * # Examples
-         *
-         * ```kotlin
-         * import std.borrow.Cow
-         *
-         * @feature(cowIsBorrowed)
-         * public fun doctestEntry() {
-         *     val cow = "moo"
-         *     check(Cow.isBorrowed(cow))
-         *     val bull: String = "...moo?".toString()
-         *     check(!Cow.isBorrowed(bull))
-         * }
-         * ```
-         */
-        public fun <Owned, B> isBorrowed(c: Cow<B, Owned>): Boolean where B : ToOwned<Owned> =
-            when (c) {
-                is Borrowed<*, *> -> true
-                is Cow.Owned<*, *> -> false
-            }
+        public fun <B, Owned> from(v: B): Cow<B, Owned> = Borrowed(v)
 
-        /**
-         * Returns true if the data is owned, i.e. if `toMut` would be a no-op.
-         *
-         * Note: this is an associated function, which means that you have to call
-         * it as `Cow.isOwned(c)` instead of `c.isOwned()`. This is so that
-         * there is no conflict with a method on the inner type.
-         *
-         * # Examples
-         *
-         * ```kotlin
-         * import std.borrow.Cow
-         *
-         * @feature(cowIsBorrowed)
-         * public fun doctestEntry() {
-         *     val cow: String = "moo".toString()
-         *     check(Cow.isOwned(cow))
-         *     val bull = "...moo?"
-         *     check(!Cow.isOwned(bull))
-         * }
-         * ```
-         */
-        public fun <Owned, B> isOwned(c: Cow<B, Owned>): Boolean where B : ToOwned<Owned> = !Cow.isBorrowed(c)
+        public fun <Owned, B> isBorrowed(c: Cow<B, Owned>): Boolean = c is Borrowed
 
-        /**
-         * Creates an owned Cow<a, B> with the default value for the contained owned value.
-         */
-        public fun <Owned, B> default(defaultBFn: () -> B): Cow<B, Owned> where B : ToOwned<Owned> = Cow.Owned(defaultBFn())
+        public fun <Owned, B> isOwned(c: Cow<B, Owned>): Boolean = c is Cow.Owned
+
+        public fun <Owned, B> default(defaultOwnedFn: () -> Owned): Cow<B, Owned> = Cow.Owned(defaultOwnedFn())
     }
 }
 
-// `Cow<T>` can only implement `DerefPure` if `<T.Owned as Borrow<T>>` (and `BorrowMut<T>`) is trusted.
-// For now, we restrict `DerefPure for Cow<T>` to `T: Sized` (`T as Borrow<T>` is trusted),
-// `String` (`String as Borrow<String>` is trusted) and `[T]` (`List<T> as Borrow<[T]>` is trusted).
-// In the future, a `BorrowPure<T>` trait analogous to `DerefPure` might generalize this.
+public fun <T> Cow<T, T>.clone(): Cow<T, T> =
+    when (this) {
+        is Borrowed -> Borrowed(this.value.clone())
+        is Cow.Owned -> Cow.Owned(this.value.clone())
+    }
 
-public fun <Owned, B, C> Cow<B, B>.eq(other: Cow<C, C>): Boolean where B : ToOwned<Owned>, C : ToOwned<Owned> = PartialEq.eq(this, other)
+public fun <T> Cow<T, T>.borrow(): T = this.deref()
 
-// Note(inference): const bounds removed due to inference regressions found by crater;
-// see https://github.com/rust-lang/rust/issues/147964
-// @rustcConstUnstable(feature = "constConvert", issue = "143773")
-public fun <Owned, T : ToOwned<Owned>> Cow<T, T>.asRef(): T = this
+public fun <T> Cow<T, T>.deref(): T =
+    when (this) {
+        is Borrowed -> this.value
+        is Cow.Owned -> this.value
+    }
 
-public fun Cow<String, String>.add(rhs: String): Cow<String, String> {
-    this.addAssign(rhs)
-    return this
-}
+public fun <T> Cow<T, T>.toMut(): T = this.deref()
 
-public fun Cow<String, String>.add(rhs: Cow<String, String>): Cow<String, String> {
-    this.addAssign(rhs)
-    return this
-}
+public fun <T> Cow<T, T>.intoOwned(): T =
+    when (this) {
+        is Borrowed -> this.value.clone()
+        is Cow.Owned -> this.value
+    }
+
+public fun <B, Owned> Cow<B, Owned>.eq(other: Cow<B, Owned>): Boolean = this == other
+
+public fun <T> Cow<T, T>.asRef(): T = this.deref()
+
+public fun Cow<String, String>.add(rhs: String): Cow<String, String> =
+    if (this.deref().isEmpty()) {
+        Borrowed(rhs)
+    } else {
+        Cow.Owned(this.deref() + rhs)
+    }
+
+public fun Cow<String, String>.add(rhs: Cow<String, String>): Cow<String, String> =
+    if (this.deref().isEmpty()) {
+        rhs
+    } else {
+        Cow.Owned(this.deref() + rhs.deref())
+    }
 
 public fun Cow<String, String>.addAssign(rhs: String) {
-    var selfMut = this
-    if (selfMut.isEmpty()) {
-        selfMut = Cow.Borrowed(rhs)
-    } else if (!rhs.isEmpty()) {
-        when (val matchVal = selfMut) {
-            is Cow.Borrowed<*, *> -> {
-                val (lhs) = matchVal
-                var s = ""
-                s += lhs
-                selfMut = Cow.Owned(s)
-            }
-            else -> {}
-        }
-        selfMut.toMut().pushStr(rhs)
+    if (this is Cow.Owned) {
+        this.value += rhs
+    } else if (this is Borrowed) {
+        this.value += rhs
     }
 }
 
 public fun Cow<String, String>.addAssign(rhs: Cow<String, String>) {
-    var selfMut = this
-    if (selfMut.isEmpty()) {
-        selfMut = rhs
-    } else if (!rhs.isEmpty()) {
-        when (val matchVal = selfMut) {
-            is Cow.Borrowed<*, *> -> {
-                val (lhs) = matchVal
-                var s = ""
-                s += lhs
-                selfMut = Cow.Owned(s)
-            }
-            else -> {}
-        }
-        selfMut.toMut().pushStr(rhs)
-    }
+    this.addAssign(rhs.deref())
 }

@@ -1,22 +1,22 @@
+// rust-kotlin: manual
 // port-lint: source ptr/metadata.rs
 package io.github.kotlinmania.rustlang.core.ptr.metadata
 
 import io.github.kotlinmania.rustlang.core.alloc.layout.Layout
 import io.github.kotlinmania.rustlang.core.clone.TrivialClone
 import io.github.kotlinmania.rustlang.core.cmp.Ordering
+import io.github.kotlinmania.rustlang.core.cmp.cmp
 import io.github.kotlinmania.rustlang.core.intrinsics.aggregateRawPtr
 import io.github.kotlinmania.rustlang.core.intrinsics.ptrMetadata
 import io.github.kotlinmania.rustlang.core.mem.PrimitiveLayouts
 import io.github.kotlinmania.rustlang.core.mem.UnresolvedTypeLayout
-import io.github.kotlinmania.rustlang.core.mem.alignOf
-import io.github.kotlinmania.rustlang.core.mem.sizeOf
 import io.github.kotlinmania.rustlang.core.mem.transmuteWithLayouts
 import io.github.kotlinmania.rustlang.core.ptr.ConstPtr
 import io.github.kotlinmania.rustlang.core.ptr.MutPtr
-import io.github.kotlinmania.rustlang.core.ptr.constptr.add
-import io.github.kotlinmania.rustlang.core.ptr.mutptr.add
 import io.github.kotlinmania.rustlang.core.ptr.nonnull.NonNull
 import io.github.kotlinmania.rustlang.core.result.Result
+
+public typealias Metadata = Int
 
 private class DebugTuple(
     private val out: StringBuilder,
@@ -126,7 +126,9 @@ public interface Thin : Pointee<Unit>
  * }
  * ```
  */
-public fun metadata(ptr: ConstPtr): Metadata = ptrMetadata(ptr)
+public fun metadata(ptr: ConstPtr): Metadata = ptrMetadata(ptr).toInt()
+
+public fun metadata(ptr: MutPtr): Metadata = ptrMetadata(ptr).toInt()
 
 /**
  * Forms a (possibly-wide) raw pointer from a data pointer and metadata.
@@ -174,10 +176,8 @@ public fun fromRawPartsMut(dataPointer: MutPtr, metadata: Metadata): MutPtr = ag
  */
 public open class DynMetadata<Dyn> internal constructor(
     vtablePtrCtorArg: NonNull,
-    public var phantom: Unit,
 ) : TrivialClone<DynMetadata<Dyn>> {
-    public var vtablePtr: NonNull = vtablePtrCtorArg
-        internal set
+    internal var vtablePtr: NonNull = vtablePtrCtorArg
 
     /**
      * When `DynMetadata` appears as the metadata field of a wide pointer, the rustcMiddle layout
@@ -222,31 +222,30 @@ public open class DynMetadata<Dyn> internal constructor(
         return Layout.fromSizeAlignUnchecked(this.sizeOf(), this.alignOf())
     }
 
-    public open fun fmt(f: StringBuilder): Result<Unit, Unit> = run { DebugTuple(f, "DynMetadata").field(this.vtablePtr()).finish(); Result.Ok<Unit, Unit>(Unit) }
+    public open fun fmt(f: StringBuilder): Result<Unit, Unit> =
+        run {
+            DebugTuple(f, "DynMetadata").field(this.vtablePtr()).finish()
+            Result.Ok<Unit, Unit>(Unit)
+        }
 
     // Manual impls needed to avoid `Dyn: $ Trait` bounds.
 
-    public open fun clone(): DynMetadata<Dyn> = DynMetadata(this.vtablePtr, this.phantom)
+    public override fun clone(): DynMetadata<Dyn> = DynMetadata(this.vtablePtr)
 
-    public open fun eq(other: DynMetadata<Dyn>): Boolean = io.github.kotlinmania.rustlang.core.ptr.eq<VTable>(this.vtablePtr(), other.vtablePtr())
+    public open fun eq(other: DynMetadata<Dyn>): Boolean = this.vtablePtr() == other.vtablePtr()
 
-    public open fun cmp(other: DynMetadata<Dyn>): Ordering = ConstPtr.cmp(this.vtablePtr(), other.vtablePtr())
+    public open fun cmp(other: DynMetadata<Dyn>): Ordering = this.vtablePtr().rawAddress.cmp(other.vtablePtr().rawAddress)
 
     public open fun partialCmp(other: DynMetadata<Dyn>): Ordering? = this.cmp(other)
 
-    public override fun hashCode(): Int {
-        var hasher = 0
-        io.github.kotlinmania.rustlang.core.ptr.hash<VTable>(this.vtablePtr(), hasher)
-        return hasher
-    }
+    public override fun hashCode(): Int = this.vtablePtr().rawAddress.hashCode()
 
     public companion object {
         public operator fun <Dyn> invoke(
             vtablePtr: NonNull,
-            phantom: Unit,
-        ): DynMetadata<Dyn> = DynMetadata<Dyn>(
-            vtablePtrCtorArg = vtablePtr,
-            phantom = phantom,
-        )
+        ): DynMetadata<Dyn> =
+            DynMetadata<Dyn>(
+                vtablePtrCtorArg = vtablePtr,
+            )
     }
 }
